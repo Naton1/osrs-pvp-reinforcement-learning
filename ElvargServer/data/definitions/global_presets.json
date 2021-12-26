@@ -1,0 +1,1707 @@
+[
+	{
+      "name": "Obby Mauler",
+      "spellbook": "NORMAL",
+      "stats": [
+            1,
+            1,
+            99,
+            80,
+            60,
+            31,
+            1
+        ],
+      "inventory": [
+            {
+              "id": 2440,
+              "amount": 1
+            },
+            {
+              "id": 2444,
+              "amount": 1
+            },
+            {
+              "id": 3024,
+              "amount": 1
+            },
+            {
+              "id": 2550,
+              "amount": 1
+            },
+            {
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+            {
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+            {
+              "id": 3144,
+              "amount": 1
+            },
+            {
+              "id": 6528,
+              "amount": 1
+            },
+           	{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 8013,
+              "amount": 15
+            }
+        ],
+      "equipment": [
+            {
+              "id": 1153,
+              "amount": 1
+            },
+            {
+              "id": 6568,
+              "amount": 1
+            },
+			{
+              "id": 868,
+              "amount": 250
+            },
+            {
+              "id": 1704,
+              "amount": 1
+            },
+            {
+              "id": 1115,
+              "amount": 1
+            },
+            {
+              "id": 3842,
+              "amount": 1
+            },
+            {
+              "id": 1067,
+              "amount": 1
+            },
+            {
+              "id": 7458,
+              "amount": 1
+            },
+            {
+              "id": 3105,
+              "amount": 1
+            },
+            {
+              "id": 2550,
+              "amount": 1
+            }
+        ]
+    },
+	{
+	  "name": "G-Mauler (R)",
+	  "spellbook": "NORMAL",
+	  "stats": [
+			50,
+			1,
+			99,
+			85,
+			99,
+			1,
+			1
+		],
+	  "inventory": [
+			{
+			  "id": 9185,
+			  "amount": 1
+			},
+			{
+			  "id": 9244,
+			  "amount": 75
+			},
+			{
+			  "id": 2444,
+			  "amount": 1
+			},
+			{
+			  "id": 2440,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 4153,
+			  "amount": 1
+			},
+			{
+			  "id": 3024,
+			  "amount": 1
+			},
+					{
+			  "id": 2436,
+			  "amount": 1
+			},
+					{
+			  "id": 3144,
+			  "amount": 1
+			},
+					{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			}, 
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 2550,
+			  "amount": 1
+			},
+			{
+			  "id": 8013,
+			  "amount": 15
+			}
+		],
+	  "equipment": [
+			{
+			  "id": 1169,
+			  "amount": 1
+			},
+			{
+			  "id": 10499,
+			  "amount": 1
+			},
+			{
+			  "id": 1704,
+			  "amount": 1
+			},
+			{
+			  "id": 861,
+			  "amount": 1
+			},
+			{
+			  "id": 1129,
+			  "amount": 1
+			},
+			{
+			  "id": 2497,
+			  "amount": 1
+			},
+			{
+			  "id": 7458,
+			  "amount": 1
+			},
+			{
+			  "id": 3105,
+			  "amount": 1
+			},
+			{
+			  "id": 2550,
+			  "amount": 1
+			},
+			{
+			  "id": 892,
+			  "amount": 75
+			}
+		]
+	},
+	{
+	  "name": "DDS Pure (M)",
+	  "spellbook": "NORMAL",
+	  "stats": [
+			60,
+			1,
+			99,
+			85,
+			1,
+			1,
+			1
+		],
+	  "inventory": [
+			{
+			  "id": 5698,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 2440,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3024,
+			  "amount": 1
+			},
+					{
+			  "id": 2436,
+			  "amount": 1
+			},
+					{
+			  "id": 3144,
+			  "amount": 1
+			},
+					{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			}, 
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 2550,
+			  "amount": 1
+			},
+			{
+			  "id": 8013,
+			  "amount": 15
+			}
+		],
+	  "equipment": [
+			{
+			  "id": 1153,
+			  "amount": 1
+			},
+			{
+			  "id": 6568,
+			  "amount": 1
+			},
+			{
+			  "id": 1704,
+			  "amount": 1
+			},
+			{
+			  "id": 4587,
+			  "amount": 1
+			},
+			{
+			  "id": 1115,
+			  "amount": 1
+			},
+			{
+			  "id": 12612,
+			  "amount": 1
+			},
+			{
+			  "id": 2497,
+			  "amount": 1
+			},
+			{
+			  "id": 7458,
+			  "amount": 1
+			},
+			{
+			  "id": 3105,
+			  "amount": 1
+			},
+			{
+			  "id": 2550,
+			  "amount": 1
+			},
+			{
+			  "id": 9244,
+			  "amount": 75
+			}
+		]
+	},
+	{
+	  "name": "DDS Pure (R)",
+	  "spellbook": "NORMAL",
+	  "stats": [
+			60,
+			1,
+			99,
+			85,
+			99,
+			1,
+			1
+		],
+	  "inventory": [
+			{
+			  "id": 9185,
+			  "amount": 1
+			},
+			{
+			  "id": 9244,
+			  "amount": 75
+			},
+			{
+			  "id": 2444,
+			  "amount": 1
+			},
+			{
+			  "id": 2440,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 5698,
+			  "amount": 1
+			},
+			{
+			  "id": 3024,
+			  "amount": 1
+			},
+					{
+			  "id": 2436,
+			  "amount": 1
+			},
+					{
+			  "id": 3144,
+			  "amount": 1
+			},
+					{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			}, 
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 2550,
+			  "amount": 1
+			},
+			{
+			  "id": 8013,
+			  "amount": 15
+			}
+		],
+	  "equipment": [
+			{
+			  "id": 1169,
+			  "amount": 1
+			},
+			{
+			  "id": 10499,
+			  "amount": 1
+			},
+			{
+			  "id": 1704,
+			  "amount": 1
+			},
+			{
+			  "id": 861,
+			  "amount": 1
+			},
+			{
+			  "id": 1129,
+			  "amount": 1
+			},
+			{
+			  "id": 2497,
+			  "amount": 1
+			},
+			{
+			  "id": 7458,
+			  "amount": 1
+			},
+			{
+			  "id": 3105,
+			  "amount": 1
+			},
+			{
+			  "id": 2550,
+			  "amount": 1
+			},
+			{
+			  "id": 892,
+			  "amount": 75
+			}
+		]
+	},
+	{
+	  "name": "NH Pure",
+	  "spellbook": "ANCIENT",
+	  "stats": [
+			60,
+			1,
+			99,
+			99,
+			99,
+			52,
+			94
+		],
+	  "inventory": [
+			{
+			  "id": 9185,
+			  "amount": 1
+			},
+			{
+			  "id": 2497,
+			  "amount": 1
+			},
+			{
+			  "id": 2444,
+			  "amount": 1
+			},
+			{
+			  "id": 2440,
+			  "amount": 1
+			},
+			{
+			  "id": 10499,
+			  "amount": 1
+			},
+			{
+			  "id": 5698,
+			  "amount": 1
+			},
+			{
+			  "id": 3024,
+			  "amount": 1
+			},
+			{
+			  "id": 2436,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 12608,
+			  "amount": 1
+			},
+			{
+			  "id": 3024,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 555,
+			  "amount": 1000
+			}, 
+			{
+			  "id": 565,
+			  "amount": 1000
+			},
+			{
+			  "id": 560,
+			  "amount": 1000
+			},
+			{
+			  "id": 8013,
+			  "amount": 15
+			}
+		],
+	  "equipment": [
+			{
+			  "id": 2900,
+			  "amount": 1
+			},
+			{
+			  "id": 2414,
+			  "amount": 1
+			},
+			{
+			  "id": 1704,
+			  "amount": 1
+			},
+			{
+			  "id": 4675,
+			  "amount": 1
+			},
+			{
+			  "id": 1035,
+			  "amount": 1
+			},
+			{
+			  "id": 12612,
+			  "amount": 1
+			},
+			{
+			  "id": 1033,
+			  "amount": 1
+			},
+			{
+			  "id": 7458,
+			  "amount": 1
+			},
+			{
+			  "id": 3105,
+			  "amount": 1
+			},
+			{
+			  "id": 2550,
+			  "amount": 1
+			},
+			{
+			  "id": 9244,
+			  "amount": 75
+			}
+		]
+	},
+	{
+	  "name": "60Att. Zerker",
+	  "spellbook": "LUNAR",
+	  "stats": [
+			60,
+			45,
+			99,
+			95,
+			99,
+			52,
+			94
+		],
+	  "inventory": [
+			{
+			  "id": 5698,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 2436,
+			  "amount": 1
+			},
+			{
+			  "id": 2440,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3024,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3024,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 2550,
+			  "amount": 1
+			},
+			{
+			  "id": 560,
+			  "amount": 1000
+			}, 
+			{
+			  "id": 557,
+			  "amount": 1000
+			},
+			{
+			  "id": 9075,
+			  "amount": 1000
+			},
+			{
+			  "id": 8013,
+			  "amount": 15
+			}
+		],
+	  "equipment": [
+			{
+			  "id": 3753,
+			  "amount": 1
+			},
+			{
+			  "id": 9751,
+			  "amount": 1
+			},
+			{
+			  "id": 1704,
+			  "amount": 1
+			},
+			{
+			  "id": 4587,
+			  "amount": 1
+			},
+			{
+			  "id": 1127,
+			  "amount": 1
+			},
+			{
+			  "id": 8850,
+			  "amount": 1
+			},
+			{
+			  "id": 1079,
+			  "amount": 1
+			},
+			{
+			  "id": 7462,
+			  "amount": 1
+			},
+			{
+			  "id": 4131,
+			  "amount": 1
+			},
+			{
+			  "id": 2550,
+			  "amount": 1
+			}
+		]
+	},
+	{
+	  "name": "70Att. Zerker",
+	  "spellbook": "LUNAR",
+	  "stats": [
+			70,
+			45,
+			99,
+			95,
+			99,
+			52,
+			94
+		],
+	  "inventory": [
+			{
+			  "id": 5698,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 2436,
+			  "amount": 1
+			},
+			{
+			  "id": 2440,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3024,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3024,
+			  "amount": 1
+			},
+			{
+			  "id": 6685,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 3144,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 385,
+			  "amount": 1
+			},
+			{
+			  "id": 2550,
+			  "amount": 1
+			},
+			{
+			  "id": 560,
+			  "amount": 1000
+			}, 
+			{
+			  "id": 557,
+			  "amount": 1000
+			},
+			{
+			  "id": 9075,
+			  "amount": 1000
+			},
+			{
+			  "id": 8013,
+			  "amount": 15
+			}
+		],
+	  "equipment": [
+			{
+			  "id": 3753,
+			  "amount": 1
+			},
+			{
+			  "id": 9751,
+			  "amount": 1
+			},
+			{
+			  "id": 1704,
+			  "amount": 1
+			},
+			{
+			  "id": 4151,
+			  "amount": 1
+			},
+			{
+			  "id": 1127,
+			  "amount": 1
+			},
+			{
+			  "id": 8850,
+			  "amount": 1
+			},
+			{
+			  "id": 1079,
+			  "amount": 1
+			},
+			{
+			  "id": 7462,
+			  "amount": 1
+			},
+			{
+			  "id": 4131,
+			  "amount": 1
+			},
+			{
+			  "id": 2550,
+			  "amount": 1
+			}
+		]
+	},
+	{
+      "name": "Main Rune",
+      "spellbook": "LUNAR",
+      "stats": [
+            99,
+            99,
+            99,
+            99,
+            99,
+            99,
+            99
+        ],
+      "inventory": [
+            {
+              "id": 2440,
+              "amount": 1
+            },
+            {
+              "id": 6685,
+              "amount": 1
+            },
+            {
+              "id": 3024,
+              "amount": 1
+            },
+            {
+              "id": 3024,
+              "amount": 1
+            },
+            {
+              "id": 2436,
+              "amount": 1
+            },
+			{
+              "id": 9075,
+              "amount": 2000
+            },
+			{
+              "id": 557,
+              "amount": 10000
+            },
+            {
+              "id": 560,
+              "amount": 1000
+            },
+			{
+              "id": 5698,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+            {
+              "id": 3144,
+              "amount": 1
+            },
+            {
+              "id": 3144,
+              "amount": 1
+            },
+            {
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 2550,
+              "amount": 1
+            },
+			{
+              "id": 8013,
+              "amount": 15
+            },
+        ],
+		"equipment": 
+		[
+            {
+              "id": 10828,
+              "amount": 1
+            },
+            {
+              "id": 6568,
+              "amount": 1
+            },
+			{
+              "id": 1704,
+              "amount": 1
+            },
+            {
+              "id": 4151,
+              "amount": 1
+            },
+            {
+              "id": 1127,
+              "amount": 1
+            },
+            {
+              "id": 8850,
+              "amount": 1
+            },
+            {
+              "id": 1079,
+              "amount": 1
+            },
+            {
+              "id": 7462,
+              "amount": 1
+            },
+            {
+              "id": 11840,
+              "amount": 1
+            },
+            {
+              "id": 2550,
+              "amount": 1
+            },
+        ]
+    },
+	{
+      "name": "Main Hybrid",
+      "spellbook": "ANCIENT",
+      "stats": [
+            99,
+            99,
+            99,
+            99,
+            99,
+            99,
+            99
+        ],
+      "inventory": [
+            {
+              "id": 1127,
+              "amount": 1
+            },
+            {
+              "id": 4151,
+              "amount": 1
+            },
+            {
+              "id": 2503,
+              "amount": 1
+            },
+            {
+              "id": 6685,
+              "amount": 1
+            },
+            {
+              "id": 1079,
+              "amount": 1
+            },
+            {
+              "id": 8850,
+              "amount": 1
+            },
+            {
+              "id": 5698,
+              "amount": 1
+            },
+            {
+              "id": 6685,
+              "amount": 1
+            },
+            {
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+                    {
+              "id": 3024,
+              "amount": 1
+            },
+
+            {
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+            {
+              "id": 3024,
+              "amount": 1
+            },
+
+            {
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+            {
+              "id": 2436,
+              "amount": 1
+            },
+            {
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+            {
+              "id": 2440,
+              "amount": 1
+            },
+            {
+              "id": 8013,
+              "amount": 15
+            },
+            {
+              "id": 560,
+              "amount": 4000
+            },
+            {
+              "id": 555,
+              "amount": 6000
+            },
+            {
+              "id": 565,
+              "amount": 2000
+            }
+        ],
+      "equipment": [
+            {
+              "id": 10828,
+              "amount": 1
+            },
+            {
+              "id": 2412,
+              "amount": 1
+            },
+            {
+              "id": 1704,
+              "amount": 1
+            },
+            {
+              "id": 4675,
+              "amount": 1
+            },
+            {
+              "id": 4091,
+              "amount": 1
+            },
+            {
+              "id": 3842,
+              "amount": 1
+            },
+            {
+              "id": 4093,
+              "amount": 1
+            },
+            {
+              "id": 7462,
+              "amount": 1
+            },
+            {
+              "id": 3105,
+              "amount": 1
+            },
+            {
+              "id": 2550,
+              "amount": 1
+            }
+        ]
+    },
+	{
+      "name": "Main Tribrid",
+      "spellbook": "ANCIENT",
+      "stats": [
+            99,
+            99,
+            99,
+            99,
+            99,
+            99,
+            99
+        ],
+      "inventory": [
+            {
+              "id": 10499,
+              "amount": 1
+            },
+            {
+              "id": 2503,
+              "amount": 1
+            },
+            {
+              "id": 4151,
+              "amount": 1
+            },
+            {
+              "id": 6685,
+              "amount": 1
+            },
+            {
+              "id": 9185,
+              "amount": 1
+            },
+            {
+              "id": 1079,
+              "amount": 1
+            },
+            {
+              "id": 8850,
+              "amount": 1
+            },
+            {
+              "id": 6685,
+              "amount": 1
+            },
+           	{
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 3144,
+              "amount": 1
+            },
+			{
+              "id": 5698,
+              "amount": 1
+            },
+            {
+              "id": 3024,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+            {
+              "id": 3024,
+              "amount": 1
+            },
+            {
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+            {
+              "id": 2440,
+              "amount": 1
+            },
+            {
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 385,
+              "amount": 1
+            },
+			{
+              "id": 8013,
+              "amount": 15
+            },
+            {
+              "id": 2436,
+              "amount": 1
+            },
+            {
+              "id": 555,
+              "amount": 6000
+            },
+            {
+              "id": 565,
+              "amount": 2000
+            },
+            {
+              "id": 560,
+              "amount": 4000
+            },
+            {
+              "id": 2444,
+              "amount": 1
+            }
+        ],
+      "equipment": [
+            {
+              "id": 10828,
+              "amount": 1
+            },
+            {
+              "id": 2412,
+              "amount": 1
+            },
+			{
+              "id": 9244,
+              "amount": 500
+            },
+            {
+              "id": 1704,
+              "amount": 1
+            },
+            {
+              "id": 4675,
+              "amount": 1
+            },
+            {
+              "id": 4091,
+              "amount": 1
+            },
+            {
+              "id": 12829,
+              "amount": 1
+            },
+            {
+              "id": 4093,
+              "amount": 1
+            },
+            {
+              "id": 7462,
+              "amount": 1
+            },
+            {
+              "id": 3105,
+              "amount": 1
+            },
+            {
+              "id": 2550,
+              "amount": 1
+            }
+        ]
+    }
+]
