@@ -1,15 +1,22 @@
 package com.runescape;
 
-import javax.swing.*;
-
 import com.runescape.util.SystemUtils;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JToolBar;
+import javax.swing.UIManager;
 import java.applet.Applet;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * I fear the day technology will surpass our human interaction. The world will have a generation of idiots. -Albert Einstein

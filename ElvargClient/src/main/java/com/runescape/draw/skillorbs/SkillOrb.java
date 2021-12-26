@@ -6,7 +6,8 @@ import com.runescape.draw.Rasterizer2D;
 import com.runescape.util.SecondsTimer;
 import com.runescape.util.SkillConstants;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Shape;
 import java.text.NumberFormat;
 
 /**

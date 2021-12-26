@@ -3,7 +3,10 @@ package com.runescape.draw;
 import com.runescape.cache.def.ItemDefinition;
 import com.runescape.cache.graphics.widget.Widget;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.Arc2D;
 
 public class WheelOfFortune {

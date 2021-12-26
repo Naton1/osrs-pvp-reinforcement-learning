@@ -1,6 +1,6 @@
 package com.runescape.draw.teleports;
 
-import java.awt.*;
+import java.awt.Dimension;
 
 /**
  * @author relex lawl

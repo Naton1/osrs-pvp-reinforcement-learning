@@ -4,7 +4,7 @@ import com.runescape.Client;
 import com.runescape.draw.Rasterizer2D;
 import com.runescape.util.SkillConstants;
 
-import java.awt.*;
+import java.awt.Graphics2D;
 
 /**
  * Handles skill orbs.

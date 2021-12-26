@@ -1,6 +1,6 @@
 package com.runescape.util;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;

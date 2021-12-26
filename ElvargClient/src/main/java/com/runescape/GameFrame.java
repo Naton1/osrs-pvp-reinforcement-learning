@@ -1,7 +1,10 @@
 package com.runescape;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Insets;
 
 public final class GameFrame extends JFrame {
 
