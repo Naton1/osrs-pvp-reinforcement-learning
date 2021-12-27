@@ -55,10 +55,7 @@ public final class SystemUtils {
         if ((os.indexOf("sunos") >= 0) || (os.indexOf("linux") >= 0)) {
             return true;
         }
-        if (isMac() && (System.getProperty("os.version", "").startsWith("10."))) {
-            return true;
-        }
-        return false;
+        return isMac() && (System.getProperty("os.version", "").startsWith("10."));
     }
 
     public static boolean isSolaris() {

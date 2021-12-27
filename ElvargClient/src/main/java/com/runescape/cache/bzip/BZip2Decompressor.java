@@ -4,7 +4,7 @@ public final class BZip2Decompressor {
 
     private static final BZip2DecompressionState state = new BZip2DecompressionState();
 
-    public static int decompress(byte output[], int length, byte compressed[], int decompressedLength, int minLen) {
+    public static int decompress(byte[] output, int length, byte[] compressed, int decompressedLength, int minLen) {
         synchronized (state) {
             state.compressed = compressed;
             state.nextIn = minLen;
@@ -30,9 +30,9 @@ public final class BZip2Decompressor {
         int i = state.anInt574;
         int j = state.anInt584;
         int k = state.anInt582;
-        int ai[] = BZip2DecompressionState.tt;
+        int[] ai = BZip2DecompressionState.tt;
         int l = state.anInt581;
-        byte abyte0[] = state.decompressed;
+        byte[] abyte0 = state.decompressed;
         int i1 = state.nextOut;
         int j1 = state.length;
         int k1 = j1;
@@ -139,9 +139,9 @@ public final class BZip2Decompressor {
 
     private static void decompress(BZip2DecompressionState state) {
         int gMinLen = 0;
-        int gLimit[] = null;
-        int gBase[] = null;
-        int gPerm[] = null;
+        int[] gLimit = null;
+        int[] gBase = null;
+        int[] gPerm = null;
         state.anInt578 = 1;
         if (BZip2DecompressionState.tt == null)
             BZip2DecompressionState.tt = new int[state.anInt578 * 0x186a0];
@@ -208,7 +208,7 @@ public final class BZip2Decompressor {
                 state.selectorMtf[i1] = (byte) count;
             }
 
-            byte pos[] = new byte[6];
+            byte[] pos = new byte[6];
             for (byte v = 0; v < huffmanTableCount; v++)
                 pos[v] = v;
 
@@ -463,7 +463,7 @@ public final class BZip2Decompressor {
 
     }
 
-    private static void createDecodeTables(int limit[], int base[], int perm[], byte length[], int i, int maxLength, int alphabetSize) {
+    private static void createDecodeTables(int[] limit, int[] base, int[] perm, byte[] length, int i, int maxLength, int alphabetSize) {
         int pp = 0;
         for (int i1 = i; i1 <= maxLength; i1++) {
             for (int l2 = 0; l2 < alphabetSize; l2++) {

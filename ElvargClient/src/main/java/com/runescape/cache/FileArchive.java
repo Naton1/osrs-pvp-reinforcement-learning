@@ -37,7 +37,7 @@ public final class FileArchive {
      */
     private final boolean extracted;
 
-    public FileArchive(byte data[]) {
+    public FileArchive(byte[] data) {
         Buffer buffer = new Buffer(data);
 
         int decompressedLength = buffer.readTriByte();
@@ -45,7 +45,7 @@ public final class FileArchive {
 
         if (compressedLength != decompressedLength) {
 
-            byte output[] = new byte[decompressedLength];
+            byte[] output = new byte[decompressedLength];
 
             BZip2Decompressor.decompress(output, decompressedLength, data, compressedLength, 6);
 
@@ -87,7 +87,7 @@ public final class FileArchive {
     }
 
     public byte[] readFile(String name) {
-        byte output[] = null;
+        byte[] output = null;
         int hash = 0;
         name = name.toUpperCase();
         for (int index = 0; index < name.length(); index++) {

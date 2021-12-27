@@ -90,7 +90,7 @@ public final class Player extends Mob {
                 if (spotAnim.resizeXY != 128 || spotAnim.resizeZ != 128)
                     model_3.scale(spotAnim.resizeXY, spotAnim.resizeXY, spotAnim.resizeZ);
                 model_3.light(64 + spotAnim.modelShadow, 850 + spotAnim.modelBrightness, -30, -50, -30, true);
-                Model models[] = {animatedModel, model_3};
+                Model[] models = {animatedModel, model_3};
                 animatedModel = new Model(models);
             }
         }
@@ -110,7 +110,7 @@ public final class Player extends Mob {
                     model_1.rotate90Degrees();
                 } else if (super.nextStepOrientation == 1536)
                     model_1.rotate90Degrees();
-                Model models[] = {animatedModel, model_1};
+                Model[] models = {animatedModel, model_1};
                 animatedModel = new Model(models);
                 if (super.nextStepOrientation == 512)
                     model_1.rotate90Degrees();
@@ -305,7 +305,7 @@ public final class Player extends Mob {
             }
         }
         if (model_1 == null) {
-            Model aclass30_sub2_sub4_sub6s[] = new Model[14];
+            Model[] aclass30_sub2_sub4_sub6s = new Model[14];
             int j2 = 0;
             for (int l2 = 0; l2 < 12; l2++) {
                 int i3 = equipment[l2];
@@ -384,7 +384,7 @@ public final class Player extends Mob {
             return null;
         }
 
-        Model headModels[] = new Model[12];
+        Model[] headModels = new Model[12];
 
         int headModelsOffset = 0;
 

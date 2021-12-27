@@ -7,7 +7,7 @@ import com.runescape.io.Buffer;
 public final class IndexedImage extends Rasterizer2D {
 
     public final int[] palette;
-    public byte palettePixels[];
+    public byte[] palettePixels;
     public int width;
     public int height;
     public int drawOffsetX;
@@ -58,7 +58,7 @@ public final class IndexedImage extends Rasterizer2D {
     public void downscale() {
         resizeWidth /= 2;
         resizeHeight /= 2;
-        byte raster[] = new byte[resizeWidth * resizeHeight];
+        byte[] raster = new byte[resizeWidth * resizeHeight];
         int sourceIndex = 0;
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -77,7 +77,7 @@ public final class IndexedImage extends Rasterizer2D {
             return;
         }
 
-        byte raster[] = new byte[resizeWidth * resizeHeight];
+        byte[] raster = new byte[resizeWidth * resizeHeight];
 
         int i = 0;
         for (int y = 0; y < height; y++) {
@@ -93,7 +93,7 @@ public final class IndexedImage extends Rasterizer2D {
     }
 
     public void flipHorizontally() {
-        byte raster[] = new byte[width * height];
+        byte[] raster = new byte[width * height];
         int pixel = 0;
         for (int y = 0; y < height; y++) {
             for (int x = width - 1; x >= 0; x--) {
@@ -105,7 +105,7 @@ public final class IndexedImage extends Rasterizer2D {
     }
 
     public void flipVertically() {
-        byte raster[] = new byte[width * height];
+        byte[] raster = new byte[width * height];
         int pixel = 0;
         for (int y = height - 1; y >= 0; y--) {
             for (int x = 0; x < width; x++) {
@@ -193,7 +193,7 @@ public final class IndexedImage extends Rasterizer2D {
 
     }
 
-    private void draw(int i, int raster[], byte image[], int destStep, int destIndex, int width, int sourceIndex, int ai1[], int sourceStep) {
+    private void draw(int i, int[] raster, byte[] image, int destStep, int destIndex, int width, int sourceIndex, int[] ai1, int sourceStep) {
         int minX = -(width >> 2);
         width = -(width & 3);
         for (int y = -i; y < 0; y++) {

@@ -100,7 +100,7 @@ public final class ShapedTile {
     public final int rotation;
     public final int colourRGB;
     public final int colourRGBA;
-    public int anIntArray682[];
+    public int[] anIntArray682;
 
     public ShapedTile(int yLoc, int j, int k, int l, int texture, int j1, int rotation, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int xLoc, int l4) {
         flat = !(i3 != l2 || i3 != l || i3 != k2);
@@ -112,13 +112,13 @@ public final class ShapedTile {
         int halfSizeLength = sideLength / 2;
         int quarterSizeLight = sideLength / 4;
         int k5 = (sideLength * 3) / 4;
-        int ai[] = anIntArrayArray696[j3];
+        int[] ai = anIntArrayArray696[j3];
         int l5 = ai.length;
         anIntArray673 = new int[l5];
         anIntArray674 = new int[l5];
         anIntArray675 = new int[l5];
-        int ai1[] = new int[l5];
-        int ai2[] = new int[l5];
+        int[] ai1 = new int[l5];
+        int[] ai2 = new int[l5];
         int xPos = xLoc * sideLength;
         int yPos = yLoc * sideLength;
         for (int k6 = 0; k6 < l5; k6++) {
@@ -238,7 +238,7 @@ public final class ShapedTile {
             ai2[k6] = j9;
         }
 
-        int ai3[] = anIntArrayArray697[j3];
+        int[] ai3 = anIntArrayArray697[j3];
         int j7 = ai3.length / 4;
         anIntArray679 = new int[j7];
         anIntArray680 = new int[j7];

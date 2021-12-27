@@ -5,14 +5,13 @@ import com.runescape.io.Buffer;
 
 public final class Animation {
 
-    public static Animation animations[];
-    public static int anInt367;
+    public static Animation[] animations;
     public int frameCount;
-    public int primaryFrames[];
-    public int secondaryFrames[];
+    public int[] primaryFrames;
+    public int[] secondaryFrames;
     public int[] durations;
     public int loopOffset;
-    public int interleaveOrder[];
+    public int[] interleaveOrder;
     public boolean stretches;
     public int forcedPriority;
     public int playerOffhand;

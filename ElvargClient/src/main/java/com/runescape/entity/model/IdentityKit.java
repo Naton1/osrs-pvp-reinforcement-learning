@@ -6,7 +6,7 @@ import com.runescape.io.Buffer;
 public final class IdentityKit {
 
     public static int length;
-    public static IdentityKit kits[];
+    public static IdentityKit[] kits;
     private final int[] originalColors;
     private final int[] replacementColors;
     private final int[] headModels = {-1, -1, -1, -1, -1};
@@ -90,7 +90,7 @@ public final class IdentityKit {
             return null;
         }
 
-        Model models[] = new Model[bodyModels.length];
+        Model[] models = new Model[bodyModels.length];
         for (int part = 0; part < bodyModels.length; part++) {
             models[part] = Model.getModel(bodyModels[part]);
         }
@@ -121,7 +121,7 @@ public final class IdentityKit {
     }
 
     public Model headModel() {
-        Model models[] = new Model[5];
+        Model[] models = new Model[5];
         int count = 0;
         for (int part = 0; part < 5; part++) {
             if (headModels[part] != -1) {

@@ -12,10 +12,10 @@ import com.runescape.util.ChunkUtil;
 public final class MapRegion {
 
     public static final int BRIDGE_TILE = 2;
-    private static final int COSINE_VERTICES[] = {1, 0, -1, 0};
-    private static final int anIntArray140[] = {16, 32, 64, 128};
-    private static final int SINE_VERTICIES[] = {0, -1, 0, 1};
-    private static final int anIntArray152[] = {1, 2, 4, 8};
+    private static final int[] COSINE_VERTICES = {1, 0, -1, 0};
+    private static final int[] anIntArray140 = {16, 32, 64, 128};
+    private static final int[] SINE_VERTICIES = {0, -1, 0, 1};
+    private static final int[] anIntArray152 = {1, 2, 4, 8};
     private static final int BLOCKED_TILE = 1;
     private static final int FORCE_LOWEST_PLANE = 8;
     public static int anInt131;
@@ -38,7 +38,7 @@ public final class MapRegion {
     private final byte[][][] overlayOrientations;
     private final byte[][][] tileFlags;
 
-    public MapRegion(byte fileFlags[][][], int tileHeights[][][]) {
+    public MapRegion(byte[][][] fileFlags, int[][][] tileHeights) {
         maximumPlane = 99;
         regionSizeX = 104;
         regionSizeY = 104;
@@ -122,7 +122,7 @@ public final class MapRegion {
         return (i & 0xff80) + j;
     }
 
-    public static void placeObject(SceneGraph worldController, int i, int j, int k, int l, CollisionMap class11, int ai[][][], int i1, int j1, int k1) {
+    public static void placeObject(SceneGraph worldController, int i, int j, int k, int l, CollisionMap class11, int[][][] ai, int i1, int j1, int k1) {
         int l1 = ai[l][i1][j];
         int i2 = ai[l][i1 + 1][j];
         int j2 = ai[l][i1 + 1][j + 1];
@@ -355,7 +355,7 @@ public final class MapRegion {
         return bool;
     }
 
-    public final void createRegionScene(CollisionMap maps[], SceneGraph scene) {
+    public final void createRegionScene(CollisionMap[] maps, SceneGraph scene) {
         try {
 
             for (int z = 0; z < 4; z++) {
@@ -373,7 +373,7 @@ public final class MapRegion {
 
             }
             for (int z = 0; z < 4; z++) {
-                byte shading[][] = this.shading[z];
+                byte[][] shading = this.shading[z];
                 byte byte0 = 96;
                 char diffusion = '\u0300';
                 byte lightX = -50;
@@ -488,9 +488,7 @@ public final class MapRegion {
                                         k21 = encode(l21, j22, l22);
                                     }
                                     if (z > 0) {
-                                        boolean flag = true;
-                                        if (l18 == 0 && overlayTypes[z][l6][k17] != 0)
-                                            flag = false;
+                                        boolean flag = l18 != 0 || overlayTypes[z][l6][k17] == 0;
                                         if (i19 > 0 && !FloorDefinition.overlays[i19 - 1].occlude)
                                             flag = false;
                                         if (flag && j19 == k19 && j19 == l19 && j19 == i20)
@@ -1078,7 +1076,7 @@ public final class MapRegion {
         return (hue / 4 << 10) + (saturation / 32 << 7) + luminance / 2;
     }
 
-    public final void loadMapChunk(int i, int j, CollisionMap clips[], int l, int i1, byte abyte0[], int j1, int k1, int l1) {
+    public final void loadMapChunk(int i, int j, CollisionMap[] clips, int l, int i1, byte[] abyte0, int j1, int k1, int l1) {
         for (int i2 = 0; i2 < 8; i2++) { //Add clipping
             for (int j2 = 0; j2 < 8; j2++)
                 if (l + i2 > 0 && l + i2 < 103 && l1 + j2 > 0 && l1 + j2 < 103)
@@ -1101,7 +1099,7 @@ public final class MapRegion {
 
     }
 
-    public final void method180(byte abyte0[], int i, int j, int k, int l, CollisionMap aclass11[]) {
+    public final void method180(byte[] abyte0, int i, int j, int k, int l, CollisionMap[] aclass11) {
         for (int i1 = 0; i1 < 4; i1++) {
             for (int j1 = 0; j1 < 64; j1++) {
                 for (int k1 = 0; k1 < 64; k1++)
@@ -1193,7 +1191,7 @@ public final class MapRegion {
         }
     }
 
-    public final void readObjectMap(CollisionMap aclass11[], SceneGraph worldController, int i, int j, int k, int l, byte abyte0[], int i1, int j1, int k1) {
+    public final void readObjectMap(CollisionMap[] aclass11, SceneGraph worldController, int i, int j, int k, int l, byte[] abyte0, int i1, int j1, int k1) {
         label0:
         {
             Buffer stream = new Buffer(abyte0);
@@ -1253,7 +1251,7 @@ public final class MapRegion {
         return (color & 0xff80) + light;
     }
 
-    public final void method190(int i, CollisionMap aclass11[], int j, SceneGraph worldController, byte abyte0[]) {
+    public final void method190(int i, CollisionMap[] aclass11, int j, SceneGraph worldController, byte[] abyte0) {
         label0:
         {
             Buffer stream = new Buffer(abyte0);

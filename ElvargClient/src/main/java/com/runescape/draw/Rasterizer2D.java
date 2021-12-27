@@ -17,7 +17,7 @@ import java.util.Hashtable;
 
 public class Rasterizer2D extends Cacheable {
     private static final ColorModel COLOR_MODEL = new DirectColorModel(32, 0xff0000, 0xff00, 0xff);
-    public static int pixels[];
+    public static int[] pixels;
     public static int width;
     public static int height;
     public static int topY;
@@ -35,7 +35,7 @@ public class Rasterizer2D extends Cacheable {
      * @param width  The width of the drawingArea.
      * @param pixels The array of pixels (RGBColours) in the drawingArea.
      */
-    public static void initDrawingArea(int height, int width, int pixels[]) {
+    public static void initDrawingArea(int height, int width, int[] pixels) {
         Rasterizer2D.pixels = pixels;
         Rasterizer2D.width = width;
         Rasterizer2D.height = height;

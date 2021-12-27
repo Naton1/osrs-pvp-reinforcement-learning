@@ -28,7 +28,7 @@ import java.awt.event.WindowEvent;
 public class GameWindow extends JFrame implements ActionListener {
 
     private static GameWindow instance;
-    private Applet appletInstance;
+    private final Applet appletInstance;
     private JToolBar toolbar;
 
     public GameWindow(Applet applet) {

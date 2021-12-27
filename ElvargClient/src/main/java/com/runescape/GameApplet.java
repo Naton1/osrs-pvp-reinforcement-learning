@@ -36,9 +36,9 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
     public final int DRAG = 2;
     public final int RELEASED = 3;
     public final int MOVE = 4;
-    final int keyArray[] = new int[128];
-    private final long aLongArray7[] = new long[10];
-    private final int charQueue[] = new int[128];
+    final int[] keyArray = new int[128];
+    private final long[] aLongArray7 = new long[10];
+    private final int[] charQueue = new int[128];
     public GameFrame gameFrame;
     public int mouseX;
     public int mouseY;
@@ -218,19 +218,19 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
             }
             processDrawing();
             if (shouldDebug) {
-                System.out.println((new StringBuilder()).append("ntime:").append(l2).toString());
+                System.out.println((new StringBuilder()).append("ntime:").append(l2));
                 for (int k2 = 0; k2 < 10; k2++) {
                     int i3 = ((i - k2 - 1) + 20) % 10;
                     System.out.println((new StringBuilder()).append("otim").append(i3).append(":")
-                            .append(aLongArray7[i3]).toString());
+                            .append(aLongArray7[i3]));
                 }
 
                 System.out.println((new StringBuilder()).append("fps:").append(fps).append(" ratio:").append(j)
-                        .append(" count:").append(l).toString());
+                        .append(" count:").append(l));
                 System.out.println((new StringBuilder()).append("del:").append(k).append(" deltime:").append(delayTime)
-                        .append(" mindel:").append(minDelay).toString());
+                        .append(" mindel:").append(minDelay));
                 System.out.println(
-                        (new StringBuilder()).append("intex:").append(i1).append(" opos:").append(i).toString());
+                        (new StringBuilder()).append("intex:").append(i1).append(" opos:").append(i));
                 shouldDebug = false;
                 i1 = 0;
             }

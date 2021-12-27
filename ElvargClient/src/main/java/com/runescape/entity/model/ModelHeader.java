@@ -2,7 +2,7 @@ package com.runescape.entity.model;
 
 final class ModelHeader {
 
-    public byte aByteArray368[];
+    public byte[] aByteArray368;
     public int anInt369;
     public int anInt370;
     public int anInt371;

@@ -100,7 +100,7 @@ public final class SceneGraph {
     private int interactableObjectCacheCurrPos;
     private int anInt488;
 
-    public SceneGraph(int heightMap[][][]) {
+    public SceneGraph(int[][][] heightMap) {
         int yLocSize = 104;// was parameter
         int xLocSize = 104;// was parameter
         int zLocSize = 4;// was parameter
@@ -144,14 +144,14 @@ public final class SceneGraph {
         sceneClusters[z][sceneClusterCounts[z]++] = sceneCluster;
     }
 
-    public static void setupViewport(int i, int j, int viewportWidth, int viewportHeight, int ai[]) {
+    public static void setupViewport(int i, int j, int viewportWidth, int viewportHeight, int[] ai) {
         anInt495 = 0;
         anInt496 = 0;
         SceneGraph.viewportWidth = viewportWidth;
         SceneGraph.viewportHeight = viewportHeight;
         viewportHalfWidth = viewportWidth / 2;
         viewportHalfHeight = viewportHeight / 2;
-        boolean aflag[][][][] = new boolean[9][32][53][53];
+        boolean[][][][] aflag = new boolean[9][32][53][53];
         for (int zAngle = 128; zAngle <= 384; zAngle += 32) {
             for (int xyAngle = 0; xyAngle < 2048; xyAngle += 64) {
                 camUpDownY = Model.SINE[zAngle];
@@ -761,7 +761,7 @@ public final class SceneGraph {
     private void mergeNormals(Model model1, Model model2, int offsetX, int offsetY, int offsetZ, boolean flag) {
         anInt488++;
         int count = 0;
-        int second[] = model2.vertexX;
+        int[] second = model2.vertexX;
         int secondVertices = model2.numVertices;
         for (int model1Vertex = 0; model1Vertex < model1.numVertices; model1Vertex++) {
             VertexNormal vertexNormal1 = model1.vertexNormals[model1Vertex];
@@ -809,7 +809,7 @@ public final class SceneGraph {
 
     }
 
-    public void drawTileOnMinimapSprite(int pixels[], int drawIndex, int zLoc, int xLoc, int yLoc) {
+    public void drawTileOnMinimapSprite(int[] pixels, int drawIndex, int zLoc, int xLoc, int yLoc) {
         int leftOverWidth = 512;// was parameter
         Tile tile = tileArray[zLoc][xLoc][yLoc];
         if (tile == null)
@@ -838,8 +838,8 @@ public final class SceneGraph {
         int rotation = shapedTile.rotation;
         int underlayRGB = shapedTile.colourRGB;
         int overlayRGB = shapedTile.colourRGBA;
-        int shapePoints[] = tileVertices[shape];
-        int shapePointIndices[] = tileVertexIndices[rotation];
+        int[] shapePoints = tileVertices[shape];
+        int[] shapePointIndices = tileVertexIndices[rotation];
         int shapePtr = 0;
         if (underlayRGB != 0) {
             for (int i = 0; i < 4; i++) {
@@ -925,7 +925,7 @@ public final class SceneGraph {
         method319();
         anInt446 = 0;
         for (int zLoc = zAnInt442; zLoc < numberOfZ; zLoc++) {
-            Tile planeTiles[][] = tileArray[zLoc];
+            Tile[][] planeTiles = tileArray[zLoc];
             for (int xLoc = cameraLowTileX; xLoc < cameraHighTileX; xLoc++) {
                 for (int yLoc = cameraLowTileY; yLoc < cameraHighTileY; yLoc++) {
                     Tile tile = planeTiles[xLoc][yLoc];
@@ -945,7 +945,7 @@ public final class SceneGraph {
         }
 
         for (int zLoc = zAnInt442; zLoc < numberOfZ; zLoc++) {
-            Tile plane[][] = tileArray[zLoc];
+            Tile[][] plane = tileArray[zLoc];
             for (int dX = -25; dX <= 0; dX++) {
                 int xLoc1 = xCameraTile + dX;
                 int xLoc2 = xCameraTile - dX;
@@ -987,7 +987,7 @@ public final class SceneGraph {
         }
 
         for (int zLoc = zAnInt442; zLoc < numberOfZ; zLoc++) {
-            Tile plane[][] = tileArray[zLoc];
+            Tile[][] plane = tileArray[zLoc];
             for (int dX = -25; dX <= 0; dX++) {
                 int xLoc1 = xCameraTile + dX;
                 int xLoc2 = xCameraTile - dX;
@@ -1046,7 +1046,7 @@ public final class SceneGraph {
             int j = currentTile.anInt1309;
             int k = currentTile.z1AnInt1307;
             int l = currentTile.anInt1310;
-            Tile aclass30_sub3[][] = tileArray[k];
+            Tile[][] aclass30_sub3 = tileArray[k];
             if (currentTile.aBoolean1322) {
                 if (flag) {
                     if (k > 0) {
@@ -1660,7 +1660,7 @@ public final class SceneGraph {
 
     private void method319() {
         int sceneClusterCount = sceneClusterCounts[currentRenderPlane];
-        SceneCluster sceneClusters[] = SceneGraph.sceneClusters[currentRenderPlane];
+        SceneCluster[] sceneClusters = SceneGraph.sceneClusters[currentRenderPlane];
         anInt475 = 0;
         for (int sceneIndex = 0; sceneIndex < sceneClusterCount; sceneIndex++) {
             SceneCluster sceneCluster = sceneClusters[sceneIndex];

@@ -21,7 +21,7 @@ public enum PlayerRights {
 		return crown;
 	}
 	
-	private static Map<Integer, PlayerRights> rights = new HashMap<>();
+	private static final Map<Integer, PlayerRights> rights = new HashMap<>();
 	static {
 		for (PlayerRights r : PlayerRights.values()) {
 			rights.put(r.ordinal(), r);

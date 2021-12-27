@@ -28,7 +28,7 @@ public final class ItemDefinition {
     public int noted_item_id;
     public int equipped_model_female_2;
     public int equipped_model_male_1;
-    public String groundActions[];
+    public String[] groundActions;
     public int translate_x;
     public String name;
     public int inventory_model;
@@ -37,7 +37,7 @@ public final class ItemDefinition {
     public int unnoted_item_id;
     public int modelZoom;
     public int equipped_model_male_2;
-    public String actions[];
+    public String[] actions;
     public int rotation_y;
     public int[] stack_variant_id;
     public int translate_yz;//
@@ -233,8 +233,8 @@ public final class ItemDefinition {
         Sprite enabledSprite = new Sprite(32, 32);
         int centerX = Rasterizer3D.originViewX;
         int centerY = Rasterizer3D.originViewY;
-        int lineOffsets[] = Rasterizer3D.scanOffsets;
-        int pixels[] = Rasterizer2D.pixels;
+        int[] lineOffsets = Rasterizer3D.scanOffsets;
+        int[] pixels = Rasterizer2D.pixels;
         int width = Rasterizer2D.width;
         int height = Rasterizer2D.height;
         int vp_left = Rasterizer2D.leftX;
@@ -309,8 +309,8 @@ public final class ItemDefinition {
         Sprite sprite = new Sprite(90, 90);
         int centerX = Rasterizer3D.originViewX;
         int centerY = Rasterizer3D.originViewY;
-        int lineOffsets[] = Rasterizer3D.scanOffsets;
-        int pixels[] = Rasterizer2D.pixels;
+        int[] lineOffsets = Rasterizer3D.scanOffsets;
+        int[] pixels = Rasterizer2D.pixels;
         int width = Rasterizer2D.width;
         int height = Rasterizer2D.height;
         int vp_left = Rasterizer2D.leftX;
@@ -356,9 +356,7 @@ public final class ItemDefinition {
         }
         if (model_1 == -1)
             return true;
-        boolean cached = true;
-        if (!Model.isCached(model_1))
-            cached = false;
+        boolean cached = Model.isCached(model_1);
         if (model_2 != -1 && !Model.isCached(model_2))
             cached = false;
         return cached;
@@ -376,7 +374,7 @@ public final class ItemDefinition {
         Model dialogueModel_ = Model.getModel(dialogueModel);
         if (dialogueHatModel != -1) {
             Model hatModel_ = Model.getModel(dialogueHatModel);
-            Model models[] = {dialogueModel_, hatModel_};
+            Model[] models = {dialogueModel_, hatModel_};
             dialogueModel_ = new Model(2, models);
         }
         if (modified_model_colors != null) {
@@ -398,9 +396,7 @@ public final class ItemDefinition {
         }
         if (primaryModel == -1)
             return true;
-        boolean cached = true;
-        if (!Model.isCached(primaryModel))
-            cached = false;
+        boolean cached = Model.isCached(primaryModel);
         if (secondaryModel != -1 && !Model.isCached(secondaryModel))
             cached = false;
         if (emblem != -1 && !Model.isCached(emblem))
@@ -426,11 +422,11 @@ public final class ItemDefinition {
             if (emblem != -1) {
                 Model secondaryModel_ = Model.getModel(secondaryModel);
                 Model emblemModel = Model.getModel(emblem);
-                Model models[] = {primaryModel_, secondaryModel_, emblemModel};
+                Model[] models = {primaryModel_, secondaryModel_, emblemModel};
                 primaryModel_ = new Model(3, models);
             } else {
                 Model model_2 = Model.getModel(secondaryModel);
-                Model models[] = {primaryModel_, model_2};
+                Model[] models = {primaryModel_, model_2};
                 primaryModel_ = new Model(2, models);
             }
         if (gender == 0 && equipped_model_male_translation_y != 0)

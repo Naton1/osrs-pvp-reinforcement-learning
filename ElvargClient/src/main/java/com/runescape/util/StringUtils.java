@@ -32,7 +32,7 @@ public final class StringUtils {
             if (encoded % 37L == 0L)
                 return "invalid_name";
             int length = 0;
-            char chars[] = new char[12];
+            char[] chars = new char[12];
             while (encoded != 0L) {
                 long l1 = encoded;
                 encoded /= 37L;
@@ -40,7 +40,7 @@ public final class StringUtils {
             }
             return new String(chars, 12 - length, length);
         } catch (RuntimeException runtimeexception) {
-            System.out.println("81570, " + encoded + ", " + (byte) -99 + ", " + runtimeexception.toString());
+            System.out.println("81570, " + encoded + ", " + (byte) -99 + ", " + runtimeexception);
         }
         throw new RuntimeException();
     }
@@ -84,7 +84,7 @@ public final class StringUtils {
      */
     public static String formatText(String t) {
         if (t.length() > 0) {
-            char chars[] = t.toCharArray();
+            char[] chars = t.toCharArray();
             for (int index = 0; index < chars.length; index++)
                 if (chars[index] == '_') {
                     chars[index] = ' ';
@@ -104,7 +104,7 @@ public final class StringUtils {
         return number.length() < 4 ? number : insertCommasToNumber(number
                 .substring(0, number.length() - 3))
                 + ","
-                + number.substring(number.length() - 3, number.length());
+                + number.substring(number.length() - 3);
     }
 
     /**
@@ -124,7 +124,7 @@ public final class StringUtils {
         int end = maxChar;
         if (length > maxChar) {
             int noOfLines = (length / maxChar) + 1;
-            int endOfStr[] = new int[noOfLines];
+            int[] endOfStr = new int[noOfLines];
             for (int f = 0; f < noOfLines - 1; f++) {
                 int end1 = maxChar;
                 endOfStr[f] = end;

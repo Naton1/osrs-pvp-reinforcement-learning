@@ -55,7 +55,7 @@ final class HashTable {
             return;
         } catch (RuntimeException runtimeexception) {
             System.out.println("91499, " + linkable + ", " + key + ", "
-                    + (byte) 7 + ", " + runtimeexception.toString());
+                    + (byte) 7 + ", " + runtimeexception);
         }
         throw new RuntimeException();
     }

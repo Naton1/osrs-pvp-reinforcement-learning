@@ -3,7 +3,7 @@ package com.runescape.util.zip;
 public final class BZip2Decompressor {
     private static final BZip2Header header = new BZip2Header();
 
-    public static int method225(byte abyte0[], int i, byte abyte1[], int j, int k) {
+    public static int method225(byte[] abyte0, int i, byte[] abyte1, int j, int k) {
         synchronized (header) {
             header.aByteArray563 = abyte1;
             header.anInt564 = k;
@@ -29,9 +29,9 @@ public final class BZip2Decompressor {
         int i = header.anInt574;
         int j = header.anInt584;
         int k = header.anInt582;
-        int ai[] = BZip2Header.anIntArray587;
+        int[] ai = BZip2Header.anIntArray587;
         int l = header.anInt581;
-        byte abyte0[] = header.aByteArray568;
+        byte[] abyte0 = header.aByteArray568;
         int i1 = header.anInt569;
         int j1 = header.anInt570;
         int k1 = j1;
@@ -140,9 +140,9 @@ public final class BZip2Decompressor {
 
     private static void method227(BZip2Header class32) {
         int k8 = 0;
-        int ai[] = null;
-        int ai1[] = null;
-        int ai2[] = null;
+        int[] ai = null;
+        int[] ai1 = null;
+        int[] ai2 = null;
         class32.anInt578 = 1;
         if (BZip2Header.anIntArray587 == null)
             BZip2Header.anIntArray587 = new int[class32.anInt578 * 0x186a0];
@@ -205,7 +205,7 @@ public final class BZip2Decompressor {
                 class32.aByteArray595[i1] = (byte) j3;
             }
 
-            byte abyte0[] = new byte[6];
+            byte[] abyte0 = new byte[6];
             for (byte byte16 = 0; byte16 < j4; byte16++)
                 abyte0[byte16] = byte16;
 
@@ -459,7 +459,7 @@ public final class BZip2Decompressor {
             }
     }
 
-    private static void method232(int ai[], int ai1[], int ai2[], byte abyte0[], int i, int j, int k) {
+    private static void method232(int[] ai, int[] ai1, int[] ai2, byte[] abyte0, int i, int j, int k) {
         int l = 0;
         for (int i1 = i; i1 <= j; i1++) {
             for (int l2 = 0; l2 < k; l2++)

@@ -6,7 +6,7 @@ package com.runescape.util.zip;
 
 final class BZip2Context {
 
-    public static int anIntArray587[];
+    public static int[] anIntArray587;
     final int[] anIntArray583;
     final int[] anIntArray585;
     final boolean[] aBooleanArray589;
@@ -21,12 +21,12 @@ final class BZip2Context {
     final int[][] anIntArrayArray598;
     final int[][] anIntArrayArray599;
     final int[] anIntArray600;
-    byte data[];
+    byte[] data;
     int anInt564;
     int anInt565;
     int anInt566;
     int anInt567;
-    byte aByteArray568[];
+    byte[] aByteArray568;
     int anInt569;
     int anInt570;
     int anInt571;

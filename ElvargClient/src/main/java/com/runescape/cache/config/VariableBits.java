@@ -5,11 +5,11 @@ import com.runescape.io.Buffer;
 
 public final class VariableBits {
 
-    public static VariableBits varbits[];
+    public static VariableBits[] varbits;
     public int setting;
     public int low;
     public int high;
-    private boolean aBoolean651;
+    private final boolean aBoolean651;
 
     private VariableBits() {
         aBoolean651 = false;

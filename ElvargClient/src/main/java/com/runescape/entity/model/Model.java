@@ -17,37 +17,37 @@ public class Model extends Renderable {
     public static int anInt1685;
     public static int anInt1686;
     public static int anInt1687;
-    public static int anIntArray1688[] = new int[1000];
-    public static int SINE[];
-    public static int COSINE[];
-    static ModelHeader modelHeader[];
-    static boolean hasAnEdgeToRestrict[] = new boolean[4700];
-    static boolean outOfReach[] = new boolean[4700];
-    static int projected_vertex_x[] = new int[4700];
-    static int projected_vertex_y[] = new int[4700];
-    static int projected_vertex_z[] = new int[4700];
-    static int camera_vertex_x[] = new int[4700];
-    static int camera_vertex_y[] = new int[4700];
-    static int camera_vertex_z[] = new int[4700];
-    static int depthListIndices[] = new int[1600];
-    static int faceLists[][] = new int[1600][512];
-    static int anIntArray1673[] = new int[12];
-    static int anIntArrayArray1674[][] = new int[12][2000];
-    static int anIntArray1675[] = new int[2000];
-    static int anIntArray1676[] = new int[2000];
-    static int anIntArray1677[] = new int[12];
-    static int anIntArray1678[] = new int[10];
-    static int anIntArray1679[] = new int[10];
-    static int anIntArray1680[] = new int[10];
+    public static int[] anIntArray1688 = new int[1000];
+    public static int[] SINE;
+    public static int[] COSINE;
+    static ModelHeader[] modelHeader;
+    static boolean[] hasAnEdgeToRestrict = new boolean[4700];
+    static boolean[] outOfReach = new boolean[4700];
+    static int[] projected_vertex_x = new int[4700];
+    static int[] projected_vertex_y = new int[4700];
+    static int[] projected_vertex_z = new int[4700];
+    static int[] camera_vertex_x = new int[4700];
+    static int[] camera_vertex_y = new int[4700];
+    static int[] camera_vertex_z = new int[4700];
+    static int[] depthListIndices = new int[1600];
+    static int[][] faceLists = new int[1600][512];
+    static int[] anIntArray1673 = new int[12];
+    static int[][] anIntArrayArray1674 = new int[12][2000];
+    static int[] anIntArray1675 = new int[2000];
+    static int[] anIntArray1676 = new int[2000];
+    static int[] anIntArray1677 = new int[12];
+    static int[] anIntArray1678 = new int[10];
+    static int[] anIntArray1679 = new int[10];
+    static int[] anIntArray1680 = new int[10];
     static int xAnimOffset;
     static int yAnimOffset;
     static int zAnimOffset;
-    static int modelIntArray3[];
-    static int modelIntArray4[];
-    private static int anIntArray1622[] = new int[2000];
-    private static int anIntArray1623[] = new int[2000];
-    private static int anIntArray1624[] = new int[2000];
-    private static int anIntArray1625[] = new int[2000];
+    static int[] modelIntArray3;
+    static int[] modelIntArray4;
+    private static int[] anIntArray1622 = new int[2000];
+    private static int[] anIntArray1623 = new int[2000];
+    private static int[] anIntArray1624 = new int[2000];
+    private static int[] anIntArray1625 = new int[2000];
 
     static {
         SINE = Rasterizer3D.anIntArray1470;
@@ -60,25 +60,25 @@ public class Model extends Renderable {
     public byte[] texture_coordinates;
     public byte[] texture_type;
     public int numVertices;
-    public int vertexX[];
-    public int vertexY[];
-    public int vertexZ[];
+    public int[] vertexX;
+    public int[] vertexY;
+    public int[] vertexZ;
     public int numTriangles;
-    public int facePointA[];
-    public int facePointB[];
-    public int facePointC[];
-    public int faceHslA[];
-    public int faceHslB[];
-    public int faceHslC[];
-    public int faceDrawType[];
-    public byte face_render_priorities[];
-    public int face_alpha[];
-    public short triangleColours[];
+    public int[] facePointA;
+    public int[] facePointB;
+    public int[] facePointC;
+    public int[] faceHslA;
+    public int[] faceHslB;
+    public int[] faceHslC;
+    public int[] faceDrawType;
+    public byte[] face_render_priorities;
+    public int[] face_alpha;
+    public short[] triangleColours;
     public byte face_priority = 0;
     public int numberOfTexturesFaces;
-    public short textures_face_a[];
-    public short textures_face_b[];
-    public short textures_face_c[];
+    public short[] textures_face_a;
+    public short[] textures_face_b;
+    public short[] textures_face_c;
     public int minimumXVertex;
     public int maximumXVertex;
     public int maximumZVertex;
@@ -88,12 +88,12 @@ public class Model extends Renderable {
     public int maxRenderDepth;
     public int diagonal3DAboveOrigin;
     public int itemDropHeight;
-    public int vertexVSkin[];
-    public int triangleTSkin[];
-    public int vertexGroups[][];
-    public int faceGroups[][];
+    public int[] vertexVSkin;
+    public int[] triangleTSkin;
+    public int[][] vertexGroups;
+    public int[][] faceGroups;
     public boolean fits_on_single_square;
-    public VertexNormal alsoVertexNormals[];
+    public VertexNormal[] alsoVertexNormals;
     private boolean aBoolean1618;
 
     public Model(int modelId) {
@@ -112,7 +112,7 @@ public class Model extends Renderable {
             aBoolean1618 = !aBoolean1618;
     }
 
-    public Model(int length, Model model_segments[]) {
+    public Model(int length, Model[] model_segments) {
         try {
             aBoolean1618 = true;
             fits_on_single_square = false;
@@ -242,7 +242,7 @@ public class Model extends Renderable {
         }
     }
 
-    public Model(Model amodel[]) {
+    public Model(Model[] amodel) {
         int i = 2;
         aBoolean1618 = true;
         fits_on_single_square = false;
@@ -557,7 +557,7 @@ public class Model extends Renderable {
         modelIntArray4 = null;
     }
 
-    public static void method460(byte abyte0[], int j) {
+    public static void method460(byte[] abyte0, int j) {
         try {
             if (abyte0 == null) {
                 ModelHeader class21 = modelHeader[j] = new ModelHeader();
@@ -933,7 +933,7 @@ public class Model extends Renderable {
 
     }
 
-    public void readNewModel(byte data[], int modelId) {
+    public void readNewModel(byte[] data, int modelId) {
         Buffer nc1 = new Buffer(data);
         Buffer nc2 = new Buffer(data);
         Buffer nc3 = new Buffer(data);
@@ -1391,7 +1391,7 @@ public class Model extends Renderable {
 
     public void skin() {
         if (vertexVSkin != null) {
-            int ai[] = new int[256];
+            int[] ai = new int[256];
             int j = 0;
             for (int l = 0; l < numVertices; l++) {
                 int j1 = vertexVSkin[l];
@@ -1411,7 +1411,7 @@ public class Model extends Renderable {
             vertexVSkin = null;
         }
         if (triangleTSkin != null) {
-            int ai1[] = new int[256];
+            int[] ai1 = new int[256];
             int k = 0;
             for (int i1 = 0; i1 < numTriangles; i1++) {
                 int l1 = triangleTSkin[i1];
@@ -1432,7 +1432,7 @@ public class Model extends Renderable {
         }
     }
 
-    private void transformSkin(int animationType, int skin[], int x, int y, int z) {
+    private void transformSkin(int animationType, int[] skin, int x, int y, int z) {
 
         int i1 = skin.length;
         if (animationType == 0) {
@@ -1443,7 +1443,7 @@ public class Model extends Renderable {
             for (int k2 = 0; k2 < i1; k2++) {
                 int l3 = skin[k2];
                 if (l3 < vertexGroups.length) {
-                    int ai5[] = vertexGroups[l3];
+                    int[] ai5 = vertexGroups[l3];
                     for (int i5 = 0; i5 < ai5.length; i5++) {
                         int j6 = ai5[i5];
                         xAnimOffset += vertexX[j6];
@@ -1456,14 +1456,14 @@ public class Model extends Renderable {
             }
 
             if (j1 > 0) {
-                xAnimOffset = (int) (xAnimOffset / j1 + x);
-                yAnimOffset = (int) (yAnimOffset / j1 + y);
-                zAnimOffset = (int) (zAnimOffset / j1 + z);
+                xAnimOffset = xAnimOffset / j1 + x;
+                yAnimOffset = yAnimOffset / j1 + y;
+                zAnimOffset = zAnimOffset / j1 + z;
                 return;
             } else {
-                xAnimOffset = (int) x;
-                yAnimOffset = (int) y;
-                zAnimOffset = (int) z;
+                xAnimOffset = x;
+                yAnimOffset = y;
+                zAnimOffset = z;
                 return;
             }
         }
@@ -1471,7 +1471,7 @@ public class Model extends Renderable {
             for (int k1 = 0; k1 < i1; k1++) {
                 int l2 = skin[k1];
                 if (l2 < vertexGroups.length) {
-                    int ai1[] = vertexGroups[l2];
+                    int[] ai1 = vertexGroups[l2];
                     for (int i4 = 0; i4 < ai1.length; i4++) {
                         int j5 = ai1[i4];
                         vertexX[j5] += x;
@@ -1488,7 +1488,7 @@ public class Model extends Renderable {
             for (int l1 = 0; l1 < i1; l1++) {
                 int i3 = skin[l1];
                 if (i3 < vertexGroups.length) {
-                    int ai2[] = vertexGroups[i3];
+                    int[] ai2 = vertexGroups[i3];
                     for (int j4 = 0; j4 < ai2.length; j4++) {
                         int k5 = ai2[j4];
                         vertexX[k5] -= xAnimOffset;
@@ -1532,15 +1532,15 @@ public class Model extends Renderable {
             for (int i2 = 0; i2 < i1; i2++) {
                 int j3 = skin[i2];
                 if (j3 < vertexGroups.length) {
-                    int ai3[] = vertexGroups[j3];
+                    int[] ai3 = vertexGroups[j3];
                     for (int k4 = 0; k4 < ai3.length; k4++) {
                         int l5 = ai3[k4];
                         vertexX[l5] -= xAnimOffset;
                         vertexY[l5] -= yAnimOffset;
                         vertexZ[l5] -= zAnimOffset;
-                        vertexX[l5] = (int) ((vertexX[l5] * x) / 128);
-                        vertexY[l5] = (int) ((vertexY[l5] * y) / 128);
-                        vertexZ[l5] = (int) ((vertexZ[l5] * z) / 128);
+                        vertexX[l5] = (vertexX[l5] * x) / 128;
+                        vertexY[l5] = (vertexY[l5] * y) / 128;
+                        vertexZ[l5] = (vertexZ[l5] * z) / 128;
                         vertexX[l5] += xAnimOffset;
                         vertexY[l5] += yAnimOffset;
                         vertexZ[l5] += zAnimOffset;
@@ -1555,7 +1555,7 @@ public class Model extends Renderable {
             for (int j2 = 0; j2 < i1; j2++) {
                 int k3 = skin[j2];
                 if (k3 < faceGroups.length) {
-                    int ai4[] = faceGroups[k3];
+                    int[] ai4 = faceGroups[k3];
                     for (int l4 = 0; l4 < ai4.length; l4++) {
                         int i6 = ai4[l4];
                         face_alpha[i6] += x * 8;
@@ -1592,7 +1592,7 @@ public class Model extends Renderable {
 
     }
 
-    public void applyAnimationFrames(int ai[], int j, int k) {
+    public void applyAnimationFrames(int[] ai, int j, int k) {
         if (k == -1)
             return;
         if (ai == null || j == -1) {
@@ -1927,9 +1927,7 @@ public class Model extends Renderable {
             return;
 
         int j5 = l2 + (super.modelBaseY * j >> 16);
-        boolean flag = false;
-        if (k2 - j5 <= 50)
-            flag = true;
+        boolean flag = k2 - j5 <= 50;
 
         boolean flag1 = false;
         if (i2 > 0 && aBoolean1684) {
@@ -2031,10 +2029,7 @@ public class Model extends Renderable {
                     }
                     if ((x_a - x_b) * (projected_vertex_y[c] - projected_vertex_y[b]) - (projected_vertex_y[a] - projected_vertex_y[b]) * (x_c - x_b) > 0) {
                         outOfReach[face] = false;
-                        if (x_a < 0 || x_b < 0 || x_c < 0 || x_a > Rasterizer2D.lastX || x_b > Rasterizer2D.lastX || x_c > Rasterizer2D.lastX)
-                            hasAnEdgeToRestrict[face] = true;
-                        else
-                            hasAnEdgeToRestrict[face] = false;
+                        hasAnEdgeToRestrict[face] = x_a < 0 || x_b < 0 || x_c < 0 || x_a > Rasterizer2D.lastX || x_b > Rasterizer2D.lastX || x_c > Rasterizer2D.lastX;
 
                         int k5 = (projected_vertex_z[a] + projected_vertex_z[b] + projected_vertex_z[c]) / 3 + diagonal3DAboveOrigin;
                         faceLists[k5][depthListIndices[k5]++] = face;
@@ -2046,7 +2041,7 @@ public class Model extends Renderable {
             for (int i1 = maxRenderDepth - 1; i1 >= 0; i1--) {
                 int l1 = depthListIndices[i1];
                 if (l1 > 0) {
-                    int ai[] = faceLists[i1];
+                    int[] ai = faceLists[i1];
                     for (int j3 = 0; j3 < l1; j3++)
                         method484(ai[j3]);
 
@@ -2061,7 +2056,7 @@ public class Model extends Renderable {
         for (int i2 = maxRenderDepth - 1; i2 >= 0; i2--) {
             int k2 = depthListIndices[i2];
             if (k2 > 0) {
-                int ai1[] = faceLists[i2];
+                int[] ai1 = faceLists[i2];
                 for (int i4 = 0; i4 < k2; i4++) {
                     int l4 = ai1[i4];
                     byte l5 = face_render_priorities[l4];
@@ -2090,8 +2085,8 @@ public class Model extends Renderable {
 
         int i6 = 0;
         int k6 = anIntArray1673[10];
-        int ai2[] = anIntArrayArray1674[10];
-        int ai3[] = anIntArray1675;
+        int[] ai2 = anIntArrayArray1674[10];
+        int[] ai3 = anIntArray1675;
         if (i6 == k6) {
             i6 = 0;
             k6 = anIntArray1673[11];
@@ -2145,7 +2140,7 @@ public class Model extends Renderable {
                     i5 = -1000;
             }
             int i7 = anIntArray1673[l6];
-            int ai4[] = anIntArrayArray1674[l6];
+            int[] ai4 = anIntArrayArray1674[l6];
             for (int j7 = 0; j7 < i7; j7++)
                 method484(ai4[j7]);
 

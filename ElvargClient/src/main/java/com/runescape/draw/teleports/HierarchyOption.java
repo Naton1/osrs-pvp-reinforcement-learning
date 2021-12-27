@@ -7,15 +7,15 @@ import java.awt.Dimension;
  */
 public interface HierarchyOption {
 
-    public Dimension getDimension();
+    Dimension getDimension();
 
-    public String getName();
+    String getName();
 
-    public int getShortcutKey();
+    int getShortcutKey();
 
-    public String getDescription();
+    String getDescription();
 
-    public int[] getIndex();
+    int[] getIndex();
 
-    public HierarchyOption[] getOptions();
+    HierarchyOption[] getOptions();
 }

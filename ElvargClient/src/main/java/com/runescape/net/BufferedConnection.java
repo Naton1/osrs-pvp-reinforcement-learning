@@ -11,8 +11,8 @@ public final class BufferedConnection implements Runnable {
 
     private final Socket socket;
     private final GameApplet rsApplet;
-    private InputStream inputStream;
-    private OutputStream outputStream;
+    private final InputStream inputStream;
+    private final OutputStream outputStream;
     private boolean closed;
     private byte[] buffer;
     private int writeIndex;
@@ -66,7 +66,7 @@ public final class BufferedConnection implements Runnable {
             return inputStream.available();
     }
 
-    public void flushInputStream(byte abyte0[], int j) throws IOException {
+    public void flushInputStream(byte[] abyte0, int j) throws IOException {
         int i = 0;// was parameter
         if (closed)
             return;
@@ -80,7 +80,7 @@ public final class BufferedConnection implements Runnable {
 
     }
 
-    public void queueBytes(int i, byte abyte0[]) throws IOException {
+    public void queueBytes(int i, byte[] abyte0) throws IOException {
         if (closed)
             return;
         if (hasIOError) {

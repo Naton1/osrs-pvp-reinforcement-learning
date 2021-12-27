@@ -33,7 +33,7 @@ public class SkillOrb {
      * The show timer. Resets when this orb
      * receives experience.
      */
-    private SecondsTimer showTimer = new SecondsTimer();
+    private final SecondsTimer showTimer = new SecondsTimer();
 
     /**
      * The orb's current alpha (transparency)
@@ -150,10 +150,7 @@ public class SkillOrb {
             }
         }
 
-        boolean levelUp = false;
-        if (progressAngle < angleStepper) {
-            levelUp = true;
-        }
+        boolean levelUp = progressAngle < angleStepper;
 
         if (progressChange < 360 && ((progressChange > 0 && angleStepper <= progressAngle - 2) || levelUp)) {
             angleStepper += 2; // TODO need to altar for larger xp drops? base on progressChange size

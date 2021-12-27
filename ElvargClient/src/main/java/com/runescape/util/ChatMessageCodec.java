@@ -10,8 +10,8 @@ public final class ChatMessageCodec {
             '5', '6', '7', '8', '9', ' ', '!', '?', '.', ',', ':', ';', '(',
             ')', '-', '&', '*', '\\', '\'', '@', '#', '+', '=', '\243', '$',
             '%', '"', '[', ']'};
-    private static char[] message = new char[100];
-    private static Buffer stream = new Buffer(new byte[100]);
+    private static final char[] message = new char[100];
+    private static final Buffer stream = new Buffer(new byte[100]);
 
     public static String decode(int length, Buffer buffer) {
         int index = 0;

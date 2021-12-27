@@ -48,10 +48,10 @@ public class SettingsWidget extends Widget {
 
         addSpriteLoader(42501, 355); // Frame
         /* Top buttons */
-        configHoverButton(42502, "Display", 164, 165, 166, 167, true, new int[]{42503, 42504, 42505});
-        configHoverButton(42503, "Audio", 168, 169, 170, 171, false, new int[]{42502, 42504, 42505});
-        configHoverButton(42504, "Chat", 172, 173, 174, 175, false, new int[]{42502, 42503, 42505});
-        configHoverButton(42505, "Controls", 176, 177, 178, 179, false, new int[]{42502, 42503, 42504});
+        configHoverButton(42502, "Display", 164, 165, 166, 167, true, 42503, 42504, 42505);
+        configHoverButton(42503, "Audio", 168, 169, 170, 171, false, 42502, 42504, 42505);
+        configHoverButton(42504, "Chat", 172, 173, 174, 175, false, 42502, 42503, 42505);
+        configHoverButton(42505, "Controls", 176, 177, 178, 179, false, 42502, 42503, 42504);
         /* Bottom buttons */
         configButton(ACCEPT_AID, "Toggle Accept Aid", 341, 340);
         configButton(RUN, "Toggle Run", 343, 342);

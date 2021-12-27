@@ -36,7 +36,7 @@ public enum Dropdown {
         }
     };
 
-    private Dropdown() {
+    Dropdown() {
     }
 
     public abstract void selectOption(int selected, Widget r);

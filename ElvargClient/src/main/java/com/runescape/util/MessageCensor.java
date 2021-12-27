@@ -36,7 +36,7 @@ public final class MessageCensor {
         tlds = new int[i];
         for (int j = 0; j < i; j++) {
             tlds[j] = stream.readUnsignedByte();
-            char ac[] = new char[stream.readUnsignedByte()];
+            char[] ac = new char[stream.readUnsignedByte()];
             for (int k = 0; k < ac.length; k++)
                 ac[k] = (char) stream.readUnsignedByte();
 
@@ -72,7 +72,7 @@ public final class MessageCensor {
                 word[character] = (char) stream.readUnsignedByte();
 
             words[index] = word;
-            byte complex[][] = new byte[stream.readUnsignedByte()][2];
+            byte[][] complex = new byte[stream.readUnsignedByte()][2];
             for (int l = 0; l < complex.length; l++) {
                 complex[l][0] = (byte) stream.readUnsignedByte();
                 complex[l][1] = (byte) stream.readUnsignedByte();
@@ -95,7 +95,7 @@ public final class MessageCensor {
 
     }
 
-    private static void stripIllegalCharacters(char ac[]) {
+    private static void stripIllegalCharacters(char[] ac) {
         int i = 0;
         for (int j = 0; j < ac.length; j++) {
             if (legalCharacter(ac[j]))
@@ -129,7 +129,7 @@ public final class MessageCensor {
         for (int index = 0; index < exceptions.length; index++) {
             for (int k = -1; (k = trimmedLowerCase.indexOf(exceptions[index],
                     k + 1)) != -1; ) {
-                char ac1[] = exceptions[index].toCharArray();
+                char[] ac1 = exceptions[index].toCharArray();
                 System.arraycopy(ac1, 0, chars, k, ac1.length);
 
             }
@@ -140,7 +140,7 @@ public final class MessageCensor {
         return (new String(chars)).trim();
     }
 
-    private static void copyCase(char ac[], char ac1[]) {
+    private static void copyCase(char[] ac, char[] ac1) {
         for (int j = 0; j < ac.length; j++)
             if (ac1[j] != '*' && isUpperCase(ac[j]))
                 ac1[j] = ac[j];
@@ -170,18 +170,18 @@ public final class MessageCensor {
         }
     }
 
-    private static void censorDomains(char ac[]) {
-        char ac1[] = ac.clone();
-        char ac2[] = {'(', 'a', ')'};
+    private static void censorDomains(char[] ac) {
+        char[] ac1 = ac.clone();
+        char[] ac2 = {'(', 'a', ')'};
         method509(null, ac1, ac2);
-        char ac3[] = ac.clone();
-        char ac4[] = {'d', 'o', 't'};
+        char[] ac3 = ac.clone();
+        char[] ac4 = {'d', 'o', 't'};
         method509(null, ac3, ac4);
         for (int i = domains.length - 1; i >= 0; i--)
             method502(ac, domains[i], ac3, ac1);
     }
 
-    private static void method502(char ac[], char ac1[], char ac2[], char ac3[]) {
+    private static void method502(char[] ac, char[] ac1, char[] ac2, char[] ac3) {
         if (ac1.length > ac.length)
             return;
         int j;
@@ -228,7 +228,7 @@ public final class MessageCensor {
 
     }
 
-    private static int method503(char ac[], char ac1[], int j) {
+    private static int method503(char[] ac, char[] ac1, int j) {
         if (j == 0)
             return 2;
         for (int k = j - 1; k >= 0; k--) {
@@ -251,7 +251,7 @@ public final class MessageCensor {
         return !isNotAlphanumeric(ac[j - 1]) ? 0 : 1;
     }
 
-    private static int method504(char ac[], int i, char ac1[]) {
+    private static int method504(char[] ac, int i, char[] ac1) {
         if (i + 1 == ac1.length)
             return 2;
         for (int j = i + 1; j < ac1.length; j++) {
@@ -285,8 +285,8 @@ public final class MessageCensor {
                     chars);
     }
 
-    private static void method506(char ac[], char ac1[], int i, char ac2[],
-                                  char ac3[]) {
+    private static void method506(char[] ac, char[] ac1, int i, char[] ac2,
+                                  char[] ac3) {
         if (ac1.length > ac3.length)
             return;
         int j;
@@ -390,7 +390,7 @@ public final class MessageCensor {
         }
     }
 
-    private static int method507(char ac[], int j, char ac1[]) {
+    private static int method507(char[] ac, int j, char[] ac1) {
         if (j == 0)
             return 2;
         for (int k = j - 1; k >= 0; k--) {
@@ -412,7 +412,7 @@ public final class MessageCensor {
         return !isNotAlphanumeric(ac[j - 1]) ? 0 : 1;
     }
 
-    private static int method508(char ac[], char ac1[], int i) {
+    private static int method508(char[] ac, char[] ac1, int i) {
         if (i + 1 == ac.length)
             return 2;
         for (int j = i + 1; j < ac.length; j++) {
@@ -435,7 +435,7 @@ public final class MessageCensor {
         return !isNotAlphanumeric(ac[i + 1]) ? 0 : 1;
     }
 
-    private static void method509(byte abyte0[][], char ac[], char ac1[]) {
+    private static void method509(byte[][] abyte0, char[] ac, char[] ac1) {
         if (ac1.length > ac.length)
             return;
         int j;
@@ -510,7 +510,7 @@ public final class MessageCensor {
                         for (; !flag7 && k2 < l; k2++)
                             if (k2 >= 0
                                     && (!isNotAlphanumeric(ac[k2]) || ac[k2] == '\'')) {
-                                char ac2[] = new char[3];
+                                char[] ac2 = new char[3];
                                 int j3;
                                 for (j3 = 0; j3 < 3; j3++) {
                                     if (k2 + j3 >= ac.length
@@ -520,9 +520,7 @@ public final class MessageCensor {
                                     ac2[j3] = ac[k2 + j3];
                                 }
 
-                                boolean flag8 = true;
-                                if (j3 == 0)
-                                    flag8 = false;
+                                boolean flag8 = j3 != 0;
                                 if (j3 < 3
                                         && k2 - 1 >= 0
                                         && (!isNotAlphanumeric(ac[k2 - 1]) || ac[k2 - 1] == '\''))
@@ -562,7 +560,7 @@ public final class MessageCensor {
 
     }
 
-    private static boolean method510(byte byte0, byte abyte0[][], byte byte2) {
+    private static boolean method510(byte byte0, byte[][] abyte0, byte byte2) {
         int i = 0;
         if (abyte0[i][0] == byte0 && abyte0[i][1] == byte2)
             return true;
@@ -715,7 +713,7 @@ public final class MessageCensor {
             return 27;
     }
 
-    private static void method514(char ac[]) {
+    private static void method514(char[] ac) {
         int j;
         int k = 0;
         int l = 0;
@@ -748,7 +746,7 @@ public final class MessageCensor {
         }
     }
 
-    private static int method515(char ac[], int i) {
+    private static int method515(char[] ac, int i) {
         for (int k = i; k < ac.length && k >= 0; k++)
             if (ac[k] >= '0' && ac[k] <= '9')
                 return k;
@@ -756,7 +754,7 @@ public final class MessageCensor {
         return -1;
     }
 
-    private static int method516(char ac[], int j) {
+    private static int method516(char[] ac, int j) {
         for (int k = j; k < ac.length && k >= 0; k++)
             if (ac[k] < '0' || ac[k] > '9')
                 return k;
@@ -788,7 +786,7 @@ public final class MessageCensor {
         return false;
     }
 
-    private static int hash(char ac[]) {
+    private static int hash(char[] ac) {
         if (ac.length > 6)
             return 0;
         int k = 0;

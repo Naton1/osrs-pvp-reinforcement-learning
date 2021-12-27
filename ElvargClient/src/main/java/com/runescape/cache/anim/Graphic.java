@@ -7,7 +7,7 @@ import com.runescape.io.Buffer;
 
 public final class Graphic {
 
-    public static Graphic cache[];
+    public static Graphic[] cache;
     public static ReferenceCache models = new ReferenceCache(30);
     private int[] originalModelColours;
     private int[] modifiedModelColours;

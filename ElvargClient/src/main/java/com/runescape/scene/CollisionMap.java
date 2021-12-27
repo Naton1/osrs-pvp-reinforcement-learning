@@ -437,8 +437,7 @@ public final class CollisionMap {
                 return true;
             if (j == i - 1 && k == k1 && (clipData[j][k] & 8) == 0)
                 return true;
-            if (j == i + 1 && k == k1 && (clipData[j][k] & 0x80) == 0)
-                return true;
+            return j == i + 1 && k == k1 && (clipData[j][k] & 0x80) == 0;
         }
         return false;
     }
@@ -482,8 +481,7 @@ public final class CollisionMap {
                 return true;
             if (j1 == i - 1 && k == j && (clipData[j1][k] & 8) == 0)
                 return true;
-            if (j1 == i + 1 && k == j && (clipData[j1][k] & 0x80) == 0)
-                return true;
+            return j1 == i + 1 && k == j && (clipData[j1][k] & 0x80) == 0;
         }
         return false;
     }

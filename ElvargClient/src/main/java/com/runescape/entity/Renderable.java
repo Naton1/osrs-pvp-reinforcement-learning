@@ -7,7 +7,7 @@ import com.runescape.entity.model.VertexNormal;
 public class Renderable extends Cacheable {
 
     public int modelBaseY;
-    public VertexNormal vertexNormals[];
+    public VertexNormal[] vertexNormals;
 
     public Renderable() {
         modelBaseY = 1000;

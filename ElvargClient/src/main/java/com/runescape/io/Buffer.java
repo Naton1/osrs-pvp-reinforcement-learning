@@ -18,7 +18,7 @@ public final class Buffer extends Cacheable {
     public static final BigInteger RSA_EXPONENT = new BigInteger("65537");
     private IsaacCipher cipher;
     
-    public byte payload[];
+    public byte[] payload;
     public int currentPosition;
     public int bitPosition;
 
@@ -108,7 +108,7 @@ public final class Buffer extends Cacheable {
             payload[currentPosition++] = (byte) (int) (value >> 8);
             payload[currentPosition++] = (byte) (int) value;
         } catch (RuntimeException runtimeexception) {
-            System.out.println("14395, " + 5 + ", " + value + ", " + runtimeexception.toString());
+            System.out.println("14395, " + 5 + ", " + value + ", " + runtimeexception);
             throw new RuntimeException();
         }
     }
@@ -120,12 +120,12 @@ public final class Buffer extends Cacheable {
         payload[currentPosition++] = 10;
     }
 
-    public void writeBytes(byte data[], int offset, int length) {
+    public void writeBytes(byte[] data, int offset, int length) {
         for (int index = length; index < length + offset; index++)
             payload[currentPosition++] = data[index];
     }
     
-    public void writeBytes(byte data[]) {
+    public void writeBytes(byte[] data) {
     	for (byte b : data) {
     		writeByte(b);
     	}
@@ -210,12 +210,12 @@ public final class Buffer extends Cacheable {
         int index = currentPosition;
         while (payload[currentPosition++] != 10)
             ;
-        byte data[] = new byte[currentPosition - index - 1];
+        byte[] data = new byte[currentPosition - index - 1];
         System.arraycopy(payload, index, data, index - index, currentPosition - 1 - index);
         return data;
     }
 
-    public void readBytes(int offset, int length, byte data[]) {
+    public void readBytes(int offset, int length, byte[] data) {
         for (int index = length; index < length + offset; index++)
             data[index] = payload[currentPosition++];
     }
@@ -284,10 +284,10 @@ public final class Buffer extends Cacheable {
     public void encodeRSA(BigInteger exponent, BigInteger modulus) {
         int length = currentPosition;
         currentPosition = 0;
-        byte buffer[] = new byte[length];
+        byte[] buffer = new byte[length];
         readBytes(length, 0, buffer);
 
-        byte rsa[] = buffer;
+        byte[] rsa = buffer;
 
         if (Configuration.ENABLE_RSA) {
             rsa = new BigInteger(buffer).modPow(exponent, modulus)
@@ -401,13 +401,13 @@ public final class Buffer extends Cacheable {
                 + (payload[currentPosition - 2] & 0xff);
     }
 
-    public void writeReverseDataA(byte data[], int length, int offset) {
+    public void writeReverseDataA(byte[] data, int length, int offset) {
         for (int index = (length + offset) - 1; index >= length; index--) {
             payload[currentPosition++] = (byte) (data[index] + 128);
         }
     }
 
-    public void readReverseData(byte data[], int offset, int length) {
+    public void readReverseData(byte[] data, int offset, int length) {
         for (int index = (length + offset) - 1; index >= length; index--) {
             data[index] = payload[currentPosition++];
         }

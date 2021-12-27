@@ -370,11 +370,11 @@ public class TeleportChatBox {
 			ZULRAH(KeyEvent.VK_Z, "Zulrah"),
 			;
 
-			private Option(int shortcutKey, String name) {
+			Option(int shortcutKey, String name) {
 				this(shortcutKey, name, null);
 			}
 
-			private Option(int shortcutKey, String name, HierarchyOption[] options) {
+			Option(int shortcutKey, String name, HierarchyOption[] options) {
 				this.shortcutKey = shortcutKey;
 				this.name = name;
 				this.options = options;
@@ -457,8 +457,8 @@ public class TeleportChatBox {
 			MAGE_BANK(KeyEvent.VK_M, "Mage bank", null),
 			;
 
-			private Option(int shortcutKey, String name,
-					HierarchyOption[] options) {
+			Option(int shortcutKey, String name,
+				   HierarchyOption[] options) {
 				this.shortcutKey = shortcutKey;
 				this.name = name;
 				this.options = options;
@@ -535,14 +535,14 @@ public class TeleportChatBox {
 			FIGHT_CAVES(KeyEvent.VK_F, "Fight caves", ""),
 ;
 
-			private Option(int shortcutKey, String name,
-					String description) {
+			Option(int shortcutKey, String name,
+				   String description) {
 				this.shortcutKey = shortcutKey;
 				this.name = name;
 				this.description = description;
 			}
 
-			private Option(int shortcutKey, String name) {
+			Option(int shortcutKey, String name) {
 				this(shortcutKey, name, null);
 			}
 
@@ -615,8 +615,8 @@ public class TeleportChatBox {
 			
 			;
 
-			private Option(int index, int shortcutKey, String name,
-					HierarchyOption[] options) {
+			Option(int index, int shortcutKey, String name,
+				   HierarchyOption[] options) {
 				this.index = index;
 				this.shortcutKey = shortcutKey;
 				this.name = name;
@@ -662,7 +662,6 @@ public class TeleportChatBox {
 			}
 		}
 
-		;
 	}
 
 }

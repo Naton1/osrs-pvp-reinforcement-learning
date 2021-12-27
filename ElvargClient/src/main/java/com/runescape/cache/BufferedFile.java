@@ -7,9 +7,9 @@ import java.io.IOException;
 
 public final class BufferedFile {
 
-    private byte[] out;
-    private byte[] in;
-    private FileOnDisk file;
+    private final byte[] out;
+    private final byte[] in;
+    private final FileOnDisk file;
     private int outCount = 0;
     private long actualPosition;
     private long actualOutFileSize;

@@ -61,7 +61,7 @@ public class Widget {
 	private static final int LUNAR_OFF_SPRITES_START = 246;
 	private static final int LUNAR_ON_SPRITES_START = 285;
 	private static final int LUNAR_HOVER_BOX_SPRITES_START = 324;
-	public static Widget interfaceCache[];
+	public static Widget[] interfaceCache;
 	public static RSFont[] newFonts;
 	public static GameFont[] fonts;
 	public static FileArchive graphics;
@@ -76,10 +76,10 @@ public class Widget {
 	public boolean drawsTransparent;
 	public Sprite disabledSprite;
 	public int lastFrameTime;
-	public Sprite sprites[];
-	public int requiredValues[];
+	public Sprite[] sprites;
+	public int[] requiredValues;
 	public int contentType;
-	public int spritesX[];
+	public int[] spritesX;
 	public int defaultHoverColor;
 	public int atActionType;
 	public String spellName;
@@ -91,8 +91,8 @@ public class Widget {
 	public boolean rightAlignedText;
 	public boolean rollingText;
 	public int scrollPosition;
-	public String actions[];
-	public int valueIndexArray[][];
+	public String[] actions;
+	public int[][] valueIndexArray;
 	public boolean filled;
 	public String secondaryText;
 	public int hoverType;
@@ -104,20 +104,20 @@ public class Widget {
 	public int parent;
 	public int spellUsableOn;
 	public int secondaryHoverColor;
-	public int children[];
-	public int childX[];
+	public int[] children;
+	public int[] childX;
 	public boolean usableItems;
 	public GameFont textDrawingAreas;
 	public boolean inventoryHover;
 	public int spritePaddingY;
-	public int valueCompareType[];
+	public int[] valueCompareType;
 	public int currentFrame;
-	public int spritesY[];
+	public int[] spritesY;
 	public String defaultText;
 	public boolean hasActions;
 	public int id;
-	public int inventoryAmounts[];
-	public int inventoryItemId[];
+	public int[] inventoryAmounts;
+	public int[] inventoryItemId;
 	public byte opacity;
 	public int defaultAnimationId;
 	public int secondaryAnimationId;
@@ -134,7 +134,7 @@ public class Widget {
 	public int modelZoom;
 	public int modelRotation1;
 	public int modelRotation2;
-	public int childY[];
+	public int[] childY;
 	public DropdownMenu dropdown;
 	public int[] dropdownColours;
 	public boolean hovered = false;
@@ -162,7 +162,7 @@ public class Widget {
 	public Widget() {
 	}
 
-	public static void load(FileArchive interfaceArchive, GameFont fonts[], FileArchive graphics, RSFont[] newFonts) {
+	public static void load(FileArchive interfaceArchive, GameFont[] fonts, FileArchive graphics, RSFont[] newFonts) {
 		spriteCache = new ReferenceCache(SPRITE_CACHE_SIZE);
 		Buffer buffer = new Buffer(interfaceArchive.readFile("data"));
 		Widget.newFonts = newFonts;
@@ -1703,8 +1703,8 @@ public class Widget {
 		list.scrollMax = 1405;
 	}
 
-	public static void addHoverText2(int id, String text, String[] tooltips, GameFont tda[], int idx, int color,
-			boolean center, boolean textShadowed, int width) {
+	public static void addHoverText2(int id, String text, String[] tooltips, GameFont[] tda, int idx, int color,
+									 boolean center, boolean textShadowed, int width) {
 		Widget rsinterface = addInterface(id);
 		rsinterface.id = id;
 		rsinterface.parent = id;
@@ -1727,8 +1727,8 @@ public class Widget {
 		rsinterface.tooltips = tooltips;
 	}
 
-	public static void addText2(int id, String text, GameFont tda[], int idx, int color, boolean center,
-			boolean shadow) {
+	public static void addText2(int id, String text, GameFont[] tda, int idx, int color, boolean center,
+								boolean shadow) {
 		Widget tab = addTabInterface(id);
 		tab.parent = id;
 		tab.id = id;
@@ -1808,7 +1808,7 @@ public class Widget {
 		rsint.height = 0;
 	}
 
-	public static void addText(int id, String text, GameFont wid[], int idx, int color) {
+	public static void addText(int id, String text, GameFont[] wid, int idx, int color) {
 		Widget rsinterface = addTabInterface(id);
 		rsinterface.id = id;
 		rsinterface.parent = id;
@@ -2035,7 +2035,7 @@ public class Widget {
 		return rsi;
 	}
 
-	public static void addText(int id, String text, GameFont tda[], int idx, int color, boolean centered) {
+	public static void addText(int id, String text, GameFont[] tda, int idx, int color, boolean centered) {
 		Widget rsi = interfaceCache[id] = new Widget();
 		if (centered)
 			rsi.centerText = true;
@@ -2052,7 +2052,7 @@ public class Widget {
 		rsi.textColor = color;
 	}
 
-	public static void textSize(int id, GameFont tda[], int idx) {
+	public static void textSize(int id, GameFont[] tda, int idx) {
 		Widget rsi = interfaceCache[id];
 		rsi.textDrawingAreas = tda[idx];
 	}
@@ -2390,16 +2390,16 @@ public class Widget {
 		}
 	}
 
-	public static void addText(int id, String text, GameFont tda[], int idx, int color, boolean center,
-			boolean shadow) {
+	public static void addText(int id, String text, GameFont[] tda, int idx, int color, boolean center,
+							   boolean shadow) {
 		addText(id, text, tda, idx, color, center, false, false, shadow);
 	}
 
-	public static void addRightAlignedText(int id, String text, GameFont tda[], int idx, int color, boolean shadow) {
+	public static void addRightAlignedText(int id, String text, GameFont[] tda, int idx, int color, boolean shadow) {
 		addText(id, text, tda, idx, color, false, true, false, shadow);
 	}
 
-	public static void addRollingText(int id, String text, GameFont tda[], int idx, int color, boolean shadow) {
+	public static void addRollingText(int id, String text, GameFont[] tda, int idx, int color, boolean shadow) {
 		addText(id, text, tda, idx, color, false, false, true, shadow);
 	}
 
@@ -2611,8 +2611,8 @@ public class Widget {
 		final Widget scrollBar = Widget.interfaceCache[5385];
 		scrollBar.totalChildren(Bank.MAX_BANK_TABS);
 		for (int i = 0; i < Bank.MAX_BANK_TABS; i++) {
-			addBankTabContainer(50300 + i, 109, 10, 35, 352, new String[] { "Withdraw-1", "Withdraw-5", "Withdraw-10",
-					"Withdraw-All", "Withdraw-X", null, "Withdraw-All but one" });
+			addBankTabContainer(50300 + i, 109, 10, 35, 352, "Withdraw-1", "Withdraw-5", "Withdraw-10",
+					"Withdraw-All", "Withdraw-X", null, "Withdraw-All but one");
 			scrollBar.child(i, 50300 + i, 40, 0);
 		}
 	}
@@ -2762,8 +2762,8 @@ public class Widget {
 		// addHoverText(iD, "", "View", TDA, 0, 0xff0000, false, true, 150);
 	}
 
-	public static void addHoverText(int id, String text, String tooltip, GameFont tda[], int idx, int color,
-			boolean center, boolean textShadow, int width, int hoveredColor) {
+	public static void addHoverText(int id, String text, String tooltip, GameFont[] tda, int idx, int color,
+									boolean center, boolean textShadow, int width, int hoveredColor) {
 		Widget rsinterface = addInterface(id);
 		rsinterface.id = id;
 		rsinterface.parent = id;

@@ -52,7 +52,7 @@ public final class FileUtils {
     public static Image makeColorTransparent(BufferedImage im, final Color color) {
         ImageFilter filter = new RGBImageFilter() {
 
-            public int markerRGB = color.getRGB() | 0xFF000000;
+            public final int markerRGB = color.getRGB() | 0xFF000000;
 
             public final int filterRGB(int x, int y, int rgb) {
                 if ((rgb | 0xFF000000) == markerRGB) {

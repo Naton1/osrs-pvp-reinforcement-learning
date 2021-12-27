@@ -71,7 +71,7 @@ public final class ReferenceCache {
             references.insertHead(node);
             return;
         } catch (RuntimeException runtimeexception) {
-            System.out.println("47547, " + node + ", " + key + ", " + (byte) 2 + ", " + runtimeexception.toString());
+            System.out.println("47547, " + node + ", " + key + ", " + (byte) 2 + ", " + runtimeexception);
         }
         throw new RuntimeException();
     }

@@ -41,7 +41,7 @@ public final class ObjectDefinition {
     public int type;
     public boolean impenetrable;
     public int mapscene;
-    public int childrenIDs[];
+    public int[] childrenIDs;
     public int supportItems;
     public int objectSizeY;
     public boolean contouredGround;
@@ -61,7 +61,7 @@ public final class ObjectDefinition {
     public int animation;
     public int translateZ;
     public int[] modifiedModelColors;
-    public String interactions[];
+    public String[] interactions;
     private short[] originalModelTexture;
     private short[] modifiedModelTexture;
 

@@ -153,7 +153,7 @@ public class Console {
 			break;
 		case "rint":
             GameFont gameFont = new GameFont(true, "q8_full", client().titleArchive);
-            GameFont fonts[] = {client().smallText, client().regularText, client().boldText, gameFont};
+            GameFont[] fonts = {client().smallText, client().regularText, client().boldText, gameFont};
             FileArchive interfaces = client().createArchive(3, "interface", "interface", 35);
             FileArchive graphics = client().createArchive(4, "2d graphics", "media", 40);
             Widget.load(interfaces, fonts, graphics, new RSFont[]{client().newSmallFont, client().newRegularFont, client().newBoldFont, client().newFancyFont});

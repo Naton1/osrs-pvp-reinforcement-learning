@@ -14,7 +14,7 @@ import com.runescape.io.Buffer;
  */
 public final class NpcDefinition {
 
-	private static final String PETS[][] = { { "318", "Dark Core" }, { "495", "Venenatis Spiderling" },
+	private static final String[][] PETS = { { "318", "Dark Core" }, { "495", "Venenatis Spiderling" },
 			{ "497", "Callisto Cub" }, { "964", "Hellpuppy" }, { "2055", "Chaos Elemental Jr." },
 			{ "2130", "Snakeling" }, { "2131", "Magma Snakeling" }, { "2132", "Tanzanite Snakeling" },
 			{ "5536", "Vet'ion" }, { "5537", "Vet'ion Reborn" }, { "5561", "Scorpias' Offspring" },
@@ -48,7 +48,7 @@ public final class NpcDefinition {
 	public int settingId;
 	public int combatLevel;
 	public String name;
-	public String actions[];
+	public String[] actions;
 	public int walkAnim;
 	public int size;
 	public int[] recolourTarget;
@@ -63,8 +63,8 @@ public final class NpcDefinition {
 	public int lightModifier;
 	public int scaleY;
 	public boolean drawMinimapDot;
-	public int childrenIDs[];
-	public byte description[];
+	public int[] childrenIDs;
+	public byte[] description;
 	public int scaleXZ;
 	public int shadowModifier;
 	public boolean priorityRender;
@@ -287,7 +287,7 @@ public final class NpcDefinition {
 
 		if (flag1)
 			return null;
-		Model models[] = new Model[additionalModels.length];
+		Model[] models = new Model[additionalModels.length];
 		for (int index = 0; index < additionalModels.length; index++)
 			models[index] = Model.getModel(additionalModels[index]);
 
@@ -321,7 +321,7 @@ public final class NpcDefinition {
 			return lookup(childrenIDs[child]);
 	}
 
-	public Model method164(int j, int frame, int ai[]) {
+	public Model method164(int j, int frame, int[] ai) {
 		if (childrenIDs != null) {
 			NpcDefinition entityDef = morph();
 			if (entityDef == null)
@@ -338,7 +338,7 @@ public final class NpcDefinition {
 
 			if (flag)
 				return null;
-			Model models[] = new Model[modelId.length];
+			Model[] models = new Model[modelId.length];
 			for (int j1 = 0; j1 < modelId.length; j1++)
 				models[j1] = Model.getModel(modelId[j1]);
 
@@ -372,7 +372,7 @@ public final class NpcDefinition {
 		return empty;
 	}
 
-	public Model getAnimatedModel(int primaryFrame, int secondaryFrame, int interleaveOrder[]) {
+	public Model getAnimatedModel(int primaryFrame, int secondaryFrame, int[] interleaveOrder) {
 		if (childrenIDs != null) {
 			NpcDefinition definition = morph();
 			if (definition == null)
@@ -389,7 +389,7 @@ public final class NpcDefinition {
 			if (flag) {
 				return null;
 			}
-			Model models[] = new Model[modelId.length];
+			Model[] models = new Model[modelId.length];
 			for (int index = 0; index < modelId.length; index++)
 				models[index] = Model.getModel(modelId[index]);
 

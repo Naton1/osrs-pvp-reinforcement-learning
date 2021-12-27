@@ -4,7 +4,7 @@ final class Bzip2 {
 
     private static final BZip2Context content = new BZip2Context();
 
-    public static int decompress(byte abyte0[], int i, byte abyte1[], int j, int k) {
+    public static int decompress(byte[] abyte0, int i, byte[] abyte1, int j, int k) {
         synchronized (content) {
             content.data = abyte1;
             content.anInt564 = k;
@@ -30,9 +30,9 @@ final class Bzip2 {
         int i = class32.anInt574;
         int j = class32.anInt584;
         int k = class32.anInt582;
-        int ai[] = BZip2Context.anIntArray587;
+        int[] ai = BZip2Context.anIntArray587;
         int l = class32.anInt581;
-        byte abyte0[] = class32.aByteArray568;
+        byte[] abyte0 = class32.aByteArray568;
         int i1 = class32.anInt569;
         int j1 = class32.anInt570;
         int k1 = j1;
@@ -139,9 +139,9 @@ final class Bzip2 {
 
     private static void method227(BZip2Context class32) {
         int k8 = 0;
-        int ai[] = null;
-        int ai1[] = null;
-        int ai2[] = null;
+        int[] ai = null;
+        int[] ai1 = null;
+        int[] ai2 = null;
         class32.anInt578 = 1;
         if (BZip2Context.anIntArray587 == null)
             BZip2Context.anIntArray587 = new int[class32.anInt578 * 0x186a0];
@@ -202,7 +202,7 @@ final class Bzip2 {
                 class32.aByteArray595[i1] = (byte) j3;
             }
 
-            byte abyte0[] = new byte[6];
+            byte[] abyte0 = new byte[6];
             for (byte byte16 = 0; byte16 < j4; byte16++)
                 abyte0[byte16] = byte16;
 
@@ -457,7 +457,7 @@ final class Bzip2 {
 
     }
 
-    private static void method232(int ai[], int ai1[], int ai2[], byte abyte0[], int i, int j, int k) {
+    private static void method232(int[] ai, int[] ai1, int[] ai2, byte[] abyte0, int i, int j, int k) {
         int l = 0;
         for (int i1 = i; i1 <= j; i1++) {
             for (int l2 = 0; l2 < k; l2++)

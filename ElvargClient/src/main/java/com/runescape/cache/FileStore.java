@@ -35,7 +35,7 @@ public final class FileStore {
                 return null;
             }
 
-            byte buf[] = new byte[size];
+            byte[] buf = new byte[size];
 
             int totalRead = 0;
 
@@ -86,11 +86,11 @@ public final class FileStore {
         }
     }
 
-    public synchronized boolean writeFile(int length, byte data[], int index) {
-        return writeFile(data, index, length, true) ? true : writeFile(data, index, length, false);
+    public synchronized boolean writeFile(int length, byte[] data, int index) {
+        return writeFile(data, index, length, true) || writeFile(data, index, length, false);
     }
 
-    private synchronized boolean writeFile(byte bytes[], int position, int length, boolean exists) {
+    private synchronized boolean writeFile(byte[] bytes, int position, int length, boolean exists) {
         try {
             int sector;
             if (exists) {
@@ -229,7 +229,7 @@ public final class FileStore {
         return -1;
     }
 
-    public static enum Store {
+    public enum Store {
 
         ARCHIVE(0),
 
@@ -241,9 +241,9 @@ public final class FileStore {
 
         MAP(4);
 
-        private int index;
+        private final int index;
 
-        private Store(int index) {
+        Store(int index) {
             this.index = index;
         }
 

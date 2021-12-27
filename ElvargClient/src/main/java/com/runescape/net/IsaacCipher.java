@@ -9,7 +9,7 @@ public final class IsaacCipher {
     private int lastResult;
     private int counter;
 
-    public IsaacCipher(int seed[]) {
+    public IsaacCipher(int[] seed) {
         memory = new int[256];
         results = new int[256];
         System.arraycopy(seed, 0, results, 0, seed.length);

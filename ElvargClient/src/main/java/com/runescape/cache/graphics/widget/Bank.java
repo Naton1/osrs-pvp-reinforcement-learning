@@ -217,6 +217,6 @@ public class Bank {
     public enum BankTabShow {
         FIRST_ITEM_IN_TAB,
         DIGIT,
-        ROMAN_NUMERAL;
+        ROMAN_NUMERAL
     }
 }

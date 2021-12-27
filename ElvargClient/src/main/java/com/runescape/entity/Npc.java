@@ -69,7 +69,7 @@ public final class Npc extends Mob {
                             spotAnim.resizeZ);
                 model.light(64 + spotAnim.modelBrightness,
                         850 + spotAnim.modelShadow, -30, -50, -30, true);
-                Model models[] = {animatedModel, model};
+                Model[] models = {animatedModel, model};
                 animatedModel = new Model(models);
             }
         }

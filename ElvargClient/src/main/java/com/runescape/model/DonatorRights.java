@@ -21,7 +21,7 @@ public enum DonatorRights {
 		return crown;
 	}
 	
-	private static Map<Integer, DonatorRights> rights = new HashMap<>();
+	private static final Map<Integer, DonatorRights> rights = new HashMap<>();
 	static {
 		for (DonatorRights r : DonatorRights.values()) {
 			rights.put(r.ordinal(), r);

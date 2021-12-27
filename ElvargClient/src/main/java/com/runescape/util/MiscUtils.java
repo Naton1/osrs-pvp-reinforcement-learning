@@ -15,8 +15,8 @@ public final class MiscUtils {
             if (osName.startsWith("Mac OS")) {
                 Class<?> fileMgr = Class.forName("com.apple.eio.FileManager");
                 Method openURL = fileMgr.getDeclaredMethod("openURL",
-                        new Class[]{String.class});
-                openURL.invoke(null, new Object[]{url});
+                        String.class);
+                openURL.invoke(null, url);
             } else if (osName.startsWith("Windows"))
                 Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
             else {
@@ -52,7 +52,6 @@ public final class MiscUtils {
         }
 
         for (; l % 37L == 0L && l != 0L; l /= 37L) {
-            ;
         }
         return l;
     }
@@ -68,7 +67,7 @@ public final class MiscUtils {
             }
 
             int i = 0;
-            char ac[] = new char[12];
+            char[] ac = new char[12];
 
             while (l != 0L) {
                 long l1 = l;
@@ -78,7 +77,7 @@ public final class MiscUtils {
 
             return new String(ac, 12 - i, i);
         } catch (RuntimeException runtimeexception) {
-            System.out.println("81570, " + l + ", " + (byte) -99 + ", " + runtimeexception.toString());
+            System.out.println("81570, " + l + ", " + (byte) -99 + ", " + runtimeexception);
         }
 
         throw new RuntimeException();
@@ -86,7 +85,7 @@ public final class MiscUtils {
 
     public static String fixName(String s) {
         if (s.length() > 0) {
-            char ac[] = s.toCharArray();
+            char[] ac = s.toCharArray();
             for (int j = 0; j < ac.length; j++) {
                 if (ac[j] == '_') {
                     ac[j] = ' ';

@@ -13,14 +13,14 @@ public final class Rasterizer3D extends Rasterizer2D {
     public static int alpha;
     public static int originViewX;
     public static int originViewY;
-    public static int anIntArray1470[];
-    public static int COSINE[];
-    public static int scanOffsets[];
+    public static int[] anIntArray1470;
+    public static int[] COSINE;
+    public static int[] scanOffsets;
     public static int lastTextureRetrievalCount;
-    public static int hslToRgb[] = new int[0x10000];
-    private static int textureAmount = 60;
-    public static IndexedImage textures[] = new IndexedImage[textureAmount];
-    public static int textureLastUsed[] = new int[textureAmount];
+    public static int[] hslToRgb = new int[0x10000];
+    private static final int textureAmount = 60;
+    public static IndexedImage[] textures = new IndexedImage[textureAmount];
+    public static int[] textureLastUsed = new int[textureAmount];
     private static boolean aBoolean1463;
     private static int[] anIntArray1468;
     private static int textureCount;
@@ -152,7 +152,7 @@ public final class Rasterizer3D extends Rasterizer2D {
         textureLastUsed[textureId] = lastTextureRetrievalCount++;
         if (texturesPixelBuffer[textureId] != null)
             return texturesPixelBuffer[textureId];
-        int texturePixels[];
+        int[] texturePixels;
         if (textureRequestBufferPointer > 0) {
             texturePixels = textureRequestPixelBuffer[--textureRequestBufferPointer];
             textureRequestPixelBuffer[textureRequestBufferPointer] = null;
@@ -170,7 +170,7 @@ public final class Rasterizer3D extends Rasterizer2D {
         }
         texturesPixelBuffer[textureId] = texturePixels;
         IndexedImage background = textures[textureId];
-        int texturePalette[] = currentPalette[textureId];
+        int[] texturePalette = currentPalette[textureId];
         if (lowMem) {
             textureIsTransparant[textureId] = false;
             for (int i1 = 0; i1 < 4096; i1++) {
@@ -270,7 +270,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 
         for (int textureId = 0; textureId < textureAmount; textureId++)
             if (textures[textureId] != null) {
-                int originalPalette[] = textures[textureId].palette;
+                int[] originalPalette = textures[textureId].palette;
                 currentPalette[textureId] = new int[originalPalette.length];
                 for (int colourId = 0; colourId < originalPalette.length; colourId++) {
                     currentPalette[textureId][colourId] = adjustBrightness(originalPalette[colourId], brightness);
@@ -682,7 +682,7 @@ public final class Rasterizer3D extends Rasterizer2D {
         }
     }
 
-    private static void drawGouraudScanline(int dest[], int offset, int x1, int x2, int hsl1, int hsl2) {
+    private static void drawGouraudScanline(int[] dest, int offset, int x1, int x2, int hsl1, int hsl2) {
         int j;
         int k;
         if (aBoolean1464) {
@@ -1100,7 +1100,7 @@ public final class Rasterizer3D extends Rasterizer2D {
         }
     }
 
-    private static void drawFlatScanline(int dest[], int offset, int rgb, int x1, int x2) {
+    private static void drawFlatScanline(int[] dest, int offset, int rgb, int x1, int x2) {
         if (textureOutOfDrawingBounds) {
             if (x2 > Rasterizer2D.lastX) {
                 x2 = Rasterizer2D.lastX;
@@ -1145,7 +1145,7 @@ public final class Rasterizer3D extends Rasterizer2D {
         c1 = 0x7f - c1 << 1;
         c2 = 0x7f - c2 << 1;
         c3 = 0x7f - c3 << 1;
-        int ai[] = getTexturePixels(tex);
+        int[] ai = getTexturePixels(tex);
         aBoolean1463 = !textureIsTransparant[tex];
         tx2 = tx1 - tx2;
         ty2 = ty1 - ty2;
@@ -1653,7 +1653,7 @@ public final class Rasterizer3D extends Rasterizer2D {
         }
     }
 
-    private static void drawTexturedScanline(int ai[], int ai1[], int k, int x1, int x2, int l1, int l2, int a1, int i2, int j2, int k2, int a2, int i3) {
+    private static void drawTexturedScanline(int[] ai, int[] ai1, int k, int x1, int x2, int l1, int l2, int a1, int i2, int j2, int k2, int a2, int i3) {
         int i = 0;
         int j = 0;
         if (x1 >= x2)
@@ -1994,7 +1994,6 @@ public final class Rasterizer3D extends Rasterizer2D {
             if ((i9 = ai1[(j & 0x3f80) + (i >> 7)]) != 0) {
                 l = l1 >> 16;
                 ai[k] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-                ;
             }
             k++;
             i += j7;
@@ -2003,7 +2002,6 @@ public final class Rasterizer3D extends Rasterizer2D {
             if ((i9 = ai1[(j & 0x3f80) + (i >> 7)]) != 0) {
                 l = l1 >> 16;
                 ai[k] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-                ;
             }
             k++;
             i += j7;
@@ -2012,7 +2010,6 @@ public final class Rasterizer3D extends Rasterizer2D {
             if ((i9 = ai1[(j & 0x3f80) + (i >> 7)]) != 0) {
                 l = l1 >> 16;
                 ai[k] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-                ;
             }
             k++;
             i += j7;
@@ -2021,7 +2018,6 @@ public final class Rasterizer3D extends Rasterizer2D {
             if ((i9 = ai1[(j & 0x3f80) + (i >> 7)]) != 0) {
                 l = l1 >> 16;
                 ai[k] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-                ;
             }
             k++;
             i += j7;
@@ -2030,7 +2026,6 @@ public final class Rasterizer3D extends Rasterizer2D {
             if ((i9 = ai1[(j & 0x3f80) + (i >> 7)]) != 0) {
                 l = l1 >> 16;
                 ai[k] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-                ;
             }
             k++;
             i += j7;
@@ -2039,7 +2034,6 @@ public final class Rasterizer3D extends Rasterizer2D {
             if ((i9 = ai1[(j & 0x3f80) + (i >> 7)]) != 0) {
                 l = l1 >> 16;
                 ai[k] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-                ;
             }
             k++;
             i += j7;
@@ -2048,7 +2042,6 @@ public final class Rasterizer3D extends Rasterizer2D {
             if ((i9 = ai1[(j & 0x3f80) + (i >> 7)]) != 0) {
                 l = l1 >> 16;
                 ai[k] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-                ;
             }
             k++;
             i += j7;
@@ -2057,7 +2050,6 @@ public final class Rasterizer3D extends Rasterizer2D {
             if ((i9 = ai1[(j & 0x3f80) + (i >> 7)]) != 0) {
                 l = l1 >> 16;
                 ai[k] = ((i9 & 0xff00ff) * l & ~0xff00ff) + ((i9 & 0xff00) * l & 0xff0000) >> 8;
-                ;
             }
             k++;
             i += j7;
@@ -2085,7 +2077,6 @@ public final class Rasterizer3D extends Rasterizer2D {
             if ((j9 = ai1[(j & 0x3f80) + (i >> 7)]) != 0) {
                 l = l1 >> 16;
                 ai[k] = ((j9 & 0xff00ff) * l & ~0xff00ff) + ((j9 & 0xff00) * l & 0xff0000) >> 8;
-                ;
             }
             k++;
             i += j7;

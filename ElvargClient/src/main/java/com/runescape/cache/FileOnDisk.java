@@ -63,7 +63,7 @@ public final class FileOnDisk {
             throw new IOException();
         }
         stream.write(b, n, n1);
-        position += (long) n1;
+        position += n1;
     }
 
     public int read() throws IOException {
@@ -81,7 +81,7 @@ public final class FileOnDisk {
     public int read(byte[] b, int n, int n1) throws IOException {
         n = stream.read(b, n, n1);
         if (n > 0)
-            position += (long) n;
+            position += n;
 
         return n;
     }

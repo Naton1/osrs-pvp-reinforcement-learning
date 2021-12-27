@@ -9,7 +9,7 @@ import java.awt.Insets;
 public final class GameFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private GameApplet appletInstance;
+	private final GameApplet appletInstance;
 
 	public GameFrame(GameApplet gameApplet, int width, int height, boolean resizable, boolean full) {
 		appletInstance = gameApplet;

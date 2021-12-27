@@ -2,7 +2,7 @@ package com.runescape.cache.bzip;
 
 final class BZip2DecompressionState {
 
-    public static int tt[];
+    public static int[] tt;
     final int[] unzftab;
     final int[] cftab;
     final boolean[] inUse;
@@ -17,12 +17,12 @@ final class BZip2DecompressionState {
     final int[][] base;
     final int[][] perm;
     final int[] minLens;
-    byte compressed[];
+    byte[] compressed;
     int nextIn;
     int decompressedLength;
     int totalInLo32;
     int totalInHi32;
-    byte decompressed[];
+    byte[] decompressed;
     int nextOut;
     int length;
     int totalOutLo32;

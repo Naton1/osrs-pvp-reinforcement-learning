@@ -29,7 +29,7 @@ public final class ResourceProvider implements Runnable {
     private final Deque unrequested;
     private final Deque mandatoryRequests;
     private final CRC32 crc32;
-    private final String crcNames[] = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
+    private final String[] crcNames = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
     private final int[][] crcs = new int[crcNames.length][];
     public String loadingMessage;
     public int tick;
@@ -177,7 +177,7 @@ public final class ResourceProvider implements Runnable {
             }
             if (remainingData > 0 && available >= remainingData) {
                 expectingData = true;
-                byte data[] = payload;
+                byte[] data = payload;
                 int read = 0;
                 if (current != null) {
                     data = current.buffer;
@@ -604,7 +604,7 @@ public final class ResourceProvider implements Runnable {
         }
         while (resource != null) {
             expectingData = true;
-            byte data[] = null;
+            byte[] data = null;
 
             if (clientInstance.indices[0] != null)
                 data = clientInstance.indices[resource.dataType + 1].decompress(resource.ID);
@@ -657,7 +657,7 @@ public final class ResourceProvider implements Runnable {
                 }
             }
             for (int type = 0; type < 4; type++) {
-                byte data[] = fileStatus[type];
+                byte[] data = fileStatus[type];
                 int size = data.length;
                 for (int file = 0; file < size; file++)
                     if (data[file] == maximumPriority) {
@@ -692,7 +692,7 @@ public final class ResourceProvider implements Runnable {
      * @param id   The id of the file.
      * @return
      */
-    private boolean crcMatches(int expectedValue, byte crcData[]) {
+    private boolean crcMatches(int expectedValue, byte[] crcData) {
         if (crcData == null || crcData.length < 2)
             return false;
         int length = crcData.length - 2;

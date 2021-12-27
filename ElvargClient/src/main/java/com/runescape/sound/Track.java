@@ -120,7 +120,7 @@ public final class Track {
             if (synthesizers[synthesizer] != null) {
                 int synthDuration = (synthesizers[synthesizer].duration * 22050) / 1000;
                 int synthOffset = (synthesizers[synthesizer].offset * 22050) / 1000;
-                int samples[] = synthesizers[synthesizer].synthesize(synthDuration,
+                int[] samples = synthesizers[synthesizer].synthesize(synthDuration,
                         synthesizers[synthesizer].duration);
                 for (int sample = 0; sample < synthDuration; sample++)
                     output[sample + synthOffset + 44] += (byte) (samples[sample] >> 8);
