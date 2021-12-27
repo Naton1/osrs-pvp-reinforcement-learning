@@ -1,5 +1,8 @@
 package com.runescape.cache.graphics.sprite;
 
+import com.runescape.sign.SignLink;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.ByteArrayInputStream;
@@ -9,8 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import javax.imageio.ImageIO;
-import com.runescape.sign.SignLink;
+
 import static java.nio.file.StandardOpenOption.READ;
 
 public final class SpriteCache implements Closeable {
@@ -133,14 +135,6 @@ public final class SpriteCache implements Closeable {
 
     public boolean contains(int id) {
         return id < cache.length && cache[id] != null;
-    }
-
-    public void set(int id, Sprite sprite) {
-        if (!contains(id)) {
-            return;
-        }
-
-        cache[id] = sprite;
     }
 
     private static BufferedImage convert(BufferedImage bimage, int type) {

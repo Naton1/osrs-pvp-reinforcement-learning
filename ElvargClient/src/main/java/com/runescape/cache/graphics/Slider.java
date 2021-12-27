@@ -115,10 +115,6 @@ public class Slider {
         Client.instance.savePlayerData();
     }
 
-    public double getPercentage() {
-        return ((position / length) * 100);
-    }
-
     public void setValue(double value) {
 
         if (value < minValue) {

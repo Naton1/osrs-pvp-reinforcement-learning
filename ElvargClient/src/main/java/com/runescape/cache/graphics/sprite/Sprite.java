@@ -1,5 +1,12 @@
 package com.runescape.cache.graphics.sprite;
 
+import com.runescape.cache.FileArchive;
+import com.runescape.draw.Rasterizer2D;
+import com.runescape.io.Buffer;
+import com.runescape.sign.SignLink;
+import com.runescape.util.FileUtils;
+
+import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
@@ -11,16 +18,6 @@ import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RGBImageFilter;
-
-import javax.swing.ImageIcon;
-
-import com.runescape.Client;
-import com.runescape.cache.FileArchive;
-import com.runescape.cache.graphics.IndexedImage;
-import com.runescape.draw.Rasterizer2D;
-import com.runescape.io.Buffer;
-import com.runescape.sign.SignLink;
-import com.runescape.util.FileUtils;
 
 public final class Sprite extends Rasterizer2D {
     
@@ -220,21 +217,6 @@ public final class Sprite extends Rasterizer2D {
     public Sprite() {
     }
 
-    public static Image create(byte[] spriteData) {
-        return Toolkit.getDefaultToolkit().createImage(spriteData);
-    }
-
-    public void drawHoverSprite(int x, int y, int offsetX, int offsetY, Sprite hover) {
-        if (this == EMPTY_SPRITE) {
-            return;
-        }
-        this.drawSprite(x, y);
-        if (Client.instance.mouseX >= offsetX + x && Client.instance.mouseX <= offsetX + x + this.myWidth
-                && Client.instance.mouseY >= offsetY + y && Client.instance.mouseY <= offsetY + y + this.myHeight) {
-            hover.drawSprite(x, y);
-        }
-    }
-
     public void draw24BitSprite(int x, int y) {
         if (this == EMPTY_SPRITE) {
             return;
@@ -387,19 +369,6 @@ public final class Sprite extends Rasterizer2D {
 
     }
 
-    public void method345() {
-        int[] ai = new int[maxWidth * maxHeight];
-        for (int j = 0; j < myHeight; j++) {
-            System.arraycopy(myPixels, j * myWidth, ai, j + drawOffsetY * maxWidth + drawOffsetX, myWidth);
-        }
-
-        myPixels = ai;
-        myWidth = maxWidth;
-        myHeight = maxHeight;
-        drawOffsetX = 0;
-        drawOffsetY = 0;
-    }
-
     public void method346(int x, int y) {
         if (this == EMPTY_SPRITE) {
             return;
@@ -466,47 +435,6 @@ public final class Sprite extends Rasterizer2D {
 
     public void drawSprite1(int i, int j) {
         drawSprite1(i, j, 128);
-    }
-
-    public void drawSprite1(int i, int j, int k, boolean overrideCanvas) {
-        if (this == EMPTY_SPRITE) {
-            return;
-        }
-        i += drawOffsetX;
-        j += drawOffsetY;
-        int i1 = i + j * Rasterizer2D.width;
-        int j1 = 0;
-        int k1 = myHeight;
-        int l1 = myWidth;
-        int i2 = Rasterizer2D.width - l1;
-        int j2 = 0;
-        if (!(overrideCanvas && j > 0) && j < Rasterizer2D.topY) {
-            int k2 = Rasterizer2D.topY - j;
-            k1 -= k2;
-            j = Rasterizer2D.topY;
-            j1 += k2 * l1;
-            i1 += k2 * Rasterizer2D.width;
-        }
-        if (j + k1 > Rasterizer2D.bottomY)
-            k1 -= (j + k1) - Rasterizer2D.bottomY;
-        if (!overrideCanvas && i < Rasterizer2D.leftX) {
-            int l2 = Rasterizer2D.leftX - i;
-            l1 -= l2;
-            i = Rasterizer2D.leftX;
-            j1 += l2;
-            i1 += l2;
-            j2 += l2;
-            i2 += l2;
-        }
-        if (i + l1 > Rasterizer2D.bottomX) {
-            int i3 = (i + l1) - Rasterizer2D.bottomX;
-            l1 -= i3;
-            j2 += i3;
-            i2 += i3;
-        }
-        if (!(l1 <= 0 || k1 <= 0)) {
-            method351(j1, l1, Rasterizer2D.pixels, myPixels, j2, k1, i2, k, i1);
-        }
     }
 
     public void drawSprite1(int i, int j, int k) {
@@ -662,48 +590,6 @@ public final class Sprite extends Rasterizer2D {
         }
     }
 
-    public void drawSprite2(int i, int j) {
-        if (this == EMPTY_SPRITE) {
-            return;
-        }
-        int k = 225;// was parameter
-        i += drawOffsetX;
-        j += drawOffsetY;
-        int i1 = i + j * Rasterizer2D.width;
-        int j1 = 0;
-        int k1 = myHeight;
-        int l1 = myWidth;
-        int i2 = Rasterizer2D.width - l1;
-        int j2 = 0;
-        if (j < Rasterizer2D.topY) {
-            int k2 = Rasterizer2D.topY - j;
-            k1 -= k2;
-            j = Rasterizer2D.topY;
-            j1 += k2 * l1;
-            i1 += k2 * Rasterizer2D.width;
-        }
-        if (j + k1 > Rasterizer2D.bottomY)
-            k1 -= (j + k1) - Rasterizer2D.bottomY;
-        if (i < Rasterizer2D.leftX) {
-            int l2 = Rasterizer2D.leftX - i;
-            l1 -= l2;
-            i = Rasterizer2D.leftX;
-            j1 += l2;
-            i1 += l2;
-            j2 += l2;
-            i2 += l2;
-        }
-        if (i + l1 > Rasterizer2D.bottomX) {
-            int i3 = (i + l1) - Rasterizer2D.bottomX;
-            l1 -= i3;
-            j2 += i3;
-            i2 += i3;
-        }
-        if (!(l1 <= 0 || k1 <= 0)) {
-            method351(j1, l1, Rasterizer2D.pixels, myPixels, j2, k1, i2, k, i1);
-        }
-    }
-
     private void method349(int[] ai, int[] ai1, int j, int k, int l, int i1, int j1, int k1) {
         if (this == EMPTY_SPRITE) {
             return;
@@ -806,91 +692,6 @@ public final class Sprite extends Rasterizer2D {
 
         } catch (Exception _ex) {
             _ex.printStackTrace();
-        }
-    }
-
-    public void method353(int i, double d, int l1) {
-        if (this == EMPTY_SPRITE) {
-            return;
-        }
-        // all of the following were parameters
-        int j = 15;
-        int k = 20;
-        int l = 15;
-        int j1 = 256;
-        int k1 = 20;
-        // all of the previous were parameters
-        try {
-            int i2 = -k / 2;
-            int j2 = -k1 / 2;
-            int k2 = (int) (Math.sin(d) * 65536D);
-            int l2 = (int) (Math.cos(d) * 65536D);
-            k2 = k2 * j1 >> 8;
-            l2 = l2 * j1 >> 8;
-            int i3 = (l << 16) + (j2 * k2 + i2 * l2);
-            int j3 = (j << 16) + (j2 * l2 - i2 * k2);
-            int k3 = l1 + i * Rasterizer2D.width;
-            for (i = 0; i < k1; i++) {
-                int l3 = k3;
-                int i4 = i3;
-                int j4 = j3;
-                for (l1 = -k; l1 < 0; l1++) {
-                    int k4 = myPixels[(i4 >> 16) + (j4 >> 16) * myWidth];
-                    if (k4 != 0)
-                        Rasterizer2D.pixels[l3++] = k4;
-                    else
-                        l3++;
-                    i4 += l2;
-                    j4 -= k2;
-                }
-
-                i3 += k2;
-                j3 += l2;
-                k3 += Rasterizer2D.width;
-            }
-
-        } catch (Exception _ex) {
-        }
-    }
-
-    public void method354(IndexedImage background, int i, int j) {
-        if (this == EMPTY_SPRITE) {
-            return;
-        }
-        j += drawOffsetX;
-        i += drawOffsetY;
-        int k = j + i * Rasterizer2D.width;
-        int l = 0;
-        int i1 = myHeight;
-        int j1 = myWidth;
-        int k1 = Rasterizer2D.width - j1;
-        int l1 = 0;
-        if (i < Rasterizer2D.topY) {
-            int i2 = Rasterizer2D.topY - i;
-            i1 -= i2;
-            i = Rasterizer2D.topY;
-            l += i2 * j1;
-            k += i2 * Rasterizer2D.width;
-        }
-        if (i + i1 > Rasterizer2D.bottomY)
-            i1 -= (i + i1) - Rasterizer2D.bottomY;
-        if (j < Rasterizer2D.leftX) {
-            int j2 = Rasterizer2D.leftX - j;
-            j1 -= j2;
-            j = Rasterizer2D.leftX;
-            l += j2;
-            k += j2;
-            l1 += j2;
-            k1 += j2;
-        }
-        if (j + j1 > Rasterizer2D.bottomX) {
-            int k2 = (j + j1) - Rasterizer2D.bottomX;
-            j1 -= k2;
-            l1 += k2;
-            k1 += k2;
-        }
-        if (!(j1 <= 0 || i1 <= 0)) {
-            method355(myPixels, j1, background.palettePixels, i1, Rasterizer2D.pixels, 0, k1, k, l1, l);
         }
     }
 
@@ -1015,27 +816,6 @@ public final class Sprite extends Rasterizer2D {
 
     }
 
-    public void cutR(int neww) {
-        if (this == EMPTY_SPRITE) {
-            return;
-        }
-        for (int k = 0; k < myHeight; k++) {
-            if (myWidth * (k + 1) < myPixels.length)
-                for (int dd = 0; dd < neww; dd++) {
-                    if ((myWidth * (k + 1)) - dd >= 0)
-                        myPixels[(myWidth * (k + 1)) - dd] = 0;
-                }
-            else
-                for (int dd = 1; dd < neww; dd++) {
-                    if ((myWidth * (k + 1)) - dd >= 0)
-                        myPixels[(myWidth * (k + 1)) - dd] = 0;
-                }
-
-        }
-
-
-    }
-
     public void outline(int color) {
         if (this == EMPTY_SPRITE) {
             return;
@@ -1076,27 +856,6 @@ public final class Sprite extends Rasterizer2D {
         }
     }
 
-    public void cutL(int neww) {
-        if (this == EMPTY_SPRITE) {
-            return;
-        }
-
-        for (int k = 0; k < myHeight; k++) {
-            if ((k * (myHeight * myWidth)) + neww < myPixels.length)
-                for (int dd = 0; dd < neww; dd++) {
-                    if ((k * myWidth) + dd >= 0)
-                        myPixels[(k * myWidth) + dd] = 0;
-                }
-
-            else
-                for (int dd = 0; dd < neww - 1; dd++) {
-                    if ((k * myWidth) + dd >= 0)
-                        myPixels[(k * myWidth) + dd] = 0;
-                }
-
-        }
-    }
-
     public Image convertToImage() {
         if (this == EMPTY_SPRITE) {
             return null;
@@ -1121,61 +880,5 @@ public final class Sprite extends Rasterizer2D {
         // Create image
         ImageProducer ip = new FilteredImageSource(bufferedimage.getSource(), filter);
         return Toolkit.getDefaultToolkit().createImage(ip);
-    }
-
-    public int getId() {
-        return identifier;
-    }
-
-    public void setId(int id) {
-        this.identifier = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int[] getMyPixels() {
-        return myPixels;
-    }
-
-    public void setMyPixels(int[] myPixels) {
-        this.myPixels = myPixels;
-    }
-
-    public int getMyWidth() {
-        return myWidth;
-    }
-
-    public void setMyWidth(int myWidth) {
-        this.myWidth = myWidth;
-    }
-
-    public int getMyHeight() {
-        return myHeight;
-    }
-
-    public void setMyHeight(int myHeight) {
-        this.myHeight = myHeight;
-    }
-
-    public int getDrawOffsetX() {
-        return drawOffsetX;
-    }
-
-    public void setDrawOffsetX(int drawOffsetX) {
-        this.drawOffsetX = drawOffsetX;
-    }
-
-    public int getDrawOffsetY() {
-        return drawOffsetY;
-    }
-
-    public void setDrawOffsetY(int drawOffsetY) {
-        this.drawOffsetY = drawOffsetY;
     }
 }
