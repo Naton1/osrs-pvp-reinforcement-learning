@@ -4,7 +4,6 @@ import com.runescape.cache.FileArchive;
 import com.runescape.draw.Rasterizer2D;
 import com.runescape.io.Buffer;
 import com.runescape.sign.SignLink;
-import com.runescape.util.FileUtils;
 
 import javax.swing.ImageIcon;
 import java.awt.Color;
@@ -51,26 +50,6 @@ public final class Sprite extends Rasterizer2D {
         drawOffsetX = drawOffsetY = 0;
     }
 
-    public Sprite(int index, byte[] spriteData) {
-        try {
-            Image image = Toolkit.getDefaultToolkit().createImage(spriteData);
-            ImageIcon sprite = new ImageIcon(image);
-            myWidth = sprite.getIconWidth();
-            myHeight = sprite.getIconHeight();
-            maxWidth = myWidth;
-            maxHeight = myHeight;
-            drawOffsetX = 0;
-            drawOffsetY = 0;
-            myPixels = new int[myWidth * myHeight];
-            PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
-            pixelgrabber.grabPixels();
-            image = null;
-            setTransparency(255, 0, 255);
-        } catch (Exception _ex) {
-
-        }
-    }
-
     public Sprite(byte[] data, Component component) {
         try {
             Image image = Toolkit.getDefaultToolkit().createImage(data);
@@ -88,24 +67,6 @@ public final class Sprite extends Rasterizer2D {
             pixelgrabber.grabPixels();
         } catch (Exception _ex) {
             System.out.println("Error converting jpg");
-        }
-    }
-
-    public Sprite(String img, int width, int height) {
-        try {
-            Image image = Toolkit.getDefaultToolkit().createImage(FileUtils.readFile(img));
-            myWidth = width;
-            myHeight = height;
-            maxWidth = myWidth;
-            maxHeight = myHeight;
-            drawOffsetX = 0;
-            drawOffsetY = 0;
-            myPixels = new int[myWidth * myHeight];
-            PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
-            pixelgrabber.grabPixels();
-            image = null;
-        } catch (Exception _ex) {
-            System.out.println(_ex);
         }
     }
 
@@ -192,26 +153,6 @@ public final class Sprite extends Rasterizer2D {
 
         }
         setTransparency(255, 0, 255);
-    }
-
-    public Sprite(byte[] spriteData) {
-        try {
-            Image image = Toolkit.getDefaultToolkit().createImage(spriteData);
-            ImageIcon sprite = new ImageIcon(image);
-            myWidth = sprite.getIconWidth();
-            myHeight = sprite.getIconHeight();
-            maxWidth = myWidth;
-            maxHeight = myHeight;
-            drawOffsetX = 0;
-            drawOffsetY = 0;
-            myPixels = new int[myWidth * myHeight];
-            PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, myWidth, myHeight, myPixels, 0, myWidth);
-            pixelgrabber.grabPixels();
-            image = null;
-            setTransparency(255, 0, 255);
-        } catch (Exception _ex) {
-            System.out.println(_ex);
-        }
     }
 
     public Sprite() {
@@ -770,50 +711,6 @@ public final class Sprite extends Rasterizer2D {
             pixel += j1;
             i += l;
         }
-    }
-
-    private void method355(int[] ai, int i, byte[] abyte0, int j, int[] ai1, int k, int l, int i1, int j1, int k1) {
-        if (this == EMPTY_SPRITE) {
-            return;
-        }
-        int l1 = -(i >> 2);
-        i = -(i & 3);
-        for (int j2 = -j; j2 < 0; j2++) {
-            for (int k2 = l1; k2 < 0; k2++) {
-                k = ai[k1++];
-                if (k != 0 && abyte0[i1] == 0)
-                    ai1[i1++] = k;
-                else
-                    i1++;
-                k = ai[k1++];
-                if (k != 0 && abyte0[i1] == 0)
-                    ai1[i1++] = k;
-                else
-                    i1++;
-                k = ai[k1++];
-                if (k != 0 && abyte0[i1] == 0)
-                    ai1[i1++] = k;
-                else
-                    i1++;
-                k = ai[k1++];
-                if (k != 0 && abyte0[i1] == 0)
-                    ai1[i1++] = k;
-                else
-                    i1++;
-            }
-
-            for (int l2 = i; l2 < 0; l2++) {
-                k = ai[k1++];
-                if (k != 0 && abyte0[i1] == 0)
-                    ai1[i1++] = k;
-                else
-                    i1++;
-            }
-
-            i1 += l;
-            k1 += j1;
-        }
-
     }
 
     public void outline(int color) {
