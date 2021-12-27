@@ -4,11 +4,8 @@ import com.runescape.Client;
 import com.runescape.collection.Deque;
 import com.runescape.collection.Queue;
 import com.runescape.io.Buffer;
-import com.runescape.sign.SignLink;
 
 import java.io.ByteArrayInputStream;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -104,20 +101,6 @@ public final class ResourceProvider implements Runnable {
         unrequested = new Deque();
         mandatoryRequests = new Deque();
         crc32 = new CRC32();
-    }
-
-    private String forId(int type) {
-        switch (type) {
-            case 1:
-                return "Model";
-            case 2:
-                return "Animation";
-            case 3:
-                return "Sound";
-            case 4:
-                return "Map";
-        }
-        return "";
     }
 
     private void respond() {
@@ -501,20 +484,6 @@ public final class ResourceProvider implements Runnable {
 			}*/
     }
 
-    public void requestExtra(byte priority, int type, int file) {
-        if (clientInstance.indices[0] == null)
-            return;
-        //if (versions[type][file] == 0)
-        //	return;
-        byte[] data = clientInstance.indices[type + 1].decompress(file);
-        if (crcMatches(crcs[type][file], data))
-            return;
-        fileStatus[type][file] = priority;
-        if (priority > maximumPriority)
-            maximumPriority = priority;
-        totalFiles++;
-    }
-
     public boolean landscapePresent(int landscape) {
         for (int index = 0; index < areas.length; index++)
             if (landscapes[index] == landscape)
@@ -642,28 +611,6 @@ public final class ResourceProvider implements Runnable {
         }
     }
 
-    private boolean crcMatches(int expectedValue, byte[] crcData) {
-        if (crcData == null || crcData.length < 2)
-            return false;
-        int length = crcData.length - 2;
-        crc32.reset();
-        crc32.update(crcData, 0, length);
-        int crcValue = (int) crc32.getValue();
-        return crcValue == expectedValue;
-    }
-
-    public int getChecksum(int type, int id) {
-        int crc = -1;
-        byte[] data = clientInstance.indices[type + 1].decompress(id);
-        if (data != null) {
-            int length = data.length - 2;
-            crc32.reset();
-            crc32.update(data, 0, length);
-            crc = (int) crc32.getValue();
-        }
-        return crc;
-    }
-
     public int getVersion(int type, int id) {
         int version = -1;
         byte[] data = clientInstance.indices[type + 1].decompress(id);
@@ -674,15 +621,4 @@ public final class ResourceProvider implements Runnable {
         return version;
     }
 
-    public void writeVersionList(int type) {
-        try {
-            DataOutputStream out = new DataOutputStream(new FileOutputStream(SignLink.findcachedir() + type + "_version.dat"));
-            for (int index = 0; index < clientInstance.indices[type + 1].getFileCount(); index++) {
-                out.writeShort(getVersion(type, index));
-            }
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

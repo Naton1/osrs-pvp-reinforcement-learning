@@ -982,23 +982,6 @@ public class Client extends GameApplet {
         return " " + s;
     }
 
-    public static final byte[] ReadFile(String fileName) {
-        try {
-            byte[] abyte0;
-            File file = new File(fileName);
-            int i = (int) file.length();
-            abyte0 = new byte[i];
-            DataInputStream datainputstream = new DataInputStream(
-                    new BufferedInputStream(new FileInputStream(fileName)));
-            datainputstream.readFully(abyte0, 0, i);
-            datainputstream.close();
-            return abyte0;
-        } catch (Exception e) {
-            System.out.println((new StringBuilder()).append("Read Error: ").append(fileName));
-            return null;
-        }
-    }
-
     public static String capitalize(String s) {
         for (int i = 0; i < s.length(); i++) {
             if (i == 0) {
@@ -1014,28 +997,6 @@ public class Client extends GameApplet {
             }
         }
         return s;
-    }
-
-    public static AbstractMap.SimpleEntry<Integer, Integer> getNextInteger(
-            ArrayList<Integer> values) {
-        ArrayList<AbstractMap.SimpleEntry<Integer, Integer>> frequencies = new ArrayList<>();
-        int maxIndex = 0;
-        main:
-        for (int i = 0; i < values.size(); ++i) {
-            int value = values.get(i);
-            for (int j = 0; j < frequencies.size(); ++j) {
-                if (frequencies.get(j).getKey() == value) {
-                    frequencies.get(j).setValue(frequencies.get(j).getValue() + 1);
-                    if (frequencies.get(maxIndex).getValue() < frequencies.get(j)
-                            .getValue()) {
-                        maxIndex = j;
-                    }
-                    continue main;
-                }
-            }
-            frequencies.add(new AbstractMap.SimpleEntry<Integer, Integer>(value, 1));
-        }
-        return frequencies.get(maxIndex);
     }
 
     private static String intToKOrMil(int j) {
@@ -1119,108 +1080,6 @@ public class Client extends GameApplet {
         return 0;
     }
 
-    public static String readableFileSize(long size) {
-        if (size <= 0) return "0";
-        final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
-        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-    }
-
-    public static long findSize(String path) {
-        long totalSize = 0;
-        ArrayList<String> directory = new ArrayList<String>();
-        File file = new File(path);
-
-        if (file.isDirectory()) {
-            directory.add(file.getAbsolutePath());
-            while (directory.size() > 0) {
-                String folderPath = directory.get(0);
-                directory.remove(0);
-                File folder = new File(folderPath);
-                File[] filesInFolder = folder.listFiles();
-                int noOfFiles = filesInFolder.length;
-
-                for (int i = 0; i < noOfFiles; i++) {
-                    File f = filesInFolder[i];
-                    if (f.isDirectory()) {
-                        directory.add(f.getAbsolutePath());
-                    } else {
-                        totalSize += f.length();
-                    }
-                }
-            }
-        } else {
-            totalSize = file.length();
-        }
-        return totalSize;
-    }
-
-    private static byte[] wrap(byte[] data, int dataOffset, int dataLength) {
-        if (dataLength == -1)
-            dataLength = data.length - dataOffset;
-
-        CRC32 crc32 = CRC_32;
-        crc32.reset();
-        crc32.update(data, dataOffset, dataLength);
-        int compression = 0;
-        int length = dataLength;
-        if (length < 24)
-            compression = 0;
-
-        else if (length < 132000) {
-            compression = 1;
-            try {
-                ByteArrayOutputStream buffer = BUFFER;
-                buffer.reset();
-                deflater.reset();
-                DeflaterOutputStream out = new DeflaterOutputStream(buffer, deflater, 512);
-                try {
-                    out.write(data, dataOffset, dataLength);
-                } finally {
-                    out.close();
-                }
-                if (buffer.size() < length) {
-                    data = buffer.toByteArray();
-                    dataOffset = 0;
-                    dataLength = data.length;
-                } else
-                    compression = 0;
-
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        } else {
-            compression = 2;
-            try {
-                ByteArrayOutputStream buffer = BUFFER;
-                buffer.reset();
-                BZip2OutputStream out = new BZip2OutputStream(buffer, BZip2OutputStream.chooseBlockSize(length), true);
-                try {
-                    out.write(data, dataOffset, dataLength);
-                } finally {
-                    out.close();
-                }
-                if (buffer.size() < length) {
-                    data = buffer.toByteArray();
-                    dataOffset = 0;
-                    dataLength = data.length;
-                } else
-                    compression = 0;
-
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        byte[] out = new byte[1 + 4 + (compression != 0 ? 4 : 0) + dataLength];
-        out[0] = (byte) compression;
-        putInt(out, 1, dataLength);
-        if (compression != 0)
-            putInt(out, 5, length);
-
-        System.arraycopy(data, dataOffset, out, compression != 0 ? 9 : 5, dataLength);
-        return out;
-    }
-
     private static void putInt(byte[] array, int offset, int n) {
         array[offset] = (byte) (n >>> 24);
         array[offset + 1] = (byte) (n >>> 16);
@@ -1244,13 +1103,6 @@ public class Client extends GameApplet {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public boolean compareCrc(byte[] buffer, int expectedCrc) {
-        CRC.reset();
-        CRC.update(buffer);
-        int crc = (int) CRC.getValue();
-        return crc == expectedCrc;
     }
 
     public void savePlayerData() {
@@ -4040,40 +3892,6 @@ public class Client extends GameApplet {
         }
     }
 
-    public String getNameForTab(int tab) {
-        switch (tab) {
-            case 0:
-                return "Combat";
-            case 1:
-                return "Stats";
-            case 2:
-                return "Quest";
-            case 3:
-                return "Inventory";
-            case 4:
-                return "Equipment";
-            case 5:
-                return "Prayer";
-            case 6:
-                return "Magic";
-            case 7:
-                return "Clan chat";
-            case 8:
-                return "Friends";
-            case 9:
-                return "Ignores";
-            case 10:
-                return "Logout";
-            case 11:
-                return "Settings";
-            case 12:
-                return "Emotes";
-            case 13:
-                return "Teleports";
-        }
-        return "";
-    }
-
     private void drawTabArea() {
 		final int xOffset = frameMode == ScreenMode.FIXED ? 0 : frameWidth - 241;
 		final int yOffset = frameMode == ScreenMode.FIXED ? 0 : frameHeight - 336;
@@ -4708,16 +4526,7 @@ public class Client extends GameApplet {
         }
         loadingError = true;
     }
-    
-    public void requestCRCs() {
-        for (int i = 0; i < CRCs.length; i++) {
-            CRCs[i] = 0;
-        }
-        while (CRCs[CRCs.length - 1] == 0) {
-            drawLoadingText(0, "Connecting to update-server...");
-        }
-    }
-    
+
     public FileArchive createArchive(int file, String displayedName, String name, int x) {
         byte[] buffer = null;
 
@@ -5872,13 +5681,6 @@ public class Client extends GameApplet {
         // }
         // SignLink.fadeMidi = 0;
         //SignLink.midi = "stop";
-    }
-
-    private void adjustVolume(boolean updateMidi, int volume) {
-        //SignLink.setVolume(volume);
-        //if (updateMidi) {
-        //    SignLink.midi = "voladjust";
-        // }
     }
 
     private boolean saveWave(byte[] data, int id) {
@@ -8246,26 +8048,6 @@ public class Client extends GameApplet {
                 l++;
             }
         }
-    }
-
-    public int getLevelForXP(int exp) {
-        int points = 0;
-        int output = 0;
-
-        if (exp > 13034430) {
-            return 99;
-        }
-
-        for (int lvl = 1; lvl <= 99; lvl++) {
-            points += Math.floor(lvl + 300.0 * Math.pow(2.0, lvl / 7.0));
-            output = (int) Math.floor(points / 4);
-
-            if (output >= exp) {
-                return lvl;
-            }
-        }
-
-        return 0;
     }
 
     /**
@@ -13139,41 +12921,6 @@ public class Client extends GameApplet {
         }
     }
 
-    public void projectParticle(int i, int j, int l) {
-
-        if (i < 128 || l < 128 || i > 13056 || l > 13056) {
-            particleDrawX = -1;
-            particleDrawY = -1;
-            return;
-        }
-        int i1 = getCenterHeight(plane, l, i) - j;
-        i -= xCameraPos;
-        i1 -= zCameraPos;
-        l -= yCameraPos;
-
-        int j1 = Model.SINE[yCameraCurve];
-        int k1 = Model.COSINE[yCameraCurve];
-        int l1 = Model.SINE[xCameraCurve];
-        int i2 = Model.COSINE[xCameraCurve];
-        int j2 = l * l1 + i * i2 >> 16;
-        l = l * i2 - i * l1 >> 16;
-        i = j2;
-        j2 = i1 * k1 - l * j1 >> 16;
-        l = i1 * j1 + l * k1 >> 16;
-        i1 = j2;
-        if (l >= 50) {
-            particleDrawX = Rasterizer3D.originViewX + (i << SceneGraph.viewDistance) / l;
-            particleDrawY = Rasterizer3D.originViewY + (i1 << SceneGraph.viewDistance) / l;
-            //particleDrawZ = Rasterizer3D.originViewY + (((i1) << SceneGraph.viewDistance) / l) * Rasterizer3D.originViewY +((i) << SceneGraph.viewDistance) / l;
-            //particleDrawZ = l;
-            particleDrawZ = Rasterizer3D.originViewY + ((i) << SceneGraph.viewDistance) / l; // TODO
-
-        } else {
-            particleDrawX = -1;
-            particleDrawY = -1;
-        }
-    }
-
     private void buildSplitPrivateChatMenu() {
         if (splitPrivateChat == 0)
             return;
@@ -13446,21 +13193,6 @@ public class Client extends GameApplet {
             stopMidi();
         }
 
-    }
-
-    public void drawMusicSprites() {
-
-        int musicState = 0;
-        bottomRightImageProducer.initDrawingArea();
-        switch (musicState) {
-            case 0:
-                spriteCache.draw(58, 158, 196);
-                break;
-
-            case 1:
-                spriteCache.draw(59, 158, 196);
-                break;
-        }
     }
 
     private void drawLoginScreen(boolean flag) {
@@ -14139,50 +13871,6 @@ public class Client extends GameApplet {
     }
 
     /**
-     * This method updates default messages upon login to the desired text of the interface text.
-     */
-    public void updateStrings(String message, int index) {
-        switch (index) {
-            case 1675:
-                sendString(message, 17508);
-                break;// Stab
-            case 1676:
-                sendString(message, 17509);
-                break;// Slash
-            case 1677:
-                sendString(message, 17510);
-                break;// Crush
-            case 1678:
-                sendString(message, 17511);
-                break;// Magic
-            case 1679:
-                sendString(message, 17512);
-                break;// Range
-            case 1680:
-                sendString(message, 17513);
-                break;// Stab
-            case 1681:
-                sendString(message, 17514);
-                break;// Slash
-            case 1682:
-                sendString(message, 17515);
-                break;// Crush
-            case 1683:
-                sendString(message, 17516);
-                break;// Magic
-            case 1684:
-                sendString(message, 17517);
-                break;// Range
-            case 1686:
-                sendString(message, 17518);
-                break;// Strength
-            case 1687:
-                sendString(message, 17519);
-                break;// Prayer
-        }
-    }
-
-    /**
      * Sends a string
      */
     public void sendString(String text, int index) {
@@ -14192,81 +13880,6 @@ public class Client extends GameApplet {
         Widget.interfaceCache[index].defaultText = text;
         if (Widget.interfaceCache[index].parent == tabInterfaceIDs[tabId]) {
         }
-    }
-
-    public void sendButtonClick(int button, int toggle, int type) {
-        Widget widget = Widget.interfaceCache[button];
-        switch (type) {
-            case 135:
-                boolean flag8 = true;
-
-                if (widget.contentType > 0) {
-                    flag8 = promptUserForInput(widget);
-                }
-
-                if (flag8) {
-                    packetSender.sendButtonClick(button);
-                }
-                break;
-
-            // case reset setting widget
-            case 646:
-                packetSender.sendButtonClick(button);
-
-                if (widget.valueIndexArray != null && widget.valueIndexArray[0][0] == 5) {
-                    if (settings[toggle] != widget.requiredValues[0]) {
-                        settings[toggle] = widget.requiredValues[0];
-                        updateVarp(toggle);
-                    }
-                }
-                break;
-
-            case 169:
-                packetSender.sendButtonClick(button);
-                if (widget.valueIndexArray != null && widget.valueIndexArray[0][0] == 5) {
-                    settings[toggle] = 1 - settings[toggle];
-                    updateVarp(toggle);
-                }
-                break;
-
-            default:
-                System.out.println("button: " + button + " - toggle: " + toggle
-                        + " - type: " + type);
-                break;
-        }
-    }
-
-    /**
-     * Sets button configurations on interfaces.
-     */
-    public void sendConfiguration(int id, int state) {
-        anIntArray1045[id] = state;
-        if (settings[id] != state) {
-            settings[id] = state;
-            updateVarp(id);
-            if (dialogueId != -1)
-                updateChatbox = true;
-        }
-    }
-
-    /**
-     * Clears the screen of all open interfaces.
-     */
-    public void clearScreen() {
-        if (overlayInterfaceId != -1) {
-            overlayInterfaceId = -1;
-            tabAreaAltered = true;
-        }
-        if (backDialogueId != -1) {
-            backDialogueId = -1;
-            updateChatbox = true;
-        }
-        if (inputDialogState != 0) {
-            inputDialogState = 0;
-            updateChatbox = true;
-        }
-        openInterfaceId = -1;
-        continuedDialogue = false;
     }
 
     /**
@@ -16026,66 +15639,6 @@ public class Client extends GameApplet {
             return 0xFF0000;
     }
 
-    public int getOrbFill(int statusInt) {
-        if (statusInt <= Integer.MAX_VALUE && statusInt >= 97)
-            return 0;
-        else if (statusInt <= 96 && statusInt >= 93)
-            return 1;
-        else if (statusInt <= 92 && statusInt >= 89)
-            return 2;
-        else if (statusInt <= 88 && statusInt >= 85)
-            return 3;
-        else if (statusInt <= 84 && statusInt >= 81)
-            return 4;
-        else if (statusInt <= 80 && statusInt >= 77)
-            return 5;
-        else if (statusInt <= 76 && statusInt >= 73)
-            return 6;
-        else if (statusInt <= 72 && statusInt >= 69)
-            return 7;
-        else if (statusInt <= 68 && statusInt >= 65)
-            return 8;
-        else if (statusInt <= 64 && statusInt >= 61)
-            return 9;
-        else if (statusInt <= 60 && statusInt >= 57)
-            return 10;
-        else if (statusInt <= 56 && statusInt >= 53)
-            return 11;
-        else if (statusInt <= 52 && statusInt >= 49)
-            return 12;
-        else if (statusInt <= 48 && statusInt >= 45)
-            return 13;
-        else if (statusInt <= 44 && statusInt >= 41)
-            return 14;
-        else if (statusInt <= 40 && statusInt >= 37)
-            return 15;
-        else if (statusInt <= 36 && statusInt >= 33)
-            return 16;
-        else if (statusInt <= 32 && statusInt >= 29)
-            return 17;
-        else if (statusInt <= 28 && statusInt >= 25)
-            return 18;
-        else if (statusInt <= 24 && statusInt >= 21)
-            return 19;
-        else if (statusInt <= 20 && statusInt >= 17)
-            return 20;
-        else if (statusInt <= 16 && statusInt >= 13)
-            return 21;
-        else if (statusInt <= 12 && statusInt >= 9)
-            return 22;
-        else if (statusInt <= 8 && statusInt >= 7)
-            return 23;
-        else if (statusInt <= 6 && statusInt >= 5)
-            return 24;
-        else if (statusInt <= 4 && statusInt >= 3)
-            return 25;
-        else if (statusInt <= 2 && statusInt >= 1)
-            return 26;
-        else if (statusInt <= 0)
-            return 27;
-        return 0;
-    }
-
     public void clearTopInterfaces() {
         // close interface
         packetSender.sendInterfaceClear();
@@ -16101,19 +15654,6 @@ public class Client extends GameApplet {
         }
         openInterfaceId = -1;
         fullscreenInterfaceID = -1;
-    }
-
-    public void addObject(int x, int y, int objectId, int face, int type, int height) {
-        int mX = currentRegionX - 6;
-        int mY = currentRegionY - 6;
-        int x2 = x - mX * 8;
-        int y2 = y - mY * 8;
-        int i15 = 40 >> 2;
-        int l17 = objectGroups[i15];
-        if (y2 > 0 && y2 < 103 && x2 > 0 && x2 < 103) {
-            requestSpawnObject(-1, objectId, face, l17, y2, type, height, x2, 0);
-
-        }
     }
 
     public void resetAllImageProducers() {
@@ -16145,12 +15685,6 @@ public class Client extends GameApplet {
         }
         this.anInt1186 += i * 3;
         this.anInt1187 += (j << 1);
-    }
-
-    float PercentCalc(long Number1, long number2) {
-        float percentage;
-        percentage = (Number1 * 100 / number2);
-        return percentage;
     }
 
     public int getMyPrivilege() {
@@ -16267,70 +15801,7 @@ public class Client extends GameApplet {
           //  MapRegion.passiveRequestGameObjectModels(new Buffer(resource.buffer), resourceProvider);
         } while (true);
     }
-    
-    public void repackCacheIndex(int cacheIndex) {
-        System.out.println("Started repacking index " + cacheIndex + ".");
-        int indexLength = new File(SignLink.indexLocation(cacheIndex, -1)).listFiles().length;
-        File[] file = new File(SignLink.indexLocation(cacheIndex, -1)).listFiles();
-        try {
-            for (int index = 0; index < indexLength; index++) {
-                int fileIndex = Integer.parseInt(FileUtils.getFileNameWithoutExtension(file[index].toString()));
-                byte[] data = FileUtils.fileToByteArray(cacheIndex, fileIndex);
-                if (data != null && data.length > 0) {
-                    indices[cacheIndex].writeFile(data.length, data, fileIndex);
-                    System.out.println("Repacked " + fileIndex + ".");
-                } else {
-                    System.out.println("Unable to locate index " + fileIndex + ".");
-                }
-            }
-        } catch (Exception ex) {
-            System.out.println("Error packing cache index " + cacheIndex + ".");
-        }
-        System.out.println("Finished repacking " + cacheIndex + ".");
-    }
 
-    public void dumpCacheIndex(int cacheIndex) {
-        try {
-            for (int i = 0; ; i++) {
-                try {
-                    byte[] indexByteArray = indices[cacheIndex].decompress(i);
-                    if (indexByteArray == null) {
-                        System.out.println("Finished dumping index " + cacheIndex
-                                + ", exiting dump operation.");
-                        break;
-                    }
-
-                    /*   final File dir = new File(SignLink.findcachedir() + "dump" + cacheIndex.getIndex() + "/");
-
-                              if (!dir.exists()) {
-                                  dir.mkdirs();
-                              }
-                     */
-
-                    if (indexByteArray.length == 0) {
-                        continue;
-                    }
-
-                    Path file = Paths.get(SignLink.findcachedir() + "dump" + cacheIndex + "/" + i + ".dat");
-                    Files.write(file, indexByteArray);
-
-                    /*BufferedOutputStream gzip = new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(SignLink.findcachedir() + "dump" + cacheIndex.getIndex() + "/" + i + ".gz")));
-                    gzip.write(indexByteArray);
-                    System.out.println("Unpacked " + i + ".");
-                    gzip.close();*/
-
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    throw new IOException(
-                            "Error writing to folder. Ensure you have this directory created: '"
-                                    + SignLink.findcachedir() + "dump" + cacheIndex + "/");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
     public enum ScreenMode {
         FIXED, RESIZABLE, FULLSCREEN
     }

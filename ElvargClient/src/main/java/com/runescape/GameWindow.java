@@ -121,11 +121,6 @@ public class GameWindow extends JFrame implements ActionListener {
         }
     }
 
-    public void setFrameSize(int width, int height) {
-        Insets insets = this.getInsets();
-        this.setSize(width + insets.left + insets.right, height + insets.top + insets.bottom);
-    }
-
     public int getFrameWidth() {
         Insets insets = this.getInsets();
         return getWidth() - (insets.left + insets.right);
