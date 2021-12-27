@@ -1,12 +1,12 @@
 package com.runescape.draw.teleports;
 
-import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-
 import com.runescape.Client;
 import com.runescape.Client.ScreenMode;
 import com.runescape.cache.graphics.RSFont;
 import com.runescape.draw.Rasterizer2D;
+
+import java.awt.Dimension;
+import java.awt.event.KeyEvent;
 
 public class TeleportChatBox {
 
@@ -603,63 +603,12 @@ public class TeleportChatBox {
 
 		@Override
 		public HierarchyOption[] getOptions() {
-			return Option.values();
+			return new HierarchyOption[0];
 		}
 
 		@Override
 		public String getDescription() {
 			return null;
-		}
-
-		private enum Option implements HierarchyOption {
-			
-			;
-
-			Option(int index, int shortcutKey, String name,
-				   HierarchyOption[] options) {
-				this.index = index;
-				this.shortcutKey = shortcutKey;
-				this.name = name;
-				this.options = options;
-			}
-
-			private final int index;
-
-			private final int shortcutKey;
-
-			private final String name;
-
-			private final HierarchyOption[] options;
-
-			@Override
-			public Dimension getDimension() {
-				return new Dimension(162, SUPER_HEIGHT);
-			}
-
-			@Override
-			public String getName() {
-				return name;
-			}
-
-			@Override
-			public int getShortcutKey() {
-				return shortcutKey;
-			}
-
-			@Override
-			public String getDescription() {
-				return null;
-			}
-
-			@Override
-			public int[] getIndex() {
-				return options != null ? null : new int[]{index, 0};
-			}
-
-			@Override
-			public HierarchyOption[] getOptions() {
-				return options;
-			}
 		}
 
 	}

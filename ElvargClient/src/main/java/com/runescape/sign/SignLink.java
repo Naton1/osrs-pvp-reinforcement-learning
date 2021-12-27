@@ -85,14 +85,6 @@ public final class SignLink {
         }
     }
 
-    public static String trim(String s) {
-        if (s == null || s.length() == 0)
-            return null;
-
-        s = s.trim();
-        return s.length() == 0 ? null : s;
-    }
-
     public static String findcachedir() {
         final File cacheDirectory = new File(Configuration.CACHE_DIRECTORY);
         if (!cacheDirectory.exists())

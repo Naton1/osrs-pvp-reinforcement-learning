@@ -43,51 +43,6 @@ public class Rasterizer2D extends Cacheable {
     }
 
     /**
-     * Draws a transparent box with a gradient that changes from top to bottom.
-     *
-     * @param leftX        The left edge X-Coordinate of the box.
-     * @param topY         The top edge Y-Coordinate of the box.
-     * @param width        The width of the box.
-     * @param height       The height of the box.
-     * @param topColour    The top rgbColour of the gradient.
-     * @param bottomColour The bottom rgbColour of the gradient.
-     * @param opacity      The opacity value ranging from 0 to 256.
-     */
-    public static void drawTransparentGradientBox(int leftX, int topY, int width, int height, int topColour, int bottomColour, int opacity) {
-        int gradientProgress = 0;
-        int progressPerPixel = 0x10000 / height;
-        if (leftX < Rasterizer2D.leftX) {
-            width -= Rasterizer2D.leftX - leftX;
-            leftX = Rasterizer2D.leftX;
-        }
-        if (topY < Rasterizer2D.topY) {
-            gradientProgress += (Rasterizer2D.topY - topY) * progressPerPixel;
-            height -= Rasterizer2D.topY - topY;
-            topY = Rasterizer2D.topY;
-        }
-        if (leftX + width > bottomX)
-            width = bottomX - leftX;
-        if (topY + height > bottomY)
-            height = bottomY - topY;
-        int leftOver = Rasterizer2D.width - width;
-        int transparency = 256 - opacity;
-        int pixelIndex = leftX + topY * Rasterizer2D.width;
-        for (int rowIndex = 0; rowIndex < height; rowIndex++) {
-            int gradient = 0x10000 - gradientProgress >> 8;
-            int inverseGradient = gradientProgress >> 8;
-            int gradientColour = ((topColour & 0xff00ff) * gradient + (bottomColour & 0xff00ff) * inverseGradient & 0xff00ff00) + ((topColour & 0xff00) * gradient + (bottomColour & 0xff00) * inverseGradient & 0xff0000) >>> 8;
-            int transparentPixel = ((gradientColour & 0xff00ff) * opacity >> 8 & 0xff00ff) + ((gradientColour & 0xff00) * opacity >> 8 & 0xff00);
-            for (int columnIndex = 0; columnIndex < width; columnIndex++) {
-                int backgroundPixel = pixels[pixelIndex];
-                backgroundPixel = ((backgroundPixel & 0xff00ff) * transparency >> 8 & 0xff00ff) + ((backgroundPixel & 0xff00) * transparency >> 8 & 0xff00);
-                pixels[pixelIndex++] = transparentPixel + backgroundPixel;
-            }
-            pixelIndex += leftOver;
-            gradientProgress += progressPerPixel;
-        }
-    }
-
-    /**
      * Sets the drawingArea to the default size and position.
      * Position: Upper left corner.
      * Size: As specified before.

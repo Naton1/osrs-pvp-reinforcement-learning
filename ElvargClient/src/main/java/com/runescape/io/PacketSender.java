@@ -91,20 +91,11 @@ public class PacketSender {
         buffer.writeShort(playerIndex);
     }
 
-    public void sendChatboxTrade(int playerIndex) {
-        buffer.writeOpcode(139);
-        buffer.writeLEShort(playerIndex);
-    }
-
     public void sendChatConfigurations(int publicMode, int privateMode, int tradeMode) {
         buffer.writeOpcode(95);
         buffer.writeByte(publicMode);
         buffer.writeByte(privateMode);
         buffer.writeByte(tradeMode);
-    }
-
-    public void sendMinimapFlagClear() {
-        buffer.writeOpcode(78);
     }
 
     public void sendButtonClick(int buttonId) {
@@ -122,11 +113,6 @@ public class PacketSender {
         buffer.writeOpcode(183);
         buffer.writeByte(teleportType);
         buffer.writeByte(teleportIndex);
-    }
-
-    public void sendClientFocus(boolean focused) {
-        buffer.writeOpcode(3);
-        buffer.writeByte(focused ? 1 : 0);
     }
 
     public void sendInterfaceClear() {

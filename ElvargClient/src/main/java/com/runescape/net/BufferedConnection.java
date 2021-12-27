@@ -140,15 +140,4 @@ public final class BufferedConnection implements Runnable {
         }
     }
 
-    public void printDebug() {
-        System.out.println("dummy:" + closed);
-        System.out.println("tcycl:" + writeIndex);
-        System.out.println("tnum:" + buffIndex);
-        System.out.println("writer:" + isWriter);
-        System.out.println("ioerror:" + hasIOError);
-        try {
-            System.out.println("available:" + available());
-        } catch (IOException _ex) {
-        }
-    }
 }

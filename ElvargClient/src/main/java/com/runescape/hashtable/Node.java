@@ -5,9 +5,6 @@ public class Node {
     public Node prev;
     public Node next;
 
-    public Node() {
-    }
-
     public final void unlink() {
         if (next == null) {
         } else {

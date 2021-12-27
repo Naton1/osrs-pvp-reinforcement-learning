@@ -6,9 +6,6 @@ public class NodeChild extends Node {
     public NodeChild prevNodeChild;
     NodeChild nextNodeChild;
 
-    public NodeChild() {
-    }
-
     public final void unlinkSub() {
         if (nextNodeChild == null) {
         } else {

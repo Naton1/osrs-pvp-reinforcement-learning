@@ -33,20 +33,6 @@ public final class Buffer extends Cacheable {
         stream_1.cipher = cipher;
         return stream_1;
     }
-    
-    public final int readUTriByte() {
-        currentPosition += 3;
-        return (0xff & payload[currentPosition - 3] << 16)
-                + (0xff & payload[currentPosition - 2] << 8)
-                + (0xff & payload[currentPosition - 1]);
-    }
-
-    public final int readUTriByte(int i) {
-        currentPosition += 3;
-        return (0xff & payload[currentPosition - 3] << 16)
-                + (0xff & payload[currentPosition - 2] << 8)
-                + (0xff & payload[currentPosition - 1]);
-    }
 
     public int readUSmart2() {
         int baseVal = 0;
@@ -57,13 +43,6 @@ public final class Buffer extends Cacheable {
         return baseVal + lastVal;
     }
 
-    public String readNewString() {
-        int i = currentPosition;
-        while (payload[currentPosition++] != 0)
-            ;
-        return new String(payload, i, currentPosition - i - 1);
-    }
-    
     public void writeOpcode(int i) {
         payload[currentPosition++] = (byte) (i + cipher.getNextKey());
     }
@@ -73,12 +52,6 @@ public final class Buffer extends Cacheable {
     }
 
     public void writeShort(int value) {
-        payload[currentPosition++] = (byte) (value >> 8);
-        payload[currentPosition++] = (byte) value;
-    }
-
-    public void writeTriByte(int value) {
-        payload[currentPosition++] = (byte) (value >> 16);
         payload[currentPosition++] = (byte) (value >> 8);
         payload[currentPosition++] = (byte) value;
     }
@@ -124,20 +97,9 @@ public final class Buffer extends Cacheable {
         for (int index = length; index < length + offset; index++)
             payload[currentPosition++] = data[index];
     }
-    
-    public void writeBytes(byte[] data) {
-    	for (byte b : data) {
-    		writeByte(b);
-    	}
-    }
 
     public void writeBytes(int value) {
         payload[currentPosition - value - 1] = (byte) value;
-    }
-    
-    public int method440() {
-        currentPosition += 4;
-        return ((payload[currentPosition - 3] & 0xFF) << 24) + ((payload[currentPosition - 4] & 0xFF) << 16) + ((payload[currentPosition - 1] & 0xFF) << 8) + (payload[-2] & 0xFF);
     }
 
     public int readUnsignedByte() {
@@ -206,15 +168,6 @@ public final class Buffer extends Cacheable {
         return new String(payload, index, currentPosition - index - 1);
     }
 
-    public byte[] readBytes() {
-        int index = currentPosition;
-        while (payload[currentPosition++] != 10)
-            ;
-        byte[] data = new byte[currentPosition - index - 1];
-        System.arraycopy(payload, index, data, index - index, currentPosition - 1 - index);
-        return data;
-    }
-
     public void readBytes(int offset, int length, byte[] data) {
         for (int index = length; index < length + offset; index++)
             data[index] = payload[currentPosition++];
@@ -279,24 +232,6 @@ public final class Buffer extends Cacheable {
             return readUnsignedByte();
         else
             return readUShort() - 32768;
-    }
-
-    public void encodeRSA(BigInteger exponent, BigInteger modulus) {
-        int length = currentPosition;
-        currentPosition = 0;
-        byte[] buffer = new byte[length];
-        readBytes(length, 0, buffer);
-
-        byte[] rsa = buffer;
-
-        if (Configuration.ENABLE_RSA) {
-            rsa = new BigInteger(buffer).modPow(exponent, modulus)
-                    .toByteArray();
-        }
-
-        currentPosition = 0;
-        writeByte(rsa.length);
-        writeBytes(rsa, rsa.length, 0);
     }
 
     public void writeNegatedByte(int value) {
