@@ -228,28 +228,4 @@ public final class FileStore {
         }
         return -1;
     }
-
-    public enum Store {
-
-        ARCHIVE(0),
-
-        MODEL(1),
-
-        ANIMATION(2),
-
-        MUSIC(3),
-
-        MAP(4);
-
-        private final int index;
-
-        Store(int index) {
-            this.index = index;
-        }
-
-        public int getIndex() {
-            return this.index;
-        }
-
-    }
 }

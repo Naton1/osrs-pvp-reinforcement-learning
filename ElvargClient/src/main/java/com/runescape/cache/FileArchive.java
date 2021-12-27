@@ -72,20 +72,6 @@ public final class FileArchive {
         }
     }
 
-    public int getHash(String name) {
-        int hash = 0;
-        name = name.toUpperCase();
-        for (int index = 0; index < name.length(); index++) {
-            hash = (hash * 61 + name.charAt(index)) - 32;
-        }
-        for (int file = 0; file < entries; file++) {
-            if (identifiers[file] == hash) {
-                return hash;
-            }
-        }
-        return -1;
-    }
-
     public byte[] readFile(String name) {
         byte[] output = null;
         int hash = 0;
