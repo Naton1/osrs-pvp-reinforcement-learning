@@ -72,9 +72,6 @@ public final class ItemDefinition {
     }
 
     public static void init(FileArchive archive) {
-        // item_data = new Buffer(archive.readFile("obj.dat"));
-        // Buffer stream = new Buffer(archive.readFile("obj.idx"));
-
         item_data = new Buffer(FileUtils.readFile(SignLink.findcachedir() + "obj.dat"));
         Buffer stream = new Buffer(FileUtils.readFile(SignLink.findcachedir() + "obj.idx"));
 

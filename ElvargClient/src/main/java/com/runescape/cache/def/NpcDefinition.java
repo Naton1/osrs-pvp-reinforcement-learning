@@ -13,35 +13,12 @@ import com.runescape.io.Buffer;
  * http://www.rune-server.org/runescape-development/rs2-client/downloads/575183-almost-fully-refactored-317-client.html
  */
 public final class NpcDefinition {
-
-	private static final String[][] PETS = { { "318", "Dark Core" }, { "495", "Venenatis Spiderling" },
-			{ "497", "Callisto Cub" }, { "964", "Hellpuppy" }, { "2055", "Chaos Elemental Jr." },
-			{ "2130", "Snakeling" }, { "2131", "Magma Snakeling" }, { "2132", "Tanzanite Snakeling" },
-			{ "5536", "Vet'ion" }, { "5537", "Vet'ion Reborn" }, { "5561", "Scorpias' Offspring" },
-			{ "5884", "Abyssal Orphan" }, { "5892", "TzRek-Jad" }, { "6628", "Dagganoth Supreme Jr." },
-			{ "6629", "Dagganoth Prime Jr." }, { "6630", "Dagganoth Rex Jr." }, { "6631", "Chick'arra" },
-			{ "6632", "General Awwdor" }, { "6633", "Commander Miniana" }, { "6634", "K'ril Tinyroth" },
-			{ "6635", "Baby Mole" }, { "6636", "Prince Black Dragon" }, { "6637", "Kalphite Princess" },
-			{ "6638", "Kalphite Princess" }, { "6639", "Smoke Devil" }, { "6640", "Baby Kraken" },
-			{ "6642", "Penance Princess" }, { "7520", "Olmlet" },
-
-			{ "6715", "Heron" }, { "6717", "Beaver" }, { "6718", "Red Chinchompa" }, { "6719", "Grey Chinchompa" },
-			{ "6720", "Black Chimchompa" }, { "6723", "Rock Golem" }, { "7334", "Giant Squirrel" },
-			{ "7335", "Tangleroot" }, { "7336", "Rocky" },
-
-			{ "7337", "Fire Rift Guardian" }, { "7338", "Air Rift Guardian" }, { "7339", "Mind Rift Guardian" },
-			{ "7340", "Water Rift Guardian" }, { "7341", "Earth Rift Guardian" }, { "7342", "Body Rift Guardian" },
-			{ "7343", "Cosmic Rift Guardian" }, { "7344", "Chaos Rift Guardian" }, { "7345", "Nature Rift Guardian" },
-			{ "7346", "Law Rift Guardian" }, { "7347", "Death Rift Guardian" }, { "7348", "Soul Rift Guardian" },
-			{ "7349", "Astral Rift Guardian" }, { "7350", "Blood Rift Guardian" } };
-
 	public static int anInt56;
 	public static Buffer dataBuf;
 	public static int[] offsets;
 	public static NpcDefinition[] cache;
 	public static Client clientInstance;
 	public static ReferenceCache modelCache = new ReferenceCache(30);
-	public final int anInt64;
 	public int turn90CCWAnimIndex;
 	public int varBitID;
 	public int turn180AnimIndex;
@@ -77,7 +54,6 @@ public final class NpcDefinition {
 		turn180AnimIndex = -1;
 		settingId = -1;
 		combatLevel = -1;
-		anInt64 = 1834;
 		walkAnim = -1;
 		size = 1;
 		headIcon = -1;

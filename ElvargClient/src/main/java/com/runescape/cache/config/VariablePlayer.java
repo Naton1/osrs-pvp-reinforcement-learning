@@ -57,18 +57,6 @@ public final class VariablePlayer {
 
     }
 
-    public static VariablePlayer[] getVariables() {
-        return variables;
-    }
-
-    public static int getCurrentIndex() {
-        return currentIndex;
-    }
-
-    public static int[] getConfigIds() {
-        return configIds;
-    }
-
     private void decode(Buffer buffer, int index) {
         do {
             int opcode = buffer.readUnsignedByte();
@@ -106,10 +94,6 @@ public final class VariablePlayer {
 
     public int getActionId() {
         return actionId;
-    }
-
-    public boolean isaBoolean713() {
-        return aBoolean713;
     }
 
 }

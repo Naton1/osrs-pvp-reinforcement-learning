@@ -29,7 +29,6 @@ final class BZip2DecompressionState {
     int totalOutHigh32;
     byte aByte573;
     int anInt574;
-    boolean aBoolean575;
     int bsBuff;
     int bsLive;
     int anInt578;

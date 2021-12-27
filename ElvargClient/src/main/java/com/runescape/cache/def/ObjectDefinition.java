@@ -8,15 +8,12 @@ import com.runescape.collection.ReferenceCache;
 import com.runescape.entity.model.Model;
 import com.runescape.io.Buffer;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 
 public final class ObjectDefinition {
 
     public static final Model[] aModelArray741s = new Model[4];
     private static final int[] OBELISK_IDS = {14829, 14830, 14827, 14828, 14826, 14831};
-    public static boolean lowMemory;
     public static Buffer stream;
     public static int[] streamIndices;
     public static Client clientInstance;
@@ -67,17 +64,6 @@ public final class ObjectDefinition {
 
     public ObjectDefinition() {
         type = -1;
-    }
-
-    public static void dumpNames() throws Exception {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("./Cache/object_names.txt"));
-        for (int i = 0; i < TOTAL_OBJECTS; i++) {
-            ObjectDefinition def = lookup(i);
-            String name = def == null ? "null" : def.name;
-            writer.write("ID: " + i + ", name: " + name + "");
-            writer.newLine();
-        }
-        writer.close();
     }
 
     public static ObjectDefinition lookup(int id) {

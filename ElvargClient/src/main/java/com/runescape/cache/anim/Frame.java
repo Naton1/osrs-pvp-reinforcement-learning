@@ -4,8 +4,6 @@ import com.runescape.Client;
 import com.runescape.io.Buffer;
 
 public final class Frame {
-
-
     public static Frame[][] animationlist;
     public int duration;
     public FrameBase base;

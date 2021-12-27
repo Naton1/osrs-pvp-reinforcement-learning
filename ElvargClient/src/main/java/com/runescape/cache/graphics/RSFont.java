@@ -1,12 +1,12 @@
 package com.runescape.cache.graphics;
 
-import java.awt.Color;
-
 import com.runescape.Client;
 import com.runescape.cache.FileArchive;
 import com.runescape.cache.graphics.sprite.Sprite;
 import com.runescape.draw.Rasterizer2D;
 import com.runescape.io.Buffer;
+
+import java.awt.Color;
 
 public class RSFont extends Rasterizer2D {
 
@@ -15,7 +15,6 @@ public class RSFont extends Rasterizer2D {
     public static String startDefaultShadow;
     public static String endShadow = "/shad";
     public static String endEffect;
-    public static String aRSString_4143;
     public static String endStrikethrough = "/str";
     public static String aRSString_4147;
     public static String startColor;
@@ -35,7 +34,6 @@ public class RSFont extends Rasterizer2D {
     public static String startUnderline;
     public static String startDefaultUnderline;
     public static String aRSString_4169;
-    public static String[] splitTextStrings;
     public static int defaultColor;
     public static int textShadowColor;
     public static int strikethroughColor;
@@ -62,7 +60,6 @@ public class RSFont extends Rasterizer2D {
         endColor = "/col";
         startDefaultUnderline = "u";
         endTransparency = "/trans";
-        aRSString_4143 = Integer.toString(100);
         aRSString_4135 = "nbsp";
         aRSString_4169 = "reg";
         aRSString_4165 = "times";
@@ -78,21 +75,16 @@ public class RSFont extends Rasterizer2D {
         textColor = 0;
         defaultColor = 0;
         strikethroughColor = -1;
-        splitTextStrings = new String[100];
         underlineColor = -1;
         anInt4178 = 0;
         transparency = 256;
     }
 
     public int baseCharacterHeight = 0;
-    public int anInt4142;
-    public int anInt4144;
     public int[] characterDrawYOffsets;
     public int[] characterHeights;
     public int[] characterDrawXOffsets;
     public int[] characterWidths;
-    public int[] iconWidths;
-    public byte[] aByteArray4151;
     public byte[][] fontPixels;
     public int[] characterScreenWidths;
 
@@ -161,66 +153,6 @@ public class RSFont extends Rasterizer2D {
         } else {
             characterScreenWidths[32] = characterScreenWidths[105];
         }
-    }
-
-    public static int method1014(byte[][] is, byte[][] is_27_, int[] is_28_,
-                                 int[] is_29_, int[] is_30_, int i,
-                                 int i_31_) {
-        int i_32_ = is_28_[i];
-        int i_33_ = i_32_ + is_30_[i];
-        int i_34_ = is_28_[i_31_];
-        int i_35_ = i_34_ + is_30_[i_31_];
-        int i_36_ = i_32_;
-        if (i_34_ > i_32_) {
-            i_36_ = i_34_;
-        }
-        int i_37_ = i_33_;
-        if (i_35_ < i_33_) {
-            i_37_ = i_35_;
-        }
-        int i_38_ = is_29_[i];
-        if (is_29_[i_31_] < i_38_) {
-            i_38_ = is_29_[i_31_];
-        }
-        byte[] is_39_ = is_27_[i];
-        byte[] is_40_ = is[i_31_];
-        int i_41_ = i_36_ - i_32_;
-        int i_42_ = i_36_ - i_34_;
-        for (int i_43_ = i_36_; i_43_ < i_37_; i_43_++) {
-            int i_44_ = is_39_[i_41_++] + is_40_[i_42_++];
-            if (i_44_ < i_38_) {
-                i_38_ = i_44_;
-            }
-        }
-        return -i_38_;
-    }
-
-    public static void nullLoader() {
-        startEffect = null;
-        endEffect = null;
-        aRSString_4135 = null;
-        aRSString_4162 = null;
-        aRSString_4165 = null;
-        aRSString_4147 = null;
-        aRSString_4163 = null;
-        aRSString_4169 = null;
-        startImage = null;
-        lineBreak = null;
-        startColor = null;
-        endColor = null;
-        startTransparency = null;
-        endTransparency = null;
-        startUnderline = null;
-        startDefaultUnderline = null;
-        endUnderline = null;
-        startShadow = null;
-        startDefaultShadow = null;
-        endShadow = null;
-        startStrikethrough = null;
-        defaultStrikethrough = null;
-        endStrikethrough = null;
-        aRSString_4143 = null;
-        splitTextStrings = null;
     }
 
     public static void createTransparentCharacterPixels(int[] is, byte[] is_0_, int i, int i_1_,
@@ -332,35 +264,10 @@ public class RSFont extends Rasterizer2D {
         return text;
     }
 
-    public void drawStringMoveY(String string, int drawX, int drawY, int color,
-                                int shadow, int randomMod, int randomMod2) {
-        if (string != null) {
-            setColorAndShadow(color, shadow);
-            double d = 7.0 - (double) randomMod2 / 8.0;
-            if (d < 0.0) {
-                d = 0.0;
-            }
-            int[] yOffset = new int[string.length()];
-            for (int index = 0; index < string.length(); index++) {
-                yOffset[index] = (int) (Math.sin((double) index / 1.5 + (double) randomMod) * d);
-            }
-            drawBaseStringMoveXY(string, drawX - getTextWidth(string) / 2, drawY, null, yOffset);
-        }
-    }
-
-    public int getCharacterWidth(int i) {
-        return characterScreenWidths[i & 0xff];
-    }
-
     public void setTrans(int i, int j, int k) {
         textShadowColor = defaultShadow = i;
         textColor = defaultColor = j;
         transparency = defaultTransparency = k;
-    }
-
-    public void drawCenteredString(String s, int i, int j) {
-        if (s != null)
-            drawBasicString(s, i - getTextWidth(s) / 2, j);
     }
 
     public void setDefaultTextEffectValues(int color, int shadow, int trans) {
@@ -371,34 +278,6 @@ public class RSFont extends Rasterizer2D {
         transparency = defaultTransparency = trans;
         anInt4178 = 0;
         anInt4175 = 0;
-    }
-
-    public void drawCenteredStringMoveXY(String string, int drawX, int drawY, int color,
-                                         int shadow, int randomMod) {
-        if (string != null) {
-            setColorAndShadow(color, shadow);
-            int[] xMods = new int[string.length()];
-            int[] yMods = new int[string.length()];
-            for (int index = 0; index < string.length(); index++) {
-                xMods[index] = (int) (Math.sin((double) index / 5.0 + (double) randomMod / 5.0) * 5.0);
-                yMods[index] = (int) (Math.sin((double) index / 3.0 + (double) randomMod / 5.0) * 5.0);
-            }
-            drawBaseStringMoveXY(string, drawX - getTextWidth(string) / 2, drawY, xMods,
-                    yMods);
-        }
-    }
-
-    public void drawCenteredStringMoveY(String class100, int drawX, int drawY, int color,
-                                        int shadow, int i_54_) {
-        if (class100 != null) {
-            setColorAndShadow(color, shadow);
-            int[] yOffset = new int[class100.length()];
-            for (int index = 0; index < class100.length(); index++) {
-                yOffset[index] = (int) (Math.sin((double) index / 2.0 + (double) i_54_ / 5.0) * 5.0);
-            }
-            drawBaseStringMoveXY(class100, drawX - getTextWidth(class100) / 2, drawY, null,
-                    yOffset);
-        }
     }
 
     public void drawBasicString(String string, int drawX, int drawY) {
@@ -514,140 +393,6 @@ public class RSFont extends Rasterizer2D {
                         GameFont.drawHorizontalLine(drawX, drawY + baseCharacterHeight, lineWidth, underlineColor);
                     }
                     drawX += lineWidth;
-                }
-            }
-        }
-    }
-
-    public void drawRAString(String string, int drawX, int drawY, int color,
-                             int shadow) {
-        if (string != null) {
-            setColorAndShadow(color, shadow);
-            drawBasicString(string, drawX - getTextWidth(string), drawY);
-        }
-    }
-
-    public void drawBaseStringMoveXY(String string, int drawX, int drawY, int[] xModifier,
-                                     int[] yModifier) {
-        drawY -= baseCharacterHeight;
-        int startIndex = -1;
-        int modifierOffset = 0;
-        for (int currentCharacter = 0; currentCharacter < string.length(); currentCharacter++) {
-            int character = string.charAt(currentCharacter);
-            if (character == 60) {
-                startIndex = currentCharacter;
-            } else {
-                if (character == 62 && startIndex != -1) {
-                    String effectString = string.substring(startIndex + 1, currentCharacter);
-                    startIndex = -1;
-                    if (effectString.equals(startEffect)) {
-                        character = 60;
-                    } else if (effectString.equals(endEffect)) {
-                        character = 62;
-                    } else if (effectString.equals(aRSString_4135)) {
-                        character = 160;
-                    } else if (effectString.equals(aRSString_4162)) {
-                        character = 173;
-                    } else if (effectString.equals(aRSString_4165)) {
-                        character = 215;
-                    } else if (effectString.equals(aRSString_4147)) {
-                        character = 128;
-                    } else if (effectString.equals(aRSString_4163)) {
-                        character = 169;
-                    } else if (effectString.equals(aRSString_4169)) {
-                        character = 174;
-                    } else {
-                        if (effectString.startsWith(startImage)) {
-                            try {
-                                int xModI;
-                                if (xModifier != null) {
-                                    xModI = xModifier[modifierOffset];
-                                } else {
-                                    xModI = 0;
-                                }
-                                int yMod;
-                                if (yModifier != null) {
-                                    yMod = yModifier[modifierOffset];
-                                } else {
-                                    yMod = 0;
-                                }
-                                modifierOffset++;
-                                int iconId = Integer.valueOf(effectString.substring(4));
-                                Sprite class92 = Client.spriteCache.lookup(iconId);
-                                int iconOffsetY = class92.maxHeight;
-                                if (transparency == 256) {
-                                    class92.drawSprite(drawX + xModI,
-                                            (drawY + baseCharacterHeight - iconOffsetY + yMod));
-                                } else {
-                                    class92.drawSprite(drawX + xModI,
-                                            (drawY + baseCharacterHeight - iconOffsetY + yMod),
-                                            transparency);
-                                }
-                                drawX += class92.maxWidth;
-                            } catch (Exception exception) {
-                                /* empty */
-                            }
-                        } else {
-                            setTextEffects(effectString);
-                        }
-                        continue;
-                    }
-                }
-                if (startIndex == -1) {
-                    int width = characterWidths[character];
-                    int height = characterHeights[character];
-                    int xOff;
-                    if (xModifier != null) {
-                        xOff = xModifier[modifierOffset];
-                    } else {
-                        xOff = 0;
-                    }
-                    int yOff;
-                    if (yModifier != null) {
-                        yOff = yModifier[modifierOffset];
-                    } else {
-                        yOff = 0;
-                    }
-                    modifierOffset++;
-                    if (character != 32) {
-                        if (transparency == 256) {
-                            if (textShadowColor != -1) {
-                                drawCharacter(character,
-                                        (drawX + characterDrawXOffsets[character] + 1 + xOff),
-                                        (drawY + characterDrawYOffsets[character] + 1 + yOff),
-                                        width, height, textShadowColor, true);
-                            }
-                            drawCharacter(character,
-                                    drawX + characterDrawXOffsets[character] + xOff,
-                                    drawY + characterDrawYOffsets[character] + yOff,
-                                    width, height, textColor, false);
-                        } else {
-                            if (textShadowColor != -1) {
-                                drawTransparentCharacter(character,
-                                        (drawX + characterDrawXOffsets[character] + 1 + xOff),
-                                        (drawY + characterDrawYOffsets[character] + 1 + yOff),
-                                        width, height, textShadowColor,
-                                        transparency, true);
-                            }
-                            drawTransparentCharacter(character,
-                                    drawX + characterDrawXOffsets[character] + xOff,
-                                    drawY + characterDrawYOffsets[character] + yOff,
-                                    width, height, textColor, transparency,
-                                    false);
-                        }
-                    } else if (anInt4178 > 0) {
-                        anInt4175 += anInt4178;
-                        drawX += anInt4175 >> 8;
-                        anInt4175 &= 0xff;
-                    }
-                    int i_109_ = characterScreenWidths[character];
-                    if (strikethroughColor != -1) {
-                        GameFont.drawHorizontalLine(drawX, drawY + (int) ((double) baseCharacterHeight * 0.7), i_109_, strikethroughColor);
-                    }
-                    if (underlineColor != -1) {
-                        GameFont.drawHorizontalLine(drawX, drawY + baseCharacterHeight, i_109_, underlineColor);
-                    }
-                    drawX += i_109_;
                 }
             }
         }

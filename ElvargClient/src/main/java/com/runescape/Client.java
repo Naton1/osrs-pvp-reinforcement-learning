@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
@@ -1053,7 +1052,6 @@ public class Client extends GameApplet {
         Rasterizer3D.lowMem = false;
         lowMemory = false;
         MapRegion.lowMem = false;
-        ObjectDefinition.lowMemory = false;
     }
 
     public static void setTab(int id) {

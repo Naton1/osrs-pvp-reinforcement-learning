@@ -161,7 +161,6 @@ public final class BZip2Decompressor {
             uc = getUnsignedChar(state);
             uc = getUnsignedChar(state);
             uc = getBit(state);
-            state.aBoolean575 = uc != 0;
             state.randomised = 0;
             uc = getUnsignedChar(state);
             state.randomised = state.randomised << 8 | uc & 0xff;

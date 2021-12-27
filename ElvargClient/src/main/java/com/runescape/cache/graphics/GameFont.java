@@ -1,10 +1,10 @@
 package com.runescape.cache.graphics;
 
-import java.util.Random;
-
 import com.runescape.cache.FileArchive;
 import com.runescape.draw.Rasterizer2D;
 import com.runescape.io.Buffer;
+
+import java.util.Random;
 
 public final class GameFont extends Rasterizer2D {
 
@@ -75,40 +75,6 @@ public final class GameFont extends Rasterizer2D {
         }
     }
 
-    public static void drawAlphaFilledPixels(int xPos, int yPos,
-                                             int pixelWidth, int pixelHeight, int color, int alpha) {// method586
-        if (xPos < leftX) {
-            pixelWidth -= leftX - xPos;
-            xPos = leftX;
-        }
-        if (yPos < topY) {
-            pixelHeight -= topY - yPos;
-            yPos = topY;
-        }
-        if (xPos + pixelWidth > bottomX)
-            pixelWidth = bottomX - xPos;
-        if (yPos + pixelHeight > bottomY)
-            pixelHeight = bottomY - yPos;
-        color = ((color & 0xff00ff) * alpha >> 8 & 0xff00ff)
-                + ((color & 0xff00) * alpha >> 8 & 0xff00);
-        int k1 = 256 - alpha;
-        int l1 = width - pixelWidth;
-        int i2 = xPos + yPos * width;
-        for (int j2 = 0; j2 < pixelHeight; j2++) {
-            for (int k2 = -pixelWidth; k2 < 0; k2++) {
-                int l2 = pixels[i2];
-                l2 = ((l2 & 0xff00ff) * k1 >> 8 & 0xff00ff)
-                        + ((l2 & 0xff00) * k1 >> 8 & 0xff00);
-                pixels[i2++] = color + l2;
-            }
-            i2 += l1;
-        }
-    }
-
-    public void method380(String s, int i, int j, int k) {
-        render(j, s, k, i - method384(s));
-    }
-
     public void drawText(int i, String s, int k, int l) {
         render(i, s, k, l - method384(s) / 2);
     }
@@ -117,10 +83,6 @@ public final class GameFont extends Rasterizer2D {
         drawTextWithPotentialShadow(flag, j - getTextWidth(s) / 2, i, s, l);
     }
 
-    public void drawChatInput(int i, int j, String s, int l, boolean flag) {
-        drawTextWithPotentialShadow(flag, j, i, s, l);
-    }
-    
     public void drawCenteredText(String text, int x, int y, int color, boolean shadowed) {
     	drawTextWithPotentialShadow(shadowed, x - getTextWidth(text) / 2, color, text, y);
     }

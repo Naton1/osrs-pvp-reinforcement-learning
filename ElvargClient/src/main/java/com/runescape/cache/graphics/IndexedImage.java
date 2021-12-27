@@ -92,30 +92,6 @@ public final class IndexedImage extends Rasterizer2D {
         drawOffsetY = 0;
     }
 
-    public void flipHorizontally() {
-        byte[] raster = new byte[width * height];
-        int pixel = 0;
-        for (int y = 0; y < height; y++) {
-            for (int x = width - 1; x >= 0; x--) {
-                raster[pixel++] = raster[x + y * width];
-            }
-        }
-        this.palettePixels = raster;
-        drawOffsetX = resizeWidth - width - drawOffsetX;
-    }
-
-    public void flipVertically() {
-        byte[] raster = new byte[width * height];
-        int pixel = 0;
-        for (int y = height - 1; y >= 0; y--) {
-            for (int x = 0; x < width; x++) {
-                raster[pixel++] = raster[x + y * width];
-            }
-        }
-        this.palettePixels = raster;
-        drawOffsetY = resizeHeight - height - drawOffsetY;
-    }
-
     public void offsetColor(int redOffset, int greenOffset, int blueOffset) {
         for (int index = 0; index < palette.length; index++) {
             int red = palette[index] >> 16 & 0xff;
