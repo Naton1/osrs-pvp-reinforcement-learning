@@ -1,5 +1,12 @@
 package com.runescape;
 
+import com.runescape.cache.graphics.Slider;
+import com.runescape.cache.graphics.widget.SettingsWidget;
+import com.runescape.cache.graphics.widget.Widget;
+import com.runescape.draw.Console;
+import com.runescape.draw.ProducingGraphicsBuffer;
+import com.runescape.model.content.Keybinding;
+
 import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Component;
@@ -19,18 +26,10 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import com.runescape.cache.graphics.Slider;
-import com.runescape.cache.graphics.widget.SettingsWidget;
-import com.runescape.cache.graphics.widget.Widget;
-import com.runescape.draw.Console;
-import com.runescape.draw.ProducingGraphicsBuffer;
-import com.runescape.model.content.Keybinding;
-
 public class GameApplet extends Applet implements Runnable, MouseListener, MouseMotionListener, MouseWheelListener,
         KeyListener, FocusListener, WindowListener {
 
     private static final long serialVersionUID = 1L;
-    public static int anInt34;
     public final int LEFT = 0;
     public final int RIGHT = 1;
     public final int DRAG = 2;
@@ -46,16 +45,10 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
     public int clickMode3;
     public int saveClickX;
     public int saveClickY;
-    public boolean isLoading;
     public boolean isApplet;
-    public boolean resized;
-    public int clickType;
-    public int releasedX;
-    public int releasedY;
     public boolean mouseWheelDown;
     public int mouseWheelX;
     public int mouseWheelY;
-    protected int rotationGliding;
     int minDelay;
     int fps;
     boolean shouldDebug;
@@ -111,18 +104,6 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
 
     public boolean appletClient() {
         return gameFrame == null && isApplet == true;
-    }
-
-    final void createClientFrame(int w, int h) {
-        isApplet = false;
-        myWidth = w;
-        myHeight = h;
-        gameFrame = new GameFrame(this, myWidth, myHeight, Client.frameMode == Client.ScreenMode.RESIZABLE,
-                Client.frameMode == Client.ScreenMode.FULLSCREEN);
-        gameFrame.setFocusTraversalKeysEnabled(false);
-        graphics = getGameComponent().getGraphics();
-        fullGameScreen = new ProducingGraphicsBuffer(myWidth, myHeight);
-        startRunnable(this, 1);
     }
 
     final void initClientFrame(int w, int h) {
@@ -454,11 +435,9 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
             return;
         }
         if (e.getButton() == MouseEvent.BUTTON3) {
-            clickType = RIGHT;
             clickMode1 = 2;
             clickMode2 = 2;
         } else if (e.getButton() == MouseEvent.BUTTON1) {
-            clickType = LEFT;
             clickMode1 = 1;
             clickMode2 = 1;
         }
@@ -473,11 +452,8 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
             x -= insets.left;// 4
             y -= insets.top;// 22
         }
-        releasedX = x;
-        releasedY = y;
         idleTime = 0;
         clickMode2 = 0;
-        clickType = RELEASED;
         mouseWheelDown = false;
     }
 
@@ -512,7 +488,6 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
         idleTime = 0;
         mouseX = x;
         mouseY = y;
-        clickType = DRAG;
         Slider.handleSlider(x, y);
     }
 
@@ -531,7 +506,6 @@ public class GameApplet extends Applet implements Runnable, MouseListener, Mouse
         idleTime = 0;
         mouseX = x;
         mouseY = y;
-        clickType = MOVE;
     }
 
     public final void keyPressed(KeyEvent keyevent) {
