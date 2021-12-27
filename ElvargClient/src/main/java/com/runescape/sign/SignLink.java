@@ -1,12 +1,12 @@
 package com.runescape.sign;
 
+import com.runescape.Configuration;
+
 import java.applet.Applet;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.RandomAccessFile;
-
-import com.runescape.Configuration;
 
 public final class SignLink {
 
@@ -90,10 +90,5 @@ public final class SignLink {
         if (!cacheDirectory.exists())
             cacheDirectory.mkdir();
         return Configuration.CACHE_DIRECTORY;
-    }
-    
-    public static String indexLocation(int cacheIndex, int index) {
-        return SignLink.findcachedir() + "index" + cacheIndex + "/"
-                + (index != -1 ? index + ".gz" : "");
     }
 }

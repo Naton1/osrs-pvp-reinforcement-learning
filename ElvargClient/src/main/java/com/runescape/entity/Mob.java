@@ -62,8 +62,6 @@ public class Mob extends Renderable {
     public int turn90CWAnimIndex;
     public int turn90CCWAnimIndex;
 
-    public int entScreenX;
-    public int entScreenY;
     public int index = -1;
 
     public Mob() {

@@ -45,15 +45,4 @@ public final class GameFrame extends JFrame {
 	public void paint(Graphics g) {
 		appletInstance.paint(g);
 	}
-
-	public int getFrameWidth() {
-		Insets insets = this.getInsets();
-		return getWidth() - (insets.left + insets.right);
-	}
-
-	public int getFrameHeight() {
-		Insets insets = this.getInsets();
-		return getHeight() - (insets.top + insets.bottom);
-	}
-
 }

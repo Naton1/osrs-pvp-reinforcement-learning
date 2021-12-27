@@ -4,7 +4,6 @@ import com.runescape.util.SystemUtils;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import java.applet.Applet;
 import java.awt.Color;
@@ -29,7 +28,6 @@ public class GameWindow extends JFrame implements ActionListener {
 
     private static GameWindow instance;
     private final Applet appletInstance;
-    private JToolBar toolbar;
 
     public GameWindow(Applet applet) {
         if (!SystemUtils.isMac()) {
@@ -99,10 +97,6 @@ public class GameWindow extends JFrame implements ActionListener {
                 new GameWindow(client);
             }
         });
-    }
-
-    public JToolBar getToolbar() {
-        return toolbar;
     }
 
     public void exit() {

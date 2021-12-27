@@ -20,20 +20,6 @@ public final class Track {
         synthesizers = new Synthesizer[10];
     }
 
-    public static void unpack(Buffer stream) {
-        output = new byte[0x6baa8];
-        riff = new Buffer(output);
-        Synthesizer.init();
-        do {
-            int id = stream.readUShort();
-            if (id == 65535)
-                return;
-            tracks[id] = new Track();
-            tracks[id].decode(stream);
-            delays[id] = tracks[id].calculateDelay();
-        } while (true);
-    }
-
     public static Buffer data(int loops, int id) {
         if (tracks[id] != null) {
             Track soundTrack = tracks[id];
@@ -41,41 +27,6 @@ public final class Track {
         } else {
             return null;
         }
-    }
-
-    private void decode(Buffer stream) {
-        for (int synthesizer = 0; synthesizer < 10; synthesizer++) {
-            int valid = stream.readUnsignedByte();
-            if (valid != 0) {
-                stream.currentPosition--;
-                synthesizers[synthesizer] = new Synthesizer();
-                synthesizers[synthesizer].decode(stream);
-            }
-        }
-        loopStart = stream.readUShort();
-        loopEnd = stream.readUShort();
-    }
-
-    private int calculateDelay() {
-        int offset = 0x98967f;
-        for (int syntheziser = 0; syntheziser < 10; syntheziser++)
-            if (synthesizers[syntheziser] != null
-                    && synthesizers[syntheziser].offset / 20 < offset)
-                offset = synthesizers[syntheziser].offset / 20;
-
-        if (loopStart < loopEnd && loopStart / 20 < offset)
-            offset = loopStart / 20;
-        if (offset == 0x98967f || offset == 0)
-            return 0;
-        for (int synthesizer = 0; synthesizer < 10; synthesizer++)
-            if (synthesizers[synthesizer] != null)
-                synthesizers[synthesizer].offset -= offset * 20;
-
-        if (loopStart < loopEnd) {
-            loopStart -= offset * 20;
-            loopEnd -= offset * 20;
-        }
-        return offset;
     }
 
     private Buffer pack(int loops) {

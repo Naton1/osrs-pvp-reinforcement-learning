@@ -9,7 +9,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.util.zip.CRC32;
 import java.util.zip.GZIPInputStream;
 
 public final class ResourceProvider implements Runnable {
@@ -24,7 +23,6 @@ public final class ResourceProvider implements Runnable {
     private final int[][] versions;
     private final Deque unrequested;
     private final Deque mandatoryRequests;
-    private final CRC32 crc32;
     private final String[] crcNames = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
     private final int[][] crcs = new int[crcNames.length][];
     public int tick;
@@ -84,7 +82,6 @@ public final class ResourceProvider implements Runnable {
     private int completedCount;
     private Resource current;
     private int[] areas;
-    private byte[] modelIndices;
     private int idleTime;
 
     public ResourceProvider() {
@@ -100,7 +97,6 @@ public final class ResourceProvider implements Runnable {
         versions = new int[4][];
         unrequested = new Deque();
         mandatoryRequests = new Deque();
-        crc32 = new CRC32();
     }
 
     private void respond() {
@@ -314,7 +310,7 @@ public final class ResourceProvider implements Runnable {
     }
 
     public int getModelIndex(int i) {
-        return modelIndices[i] & 0xff;
+        return 0;
     }
 
     public void run() {
