@@ -21,7 +21,4 @@ public class Stopwatch {
         return elapsed() >= time;
     }
 
-    public long getTime() {
-        return time;
-    }
 }

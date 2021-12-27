@@ -24,31 +24,4 @@ final class Synthesizer {
         duration = 500;
     }
 
-    public static void init() {
-        NOISE = new int[32768];
-        for (int i = 0; i < 32768; i++)
-            if (Math.random() > 0.5D)
-                NOISE[i] = 1;
-            else
-                NOISE[i] = -1;
-
-        SINE = new int[32768];
-        for (int j = 0; j < 32768; j++)
-            SINE[j] = (int) (Math.sin((double) j / 5215.1903000000002D) * 16384D);
-
-        samples = new int[0x35d54];
-    }
-
-    public int[] synthesize(int sampleCount, int duration) {
-        for (int k = 0; k < sampleCount; k++)
-            samples[k] = 0;
-
-        if (duration < 10)
-            return samples;
-
-
-        return samples;
-    }
-
-
 }

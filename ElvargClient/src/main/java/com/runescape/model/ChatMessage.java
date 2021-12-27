@@ -14,7 +14,7 @@ public class ChatMessage {
     private final int type;
     private final int rights;
     private final List<ChatCrown> crowns;
-    
+
     public ChatMessage(String message, String name, int type, int rights, List<ChatCrown> crowns) {
         this.message = message;
         this.name = name;
@@ -26,6 +26,7 @@ public class ChatMessage {
     public String getMessage() {
         return message;
     }
+
     public void setMessage(String message) {
         this.message = message;
     }
@@ -36,10 +37,6 @@ public class ChatMessage {
 
     public int getType() {
         return type;
-    }
-
-    public int getRights() {
-        return rights;
     }
 
     public List<ChatCrown> getCrowns() {
