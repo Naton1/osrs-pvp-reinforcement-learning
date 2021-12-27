@@ -611,14 +611,4 @@ public final class ResourceProvider implements Runnable {
         }
     }
 
-    public int getVersion(int type, int id) {
-        int version = -1;
-        byte[] data = clientInstance.indices[type + 1].decompress(id);
-        if (data != null) {
-            int length = data.length - 2;
-            version = ((data[length] & 0xff) << 8) + (data[length + 1] & 0xff);
-        }
-        return version;
-    }
-
 }

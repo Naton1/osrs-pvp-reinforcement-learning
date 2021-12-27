@@ -55,13 +55,6 @@ public final class StringUtils {
         return hash;
     }
 
-    /**
-     * Used to format a users ip address on the welcome screen.
-     */
-    public static String decodeIp(int ip) {
-        return (ip >> 24 & 0xff) + "." + (ip >> 16 & 0xff) + "." + (ip >> 8 & 0xff) + "." + (ip & 0xff);
-    }
-
     public static String capitalize(String s) {
         for (int i = 0; i < s.length(); i++) {
             if (i == 0) {

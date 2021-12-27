@@ -542,10 +542,6 @@ public class TeleportChatBox {
 				this.description = description;
 			}
 
-			Option(int shortcutKey, String name) {
-				this(shortcutKey, name, null);
-			}
-
 			private final int shortcutKey;
 
 			private final String name;

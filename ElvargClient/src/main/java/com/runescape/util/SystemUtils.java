@@ -68,24 +68,6 @@ public final class SystemUtils {
     }
 
     /**
-     * Returns whether or not the system has a retina display.
-     *
-     * @return
-     */
-    public static boolean hasRetinaDisplay() {
-        if (!isMac()) {
-            return false;
-        }
-        Object obj = Toolkit.getDefaultToolkit().getDesktopProperty("apple.awt.contentScaleFactor");
-        if (obj instanceof Float) {
-            Float f = (Float) obj;
-            int scale = f.intValue();
-            return (scale == 2);
-        }
-        return false;
-    }
-
-    /**
      * @return the fetched MAC address.
      */
     public static String getMacAddress() {

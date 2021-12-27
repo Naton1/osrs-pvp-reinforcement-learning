@@ -8,16 +8,6 @@ public class Stopwatch {
         time = 0;
     }
 
-    public Stopwatch headStart(long startAt) {
-        time = System.currentTimeMillis() - startAt;
-        return this;
-    }
-
-    public Stopwatch reset(long i) {
-        time = i;
-        return this;
-    }
-
     public Stopwatch reset() {
         time = System.currentTimeMillis();
         return this;

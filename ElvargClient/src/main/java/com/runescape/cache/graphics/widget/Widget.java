@@ -1996,29 +1996,6 @@ public class Widget {
 		rsi.type = TYPE_INVENTORY;
 	}
 
-	public static void addItem(int id, int itemId, int amount, boolean actions, String action1, String action2,
-			String action3, String action4) {
-		Widget rsi = addInterface(id);
-		rsi.width = 1;
-		rsi.height = 1;
-		rsi.inventoryItemId = new int[] { itemId + 1 };
-		rsi.inventoryAmounts = new int[] { amount };
-		rsi.usableItems = false;
-		rsi.spritePaddingX = 16;
-		rsi.spritePaddingY = 16;
-		rsi.spritesX = new int[20];
-		rsi.spritesY = new int[20];
-		rsi.sprites = new Sprite[20];
-		rsi.type = TYPE_INVENTORY;
-		rsi.actions = new String[5];
-		if (actions) {
-			rsi.actions[0] = action1;
-			rsi.actions[1] = action2;
-			rsi.actions[2] = action3;
-			rsi.actions[3] = action4;
-		}
-	}
-
 	public static void addText(int id, String text, GameFont[] tda, int idx, int color, boolean center,
 							   boolean shadow) {
 		addText(id, text, tda, idx, color, center, false, false, shadow);

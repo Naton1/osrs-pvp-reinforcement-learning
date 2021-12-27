@@ -39,13 +39,6 @@ public class SecondsTimer extends Stopwatch {
     }
 
     /**
-     * Stops this timer
-     */
-    public void stop() {
-        seconds = 0;
-    }
-
-    /**
      * Checks if this timer has finished
      * counting down, basically reaching 0.
      *

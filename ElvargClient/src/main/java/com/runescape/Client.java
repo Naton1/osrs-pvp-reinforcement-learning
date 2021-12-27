@@ -1080,13 +1080,6 @@ public class Client extends GameApplet {
         return 0;
     }
 
-    private static void putInt(byte[] array, int offset, int n) {
-        array[offset] = (byte) (n >>> 24);
-        array[offset + 1] = (byte) (n >>> 16);
-        array[offset + 2] = (byte) (n >>> 8);
-        array[offset + 3] = (byte) n;
-    }
-
     @Override
     public void init() {
         try {

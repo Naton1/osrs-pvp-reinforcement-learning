@@ -95,57 +95,6 @@ public final class MessageCensor {
 
     }
 
-    private static void stripIllegalCharacters(char[] ac) {
-        int i = 0;
-        for (int j = 0; j < ac.length; j++) {
-            if (legalCharacter(ac[j]))
-                ac[i] = ac[j];
-            else
-                ac[i] = ' ';
-            if (i == 0 || ac[i] != ' ' || ac[i - 1] != ' ')
-                i++;
-        }
-        for (int k = i; k < ac.length; k++)
-            ac[k] = ' ';
-
-    }
-
-    private static boolean legalCharacter(char c) {
-        return c >= ' ' && c <= '\177' || c == ' ' || c == '\n' || c == '\t'
-                || c == '\243' || c == '\u20AC';
-    }
-
-    public static String apply(String message) {
-        System.currentTimeMillis();
-        char[] chars = message.toCharArray();
-        stripIllegalCharacters(chars);
-        String trimmed = (new String(chars)).trim();
-        chars = trimmed.toLowerCase().toCharArray();
-        String trimmedLowerCase = trimmed.toLowerCase();
-        censorTlds(chars);
-        censorBad(chars);
-        censorDomains(chars);
-        method514(chars);
-        for (int index = 0; index < exceptions.length; index++) {
-            for (int k = -1; (k = trimmedLowerCase.indexOf(exceptions[index],
-                    k + 1)) != -1; ) {
-                char[] ac1 = exceptions[index].toCharArray();
-                System.arraycopy(ac1, 0, chars, k, ac1.length);
-
-            }
-        }
-        copyCase(trimmed.toCharArray(), chars);
-        capitalize(chars);
-        System.currentTimeMillis();
-        return (new String(chars)).trim();
-    }
-
-    private static void copyCase(char[] ac, char[] ac1) {
-        for (int j = 0; j < ac.length; j++)
-            if (ac1[j] != '*' && isUpperCase(ac[j]))
-                ac1[j] = ac[j];
-    }
-
     private static void capitalize(char[] chars) {
         boolean flag = true;
         for (int index = 0; index < chars.length; index++) {
@@ -168,17 +117,6 @@ public final class MessageCensor {
                 method509(badEncoding[word], message, badWords[word]);
 
         }
-    }
-
-    private static void censorDomains(char[] ac) {
-        char[] ac1 = ac.clone();
-        char[] ac2 = {'(', 'a', ')'};
-        method509(null, ac1, ac2);
-        char[] ac3 = ac.clone();
-        char[] ac4 = {'d', 'o', 't'};
-        method509(null, ac3, ac4);
-        for (int i = domains.length - 1; i >= 0; i--)
-            method502(ac, domains[i], ac3, ac1);
     }
 
     private static void method502(char[] ac, char[] ac1, char[] ac2, char[] ac3) {
@@ -271,18 +209,6 @@ public final class MessageCensor {
         if (k >= 3)
             return 4;
         return !isNotAlphanumeric(ac1[i + 1]) ? 0 : 1;
-    }
-
-    private static void censorTlds(char[] chars) {
-        char[] clone = chars.clone();
-        char[] dot = {'d', 'o', 't'};
-        method509(null, clone, dot);
-        char[] clone2 = chars.clone();
-        char[] slash = {'s', 'l', 'a', 's', 'h'};
-        method509(null, clone2, slash);
-        for (int index = 0; index < tldList.length; index++)
-            method506(clone2, tldList[index], tlds[index], clone,
-                    chars);
     }
 
     private static void method506(char[] ac, char[] ac1, int i, char[] ac2,
