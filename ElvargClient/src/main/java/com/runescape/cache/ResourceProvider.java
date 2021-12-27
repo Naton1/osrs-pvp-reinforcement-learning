@@ -1,20 +1,19 @@
 package com.runescape.cache;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.zip.CRC32;
-import java.util.zip.GZIPInputStream;
-
 import com.runescape.Client;
 import com.runescape.collection.Deque;
 import com.runescape.collection.Queue;
 import com.runescape.io.Buffer;
 import com.runescape.sign.SignLink;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.Socket;
+import java.util.zip.CRC32;
+import java.util.zip.GZIPInputStream;
 
 public final class ResourceProvider implements Runnable {
 
@@ -31,10 +30,7 @@ public final class ResourceProvider implements Runnable {
     private final CRC32 crc32;
     private final String[] crcNames = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
     private final int[][] crcs = new int[crcNames.length][];
-    public String loadingMessage;
     public int tick;
-    public int errors;
-    public String currentDownload = "";
     public int[] file_amounts = new int[4];
     int[] cheapHaxValues = new int[]{
             3627, 3628,
@@ -76,8 +72,6 @@ public final class ResourceProvider implements Runnable {
     };
     private int totalFiles;
     private int maximumPriority;
-    private int deadTime;
-    private long lastRequestTime;
     private int[] landscapes;
     private Client clientInstance;
     private int completedSize;
@@ -86,10 +80,7 @@ public final class ResourceProvider implements Runnable {
     private int[] mapFiles;
     private int filesLoaded;
     private boolean running;
-    private OutputStream outputStream;
-    private int[] membersArea;
     private boolean expectingData;
-    private int[] anIntArray1360;
     private InputStream inputStream;
     private Socket socket;
     private int uncompletedCount;
@@ -101,7 +92,6 @@ public final class ResourceProvider implements Runnable {
 
     public ResourceProvider() {
         requested = new Deque();
-        loadingMessage = "";
         payload = new byte[500];
         fileStatus = new byte[4][];
         extras = new Deque();
@@ -150,7 +140,6 @@ public final class ResourceProvider implements Runnable {
                 }
 
                 if (current != null) {
-                    currentDownload = "Downloading " + forId(current.dataType + 1) + " " + current.ID + "";
                     idleTime = 0;
                     if (length == 0) {
                         System.out.println("Rej: " + type + "," + file);
@@ -210,7 +199,6 @@ public final class ResourceProvider implements Runnable {
             }
             socket = null;
             inputStream = null;
-            outputStream = null;
             remainingData = 0;
         }
     }
@@ -271,23 +259,8 @@ public final class ResourceProvider implements Runnable {
         clientInstance.startRunnable(this, 2);
     }
 
-    public int remaining() {
-        synchronized (requests) {
-            return requests.size();
-        }
-    }
-
     public void disable() {
         running = false;
-    }
-
-    public void preloadMaps(boolean members) {
-        for (int area = 0; area < areas.length; area++) {
-            if (members || membersArea[area] != 0) {
-                requestExtra((byte) 2, 3, landscapes[area]);
-                requestExtra((byte) 2, 3, mapFiles[area]);
-            }
-        }
     }
 
     public int getVersionCount(int index) {
@@ -335,14 +308,6 @@ public final class ResourceProvider implements Runnable {
         outputStream = null;
         remainingData = 0;
         errors++;*/
-    }
-
-    public int getAnimCount() {
-        return anIntArray1360.length;
-    }
-
-    public int getModelCount() {
-        return 29191;
     }
 
     public void provide(int type, int file) {
@@ -426,12 +391,10 @@ public final class ResourceProvider implements Runnable {
                         }
                         socket = null;
                         inputStream = null;
-                        outputStream = null;
                         remainingData = 0;
                     }
                 } else {
                     idleTime = 0;
-                    loadingMessage = "";
                 }
             }
         } catch (Exception exception) {
@@ -566,8 +529,8 @@ public final class ResourceProvider implements Runnable {
             if (resource.incomplete) {
                 uncompletedCount++;
                 //if (!Configuration.JAGCACHED_ENABLED) {
-                    System.out.println("Error: model is incomplete or missing  [ type = " + resource.dataType + "]  [id = " + resource.ID + "]");
-              //  }
+                System.out.println("Error: model is incomplete or missing  [ type = " + resource.dataType + "]  [id = " + resource.ID + "]");
+                //  }
             } else
                 completedCount++;
 
@@ -647,7 +610,6 @@ public final class ResourceProvider implements Runnable {
                     expectingData = true;
                     if (filesLoaded < totalFiles)
                         filesLoaded++;
-                    loadingMessage = "Loading extra files - " + (filesLoaded * 100) / totalFiles + "%";
                     completedCount++;
                     if (completedCount == 10)
                         return;
@@ -671,7 +633,6 @@ public final class ResourceProvider implements Runnable {
                         expectingData = true;
                         if (filesLoaded < totalFiles)
                             filesLoaded++;
-                        loadingMessage = "Loading extra files - " + (filesLoaded * 100) / totalFiles + "%";
                         completedCount++;
                         if (completedCount == 10)
                             return;
@@ -681,17 +642,6 @@ public final class ResourceProvider implements Runnable {
         }
     }
 
-    public boolean highPriorityMusic(int file) {
-        return musicPriorities[file] == 1;
-    }
-
-    /**
-     * Grabs the checksum of a file from the cache.
-     *
-     * @param type The type of file (0 = model, 1 = anim, 2 = midi, 3 = map).
-     * @param id   The id of the file.
-     * @return
-     */
     private boolean crcMatches(int expectedValue, byte[] crcData) {
         if (crcData == null || crcData.length < 2)
             return false;
@@ -700,13 +650,6 @@ public final class ResourceProvider implements Runnable {
         crc32.update(crcData, 0, length);
         int crcValue = (int) crc32.getValue();
         return crcValue == expectedValue;
-    }
-
-    public void writeAll() {
-        for (int i = 0; i < crcs.length; i++) {
-            writeChecksumList(i);
-            writeVersionList(i);
-        }
     }
 
     public int getChecksum(int type, int id) {
@@ -729,21 +672,6 @@ public final class ResourceProvider implements Runnable {
             version = ((data[length] & 0xff) << 8) + (data[length + 1] & 0xff);
         }
         return version;
-    }
-
-    public void writeChecksumList(int type) {
-        try {
-            DataOutputStream out = new DataOutputStream(new FileOutputStream(SignLink.findcachedir() + type + "_crc.dat"));
-            int total = 0;
-            for (int index = 0; index < clientInstance.indices[type + 1].getFileCount(); index++) {
-                out.writeInt(getChecksum(type, index));
-                total++;
-            }
-            System.out.println(type + "-" + total);
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void writeVersionList(int type) {
