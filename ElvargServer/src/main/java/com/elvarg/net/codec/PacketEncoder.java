@@ -34,6 +34,8 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         PacketType type = packet.getType();
         final int size = packet.getSize();
 
+//        System.err.println("{PacketEncoder} Send opcode: " + packet.getOpcode() + " \t  size: " + size + " \t encOp: " + opcode);
+
         // Used for finding incorrect client pkt sizes
         if (type == PacketType.FIXED) {
             int currSize = CLIENT_PACKET_SIZES[packet.getOpcode()];
@@ -104,8 +106,8 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
             6, 2, -1, 1, 1, -1, 1, 0, 0, 0, // 10
             0, 0, 0, 0, 1, 0, 0, -1, 1, 1, //20
             0, 0, 0, 0, -2, 4, 3, 0, 2, 0, //30
-            0, 0, 0, 0, 5, 8, 0, 6, 0, 0, //40
-            9, 8, 0, -2, 0, 1, 0, 0, 0, 0, //50
+            0, 0, 0, 0, 7, 8, 0, 6, 0, 0, //40
+            9, 8, 0, -2, 4, 1, 0, 0, 0, 0, //50
             -2, 1, 0, 0, 2, -2, 0, 0, 0, 0, //60
             6, 3, 2, 4, 2, 4, 0, 0, 0, 4, //70
             0, -2, 0, 0, 7, 2, 1, 6, 6, 0, //80
@@ -118,7 +120,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
             0, 4, 5, 3, 0, 0, 3, 0, 0, 0, //150
             4, 5, 0, 0, 2, 0, 6, 0, 0, 0, //160
             0, 5, -2, -2, 5, 5, 10, 6, 0, -2, // 170
-            0, 0, 0, 1, 0, 2, 1, -1, 0, 0, //180
+            0, 0, 0, 1, 1, 2, 1, -1, 0, 0, //180
             0, 0, 0, 0, 0, 2, -1, 0, -1, 0, //190
             4, 0, 0, 0, 0, 0, 3, 0, 4, 0,  //200
             0, 0, 0, 0, -2, 7, 0, -2, 2, 0, //210
