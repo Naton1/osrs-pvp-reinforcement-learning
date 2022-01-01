@@ -1,4 +1,4 @@
-package com.runescape.cache.graphics.widget;
+package com.runescape.graphics.widget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import com.runescape.Client;
 import com.runescape.Client.ScreenMode;
 import com.runescape.cache.def.ItemDefinition;
-import com.runescape.cache.graphics.GameFont;
-import com.runescape.cache.graphics.sprite.Sprite;
+import com.runescape.graphics.GameFont;
+import com.runescape.graphics.sprite.Sprite;
 import com.runescape.draw.Rasterizer2D;
 
 public class OSRSCreationMenu {

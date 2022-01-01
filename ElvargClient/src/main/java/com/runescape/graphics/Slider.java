@@ -1,8 +1,8 @@
-package com.runescape.cache.graphics;
+package com.runescape.graphics;
 
 import com.runescape.Client;
-import com.runescape.cache.graphics.sprite.Sprite;
-import com.runescape.cache.graphics.widget.Widget;
+import com.runescape.graphics.sprite.Sprite;
+import com.runescape.graphics.widget.Widget;
 import com.runescape.draw.Rasterizer3D;
 
 public class Slider {

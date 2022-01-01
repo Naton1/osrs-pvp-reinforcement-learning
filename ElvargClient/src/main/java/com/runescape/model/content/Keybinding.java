@@ -2,7 +2,7 @@ package com.runescape.model.content;
 
 import com.runescape.Client;
 import com.runescape.Configuration;
-import com.runescape.cache.graphics.widget.Widget;
+import com.runescape.graphics.widget.Widget;
 
 import java.awt.event.KeyEvent;
 

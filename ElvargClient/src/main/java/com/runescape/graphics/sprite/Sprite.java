@@ -1,4 +1,4 @@
-package com.runescape.cache.graphics.sprite;
+package com.runescape.graphics.sprite;
 
 import com.runescape.cache.FileArchive;
 import com.runescape.draw.Rasterizer2D;

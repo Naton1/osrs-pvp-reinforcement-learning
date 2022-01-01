@@ -2,7 +2,7 @@ package com.runescape.draw.teleports;
 
 import com.runescape.Client;
 import com.runescape.Client.ScreenMode;
-import com.runescape.cache.graphics.RSFont;
+import com.runescape.graphics.RSFont;
 import com.runescape.draw.Rasterizer2D;
 
 import java.awt.Dimension;

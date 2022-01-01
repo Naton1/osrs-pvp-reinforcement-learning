@@ -1,7 +1,7 @@
 package com.runescape.cache.def;
 
 import com.runescape.cache.FileArchive;
-import com.runescape.cache.graphics.sprite.Sprite;
+import com.runescape.graphics.sprite.Sprite;
 import com.runescape.collection.ReferenceCache;
 import com.runescape.draw.Rasterizer2D;
 import com.runescape.draw.Rasterizer3D;

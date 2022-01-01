@@ -1,8 +1,8 @@
-package com.runescape.cache.graphics.widget;
+package com.runescape.graphics.widget;
 
 import com.runescape.Client;
 import com.runescape.cache.def.ItemDefinition;
-import com.runescape.cache.graphics.sprite.Sprite;
+import com.runescape.graphics.sprite.Sprite;
 
 public class Bank {
 

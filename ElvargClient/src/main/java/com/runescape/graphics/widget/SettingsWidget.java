@@ -1,11 +1,11 @@
-package com.runescape.cache.graphics.widget;
+package com.runescape.graphics.widget;
 
 import com.runescape.Client;
 import com.runescape.Configuration;
 import com.runescape.Client.ScreenMode;
-import com.runescape.cache.graphics.Dropdown;
-import com.runescape.cache.graphics.GameFont;
-import com.runescape.cache.graphics.Slider;
+import com.runescape.graphics.Dropdown;
+import com.runescape.graphics.GameFont;
+import com.runescape.graphics.Slider;
 import com.runescape.model.content.Keybinding;
 
 public class SettingsWidget extends Widget {

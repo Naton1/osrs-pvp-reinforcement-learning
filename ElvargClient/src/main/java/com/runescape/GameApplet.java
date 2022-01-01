@@ -1,8 +1,8 @@
 package com.runescape;
 
-import com.runescape.cache.graphics.Slider;
-import com.runescape.cache.graphics.widget.SettingsWidget;
-import com.runescape.cache.graphics.widget.Widget;
+import com.runescape.graphics.Slider;
+import com.runescape.graphics.widget.SettingsWidget;
+import com.runescape.graphics.widget.Widget;
 import com.runescape.draw.Console;
 import com.runescape.draw.ProducingGraphicsBuffer;
 import com.runescape.model.content.Keybinding;

@@ -1,4 +1,4 @@
-package com.runescape.cache.graphics;
+package com.runescape.graphics;
 
 public class DropdownMenu {
 

@@ -1116,9 +1116,9 @@ public final class SceneGraph {
                 }
                 int j1 = 0;
                 int j2 = 0;
-                WallObject class10_3 = currentTile.wallObject;
-                WallDecoration class26_1 = currentTile.wallDecoration;
-                if (class10_3 != null || class26_1 != null) {
+                WallObject wallObject = currentTile.wallObject;
+                WallDecoration wallDecoration = currentTile.wallDecoration;
+                if (wallObject != null || wallDecoration != null) {
                     if (xCameraTile == i)
                         j1++;
                     else if (xCameraTile < i)
@@ -1130,17 +1130,17 @@ public final class SceneGraph {
                     j2 = anIntArray478[j1];
                     currentTile.anInt1328 = anIntArray480[j1];
                 }
-                if (class10_3 != null) {
-                    if ((class10_3.orientation1 & anIntArray479[j1]) != 0) {
-                        if (class10_3.orientation1 == 16) {
+                if (wallObject != null) {
+                    if ((wallObject.orientation1 & anIntArray479[j1]) != 0) {
+                        if (wallObject.orientation1 == 16) {
                             currentTile.someTileMask = 3;
                             currentTile.anInt1326 = anIntArray481[j1];
                             currentTile.anInt1327 = 3 - currentTile.anInt1326;
-                        } else if (class10_3.orientation1 == 32) {
+                        } else if (wallObject.orientation1 == 32) {
                             currentTile.someTileMask = 6;
                             currentTile.anInt1326 = anIntArray482[j1];
                             currentTile.anInt1327 = 6 - currentTile.anInt1326;
-                        } else if (class10_3.orientation1 == 64) {
+                        } else if (wallObject.orientation1 == 64) {
                             currentTile.someTileMask = 12;
                             currentTile.anInt1326 = anIntArray483[j1];
                             currentTile.anInt1327 = 12 - currentTile.anInt1326;
@@ -1152,25 +1152,25 @@ public final class SceneGraph {
                     } else {
                         currentTile.someTileMask = 0;
                     }
-                    if ((class10_3.orientation1 & j2) != 0 && !method321(l, i, j, class10_3.orientation1))
-                        class10_3.renderable1.renderAtPoint(0, camUpDownY, camUpDownX, camLeftRightY, camLeftRightX,
-                                class10_3.xPos - xCameraPos, class10_3.zPos - zCameraPos,
-                                class10_3.yPos - yCameraPos, class10_3.uid);
-                    if ((class10_3.orientation2 & j2) != 0 && !method321(l, i, j, class10_3.orientation2))
-                        class10_3.renderable2.renderAtPoint(0, camUpDownY, camUpDownX, camLeftRightY, camLeftRightX,
-                                class10_3.xPos - xCameraPos, class10_3.zPos - zCameraPos,
-                                class10_3.yPos - yCameraPos, class10_3.uid);
+                    if ((wallObject.orientation1 & j2) != 0 && !method321(l, i, j, wallObject.orientation1))
+                        wallObject.renderable1.renderAtPoint(0, camUpDownY, camUpDownX, camLeftRightY, camLeftRightX,
+                                wallObject.xPos - xCameraPos, wallObject.zPos - zCameraPos,
+                                wallObject.yPos - yCameraPos, wallObject.uid);
+                    if ((wallObject.orientation2 & j2) != 0 && !method321(l, i, j, wallObject.orientation2))
+                        wallObject.renderable2.renderAtPoint(0, camUpDownY, camUpDownX, camLeftRightY, camLeftRightX,
+                                wallObject.xPos - xCameraPos, wallObject.zPos - zCameraPos,
+                                wallObject.yPos - yCameraPos, wallObject.uid);
                 }
-                if (class26_1 != null && !method322(l, i, j, class26_1.renderable.modelBaseY))
-                    if ((class26_1.orientation & j2) != 0)
-                        class26_1.renderable.renderAtPoint(class26_1.orientation2, camUpDownY, camUpDownX, camLeftRightY,
-                                camLeftRightX, class26_1.xPos - xCameraPos, class26_1.zPos - zCameraPos,
-                                class26_1.yPos - yCameraPos, class26_1.uid);
-                    else if ((class26_1.orientation & 0x300) != 0) {
-                        int j4 = class26_1.xPos - xCameraPos;
-                        int l5 = class26_1.zPos - zCameraPos;
-                        int k6 = class26_1.yPos - yCameraPos;
-                        int i8 = class26_1.orientation2;
+                if (wallDecoration != null && !method322(l, i, j, wallDecoration.renderable.modelBaseY))
+                    if ((wallDecoration.orientation & j2) != 0)
+                        wallDecoration.renderable.renderAtPoint(wallDecoration.orientation2, camUpDownY, camUpDownX, camLeftRightY,
+                                camLeftRightX, wallDecoration.xPos - xCameraPos, wallDecoration.zPos - zCameraPos,
+                                wallDecoration.yPos - yCameraPos, wallDecoration.uid);
+                    else if ((wallDecoration.orientation & 0x300) != 0) {
+                        int j4 = wallDecoration.xPos - xCameraPos;
+                        int l5 = wallDecoration.zPos - zCameraPos;
+                        int k6 = wallDecoration.yPos - yCameraPos;
+                        int i8 = wallDecoration.orientation2;
                         int k9;
                         if (i8 == 1 || i8 == 2)
                             k9 = -j4;
@@ -1181,17 +1181,17 @@ public final class SceneGraph {
                             k10 = -k6;
                         else
                             k10 = k6;
-                        if ((class26_1.orientation & 0x100) != 0 && k10 < k9) {
+                        if ((wallDecoration.orientation & 0x100) != 0 && k10 < k9) {
                             int i11 = j4 + anIntArray463[i8];
                             int k11 = k6 + anIntArray464[i8];
-                            class26_1.renderable.renderAtPoint(i8 * 512 + 256, camUpDownY, camUpDownX, camLeftRightY,
-                                    camLeftRightX, i11, l5, k11, class26_1.uid);
+                            wallDecoration.renderable.renderAtPoint(i8 * 512 + 256, camUpDownY, camUpDownX, camLeftRightY,
+                                    camLeftRightX, i11, l5, k11, wallDecoration.uid);
                         }
-                        if ((class26_1.orientation & 0x200) != 0 && k10 > k9) {
+                        if ((wallDecoration.orientation & 0x200) != 0 && k10 > k9) {
                             int j11 = j4 + anIntArray465[i8];
                             int l11 = k6 + anIntArray466[i8];
-                            class26_1.renderable.renderAtPoint(i8 * 512 + 1280 & 0x7ff, camUpDownY, camUpDownX,
-                                    camLeftRightY, camLeftRightX, j11, l5, l11, class26_1.uid);
+                            wallDecoration.renderable.renderAtPoint(i8 * 512 + 1280 & 0x7ff, camUpDownY, camUpDownX,
+                                    camLeftRightY, camLeftRightX, j11, l5, l11, wallDecoration.uid);
                         }
                     }
                 if (flag1) {

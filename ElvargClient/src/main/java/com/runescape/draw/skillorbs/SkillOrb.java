@@ -1,7 +1,7 @@
 package com.runescape.draw.skillorbs;
 
 import com.runescape.Client;
-import com.runescape.cache.graphics.sprite.Sprite;
+import com.runescape.graphics.sprite.Sprite;
 import com.runescape.draw.Rasterizer2D;
 import com.runescape.util.SecondsTimer;
 import com.runescape.util.SkillConstants;

@@ -1,8 +1,8 @@
-package com.runescape.cache.graphics;
+package com.runescape.graphics;
 
 import com.runescape.Client;
 import com.runescape.cache.FileArchive;
-import com.runescape.cache.graphics.sprite.Sprite;
+import com.runescape.graphics.sprite.Sprite;
 import com.runescape.draw.Rasterizer2D;
 import com.runescape.io.Buffer;
 

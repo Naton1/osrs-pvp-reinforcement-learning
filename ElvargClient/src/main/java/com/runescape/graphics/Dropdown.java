@@ -1,7 +1,7 @@
-package com.runescape.cache.graphics;
+package com.runescape.graphics;
 
 import com.runescape.Configuration;
-import com.runescape.cache.graphics.widget.Widget;
+import com.runescape.graphics.widget.Widget;
 import com.runescape.model.content.Keybinding;
 
 public enum Dropdown {

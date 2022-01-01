@@ -1,4 +1,4 @@
-package com.runescape.cache.graphics.sprite;
+package com.runescape.graphics.sprite;
 
 import com.runescape.sign.SignLink;
 

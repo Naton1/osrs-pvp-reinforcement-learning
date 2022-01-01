@@ -1,4 +1,4 @@
-package com.runescape.cache.graphics.widget;
+package com.runescape.graphics.widget;
 
 import com.runescape.Client;
 import com.runescape.Configuration;
@@ -6,12 +6,12 @@ import com.runescape.cache.FileArchive;
 import com.runescape.cache.anim.Frame;
 import com.runescape.cache.def.ItemDefinition;
 import com.runescape.cache.def.NpcDefinition;
-import com.runescape.cache.graphics.Dropdown;
-import com.runescape.cache.graphics.DropdownMenu;
-import com.runescape.cache.graphics.GameFont;
-import com.runescape.cache.graphics.RSFont;
-import com.runescape.cache.graphics.Slider;
-import com.runescape.cache.graphics.sprite.Sprite;
+import com.runescape.graphics.Dropdown;
+import com.runescape.graphics.DropdownMenu;
+import com.runescape.graphics.GameFont;
+import com.runescape.graphics.RSFont;
+import com.runescape.graphics.Slider;
+import com.runescape.graphics.sprite.Sprite;
 import com.runescape.collection.ReferenceCache;
 import com.runescape.draw.teleports.TeleportButton;
 import com.runescape.entity.model.Model;

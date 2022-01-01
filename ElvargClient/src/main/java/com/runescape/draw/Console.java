@@ -12,9 +12,9 @@ import com.runescape.cache.FileArchive;
 import com.runescape.cache.def.ItemDefinition;
 import com.runescape.cache.def.NpcDefinition;
 import com.runescape.cache.def.ObjectDefinition;
-import com.runescape.cache.graphics.GameFont;
-import com.runescape.cache.graphics.RSFont;
-import com.runescape.cache.graphics.widget.Widget;
+import com.runescape.graphics.GameFont;
+import com.runescape.graphics.RSFont;
+import com.runescape.graphics.widget.Widget;
 
 public class Console {
 
