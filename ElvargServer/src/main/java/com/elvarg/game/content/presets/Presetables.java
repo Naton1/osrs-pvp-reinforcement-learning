@@ -418,15 +418,7 @@ public class Presetables {
 			player.getPacketSender().sendConfig(987, player.isOpenPresetsOnDeath() ? 0 : 1);
 			return true;
 		case 45061: // Edit preset
-			if (player.getCurrentPreset() == null) {
-				player.getPacketSender().sendMessage("You haven't selected any preset yet.");
-				return true;
-			}
-			if (player.getCurrentPreset().isGlobal()) {
-				player.getPacketSender().sendMessage("You can only edit your own presets.");
-				return true;
-			}
-			edit(player, player.getCurrentPreset().getIndex());
+			player.getPacketSender().sendMessage("This feature is currently disabled.");
 			return true;
 		case 45064: // Load preset
 			if (player.getCurrentPreset() == null) {
