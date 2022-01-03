@@ -463,6 +463,9 @@ public final class PacketBuilder {
      * @return an instance of this message builder.
      */
     public PacketBuilder putString(String string) {
+        if (string == null) {
+            string = "unkown";
+        }
         for (byte value : string.getBytes()) {
             put(value);
         }
