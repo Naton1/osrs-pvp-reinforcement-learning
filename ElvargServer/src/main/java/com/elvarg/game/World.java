@@ -27,10 +27,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class World {
 
+	private static final int MAX_PLAYERS = 2000;
 	/**
 	 * The collection of active {@link Player}s.
 	 */
-	private static MobileList<Player> players = new MobileList<>(2000);
+	private static MobileList<Player> players = new MobileList<>(MAX_PLAYERS);
 
 	/**
 	 * The collection of active {@link NPC}s.

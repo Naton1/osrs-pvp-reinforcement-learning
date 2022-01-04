@@ -39,7 +39,7 @@ public final class PacketDecoder extends ByteToMessageDecoder {
         int size = this.size;
 
         if (opcode == -1) {
-            if (buffer.isReadable()) {
+            if (buffer.isReadable(1)) {
                 opcode = buffer.readUnsignedByte();
                 opcode = opcode - random.nextInt() & 0xFF;
                 size = PACKET_SIZES[opcode];
@@ -70,13 +70,13 @@ public final class PacketDecoder extends ByteToMessageDecoder {
         }
     }
 
-    private final static int[] PACKET_SIZES = { 
-            0, 0, 2, 1, -1, -1, 2, 4, 4, 4, // 0
+    private final static int[] PACKET_SIZES = {
+            0, 0, 6, 1, -1, -1, 2, 4, 4, 4, // 0
             4, -1, -1, -1, 8, 0, 6, 2, 2, 0, // 10
             0, 2, 0, 6, 0, 12, 0, 0, 0, 0, // 20
             9, 0, 0, 0, 0, 8, 4, 0, 0, 2, // 30
             2, 6, 0, 8, 0, -1, 0, 0, 0, 1, // 40
-            0, 0, 0, 12, 0, 0, 0, 8, 8, 0, // 50
+            0, 0, 0, 12, 0, 0, 0, 8, 0, 0, // 50
             -1, 8, 0, 0, 0, 0, 0, 0, 0, 0, // 60
             6, 0, 2, 2, 8, 6, 0, -1, 0, 6, // 70
             -1, 0, 0, 0, 0, 1, 4, 6, 0, 0, // 80
@@ -87,12 +87,12 @@ public final class PacketDecoder extends ByteToMessageDecoder {
             0, 4, 6, 8, 0, 8, 0, 0, 6, 2, // 130
             0, 0, 0, 0, 0, 8, 0, 0, 0, 0, // 140
             0, 0, 1, 2, 0, 2, 6, 0, 0, 0, // 150
-            0, 0, 0, 0, -1, -1, 0, 0, 0, 0, // 160
+            0, 0, 0, 0, -1, -1, 5, 0, 0, 0, // 160
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 170
             0, 8, 0, 2, 4, 4, 5, 6, 8, 1, // 180
             0, 0, 12, 0, 0, 0, 0, 0, 0, 0, // 190
             2, 0, 0, 0, 2, 0, 0, 0, 4, 0, // 200
-            4, 0, 0, 0, 7, 8, 8, 0, 10, 0, // 210
+            4, 0, 0, 0, 9, 8, 8, 0, 10, 0, // 210
             0, 0, 3, 2, 0, 0, -1, 0, 6, 1, // 220
             1, 0, 0, 0, 6, 0, 6, 8, 1, 0, // 230
             0, 4, 0, 0, 0, 0, -1, 0, -1, 4, // 240
