@@ -34,6 +34,8 @@ public class PlayerSession {
      */
     private final LinkedList<Packet> packetsQueue = new LinkedList<>();
 
+    private final LinkedList<Integer> lastPacketOpcodeQueue = new LinkedList<>();
+
     /**
      * The channel that will manage the connection for this player.
      */
@@ -125,7 +127,6 @@ public class PlayerSession {
      * polling the internal queue, and then handling them via the
      * handleInputMessage. This method is called EACH GAME CYCLE.
      *
-     * @param priorityOnly Should only prioritized packets be read?
      */
     public void processPackets() {
         for (int i = 0; i < NetworkConstants.PACKET_PROCESS_LIMIT; i++) {
@@ -133,9 +134,14 @@ public class PlayerSession {
             if (packet == null) {
                 continue;
             }
+            if (lastPacketOpcodeQueue.size() > 4) {
+                lastPacketOpcodeQueue.poll();
+            }
+            lastPacketOpcodeQueue.add(packet.getOpcode());
             try {
                 PacketConstants.PACKETS[packet.getOpcode()].execute(player, packet);
             } catch (Exception e) {
+                System.out.println("processedPackets: " + lastPacketOpcodeQueue);
                 e.printStackTrace();
             } finally {
                 packet.getBuffer().release();

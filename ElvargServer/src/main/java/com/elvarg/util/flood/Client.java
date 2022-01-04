@@ -92,7 +92,7 @@ public class Client {
             Server.getFlooder().clients.put(username, this);
             int rights = socketStream.read();
             loggedIn = true;
-            outgoing = ByteBuffer.create(5000, true, cipher);
+            outgoing = ByteBuffer.create(5000, false, cipher);
             incoming.currentPosition = 0;
         }
     }

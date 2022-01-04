@@ -21,7 +21,7 @@ public class ItemOnGroundManager {
 	/**
 	 * The delay between every {@link ItemOnGround} state update.
 	 */
-	public static final int STATE_UPDATE_DELAY = 200; // 3 minutes = 300, 2 minutes = 200
+	public static final int STATE_UPDATE_DELAY = 50; // 3 minutes = 300, 2 minutes = 200
 
 	/**
 	 * Handles what happens when a player enters a new region. We need to send all
