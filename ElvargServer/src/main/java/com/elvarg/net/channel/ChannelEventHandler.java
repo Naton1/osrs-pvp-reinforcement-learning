@@ -40,8 +40,6 @@ public final class ChannelEventHandler extends SimpleChannelInboundHandler<Objec
 
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			ReferenceCountUtil.release(msg);
 		}
 	}
 
