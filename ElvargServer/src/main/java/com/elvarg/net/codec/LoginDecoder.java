@@ -190,7 +190,7 @@ public final class LoginDecoder extends ByteToMessageDecoder {
             String username = Misc.formatText(ByteBufUtils.readString(rsaBuffer).toLowerCase());
             String password = ByteBufUtils.readString(rsaBuffer);
 
-            if (username.length() < 3 || username.length() > 12 || password.length() < 3 || password.length() > 20) {
+            if (username.length() < 3 || username.length() > 30 || password.length() < 3 || password.length() > 30) {
                 sendLoginResponse(ctx, LoginResponses.INVALID_CREDENTIALS_COMBINATION);
                 return;
             }

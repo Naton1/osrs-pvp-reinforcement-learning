@@ -1,14 +1,5 @@
 [
 	{
-		"id": 315,
-		"position": {
-			"x": 3096,
-			"y": 3503
-		},
-		"facing": "SOUTH",
-		"radius": 1
-	},
-	{
 		"id": 7677,
 		"position": {
 			"x": 2448,
@@ -2955,16 +2946,6 @@
 			"x": 2841,
 			"y": 5330,
 			"z": 2
-		},
-		"facing": "NORTH",
-		"radius": 3
-	},
-	{
-		"id": 6797,
-		"position": {
-			"x": 3086,
-			"y": 3493,
-			"z": 0
 		},
 		"facing": "NORTH",
 		"radius": 3
