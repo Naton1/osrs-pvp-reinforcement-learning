@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class World {
 
-	private static final int MAX_PLAYERS = 2000;
+	private static final int MAX_PLAYERS = 500;
 	/**
 	 * The collection of active {@link Player}s.
 	 */
