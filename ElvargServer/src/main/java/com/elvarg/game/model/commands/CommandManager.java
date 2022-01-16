@@ -50,6 +50,7 @@ import com.elvarg.game.model.commands.impl.Runes;
 import com.elvarg.game.model.commands.impl.Save;
 import com.elvarg.game.model.commands.impl.SaveAll;
 import com.elvarg.game.model.commands.impl.Skull;
+import com.elvarg.game.model.commands.impl.SoundEffectCommand;
 import com.elvarg.game.model.commands.impl.SpawnNPCCommand;
 import com.elvarg.game.model.commands.impl.SpawnObjectCommand;
 import com.elvarg.game.model.commands.impl.SpecCommand;
@@ -154,6 +155,7 @@ public class CommandManager {
         put(new ConfigCommand(), "config");
         put(new SpecCommand(), "spec");
         put(new GFXCommand(), "gfx");
+        put(new SoundEffectCommand(), "sound");
         put(new AnimationCommand(), "anim");
         put(new InterfaceCommand(), "interface");
         put(new ChatboxInterfaceCommand(), "chatboxinterface");

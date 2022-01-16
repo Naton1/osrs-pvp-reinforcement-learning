@@ -1,5 +1,6 @@
 package com.elvarg.game.entity.impl;
 
+import com.elvarg.game.Sound;
 import com.elvarg.game.content.combat.Combat;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.hit.HitDamage;
@@ -237,6 +238,8 @@ public abstract class Mobile extends Entity {
 	public abstract int getBaseAttackSpeed();
 
 	public abstract int getAttackAnim();
+
+	public abstract Sound getAttackSound();
 
 	public abstract int getBlockAnim();
 

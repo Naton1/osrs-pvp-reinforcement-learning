@@ -2,6 +2,8 @@ package com.elvarg.game.content.combat;
 
 import java.util.Optional;
 
+import com.elvarg.game.Sound;
+import com.elvarg.game.Sounds;
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.PrayerHandler;
 import com.elvarg.game.content.Dueling.DuelRule;
@@ -546,6 +548,7 @@ public class CombatFactory {
 		// Do other stuff for players..
 		if (target.isPlayer()) {
 			final Player p_ = target.getAsPlayer();
+			Sounds.sendSound(p_, Sound.FEMALE_GETTING_HIT);
 
 			// Close their current interface
 			if (p_.getRights() != PlayerRights.DEVELOPER && p_.busy()) {
@@ -583,7 +586,6 @@ public class CombatFactory {
 		// Check for poisonous weapons..
 		// And do other effects, such as barrows effects..
 		if (attacker.isPlayer()) {
-
 			Player p_ = attacker.getAsPlayer();
 
 			// Randomly apply poison if poisonous weapon is equipped.

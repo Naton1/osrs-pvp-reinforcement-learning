@@ -3,6 +3,7 @@ package com.elvarg.game.entity.impl.npc;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.elvarg.game.Sound;
 import com.elvarg.game.World;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
@@ -343,6 +344,12 @@ public class NPC extends Mobile {
 	@Override
 	public int getAttackAnim() {
 		return getDefinition().getAttackAnim();
+	}
+
+	@Override
+	public Sound getAttackSound() {
+		// TODO: need to put proper sounds
+		return Sound.IMP_ATTACKING;
 	}
 
 	@Override
