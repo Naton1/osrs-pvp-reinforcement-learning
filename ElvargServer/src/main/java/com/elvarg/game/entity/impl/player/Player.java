@@ -11,6 +11,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.elvarg.game.GameConstants;
+import com.elvarg.game.Sound;
 import com.elvarg.game.content.Dueling;
 import com.elvarg.game.content.PetHandler;
 import com.elvarg.game.content.PrayerHandler;
@@ -272,6 +273,11 @@ public class Player extends Mobile {
 	@Override
 	public int getAttackAnim() {
 		return getFightType().getAnimation();
+	}
+
+	@Override
+	public Sound getAttackSound() {
+		return getFightType().getAttackSound();
 	}
 
 	@Override

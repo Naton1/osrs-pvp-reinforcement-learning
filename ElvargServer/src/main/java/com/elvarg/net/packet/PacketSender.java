@@ -125,6 +125,16 @@ public class PacketSender {
 		return this;
 	}
 
+	public PacketSender sendSoundEffect(int soundId, int loopType, int delay, int volume) {
+		PacketBuilder out = new PacketBuilder(174);
+		out.putShort(soundId)
+				.put(loopType)
+				.putShort(delay)
+				.putShort(volume);
+		player.getSession().write(out);
+		return this;
+	}
+
 	public PacketSender sendSound(int soundId, int volume, int delay) {
 		PacketBuilder out = new PacketBuilder(175);
 		out.putShort(soundId, ValueType.A, ByteOrder.LITTLE).put(volume).putShort(delay);

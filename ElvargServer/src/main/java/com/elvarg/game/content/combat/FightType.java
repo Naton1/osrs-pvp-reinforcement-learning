@@ -1,5 +1,6 @@
 package com.elvarg.game.content.combat;
 
+import com.elvarg.game.Sound;
 import com.elvarg.game.model.equipment.BonusManager;
 
 /**
@@ -118,9 +119,9 @@ public enum FightType {
     UNARMED_PUNCH(422, 43, 0, BonusManager.ATTACK_CRUSH, FightStyle.ACCURATE),
     UNARMED_KICK(423, 43, 1, BonusManager.ATTACK_CRUSH, FightStyle.AGGRESSIVE),
     UNARMED_BLOCK(422, 43, 2, BonusManager.ATTACK_CRUSH, FightStyle.DEFENSIVE),
-    WHIP_FLICK(1658, 43, 0, BonusManager.ATTACK_SLASH, FightStyle.ACCURATE),
-    WHIP_LASH(1658, 43, 1, BonusManager.ATTACK_SLASH, FightStyle.CONTROLLED),
-    WHIP_DEFLECT(1658, 43, 2, BonusManager.ATTACK_SLASH, FightStyle.DEFENSIVE),
+    WHIP_FLICK(1658, 43, 0, BonusManager.ATTACK_SLASH, FightStyle.ACCURATE, Sound.WEAPON_WHIP),
+    WHIP_LASH(1658, 43, 1, BonusManager.ATTACK_SLASH, FightStyle.CONTROLLED, Sound.WEAPON_WHIP),
+    WHIP_DEFLECT(1658, 43, 2, BonusManager.ATTACK_SLASH, FightStyle.DEFENSIVE, Sound.WEAPON_WHIP),
     THROWNAXE_ACCURATE(806, 43, 0, BonusManager.ATTACK_RANGE, FightStyle.ACCURATE),
     THROWNAXE_RAPID(806, 43, 1, BonusManager.ATTACK_RANGE, FightStyle.AGGRESSIVE),
     THROWNAXE_LONGRANGE(806, 43, 2, BonusManager.ATTACK_RANGE, FightStyle.DEFENSIVE),
@@ -135,6 +136,10 @@ public enum FightType {
      * The animation this fight type holds.
      */
     private int animation;
+    /**
+     * Sound for attack
+     */
+    private Sound attackSound;
 
     /**
      * The parent config id.
@@ -173,6 +178,17 @@ public enum FightType {
         this.childId = childId;
         this.bonusType = bonusType;
         this.style = style;
+        this.attackSound = Sound.WEAPON;
+    }
+
+    private FightType(int animation, int parentId, int childId, int bonusType,
+                      FightStyle style, Sound sound) {
+        this.animation = animation;
+        this.parentId = parentId;
+        this.childId = childId;
+        this.bonusType = bonusType;
+        this.style = style;
+        this.attackSound = sound;
     }
 
     /**
@@ -240,5 +256,9 @@ public enum FightType {
             default:
                 return BonusManager.DEFENCE_CRUSH;
         }
+    }
+
+    public Sound getAttackSound() {
+        return attackSound;
     }
 }
