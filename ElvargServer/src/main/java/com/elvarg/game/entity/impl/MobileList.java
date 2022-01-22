@@ -23,7 +23,7 @@ public final class MobileList<E extends Mobile> implements Iterable<E> {
 
 	/**
 	 * The queue containing all of the cached slots that can be assigned to
-	 * {@link CharacterNode}s to prevent expensive lookups.
+	 * {@link E}s to prevent expensive lookups.
 	 */
 	private final Queue<Integer> slotQueue = new ArrayDeque<>();
 	/**
@@ -31,7 +31,7 @@ public final class MobileList<E extends Mobile> implements Iterable<E> {
 	 */
 	private final int capacity;
 	/**
-	 * The backing array of {@link CharacterNode}s within this collection.
+	 * The backing array of {@link E}s within this collection.
 	 */
 	private E[] characters;
 	/**
@@ -50,7 +50,7 @@ public final class MobileList<E extends Mobile> implements Iterable<E> {
 		this.capacity = ++capacity;
 		this.characters = (E[]) new Mobile[capacity];
 		this.size = 0;
-		IntStream.rangeClosed(1, capacity).forEach(slotQueue::add);
+		IntStream.rangeClosed(1, (capacity-1)).forEach(slotQueue::add);
 	}
 
 	/**
