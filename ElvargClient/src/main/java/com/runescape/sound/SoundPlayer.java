@@ -1,5 +1,4 @@
 package com.runescape.sound;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -12,18 +11,18 @@ import java.io.InputStream;
  */
 public class SoundPlayer implements Runnable {
 
-    public static int volume;
     private AudioInputStream stream;
     private DataLine.Info info;
     private Clip sound;
+
     private InputStream soundStream;
     private Thread player;
     private int delay;
     private int soundLevel;
+    public static int volume = 2;
 
     /**
      * Initializes the sound player.
-     *
      * @param stream
      * @param level
      * @param delay
@@ -37,22 +36,6 @@ public class SoundPlayer implements Runnable {
         this.delay = delay;
         player = new Thread(this);
         player.start();
-    }
-
-    /**
-     * Returns the client's volume level.
-     */
-    public static int getVolume() {
-        return volume;
-    }
-
-    /**
-     * Sets the client's volume level.
-     *
-     * @param level
-     */
-    public static void setVolume(int level) {
-        volume = level;
     }
 
     /**
@@ -85,8 +68,22 @@ public class SoundPlayer implements Runnable {
     }
 
     /**
+     * Sets the client's volume level.
+     * @param level
+     */
+    public static void setVolume(int level) {
+        volume = level;
+    }
+
+    /**
+     * Returns the client's volume level.
+     */
+    public static int getVolume() {
+        return volume;
+    }
+
+    /**
      * Returns the decibels for a given volume level.
-     *
      * @param level
      * @return
      */
