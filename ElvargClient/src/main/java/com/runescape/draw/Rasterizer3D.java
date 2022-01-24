@@ -1141,8 +1141,8 @@ public final class Rasterizer3D extends Rasterizer2D {
         }
     }
 
-    public static void drawTexturedTriangle(int y1, int y2, int y3, int x1, int x2, int x3, int c1, int c2, int c3, int tx1, int tx2, int tx3, int ty1, int ty2, int ty3, int tz1, int tz2, int tz3, int tex) {
-        c1 = 0x7f - c1 << 1;
+    public static void drawTexturedTriangle(int y1, int y2, int y3, int x1, int x2, int x3, int c1TrackMe, int c2, int c3, int tx1, int tx2, int tx3, int ty1, int ty2, int ty3, int tz1, int tz2, int tz3, int tex) {
+        c1TrackMe = 0x7f - c1TrackMe << 1;
         c2 = 0x7f - c2 << 1;
         c3 = 0x7f - c3 << 1;
         int[] ai = getTexturePixels(tex);
@@ -1166,7 +1166,7 @@ public final class Rasterizer3D extends Rasterizer2D {
         int j7 = 0;
         if (y2 != y1) {
             i7 = (x2 - x1 << 16) / (y2 - y1);
-            j7 = (c2 - c1 << 16) / (y2 - y1);
+            j7 = (c2 - c1TrackMe << 16) / (y2 - y1);
         }
         int k7 = 0;
         int l7 = 0;
@@ -1178,7 +1178,7 @@ public final class Rasterizer3D extends Rasterizer2D {
         int j8 = 0;
         if (y3 != y1) {
             i8 = (x1 - x3 << 16) / (y1 - y3);
-            j8 = (c1 - c3 << 16) / (y1 - y3);
+            j8 = (c1TrackMe - c3 << 16) / (y1 - y3);
         }
         if (y1 <= y2 && y1 <= y3) {
             if (y1 >= Rasterizer2D.bottomY)
@@ -1189,12 +1189,12 @@ public final class Rasterizer3D extends Rasterizer2D {
                 y3 = Rasterizer2D.bottomY;
             if (y2 < y3) {
                 x3 = x1 <<= 16;
-                c3 = c1 <<= 16;
+                c3 = c1TrackMe <<= 16;
                 if (y1 < 0) {
                     x3 -= i8 * y1;
                     x1 -= i7 * y1;
                     c3 -= j8 * y1;
-                    c1 -= j7 * y1;
+                    c1TrackMe -= j7 * y1;
                     y1 = 0;
                 }
                 x2 <<= 16;
@@ -1213,11 +1213,11 @@ public final class Rasterizer3D extends Rasterizer2D {
                     y2 -= y1;
                     y1 = scanOffsets[y1];
                     while (--y2 >= 0) {
-                        drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x3 >> 16, x1 >> 16, c3, c1, l4, k5, j6, i5, l5, k6);
+                        drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x3 >> 16, x1 >> 16, c3, c1TrackMe, l4, k5, j6, i5, l5, k6);
                         x3 += i8;
                         x1 += i7;
                         c3 += j8;
-                        c1 += j7;
+                        c1TrackMe += j7;
                         y1 += Rasterizer2D.width;
                         l4 += j5;
                         k5 += i6;
@@ -1240,11 +1240,11 @@ public final class Rasterizer3D extends Rasterizer2D {
                 y2 -= y1;
                 y1 = scanOffsets[y1];
                 while (--y2 >= 0) {
-                    drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x1 >> 16, x3 >> 16, c1, c3, l4, k5, j6, i5, l5, k6);
+                    drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x1 >> 16, x3 >> 16, c1TrackMe, c3, l4, k5, j6, i5, l5, k6);
                     x3 += i8;
                     x1 += i7;
                     c3 += j8;
-                    c1 += j7;
+                    c1TrackMe += j7;
                     y1 += Rasterizer2D.width;
                     l4 += j5;
                     k5 += i6;
@@ -1264,12 +1264,12 @@ public final class Rasterizer3D extends Rasterizer2D {
                 return;
             }
             x2 = x1 <<= 16;
-            c2 = c1 <<= 16;
+            c2 = c1TrackMe <<= 16;
             if (y1 < 0) {
                 x2 -= i8 * y1;
                 x1 -= i7 * y1;
                 c2 -= j8 * y1;
-                c1 -= j7 * y1;
+                c1TrackMe -= j7 * y1;
                 y1 = 0;
             }
             x3 <<= 16;
@@ -1288,22 +1288,22 @@ public final class Rasterizer3D extends Rasterizer2D {
                 y3 -= y1;
                 y1 = scanOffsets[y1];
                 while (--y3 >= 0) {
-                    drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x2 >> 16, x1 >> 16, c2, c1, l4, k5, j6, i5, l5, k6);
+                    drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x2 >> 16, x1 >> 16, c2, c1TrackMe, l4, k5, j6, i5, l5, k6);
                     x2 += i8;
                     x1 += i7;
                     c2 += j8;
-                    c1 += j7;
+                    c1TrackMe += j7;
                     y1 += Rasterizer2D.width;
                     l4 += j5;
                     k5 += i6;
                     j6 += l6;
                 }
                 while (--y2 >= 0) {
-                    drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x3 >> 16, x1 >> 16, c3, c1, l4, k5, j6, i5, l5, k6);
+                    drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x3 >> 16, x1 >> 16, c3, c1TrackMe, l4, k5, j6, i5, l5, k6);
                     x3 += k7;
                     x1 += i7;
                     c3 += l7;
-                    c1 += j7;
+                    c1TrackMe += j7;
                     y1 += Rasterizer2D.width;
                     l4 += j5;
                     k5 += i6;
@@ -1315,22 +1315,22 @@ public final class Rasterizer3D extends Rasterizer2D {
             y3 -= y1;
             y1 = scanOffsets[y1];
             while (--y3 >= 0) {
-                drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x1 >> 16, x2 >> 16, c1, c2, l4, k5, j6, i5, l5, k6);
+                drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x1 >> 16, x2 >> 16, c1TrackMe, c2, l4, k5, j6, i5, l5, k6);
                 x2 += i8;
                 x1 += i7;
                 c2 += j8;
-                c1 += j7;
+                c1TrackMe += j7;
                 y1 += Rasterizer2D.width;
                 l4 += j5;
                 k5 += i6;
                 j6 += l6;
             }
             while (--y2 >= 0) {
-                drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x1 >> 16, x3 >> 16, c1, c3, l4, k5, j6, i5, l5, k6);
+                drawTexturedScanline(Rasterizer2D.pixels, ai, y1, x1 >> 16, x3 >> 16, c1TrackMe, c3, l4, k5, j6, i5, l5, k6);
                 x3 += k7;
                 x1 += i7;
                 c3 += l7;
-                c1 += j7;
+                c1TrackMe += j7;
                 y1 += Rasterizer2D.width;
                 l4 += j5;
                 k5 += i6;
@@ -1347,11 +1347,11 @@ public final class Rasterizer3D extends Rasterizer2D {
                 y1 = Rasterizer2D.bottomY;
             if (y3 < y1) {
                 x1 = x2 <<= 16;
-                c1 = c2 <<= 16;
+                c1TrackMe = c2 <<= 16;
                 if (y2 < 0) {
                     x1 -= i7 * y2;
                     x2 -= k7 * y2;
-                    c1 -= j7 * y2;
+                    c1TrackMe -= j7 * y2;
                     c2 -= l7 * y2;
                     y2 = 0;
                 }
@@ -1371,10 +1371,10 @@ public final class Rasterizer3D extends Rasterizer2D {
                     y3 -= y2;
                     y2 = scanOffsets[y2];
                     while (--y3 >= 0) {
-                        drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x1 >> 16, x2 >> 16, c1, c2, l4, k5, j6, i5, l5, k6);
+                        drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x1 >> 16, x2 >> 16, c1TrackMe, c2, l4, k5, j6, i5, l5, k6);
                         x1 += i7;
                         x2 += k7;
-                        c1 += j7;
+                        c1TrackMe += j7;
                         c2 += l7;
                         y2 += Rasterizer2D.width;
                         l4 += j5;
@@ -1382,10 +1382,10 @@ public final class Rasterizer3D extends Rasterizer2D {
                         j6 += l6;
                     }
                     while (--y1 >= 0) {
-                        drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x1 >> 16, x3 >> 16, c1, c3, l4, k5, j6, i5, l5, k6);
+                        drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x1 >> 16, x3 >> 16, c1TrackMe, c3, l4, k5, j6, i5, l5, k6);
                         x1 += i7;
                         x3 += i8;
-                        c1 += j7;
+                        c1TrackMe += j7;
                         c3 += j8;
                         y2 += Rasterizer2D.width;
                         l4 += j5;
@@ -1398,10 +1398,10 @@ public final class Rasterizer3D extends Rasterizer2D {
                 y3 -= y2;
                 y2 = scanOffsets[y2];
                 while (--y3 >= 0) {
-                    drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x2 >> 16, x1 >> 16, c2, c1, l4, k5, j6, i5, l5, k6);
+                    drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x2 >> 16, x1 >> 16, c2, c1TrackMe, l4, k5, j6, i5, l5, k6);
                     x1 += i7;
                     x2 += k7;
-                    c1 += j7;
+                    c1TrackMe += j7;
                     c2 += l7;
                     y2 += Rasterizer2D.width;
                     l4 += j5;
@@ -1409,10 +1409,10 @@ public final class Rasterizer3D extends Rasterizer2D {
                     j6 += l6;
                 }
                 while (--y1 >= 0) {
-                    drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x3 >> 16, x1 >> 16, c3, c1, l4, k5, j6, i5, l5, k6);
+                    drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x3 >> 16, x1 >> 16, c3, c1TrackMe, l4, k5, j6, i5, l5, k6);
                     x1 += i7;
                     x3 += i8;
-                    c1 += j7;
+                    c1TrackMe += j7;
                     c3 += j8;
                     y2 += Rasterizer2D.width;
                     l4 += j5;
@@ -1431,10 +1431,10 @@ public final class Rasterizer3D extends Rasterizer2D {
                 y2 = 0;
             }
             x1 <<= 16;
-            c1 <<= 16;
+            c1TrackMe <<= 16;
             if (y1 < 0) {
                 x1 -= i8 * y1;
-                c1 -= j8 * y1;
+                c1TrackMe -= j8 * y1;
                 y1 = 0;
             }
             int j9 = y2 - originViewY;
@@ -1457,10 +1457,10 @@ public final class Rasterizer3D extends Rasterizer2D {
                     j6 += l6;
                 }
                 while (--y3 >= 0) {
-                    drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x1 >> 16, x2 >> 16, c1, c2, l4, k5, j6, i5, l5, k6);
+                    drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x1 >> 16, x2 >> 16, c1TrackMe, c2, l4, k5, j6, i5, l5, k6);
                     x1 += i8;
                     x2 += k7;
-                    c1 += j8;
+                    c1TrackMe += j8;
                     c2 += l7;
                     y2 += Rasterizer2D.width;
                     l4 += j5;
@@ -1484,10 +1484,10 @@ public final class Rasterizer3D extends Rasterizer2D {
                 j6 += l6;
             }
             while (--y3 >= 0) {
-                drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x2 >> 16, x1 >> 16, c2, c1, l4, k5, j6, i5, l5, k6);
+                drawTexturedScanline(Rasterizer2D.pixels, ai, y2, x2 >> 16, x1 >> 16, c2, c1TrackMe, l4, k5, j6, i5, l5, k6);
                 x1 += i8;
                 x2 += k7;
-                c1 += j8;
+                c1TrackMe += j8;
                 c2 += l7;
                 y2 += Rasterizer2D.width;
                 l4 += j5;
@@ -1513,10 +1513,10 @@ public final class Rasterizer3D extends Rasterizer2D {
                 y3 = 0;
             }
             x1 <<= 16;
-            c1 <<= 16;
+            c1TrackMe <<= 16;
             if (y1 < 0) {
                 x1 -= i7 * y1;
-                c1 -= j7 * y1;
+                c1TrackMe -= j7 * y1;
                 y1 = 0;
             }
             int k9 = y3 - originViewY;
@@ -1539,11 +1539,11 @@ public final class Rasterizer3D extends Rasterizer2D {
                     j6 += l6;
                 }
                 while (--y2 >= 0) {
-                    drawTexturedScanline(Rasterizer2D.pixels, ai, y3, x2 >> 16, x1 >> 16, c2, c1, l4, k5, j6, i5, l5, k6);
+                    drawTexturedScanline(Rasterizer2D.pixels, ai, y3, x2 >> 16, x1 >> 16, c2, c1TrackMe, l4, k5, j6, i5, l5, k6);
                     x2 += k7;
                     x1 += i7;
                     c2 += l7;
-                    c1 += j7;
+                    c1TrackMe += j7;
                     y3 += Rasterizer2D.width;
                     l4 += j5;
                     k5 += i6;
@@ -1566,11 +1566,11 @@ public final class Rasterizer3D extends Rasterizer2D {
                 j6 += l6;
             }
             while (--y2 >= 0) {
-                drawTexturedScanline(Rasterizer2D.pixels, ai, y3, x1 >> 16, x2 >> 16, c1, c2, l4, k5, j6, i5, l5, k6);
+                drawTexturedScanline(Rasterizer2D.pixels, ai, y3, x1 >> 16, x2 >> 16, c1TrackMe, c2, l4, k5, j6, i5, l5, k6);
                 x2 += k7;
                 x1 += i7;
                 c2 += l7;
-                c1 += j7;
+                c1TrackMe += j7;
                 y3 += Rasterizer2D.width;
                 l4 += j5;
                 k5 += i6;
@@ -1579,11 +1579,11 @@ public final class Rasterizer3D extends Rasterizer2D {
             return;
         }
         x1 = x3 <<= 16;
-        c1 = c3 <<= 16;
+        c1TrackMe = c3 <<= 16;
         if (y3 < 0) {
             x1 -= k7 * y3;
             x3 -= i8 * y3;
-            c1 -= l7 * y3;
+            c1TrackMe -= l7 * y3;
             c3 -= j8 * y3;
             y3 = 0;
         }
@@ -1603,10 +1603,10 @@ public final class Rasterizer3D extends Rasterizer2D {
             y2 -= y3;
             y3 = scanOffsets[y3];
             while (--y2 >= 0) {
-                drawTexturedScanline(Rasterizer2D.pixels, ai, y3, x1 >> 16, x3 >> 16, c1, c3, l4, k5, j6, i5, l5, k6);
+                drawTexturedScanline(Rasterizer2D.pixels, ai, y3, x1 >> 16, x3 >> 16, c1TrackMe, c3, l4, k5, j6, i5, l5, k6);
                 x1 += k7;
                 x3 += i8;
-                c1 += l7;
+                c1TrackMe += l7;
                 c3 += j8;
                 y3 += Rasterizer2D.width;
                 l4 += j5;
@@ -1630,10 +1630,10 @@ public final class Rasterizer3D extends Rasterizer2D {
         y2 -= y3;
         y3 = scanOffsets[y3];
         while (--y2 >= 0) {
-            drawTexturedScanline(Rasterizer2D.pixels, ai, y3, x3 >> 16, x1 >> 16, c3, c1, l4, k5, j6, i5, l5, k6);
+            drawTexturedScanline(Rasterizer2D.pixels, ai, y3, x3 >> 16, x1 >> 16, c3, c1TrackMe, l4, k5, j6, i5, l5, k6);
             x1 += k7;
             x3 += i8;
-            c1 += l7;
+            c1TrackMe += l7;
             c3 += j8;
             y3 += Rasterizer2D.width;
             l4 += j5;

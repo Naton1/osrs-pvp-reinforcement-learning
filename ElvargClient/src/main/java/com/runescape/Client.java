@@ -3884,7 +3884,7 @@ public class Client extends GameApplet {
 		Rasterizer3D.scanOffsets = anIntArray1181;
 		if (frameMode == ScreenMode.FIXED) {
 		    spriteCache.draw(21, 0, 0);
-		} else if (frameMode != ScreenMode.FIXED && !stackSideStones) {
+		} else if ( !stackSideStones) {
             Rasterizer2D.drawTransparentBox(frameWidth - 217, frameHeight - 304, 195, 270, 0x3E3529, transparentTabArea ? 80 : 256);
             spriteCache.draw(47, xOffset, yOffset);
 		} else {
@@ -3896,7 +3896,7 @@ public class Client extends GameApplet {
 				for (int x = frameWidth - 417, y = frameHeight - 37, index = 0; x <= frameWidth - 30 && index < 13; x += 32, index++) {
 				    spriteCache.draw(46, x, y);
 				}
-			} else if (frameWidth < 1000) {
+			} else {
 				if (showTabComponents) {
                     Rasterizer2D.drawTransparentBox(frameWidth - 197, frameHeight - 341, 195, 265, 0x3E3529, transparentTabArea ? 80 : 256);
                     spriteCache.draw(50, frameWidth - 204, frameHeight - 348);
@@ -4310,6 +4310,7 @@ public class Client extends GameApplet {
     }
     
     void startUp() {
+
         drawLoadingText(20, "Starting up");
         if (SignLink.cache_dat != null) {
             for (int i = 0; i < 5; i++)
@@ -4347,6 +4348,11 @@ public class Client extends GameApplet {
             FileArchive wordencArchive = createArchive(7, "chat system", "wordenc", 50);
 
             FileArchive soundArchive = createArchive(8, "sound effects", "sounds", 55);
+
+            byte[] bytes = soundArchive.readFile("sounds.dat");
+            Buffer buffer = new Buffer(bytes);
+
+            Track.unpack(buffer);
 
             tileFlags = new byte[4][104][104];
             tileHeights = new int[4][105][105];
