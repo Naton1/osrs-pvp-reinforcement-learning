@@ -1800,7 +1800,7 @@ public enum CombatSpells {
     SMOKE_RUSH(new CombatAncientSpell() {
     	
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
             CombatFactory.poisonEntity(castOn, PoisonType.MILD);
         }
 
@@ -1856,7 +1856,7 @@ public enum CombatSpells {
     }),
     SHADOW_RUSH(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
             if (castOn.isPlayer()) {
 				Player player = (Player) castOn;
 
@@ -1922,7 +1922,7 @@ public enum CombatSpells {
     }),
     BLOOD_RUSH(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
             cast.heal((int) (damage * 0.10));
         }
 
@@ -1978,7 +1978,7 @@ public enum CombatSpells {
     }),
     ICE_RUSH(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
         	CombatFactory.freeze(castOn, 5);
         }
 
@@ -2034,7 +2034,7 @@ public enum CombatSpells {
     }),
     SMOKE_BURST(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
             CombatFactory.poisonEntity(castOn, PoisonType.MILD);
         }
 
@@ -2090,7 +2090,7 @@ public enum CombatSpells {
     }),
     SHADOW_BURST(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
             if (castOn.isPlayer()) {
 				Player player = (Player) castOn;
 
@@ -2156,7 +2156,7 @@ public enum CombatSpells {
     }),
     BLOOD_BURST(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
             cast.heal((int) (damage * 0.15));
         }
 
@@ -2212,7 +2212,7 @@ public enum CombatSpells {
     }),
     ICE_BURST(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
         	CombatFactory.freeze(castOn, 10);
         }
 
@@ -2268,7 +2268,7 @@ public enum CombatSpells {
     }),
     SMOKE_BLITZ(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
             CombatFactory.poisonEntity(castOn, PoisonType.EXTRA);
         }
 
@@ -2324,7 +2324,7 @@ public enum CombatSpells {
     }),
     SHADOW_BLITZ(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
 			if (castOn.isPlayer()) {
 				Player player = (Player) castOn;
 
@@ -2390,7 +2390,7 @@ public enum CombatSpells {
     }),
     BLOOD_BLITZ(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
 			cast.heal((int) (damage * 0.20));
         }
 
@@ -2446,7 +2446,7 @@ public enum CombatSpells {
     }),
     ICE_BLITZ(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
         	CombatFactory.freeze(castOn, 15);
         }
 
@@ -2502,7 +2502,7 @@ public enum CombatSpells {
     }),
     SMOKE_BARRAGE(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
         	CombatFactory.poisonEntity(castOn, PoisonType.SUPER);
         }
 
@@ -2558,7 +2558,7 @@ public enum CombatSpells {
     }),
     SHADOW_BARRAGE(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
         	if (castOn.isPlayer()) {
 				Player player = (Player) castOn;
 
@@ -2624,7 +2624,7 @@ public enum CombatSpells {
     }),
     BLOOD_BARRAGE(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
 			cast.heal((int) (damage * 0.20));
         }
 
@@ -2680,7 +2680,7 @@ public enum CombatSpells {
     }),
     ICE_BARRAGE(new CombatAncientSpell() {
         @Override
-        public void spellEffect(Mobile cast, Mobile castOn, int damage) {
+        public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
         	CombatFactory.freeze(castOn, 20);
         }
 

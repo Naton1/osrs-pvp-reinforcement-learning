@@ -1,12 +1,26 @@
 package com.elvarg.game.content.combat.method.impl;
 
+import com.elvarg.game.World;
+import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.hit.PendingHit;
+import com.elvarg.game.content.combat.magic.CombatAncientSpell;
 import com.elvarg.game.content.combat.magic.CombatSpell;
 import com.elvarg.game.content.combat.method.CombatMethod;
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Graphic;
 import com.elvarg.game.model.GraphicHeight;
+import com.elvarg.game.model.areas.AreaManager;
+import com.google.common.collect.Streams;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Represents the combat method for magic attacks.
@@ -24,7 +38,75 @@ public class MagicCombatMethod extends CombatMethod {
 
 	@Override
 	public PendingHit[] hits(Mobile character, Mobile target) {
-		return new PendingHit[] { new PendingHit(character, target, this, 3) };
+		PendingHit[] hits = new PendingHit[]{new PendingHit(character, target, this, 3)};
+
+		CombatSpell spell = character.getCombat().getCastSpell();
+
+		if (spell == null)
+			spell = character.getCombat().getAutocastSpell();
+
+		if (spell != null) {
+
+			List<PendingHit> multiCombatHits = new ArrayList<>();
+
+			for (PendingHit hit : hits) {
+				spell.onHitCalc(hit);
+
+				if (hit.isAccurate() && spell instanceof CombatAncientSpell combatAncientSpell) {
+					if (combatAncientSpell.spellRadius() > 0) {
+
+						// We passed the checks, so now we do multiple target stuff.
+						Iterator<? extends Mobile> it = null;
+						if (character.isPlayer() && target.isPlayer()) {
+							it = ((Player) character).getLocalPlayers().iterator();
+						} else if (character.isPlayer() && target.isNpc()) {
+							it = ((Player) character).getLocalNpcs().iterator();
+						} else if (character.isNpc() && target.isNpc()) {
+							it = World.getNpcs().iterator();
+						} else if (character.isNpc() && target.isPlayer()) {
+							it = World.getPlayers().iterator();
+						}
+
+						List<PendingHit> pendingHits = Streams.stream(it).filter((next) -> {
+							if (next == null) {
+								return false;
+							}
+
+							if (next.isNpc()) {
+								NPC n = (NPC) next;
+								if (!n.getDefinition().isAttackable()) {
+									return false;
+								}
+							} else {
+								Player p = (Player) next;
+								if (!(AreaManager.canAttack(character, p)) || !AreaManager.inMulti(p)) {
+									return false;
+								}
+							}
+							return true;
+						}).filter((next) ->
+								next.getLocation().isWithinDistance(target.getLocation(), combatAncientSpell.spellRadius())
+										&& !next.equals(character)
+										&& !next.equals(target)
+										&& next.getHitpoints() > 0)
+						.map((next) -> new PendingHit(character, next, this, false, 3)).toList();
+
+						for (PendingHit pendingHit : pendingHits) {
+							multiCombatHits.add(pendingHit);
+							spell.onHitCalc(pendingHit);
+						}
+					}
+
+				}
+			}
+			if (multiCombatHits.size() > 0) {
+				multiCombatHits.addAll(Arrays.asList(hits));
+				PendingHit[] allHits = new PendingHit[multiCombatHits.size()];
+				return multiCombatHits.toArray(allHits);
+			}
+		}
+
+		return hits;
 	}
 
 	@Override

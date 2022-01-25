@@ -59,7 +59,7 @@ public class GameConstants {
 	 * Should the inventory be refreshed immediately on switching items or should it
 	 * be delayed until next game cycle?
 	 */
-	public static final boolean QUEUE_SWITCHING_REFRESH = false;
+	public static final boolean QUEUE_SWITCHING_REFRESH = true;
 
 	/**
 	 * The maximum amount of drops that can be rolled from the dynamic drop table.

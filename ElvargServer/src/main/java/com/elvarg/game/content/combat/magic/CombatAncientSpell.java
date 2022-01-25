@@ -38,56 +38,6 @@ public abstract class CombatAncientSpell extends CombatSpell {
 
         // Do the spell effect here.
         spellEffect(cast, castOn, damage);
-
-        // The spell doesn't support multiple targets or we aren't in a
-        // multicombat zone, so do nothing.
-        if (spellRadius() == 0/* || !Locations.Location.inMulti(castOn)*/) {
-            return;
-        }
-
-        // We passed the checks, so now we do multiple target stuff.
-        Iterator<? extends Mobile> it = null;
-        if (cast.isPlayer() && castOn.isPlayer()) {
-            it = ((Player) cast).getLocalPlayers().iterator();
-        } else if (cast.isPlayer() && castOn.isNpc()) {
-            it = ((Player) cast).getLocalNpcs().iterator();
-        } else if (cast.isNpc() && castOn.isNpc()) {
-            it = World.getNpcs().iterator();
-        } else if (cast.isNpc() && castOn.isPlayer()) {
-            it = World.getPlayers().iterator();
-        }
-
-        for (Iterator<? extends Mobile> $it = it; $it.hasNext(); ) {
-            Mobile next = $it.next();
-
-            if (next == null) {
-                continue;
-            }
-
-            if (next.isNpc()) {
-                NPC n = (NPC) next;
-                if (!n.getDefinition().isAttackable()) {
-                    continue;
-                }
-            } else {
-                Player p = (Player) next;
-                if (!(AreaManager.canAttack(cast, p)) || !AreaManager.inMulti(p)) {
-                    continue;
-                }
-            }
-
-
-            if (next.getLocation().isWithinDistance(castOn.getLocation(), spellRadius()) && !next.equals(cast) && !next.equals(castOn) && next.getHitpoints() > 0 && next.getHitpoints() > 0) {
-                PendingHit hit = new PendingHit(cast, next, CombatFactory.MAGIC_COMBAT, true, 0).setHandleAfterHitEffects(false);
-                if (hit.isAccurate()) {
-                    endGraphic().ifPresent(next::performGraphic);
-                    spellEffect(cast, next, hit.getTotalDamage());
-                } else {
-                    next.performGraphic(MagicCombatMethod.SPLASH_GRAPHIC);
-                }
-                CombatFactory.addPendingHit(hit);
-            }
-        }
     }
 
     @Override
@@ -105,7 +55,7 @@ public abstract class CombatAncientSpell extends CombatSpell {
      * @param castOn the person being hit by this spell.
      * @param damage the damage inflicted.
      */
-    public abstract void spellEffect(Mobile cast, Mobile castOn, int damage);
+    public void spellEffect(Mobile cast, Mobile castOn, int damage) {};
 
     /**
      * The radius of this spell, only comes in effect when the victim is hit in
