@@ -980,10 +980,6 @@ public class CombatFactory {
 			// Send message and effect timer to client
 			character.getAsPlayer().getPacketSender().sendMessage("You have been frozen!").sendEffectTimer(seconds,
 					EffectTimer.FREEZE);
-
-			// Actually reset combat too
-			// I think it's that way on osrs
-			character.getCombat().reset();
 		}
 	}
 
