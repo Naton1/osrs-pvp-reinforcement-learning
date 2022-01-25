@@ -85,6 +85,8 @@ public class MagicCombatMethod extends CombatMethod {
 
 		if (character.getCombat().getAutocastSpell() == null) {
 			character.getCombat().reset();
+			character.setMobileInteraction(target);
+			character.getMovementQueue().reset();
 		}
 
 		character.getCombat().setPreviousCast(current);
