@@ -107,10 +107,7 @@ public class DamageFormulas {
     public static int getMagicMaxhit(Mobile c) {
         int maxHit = 0;
 
-        CombatSpell spell = c.getCombat().getCastSpell();
-        if (spell == null) {
-            spell = c.getCombat().getAutocastSpell();
-        }
+        CombatSpell spell = c.getCombat().getSelectedSpell();
 
         if (spell != null) {
 

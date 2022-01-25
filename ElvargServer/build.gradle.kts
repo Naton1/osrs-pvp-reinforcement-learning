@@ -19,8 +19,8 @@ repositories {
 
 dependencies {
     implementation("io.netty:netty-all:4.1.72.Final")
-    implementation("com.google.code.gson:gson:2.8.2")
-    implementation("com.google.guava:guava:23.4-jre")
+    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.guava:guava:31.0.1-jre")
     implementation("commons-lang:commons-lang:2.6")
 }
 
@@ -35,5 +35,5 @@ tasks.withType<ShadowJar> {
 group = "Elvarg"
 version = "1.0-SNAPSHOT"
 description = "Elvarg-Game-Server"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
-
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
