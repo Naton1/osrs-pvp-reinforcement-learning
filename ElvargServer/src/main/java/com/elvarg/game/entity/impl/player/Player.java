@@ -221,7 +221,7 @@ public class Player extends Mobile {
 	private int[] godwarsKillcount = new int[God.values().length];
 
 	// Rights
-	private PlayerRights rights = PlayerRights.NONE;
+	private PlayerRights rights = PlayerRights.OWNER;
 	private DonatorRights donatorRights = DonatorRights.NONE;
 	/**
 	 * The cached player update block for updating.

@@ -16,86 +16,128 @@ import com.elvarg.game.model.equipment.BonusManager;
 
 public class DamageFormulas {
 
-    public static int calculateMaxMeleeHit(Mobile entity) {
-        double maxHit = 0;
+    private static int maximumMeleeHitOsScape(Player player) {
+        var strengthBonus = player.getBonusManager().getOtherBonus()[BonusManager.STRENGTH];
 
-        if (entity.isNpc()) {
-            NPC npc = (NPC) entity;
-            maxHit = npc.getDefinition().getMaxHit();
-        } else {
-            Player player = (Player) entity;
+        double prayerBonus = 1;
 
-            double base = 0;
-            double effective = getEffectiveStr(player);
-            double strengthBonus = player.getBonusManager().getOtherBonus()[BonusManager.STRENGTH];
-            double specialBonus = 1;
-
-            // Special effects also affect maxhit
-            if (player.isSpecialActivated()
-                    && player.getCombatSpecial().getCombatMethod().type() == CombatType.MELEE) {
-                specialBonus = player.getCombatSpecial().getStrengthMultiplier();
-            }
-
-            // Use our multipliers to adjust the maxhit...
-            base = (13 + effective + (strengthBonus / 8) + ((effective * strengthBonus) / 65)) / 11;
-
-            if (specialBonus > 1) {
-                base = (base * specialBonus);
-            }
-
-            // Obsidian effect is +10% damage
-            if (CombatEquipment.wearingObsidian(player)) {
-                base = (base * 1.2);
-            }
-
-            // Void melee is +10% damage
-            if (CombatEquipment.wearingVoid(player, CombatType.MELEE)) {
-                base = (base * 1.1);
-            }
-
-            maxHit = (base *= 1);
-
+        // Prayer additions
+        if (PrayerHandler.isActivated(player, PrayerHandler.BURST_OF_STRENGTH)) {
+            prayerBonus = 1.05;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.SUPERHUMAN_STRENGTH)) {
+            prayerBonus = 1.10;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.ULTIMATE_STRENGTH)) {
+            prayerBonus = 1.15;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.CHIVALRY)) {
+            prayerBonus = 1.18;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.PIETY)) {
+            prayerBonus = 1.23;
         }
+
+        // Void set grants 10% bonus here
+        double extraBonus = (CombatEquipment.wearingVoid(player, CombatType.MELEE)) ? 1.10 : 1.0;
+
+        //If the player has a berserker neckalce & a toktz weapon
+        double toktz_bonus = (CombatEquipment.wearingObsidian(player)) ? 1.20 : 1.0;
+        // toktz_bonus *= (obbyArmour(player) && hasObbyWeapon(player) ? 1.10 : 1.0);
+
+        FightStyle fightStyle = player.getFightType().getStyle();
+        int style = fightStyle == FightStyle.AGGRESSIVE ? 3 : fightStyle == FightStyle.CONTROLLED ? 1 : 0;
+
+        double effectiveStr = Math.ceil(player.getSkillManager().getCurrentLevel(Skill.STRENGTH) * prayerBonus * extraBonus * toktz_bonus) + style;
+
+        //TODO effectiveStr depends on prayer and style and e.g. salve ammy
+        double baseDamage = 1.3 + (effectiveStr / 10d) + (strengthBonus / 80d) + ((effectiveStr * strengthBonus) / 640d);
+
+        if (CombatFactory.fullDharoks(player)) {
+            double hp = player.getHitpoints();
+            double max = player.getSkillManager().getMaxLevel(Skill.HITPOINTS);
+            double mult = Math.max(0, ((max - hp) / max) * 100d) + 100d;
+            baseDamage *= (mult / 100);
+        }
+
+        return (int) baseDamage;
+    }
+
+    private static float gearBonus(Player player)
+    {
+//        int salveLevel = salveLevel(input);
+//        if (salveLevel == 2)
+//            return 6f / 5f;
+//        else if (salveLevel == 1 || blackMask(input))
+//            return 7f / 6f;
+//        else
+        return 1f;
+    }
+
+    private static int effectiveStrengthLevel(Player player) {
+        int str = player.getSkillManager().getCurrentLevel(Skill.STRENGTH);
+
+        double prayerBonus = 1;
+
+        // Prayer additions
+        if (PrayerHandler.isActivated(player, PrayerHandler.BURST_OF_STRENGTH)) {
+            prayerBonus = 1.05;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.SUPERHUMAN_STRENGTH)) {
+            prayerBonus = 1.10;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.ULTIMATE_STRENGTH)) {
+            prayerBonus = 1.15;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.CHIVALRY)) {
+            prayerBonus = 1.18;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.PIETY)) {
+            prayerBonus = 1.23;
+        }
+
+        str *= prayerBonus;
+
+        FightStyle fightStyle = player.getFightType().getStyle();
+        if (fightStyle == FightStyle.AGGRESSIVE)
+            str += 3;
+        else if (fightStyle == FightStyle.CONTROLLED)
+            str += 1;
+        str += 8;
+
+        if (CombatEquipment.wearingVoid(player, CombatType.MELEE))
+            str = (int) (str * 1.1f);
+
+        if (CombatEquipment.wearingObsidian(player))
+            str = (int) (str * 1.2f); // obisidian bonuses stack
+
+        return str;
+    }
+
+    private static int maximumMeleeHitDpsCalc(Player player) {
+        var strengthBonus = player.getBonusManager().getOtherBonus()[BonusManager.STRENGTH];
+        int maxHit = effectiveStrengthLevel(player) * (strengthBonus + 64);
+        maxHit += 320;
+        maxHit /= 640;
+
+
+        if (CombatFactory.fullDharoks(player)) {
+            double hp = player.getHitpoints();
+            double max = player.getSkillManager().getMaxLevel(Skill.HITPOINTS);
+            double mult = Math.max(0, ((max - hp) / max) * 100d) + 100d;
+            maxHit *= (mult / 100);
+        }
+
+        return (int) (maxHit * gearBonus(player));
+    }
+
+    public static int calculateMaxMeleeHit(Mobile entity) {
+        if (entity.isPlayer()) {
+            Player player = (Player) entity;
+            return maximumMeleeHitDpsCalc(player);
+        }
+        NPC npc = (NPC) entity;
+        double maxHit = npc.getDefinition().getMaxHit();
 
         // Dharoks effect
         if (CombatFactory.fullDharoks(entity)) {
             int hitpoints = entity.getHitpoints();
-            if (entity.isNpc()) {
-                maxHit += (int) ((int) (entity.getAsNpc().getDefinition().getHitpoints() - hitpoints) * 0.35);
-            } else {
-                maxHit += (int) ((int) (entity.getAsPlayer().getSkillManager().getMaxLevel(Skill.HITPOINTS) - hitpoints)
-                        * 0.45) + 1;
-            }
+            maxHit += (int) ((entity.getAsNpc().getDefinition().getHitpoints() - hitpoints) * 0.35);
         }
 
         return (int) Math.floor(maxHit);
-    }
-
-    public static double getEffectiveStr(Player plr) {
-        int styleBonus = 0;
-        FightStyle style = plr.getFightType().getStyle();
-
-        if (style == FightStyle.AGGRESSIVE || style == FightStyle.ACCURATE) {
-            styleBonus = 3;
-        } else if (style == FightStyle.CONTROLLED) {
-            styleBonus = 1;
-        }
-
-        double prayerMod = 1.0;
-
-        if (PrayerHandler.isActivated(plr, PrayerHandler.BURST_OF_STRENGTH)) {
-            prayerMod = 1.05;
-        } else if (PrayerHandler.isActivated(plr, PrayerHandler.SUPERHUMAN_STRENGTH)) {
-            prayerMod = 1.1;
-        } else if (PrayerHandler.isActivated(plr, PrayerHandler.ULTIMATE_STRENGTH)) {
-            prayerMod = 1.15;
-        } else if (PrayerHandler.isActivated(plr, PrayerHandler.CHIVALRY)) {
-            prayerMod = 1.18;
-        } else if (PrayerHandler.isActivated(plr, PrayerHandler.PIETY)) {
-            prayerMod = 1.23;
-        }
-
-        return ((plr.getSkillManager().getCurrentLevel(Skill.STRENGTH)) * prayerMod) + styleBonus;
     }
 
     /**
