@@ -102,7 +102,7 @@ public class PendingHit {
 
         HitDamage[] hits = new HitDamage[hitAmount];
         for (int i = 0; i < hits.length; i++) {
-            accurate = !rollAccuracy || AccuracyFormulasDpsCalc.rollAccuracy(attacker, target, combatType);
+            accurate = !rollAccuracy || AccuracyFormulas.rollAccuracy(attacker, target, combatType);
             HitDamage damage = accurate ? CombatFactory.getHitDamage(attacker, target, combatType) : new HitDamage(0, HitMask.BLUE);
             totalDamage += damage.getDamage();
             hits[i] = damage;

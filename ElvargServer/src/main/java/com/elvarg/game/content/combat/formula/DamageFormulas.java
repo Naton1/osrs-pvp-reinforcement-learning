@@ -143,7 +143,6 @@ public class DamageFormulas {
         return (int) Math.floor(maxHit);
     }
 
-
     private static float effectiveRangedStrength(Player player) {
         float rngStrength = player.getSkillManager().getCurrentLevel(Skill.RANGED);
 

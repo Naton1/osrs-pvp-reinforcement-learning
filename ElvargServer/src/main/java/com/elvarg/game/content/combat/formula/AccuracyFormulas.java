@@ -22,8 +22,6 @@ public class AccuracyFormulas {
     public static final SecureRandom srand = new SecureRandom();
 
     public static boolean rollAccuracy(Mobile entity, Mobile enemy, CombatType style) {
-
-
         double multiplier = 1.0;
 
         if (style == CombatType.MELEE) {
@@ -32,6 +30,12 @@ public class AccuracyFormulas {
                     return true;
                 }
             }
+        }
+
+        // That is a bit more up to date.
+        // TODO: Implement similar for mobs
+        if (entity instanceof Player player && enemy instanceof Player enemyPlayer) {
+            return AccuracyFormulasDpsCalc.rollAccuracy(player, enemyPlayer, style);
         }
 /*
 			S E T T I N G S
