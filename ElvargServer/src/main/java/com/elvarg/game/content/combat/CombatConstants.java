@@ -11,8 +11,8 @@ public class CombatConstants {
     /**
      * The amount of damage that will be drained by combat protection prayer.
      */
-    public static final double PRAYER_DAMAGE_REDUCTION_AGAINST_PLAYERS = .5; //50% damage reduction
-    public static final double PRAYER_DAMAGE_REDUCTION_AGAINST_NPCS = 0.2; //80% damage reduction
+    public static final double PRAYER_DAMAGE_REDUCTION_AGAINST_PLAYERS = .6; //40% damage reduction
+    public static final double PRAYER_DAMAGE_REDUCTION_AGAINST_NPCS = 0; //100% damage reduction
     public static final double ELYSIAN_DAMAGE_REDUCTION = .75; // 25% damage reduction
 
     /**

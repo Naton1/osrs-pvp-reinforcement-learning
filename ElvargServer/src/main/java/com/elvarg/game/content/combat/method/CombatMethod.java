@@ -29,7 +29,11 @@ public abstract class CombatMethod {
     public int attackDistance(Mobile character) {
         return 1;
     }
-    
+
+    public double attackRollMultiplier() {
+        return 1.0;
+    }
+
     public abstract CombatType type();
     public abstract PendingHit[] hits(Mobile character, Mobile target);
 }

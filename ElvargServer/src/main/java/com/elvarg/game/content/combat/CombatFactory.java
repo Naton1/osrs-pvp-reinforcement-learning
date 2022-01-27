@@ -190,12 +190,12 @@ public class CombatFactory {
 		int damage = 0;
 
 		if (type == CombatType.MELEE) {
-			damage = Misc.inclusive(1, DamageFormulas.calculateMaxMeleeHit(entity));
+			damage = Misc.inclusive(0, DamageFormulas.calculateMaxMeleeHit(entity));
 
 			// Do melee effects with the calculated damage..
 
 		} else if (type == CombatType.RANGED) {
-			damage = Misc.inclusive(1, DamageFormulas.calculateMaxRangedHit(entity));
+			damage = Misc.inclusive(0, DamageFormulas.calculateMaxRangedHit(entity));
 
 			// Do ranged effects with the calculated damage..
 			if (entity.isPlayer()) {
@@ -220,14 +220,14 @@ public class CombatFactory {
 				}
 			}
 		} else if (type == CombatType.MAGIC) {
-			damage = Misc.inclusive(1, DamageFormulas.getMagicMaxhit(entity));
+			damage = Misc.inclusive(0, DamageFormulas.getMagicMaxhit(entity));
 
 			// Do magic effects with the calculated damage..
 		}
 
 		// We've got our damage. We can now create a HitDamage
 		// instance.
-		HitDamage hitDamage = new HitDamage(damage, HitMask.RED);
+		HitDamage hitDamage = new HitDamage(damage, damage == 0 ? HitMask.BLUE : HitMask.RED);
 
 		/**
 		 * Prayers decreasing damage.
@@ -241,14 +241,7 @@ public class CombatFactory {
 
 				// Apply the damage reduction mod
 				if (entity.isNpc()) {
-					NPC npc = entity.getAsNpc();
-
-					if (npc.getId() == NpcIdentifiers.TZTOK_JAD) {
-						hitDamage.setDamage(0);
-					} else {
-						hitDamage.multiplyDamage(CombatConstants.PRAYER_DAMAGE_REDUCTION_AGAINST_NPCS);
-					}
-
+					hitDamage.multiplyDamage(CombatConstants.PRAYER_DAMAGE_REDUCTION_AGAINST_NPCS);
 				} else {
 					hitDamage.multiplyDamage(CombatConstants.PRAYER_DAMAGE_REDUCTION_AGAINST_PLAYERS);
 				}
