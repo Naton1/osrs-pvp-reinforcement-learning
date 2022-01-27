@@ -74,7 +74,7 @@ public enum CombatSpecial {
     // Multiple hits
     DRAGON_HALBERD(new int[]{3204}, 30, 1.1, 1.35, new DragonHalberdCombatMethod(),
             WeaponInterface.HALBERD),
-    DRAGON_DAGGER(new int[]{1215, 1231, 5680, 5698}, 25, 1.15, 1.35,
+    DRAGON_DAGGER(new int[]{1215, 1231, 5680, 5698}, 25, 1.15, 1.20,
             new DragonDaggerCombatMethod(), WeaponInterface.DRAGON_DAGGER),
     ABYSSAL_DAGGER(new int[]{13271},
             50, 0.85, 1.25, new AbyssalDaggerCombatMethod(),

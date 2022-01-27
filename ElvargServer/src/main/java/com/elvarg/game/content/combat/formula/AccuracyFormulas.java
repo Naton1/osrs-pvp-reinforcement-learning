@@ -22,6 +22,8 @@ public class AccuracyFormulas {
     public static final SecureRandom srand = new SecureRandom();
 
     public static boolean rollAccuracy(Mobile entity, Mobile enemy, CombatType style) {
+
+
         double multiplier = 1.0;
 
         if (style == CombatType.MELEE) {
