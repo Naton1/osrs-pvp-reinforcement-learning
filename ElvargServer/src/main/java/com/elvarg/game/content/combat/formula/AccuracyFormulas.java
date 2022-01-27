@@ -135,7 +135,7 @@ public class AccuracyFormulas {
 //				def_current_defence_level += def_current_defence_level * multi;
 //			}
         } else {
-            NPC npc = ((NPC) entity);
+            NPC npc = (NPC) enemy;
             if (npc.getDefinition() != null && npc.getDefinition().getStats() != null) {
                 def_current_defence_level = npc.getDefinition().getStats()[2];
                 def_current_magic_level = npc.getDefinition().getStats()[4];
@@ -220,7 +220,7 @@ public class AccuracyFormulas {
             final Player player = (Player) entity;
             final var helm = player.getEquipment().get(Equipment.HEAD_SLOT);
 
-            if (helm != null && Arrays.stream(player.getSlayerTask().getTask().getNpcNames()).anyMatch((name) -> name.equalsIgnoreCase(npc.getDefinition().getName()))) {
+            if (helm != null && player.getSlayerTask() != null && Arrays.stream(player.getSlayerTask().getTask().getNpcNames()).anyMatch((name) -> name.equalsIgnoreCase(npc.getDefinition().getName()))) {
                 if (helm.getId() == 11864 || helm.getId() == 19647 || helm.getId() == 19643 || helm.getId() == 19639 || (IntStream.range(8901, 8921).anyMatch(id -> id == helm.getId()))) {
                     off_additional_bonus += 0.125;
                 }
@@ -281,7 +281,7 @@ public class AccuracyFormulas {
             def_equipment_ranged_defence = player.getBonusManager().getAttackBonus()[BonusManager.DEFENCE_RANGE];
             def_equipment_magic_defence = player.getBonusManager().getAttackBonus()[BonusManager.DEFENCE_MAGIC];
         } else {
-            NPC npc = ((NPC) entity);
+            NPC npc = ((NPC) enemy);
             if (npc.getDefinition() != null && npc.getDefinition().getStats() != null) {
                 def_equipment_stab_defence = npc.getDefinition().getStats()[10];
                 def_equipment_slash_defence = npc.getDefinition().getStats()[11];
@@ -467,24 +467,22 @@ public class AccuracyFormulas {
                 }
                 break;
         }
-        boolean debug = true;
-        if (entity.isPlayer() && debug) {
 
-            System.out.println("\nYour chance to hit is: " + off_hit_chance + "%");
-            System.out.println("Your opponents chance to block is: " + def_block_chance + "%");
-            System.out.println("Your attack is " + augmented_attack + " and his def is " + augmented_defence);
-            System.out.println("Attack bonus " + off_equipment_bonus + ", atk lv " + effective_attack);
-            System.out.println("Def bonus " + def_equipment_bonus + ", atk lv " + effective_defence);
-            System.out.println("stab bonus " + def_equipment_stab_defence);
-            System.out.println("slash bonus " + def_equipment_slash_defence);
-            System.out.println("crash bonus " + def_equipment_crush_defence);
-            String msg = String.format("Atk %d v def %d. Bonus %d vs %d. Level %d vs %d. Relative %d%% hit > %d%% block%n",
-                    (int) augmented_attack, (int) augmented_defence,
-                    off_equipment_bonus, def_equipment_bonus, (int) effective_attack, (int) effective_defence, (int) off_hit_chance, (int) def_block_chance);
-            System.out.println(msg);
+//        System.out.println("\nYour chance to hit is: " + off_hit_chance + "%");
+//        System.out.println("Your opponents chance to block is: " + def_block_chance + "%");
+//        System.out.println("Your attack is " + augmented_attack + " and his def is " + augmented_defence);
+//        System.out.println("Attack bonus " + off_equipment_bonus + ", atk lv " + effective_attack);
+//        System.out.println("Def bonus " + def_equipment_bonus + ", atk lv " + effective_defence);
+//        System.out.println("stab bonus " + def_equipment_stab_defence);
+//        System.out.println("slash bonus " + def_equipment_slash_defence);
+//        System.out.println("crash bonus " + def_equipment_crush_defence);
+//        String msg = String.format("Atk %d v def %d. Bonus %d vs %d. Level %d vs %d. Relative %d%% hit > %d%% block%n",
+//                (int) augmented_attack, (int) augmented_defence,
+//                off_equipment_bonus, def_equipment_bonus, (int) effective_attack, (int) effective_defence, (int) off_hit_chance, (int) def_block_chance);
+//        System.out.println(msg);
 //            entity.message(msg);
-            //System.out.println(targetBonuses);
-        }
+        //System.out.println(targetBonuses);
+
 
         off_hit_chance = (int) (srand.nextFloat() * off_hit_chance);
         def_block_chance = (int) (srand.nextFloat() * def_block_chance);
