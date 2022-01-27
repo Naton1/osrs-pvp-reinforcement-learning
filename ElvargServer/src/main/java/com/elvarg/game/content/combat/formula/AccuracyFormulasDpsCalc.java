@@ -20,10 +20,6 @@ public class AccuracyFormulasDpsCalc {
             int defRoll = defenseMeleeRoll(player, enemy);
 
             float hitChance = hitChance(attRoll, defRoll);
-            System.out.println("\nYour chance to hit is: " + hitChance + "%");
-            System.out.println("attRoll " + attRoll + "");
-            System.out.println("defRoll " + defRoll + "");
-
             return hitChance > srand.nextFloat();
 
         } else if (style == CombatType.RANGED) {
@@ -31,20 +27,12 @@ public class AccuracyFormulasDpsCalc {
             int defRoll = defenseRangedRoll(player, enemy);
 
             float hitChance = hitChance(attRoll, defRoll);
-            System.out.println("\nYour chance to hit is: " + hitChance + "%");
-            System.out.println("attRoll " + attRoll + "");
-            System.out.println("defRoll " + defRoll + "");
-
             return hitChance > srand.nextFloat();
         } else if (style == CombatType.MAGIC) {
             int attRoll = attackMagicRoll(player);
             int defRoll = defenseMagicRoll(player, enemy);
 
             float hitChance = hitChance(attRoll, defRoll);
-            System.out.println("\nYour chance to hit is: " + hitChance + "%");
-            System.out.println("attRoll " + attRoll + "");
-            System.out.println("defRoll " + defRoll + "");
-
             return hitChance > srand.nextFloat();
         }
         return false;
