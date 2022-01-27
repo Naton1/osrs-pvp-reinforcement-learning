@@ -21,7 +21,9 @@ import java.util.stream.IntStream;
 public class AccuracyFormulas {
     public static final SecureRandom srand = new SecureRandom();
 
-    public static boolean rollAccuracy(Mobile entity, Mobile enemy, CombatType style, double multiplier) {
+    public static boolean rollAccuracy(Mobile entity, Mobile enemy, CombatType style) {
+        double multiplier = 1.0;
+
         if (style == CombatType.MELEE) {
             if (CombatFactory.fullVeracs(entity)) {
                 if (Misc.getRandom(4) == 1) {
@@ -59,6 +61,10 @@ public class AccuracyFormulas {
         if (entity.isPlayer()) {
             Player player = ((Player) entity);
             final var weapon = player.getEquipment().get(Equipment.WEAPON_SLOT);
+
+            if (player.isSpecialActivated()) {
+                multiplier = player.getCombatSpecial().getAccuracyMultiplier();
+            }
 
             if (weapon != null) {
                 attackerWeaponId = weapon.getId(); // Used below in Twisted bow computation.

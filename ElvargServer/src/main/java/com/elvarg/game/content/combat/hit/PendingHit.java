@@ -36,7 +36,7 @@ public class PendingHit {
         this.target = target;
         this.method = method;
         this.combatType = method.type();
-        this.hits = prepareHits(hitAmount, rollAccuracy, method.attackRollMultiplier());
+        this.hits = prepareHits(hitAmount, rollAccuracy);
         this.delay = delay;
         this.handleAfterHitEffects = true;
     }
@@ -85,7 +85,7 @@ public class PendingHit {
         return handleAfterHitEffects;
     }
 
-    private HitDamage[] prepareHits(int hitAmount, boolean rollAccuracy, double rollMultiplier) {
+    private HitDamage[] prepareHits(int hitAmount, boolean rollAccuracy) {
         // Check the hit amounts.
         if (hitAmount > 4) {
             throw new IllegalArgumentException(
@@ -101,7 +101,7 @@ public class PendingHit {
 
         HitDamage[] hits = new HitDamage[hitAmount];
         for (int i = 0; i < hits.length; i++) {
-            accurate = !rollAccuracy || AccuracyFormulas.rollAccuracy(attacker, target, combatType, rollMultiplier);
+            accurate = !rollAccuracy || AccuracyFormulas.rollAccuracy(attacker, target, combatType);
             HitDamage damage = accurate ? CombatFactory.getHitDamage(attacker, target, combatType) : new HitDamage(0, HitMask.BLUE);
             totalDamage += damage.getDamage();
             hits[i] = damage;

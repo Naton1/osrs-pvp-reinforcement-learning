@@ -33,7 +33,7 @@ public class DamageFormulas {
             // Special effects also affect maxhit
             if (player.isSpecialActivated()
                     && player.getCombatSpecial().getCombatMethod().type() == CombatType.MELEE) {
-                specialBonus = player.getCombatSpecial().getStrengthBonus();
+                specialBonus = player.getCombatSpecial().getStrengthMultiplier();
             }
 
             // Use our multipliers to adjust the maxhit...
@@ -222,7 +222,7 @@ public class DamageFormulas {
             // Special attacks!
             if (player.isSpecialActivated()
                     && player.getCombatSpecial().getCombatMethod().type() == CombatType.RANGED) {
-                maxHit *= player.getCombatSpecial().getStrengthBonus();
+                maxHit *= player.getCombatSpecial().getStrengthMultiplier();
             }
 
         }

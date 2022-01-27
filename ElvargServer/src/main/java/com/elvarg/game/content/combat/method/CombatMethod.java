@@ -30,10 +30,6 @@ public abstract class CombatMethod {
         return 1;
     }
 
-    public double attackRollMultiplier() {
-        return 1.0;
-    }
-
     public abstract CombatType type();
     public abstract PendingHit[] hits(Mobile character, Mobile target);
 }

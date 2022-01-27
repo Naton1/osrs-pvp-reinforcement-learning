@@ -32,9 +32,4 @@ public class DragonDaggerCombatMethod extends MeleeCombatMethod {
             Sounds.sendSound((Player)character, Sound.DRAGON_DAGGER_SPECIAL);
         }
     }
-
-    @Override
-    public double attackRollMultiplier() {
-        return 1.35;
-    }
 }

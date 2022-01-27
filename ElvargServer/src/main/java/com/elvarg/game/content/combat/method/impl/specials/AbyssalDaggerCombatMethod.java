@@ -32,9 +32,4 @@ public class AbyssalDaggerCombatMethod extends MeleeCombatMethod {
         character.performAnimation(ANIMATION);
         character.performGraphic(GRAPHIC);
     }
-
-    @Override
-    public double attackRollMultiplier() {
-        return 1.25;
-    }
 }
