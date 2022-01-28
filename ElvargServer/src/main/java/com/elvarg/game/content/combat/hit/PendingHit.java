@@ -3,6 +3,7 @@ package com.elvarg.game.content.combat.hit;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.formula.AccuracyFormulas;
+import com.elvarg.game.content.combat.formula.AccuracyFormulasDpsCalc;
 import com.elvarg.game.content.combat.method.CombatMethod;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
@@ -101,7 +102,7 @@ public class PendingHit {
 
         HitDamage[] hits = new HitDamage[hitAmount];
         for (int i = 0; i < hits.length; i++) {
-            accurate = rollAccuracy ? AccuracyFormulas.rollAccuracy(attacker, target, combatType) : true;
+            accurate = !rollAccuracy || AccuracyFormulas.rollAccuracy(attacker, target, combatType);
             HitDamage damage = accurate ? CombatFactory.getHitDamage(attacker, target, combatType) : new HitDamage(0, HitMask.BLUE);
             totalDamage += damage.getDamage();
             hits[i] = damage;

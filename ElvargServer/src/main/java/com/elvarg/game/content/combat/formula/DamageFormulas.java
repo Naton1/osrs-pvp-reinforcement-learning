@@ -6,7 +6,6 @@ import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.FightStyle;
 import com.elvarg.game.content.combat.magic.CombatSpell;
-import com.elvarg.game.content.combat.ranged.RangedData.RangedWeapon;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
@@ -16,86 +15,77 @@ import com.elvarg.game.model.equipment.BonusManager;
 
 public class DamageFormulas {
 
-    public static int calculateMaxMeleeHit(Mobile entity) {
-        double maxHit = 0;
+    private static float effectiveStrengthLevel(Player player) {
+        float str = player.getSkillManager().getCurrentLevel(Skill.STRENGTH);
 
-        if (entity.isNpc()) {
-            NPC npc = (NPC) entity;
-            maxHit = npc.getDefinition().getMaxHit();
-        } else {
-            Player player = (Player) entity;
+        float prayerBonus = 1;
 
-            double base = 0;
-            double effective = getEffectiveStr(player);
-            double strengthBonus = player.getBonusManager().getOtherBonus()[BonusManager.STRENGTH];
-            double specialBonus = 1;
-
-            // Special effects also affect maxhit
-            if (player.isSpecialActivated()
-                    && player.getCombatSpecial().getCombatMethod().type() == CombatType.MELEE) {
-                specialBonus = player.getCombatSpecial().getStrengthBonus();
-            }
-
-            // Use our multipliers to adjust the maxhit...
-            base = (13 + effective + (strengthBonus / 8) + ((effective * strengthBonus) / 65)) / 11;
-
-            if (specialBonus > 1) {
-                base = (base * specialBonus);
-            }
-
-            // Obsidian effect is +10% damage
-            if (CombatEquipment.wearingObsidian(player)) {
-                base = (base * 1.2);
-            }
-
-            // Void melee is +10% damage
-            if (CombatEquipment.wearingVoid(player, CombatType.MELEE)) {
-                base = (base * 1.1);
-            }
-
-            maxHit = (base *= 1);
-
+        // Prayer additions
+        if (PrayerHandler.isActivated(player, PrayerHandler.BURST_OF_STRENGTH)) {
+            prayerBonus = 1.05f;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.SUPERHUMAN_STRENGTH)) {
+            prayerBonus = 1.10f;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.ULTIMATE_STRENGTH)) {
+            prayerBonus = 1.15f;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.CHIVALRY)) {
+            prayerBonus = 1.18f;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.PIETY)) {
+            prayerBonus = 1.23f;
         }
+
+        str = (str * prayerBonus);
+
+        FightStyle fightStyle = player.getFightType().getStyle();
+        if (fightStyle == FightStyle.AGGRESSIVE)
+            str += 3;
+        else if (fightStyle == FightStyle.CONTROLLED)
+            str += 1;
+        str += 8;
+
+        if (CombatEquipment.wearingVoid(player, CombatType.MELEE))
+            str =  (str * 1.1f);
+
+        if (CombatEquipment.wearingObsidian(player))
+            str = (str * 1.2f); // obisidian bonuses stack
+
+        return str;
+    }
+
+    private static int maximumMeleeHitDpsCalc(Player player) {
+        int strengthBonus = player.getBonusManager().getOtherBonus()[BonusManager.STRENGTH];
+        float maxHit = effectiveStrengthLevel(player) * (strengthBonus + 64);
+        maxHit += 320;
+        maxHit /= 640;
+
+        if (CombatFactory.fullDharoks(player)) {
+            float hp = player.getHitpoints();
+            float max = player.getSkillManager().getMaxLevel(Skill.HITPOINTS);
+            float mult = Math.max(0, ((max - hp) / max) * 100f) + 100f;
+            maxHit *= (mult / 100);
+        }
+
+        if (player.isSpecialActivated()) {
+            maxHit *= player.getCombatSpecial().getStrengthMultiplier();
+        }
+
+        return (int)maxHit;
+    }
+
+    public static int calculateMaxMeleeHit(Mobile entity) {
+        if (entity.isPlayer()) {
+            Player player = (Player) entity;
+            return maximumMeleeHitDpsCalc(player);
+        }
+        NPC npc = (NPC) entity;
+        float maxHit = npc.getDefinition().getMaxHit();
 
         // Dharoks effect
         if (CombatFactory.fullDharoks(entity)) {
             int hitpoints = entity.getHitpoints();
-            if (entity.isNpc()) {
-                maxHit += (int) ((int) (entity.getAsNpc().getDefinition().getHitpoints() - hitpoints) * 0.35);
-            } else {
-                maxHit += (int) ((int) (entity.getAsPlayer().getSkillManager().getMaxLevel(Skill.HITPOINTS) - hitpoints)
-                        * 0.45) + 1;
-            }
+            maxHit += (int) ((entity.getAsNpc().getDefinition().getHitpoints() - hitpoints) * 0.35);
         }
 
         return (int) Math.floor(maxHit);
-    }
-
-    public static double getEffectiveStr(Player plr) {
-        int styleBonus = 0;
-        FightStyle style = plr.getFightType().getStyle();
-
-        if (style == FightStyle.AGGRESSIVE || style == FightStyle.ACCURATE) {
-            styleBonus = 3;
-        } else if (style == FightStyle.CONTROLLED) {
-            styleBonus = 1;
-        }
-
-        double prayerMod = 1.0;
-
-        if (PrayerHandler.isActivated(plr, PrayerHandler.BURST_OF_STRENGTH)) {
-            prayerMod = 1.05;
-        } else if (PrayerHandler.isActivated(plr, PrayerHandler.SUPERHUMAN_STRENGTH)) {
-            prayerMod = 1.1;
-        } else if (PrayerHandler.isActivated(plr, PrayerHandler.ULTIMATE_STRENGTH)) {
-            prayerMod = 1.15;
-        } else if (PrayerHandler.isActivated(plr, PrayerHandler.CHIVALRY)) {
-            prayerMod = 1.18;
-        } else if (PrayerHandler.isActivated(plr, PrayerHandler.PIETY)) {
-            prayerMod = 1.23;
-        }
-
-        return ((plr.getSkillManager().getCurrentLevel(Skill.STRENGTH)) * prayerMod) + styleBonus;
     }
 
     /**
@@ -153,6 +143,61 @@ public class DamageFormulas {
         return (int) Math.floor(maxHit);
     }
 
+    private static float effectiveRangedStrength(Player player) {
+        float rngStrength = player.getSkillManager().getCurrentLevel(Skill.RANGED);
+
+        // Prayers
+        float prayerMod = 1.0f;
+        if (PrayerHandler.isActivated(player, PrayerHandler.SHARP_EYE)) {
+            prayerMod = 1.05f;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.HAWK_EYE)) {
+            prayerMod = 1.10f;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.EAGLE_EYE)) {
+            prayerMod = 1.15f;
+        } else if (PrayerHandler.isActivated(player, PrayerHandler.RIGOUR)) {
+            prayerMod = 1.23f;
+        }
+        rngStrength = (rngStrength * prayerMod);
+
+        FightStyle fightStyle = player.getFightType().getStyle();
+        if (fightStyle == FightStyle.ACCURATE)
+            rngStrength += 3;
+        rngStrength += 8;
+
+        if (CombatEquipment.wearingVoid(player, CombatType.RANGED)) {
+            rngStrength = (rngStrength * 1.125f);
+        }
+
+//        if (dragonHunter(input))
+//            rngStrength = (int) (rngStrength * 1.3f);
+
+        return rngStrength;
+    }
+
+    private static int maximumRangeHitDpsCalc(Player player) {
+        var strengthBonus = player.getBonusManager().getOtherBonus()[BonusManager.RANGED_STRENGTH];
+
+        float maxHit = effectiveRangedStrength(player);
+        maxHit *= (strengthBonus + 64);
+        maxHit += 320;
+        maxHit /= 640;
+
+//            maxHit *= gearBonus(player);
+
+//            if (EquipmentRequirement.TBOW.isSatisfied(input))
+//                maxHit = (int) (maxHit * tbowDmgModifier(input));
+//
+//            NpcStats target = input.getNpcTarget();
+//            if (target.getName() != null && target.getName().contains("Zulrah"))
+//                maxHit = Math.min(maxHit, 50);
+
+        if (player.isSpecialActivated() && player.getCombatSpecial().getCombatMethod().type() == CombatType.RANGED) {
+            maxHit *= player.getCombatSpecial().getStrengthMultiplier();
+        }
+
+        return (int)maxHit;
+    }
+
     /**
      * Calculates the maximum ranged hit for the argued {@link Mobile} without
      * taking the victim into consideration.
@@ -162,71 +207,13 @@ public class DamageFormulas {
      * @return the maximum ranged hit that this entity can deal.
      */
     public static int calculateMaxRangedHit(Mobile entity) {
-        double maxHit = 0;
-
         if (entity.isNpc()) {
             NPC npc = (NPC) entity;
-            maxHit = npc.getDefinition().getMaxHit();
-        } else {
-            Player player = (Player) entity;
-
-            double prayerMultiplier = 1;
-            int combatStyleBonus = 2;
-            int rangeLevel = player.getSkillManager().getCurrentLevel(Skill.RANGED);
-            int rangedStrength = ((int) player.getBonusManager().getAttackBonus()[4] / 10);
-            // Include the arrows strength..
-
-            if (player.getCombat().getAmmunition() != null) {
-                rangedStrength += (player.getCombat().getAmmunition().getStrength());
-            }
-
-            // Boost blowpipe
-            if (player.getCombat().getRangedWeapon() != null) {
-                if (player.getCombat().getRangedWeapon() == RangedWeapon.TOXIC_BLOWPIPE) {
-                    rangedStrength += 35;
-                }
-            }
-
-            // Include attack style... Accurate/long range hits harder.
-            if (player.getFightType().getStyle() == FightStyle.ACCURATE) {
-                combatStyleBonus = 3;
-            } else if (player.getFightType().getStyle() == FightStyle.DEFENSIVE) {
-                combatStyleBonus = 1;
-            }
-
-            // Do calculations of maxhit...
-            int effectiveRangeDamage = (int) ((rangeLevel * prayerMultiplier) + combatStyleBonus);
-            maxHit = 1.3 + (effectiveRangeDamage / 10) + (rangedStrength / 80)
-                    + ((effectiveRangeDamage * rangedStrength) / 640);
-
-            // We now have the maxhit and can increase its damage...
-
-            // Void hits 20% more
-            if (CombatEquipment.wearingVoid(player, CombatType.RANGED)) {
-                maxHit *= 1.2;
-            }
-
-            // Prayers
-            double prayerMod = 1.0;
-            if (PrayerHandler.isActivated(player, PrayerHandler.SHARP_EYE)) {
-                prayerMod = 1.05;
-            } else if (PrayerHandler.isActivated(player, PrayerHandler.HAWK_EYE)) {
-                prayerMod = 1.10;
-            } else if (PrayerHandler.isActivated(player, PrayerHandler.EAGLE_EYE)) {
-                prayerMod = 1.15;
-            } else if (PrayerHandler.isActivated(player, PrayerHandler.RIGOUR)) {
-                prayerMod = 1.23;
-            }
-            maxHit *= prayerMod;
-
-            // Special attacks!
-            if (player.isSpecialActivated()
-                    && player.getCombatSpecial().getCombatMethod().type() == CombatType.RANGED) {
-                maxHit *= player.getCombatSpecial().getStrengthBonus();
-            }
-
+            return npc.getDefinition().getMaxHit();
         }
 
-        return (int) Math.floor(maxHit);
+        Player player = (Player) entity;
+
+        return maximumRangeHitDpsCalc(player);
     }
 }

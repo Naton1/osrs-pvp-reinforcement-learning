@@ -15,7 +15,6 @@ public class SpawnNPCCommand implements Command {
         if (player.getPrivateArea() != null) {
             player.getPrivateArea().add(npc);
         }
-        npc.setHitpoints(10000);
     }
 
     @Override

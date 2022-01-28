@@ -1,6 +1,8 @@
 package com.elvarg.game;
 
+import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.model.Location;
+import com.elvarg.util.ItemIdentifiers;
 
 /**
  * A class containing different attributes which affect the game in different
@@ -81,7 +83,8 @@ public class GameConstants {
 	/**
 	 * Spawnable Items
 	 */
-	public static final int[] ALLOWED_SPAWNS = { 13441, 3144, 391, 397, 385, 7946, 2436, 145, 147, 149, 2440, 157, 159, 161,
+	public static final int[] ALLOWED_SPAWNS = {
+			13441, 3144, 391, 397, 385, 7946, 2436, 145, 147, 149, 2440, 157, 159, 161,
 			2442, 163, 165, 167, 9739, 2444, 169, 171, 173, // potions and food
 			3040, 3042, 3044, 3046, 2452, 2454, 2456, 2458, 2448, 181, 183, 185, 6685, 6687, 6689, 6691, 2450, 189, 191, 193, 3024, 3026, 3028, 3030, 2434, // potions and food
 			139, 141, 143, 4417, 4419, 4421, 4423, 229, // potions and food
