@@ -31,6 +31,7 @@ public final class LoginDecoder extends ByteToMessageDecoder {
      * for packet encryption.
      */
     private static final Random random = new SecureRandom();
+    private static final int SECRET_VALUE = 345749224;
 
     /**
      * The size of the encrypted data.
@@ -41,6 +42,11 @@ public final class LoginDecoder extends ByteToMessageDecoder {
      * The current login decoder state
      */
     private LoginDecoderState state = LoginDecoderState.LOGIN_REQUEST;
+
+    /**
+     * The size of the encrypted data.
+     */
+    private String hostAddressOverride = null;
 
     /**
      * Sends a response code to the client to notify the user logging in.
@@ -84,6 +90,23 @@ public final class LoginDecoder extends ByteToMessageDecoder {
             Server.getLogger().info("Session rejected for bad login request id: " + request);
             sendLoginResponse(ctx, LoginResponses.LOGIN_BAD_SESSION_ID);
             return;
+        }
+
+        if (buffer.isReadable(8)) {
+            int secret = buffer.readInt();
+
+            if (secret != SECRET_VALUE) {
+                Server.getLogger().info("Invalid secret value given: " + secret);
+                sendLoginResponse(ctx, LoginResponses.LOGIN_BAD_SESSION_ID);
+                return;
+            }
+            int ip = buffer.readInt();
+
+            hostAddressOverride = String.format("%d.%d.%d.%d",
+                    (ip & 0xff),
+                    (ip >> 8 & 0xff),
+                    (ip >> 16 & 0xff),
+                    (ip >> 24 & 0xff));
         }
 
         // Send information to the client
@@ -195,7 +218,12 @@ public final class LoginDecoder extends ByteToMessageDecoder {
                 return;
             }
 
-            out.add(new LoginDetailsMessage(ctx, username, password, ByteBufUtils.getHost(ctx.channel()),
+            String host = hostAddressOverride;
+            if (host == null) {
+                host = ByteBufUtils.getHost(ctx.channel());
+            }
+
+            out.add(new LoginDetailsMessage(ctx, username, password, host,
                     new IsaacRandom(seed), decodingRandom));
         }
     }
