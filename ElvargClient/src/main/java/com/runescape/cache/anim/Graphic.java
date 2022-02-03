@@ -95,7 +95,13 @@ public final class Graphic {
         model = Model.getModel(modelId);
         if (model == null)
             return null;
-        for (int i = 0; i < 6; i++)
+        if (originalModelColours == null ||
+                originalModelColours.length == 0 ||
+                originalModelColours.length != modifiedModelColours.length) {
+            return model;
+        }
+
+        for (int i = 0; i < originalModelColours.length; i++)
             if (originalModelColours[0] != 0)
                 model.recolor(originalModelColours[i], modifiedModelColours[i]);
 
