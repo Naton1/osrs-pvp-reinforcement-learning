@@ -361,7 +361,7 @@ public class CombatFactory {
 		}
 
         // Make sure we the path is clear for projectiles..
-        if (attacker.useProjectileClipping() && !RegionManager.canProjectileAttack(attackerPosition, targetPosition, attacker.size(), attacker.getPrivateArea())) {
+        if (attacker.useProjectileClipping() && !RegionManager.canProjectileAttack(attacker, target)) {
 			return false;
 		}
 
