@@ -119,6 +119,8 @@ public final class WeaponInterfaces {
                     player.setFightType(FightType.DRAGON_DAGGER_STAB);
                 } else if (player.getWeapon() == WeaponInterface.SWORD) {
                     player.setFightType(FightType.SWORD_STAB);
+                } else if (player.getWeapon() == WeaponInterface.GHRAZI_RAPIER) {
+                    player.setFightType(FightType.GHRAZI_RAPIER_STAB);
                 }
                 return true;
             case 2285:
@@ -128,6 +130,8 @@ public final class WeaponInterfaces {
                     player.setFightType(FightType.DRAGON_DAGGER_LUNGE);
                 } else if (player.getWeapon() == WeaponInterface.SWORD) {
                     player.setFightType(FightType.SWORD_LUNGE);
+                } else if (player.getWeapon() == WeaponInterface.GHRAZI_RAPIER) {
+                    player.setFightType(FightType.GHRAZI_RAPIER_LUNGE);
                 }
                 return true;
             case 2284:
@@ -137,6 +141,8 @@ public final class WeaponInterfaces {
                     player.setFightType(FightType.DRAGON_DAGGER_SLASH);
                 } else if (player.getWeapon() == WeaponInterface.SWORD) {
                     player.setFightType(FightType.SWORD_SLASH);
+                } else if (player.getWeapon() == WeaponInterface.GHRAZI_RAPIER) {
+                    player.setFightType(FightType.GHRAZI_RAPIER_SLASH);
                 }
                 return true;
             case 2283:
@@ -146,6 +152,8 @@ public final class WeaponInterfaces {
                     player.setFightType(FightType.DRAGON_DAGGER_BLOCK);
                 } else if (player.getWeapon() == WeaponInterface.SWORD) {
                     player.setFightType(FightType.SWORD_BLOCK);
+                } else if (player.getWeapon() == WeaponInterface.GHRAZI_RAPIER) {
+                    player.setFightType(FightType.GHRAZI_RAPIER_BLOCK);
                 }
                 return true;
             case 2429: // scimitar & longsword
@@ -536,7 +544,11 @@ public final class WeaponInterfaces {
                 FightType.TWOHANDEDSWORD_CHOP, FightType.TWOHANDEDSWORD_SLASH,
                 FightType.TWOHANDEDSWORD_SMASH, FightType.TWOHANDEDSWORD_BLOCK}, 7699, 7711),
         ELDER_MAUL(425, 428, 6, new FightType[]{FightType.ELDER_MAUL_POUND,
-                FightType.ELDER_MAUL_PUMMEL, FightType.ELDER_MAUL_BLOCK}, 7474, 7486);
+                FightType.ELDER_MAUL_PUMMEL, FightType.ELDER_MAUL_BLOCK}, 7474, 7486),
+        GHRAZI_RAPIER(2276, 2279, 4, new FightType[]{FightType.GHRAZI_RAPIER_STAB,
+                FightType.GHRAZI_RAPIER_LUNGE, FightType.GHRAZI_RAPIER_SLASH,
+                FightType.GHRAZI_RAPIER_BLOCK}, 7574, 7586),
+        ;
 
         /**
          * The interface that will be displayed on the sidebar.

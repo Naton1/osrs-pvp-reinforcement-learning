@@ -361,10 +361,13 @@ public class Herblore extends ItemIdentifiers {
     public enum PotionDose {
         STRENGTH(119, 117, 115, 113, VIAL_OF_WATER, "Strength"),
         SUPER_STRENGTH(161, 159, 157, 2440, VIAL_OF_WATER, "Super strength"),
+        SUPER_COMBAT(12701, 12699, 12697, 12695, VIAL_OF_WATER, "Super combat"),
         ATTACK(125, 123, 121, 2428, VIAL_OF_WATER, "Attack"),
         SUPER_ATTACK(149, 147, 145, 2436, VIAL_OF_WATER, "Super attack"),
-        DEFENCE(137, 135, 133, 2432, VIAL_OF_WATER, "Defence"), SUPER_DEFENCE(
-                167, 165, 163, 2442, VIAL_OF_WATER, "Super defence"), RANGING_POTION(
+        DEFENCE(137, 135, 133, 2432, VIAL_OF_WATER, "Defence"),
+        SUPER_DEFENCE(
+                167, 165, 163, 2442, VIAL_OF_WATER, "Super defence"),
+        RANGING_POTION(
                 173, 171, 169, 2444, VIAL_OF_WATER, "Ranging"), FISHING(155, 153, 151,
                 2438, VIAL_OF_WATER, "Fishing"), PRAYER(143, 141, 139, 2434, VIAL_OF_WATER,
                 "Prayer"), ANTIFIRE(2458, 2456, 2454, 2452, VIAL_OF_WATER, "Antifire"), ZAMORAK_BREW(
