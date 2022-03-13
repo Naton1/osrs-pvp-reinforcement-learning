@@ -166,7 +166,6 @@ public enum CombatSpecial {
      */
     public static void drain(Mobile character, int amount) {
         character.decrementSpecialPercentage(amount);
-        character.setSpecialActivated(false);
 
         if (!character.isRecoveringSpecialAttack()) {
             TaskManager.submit(new RestoreSpecialAttackTask(character));
