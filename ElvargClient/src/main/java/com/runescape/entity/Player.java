@@ -73,17 +73,15 @@ public final class Player extends Mob {
              * MAKE SURE WE'VE LOADED THE GRAPHIC BEFORE ATTEMPTING TO DO IT.
              * Fixes graphics flickering.
              */
-            //if (Frame.animationlist[spotAnim.animationSequence.primaryFrames[0] >> 16].length == 0) {
-            //    spotAnimationModel = null;
-            //}
+            if (Frame.animationlist[spotAnim.animationSequence.primaryFrames[0] >> 16].length == 0) {
+                spotAnimationModel = null;
+            }
 
             if (spotAnimationModel != null) {
 
                 Model model_3 = new Model(true, Frame.noAnimationInProgress(super.currentAnimation), false, spotAnimationModel);
                 model_3.translate(0, -super.graphicHeight, 0);
                 model_3.skin();
-                /*model_3.applyAnimationFrame(spotAnim.animationSequence.primaryFrames[super.currentAnimation], nextFrame,
-                        cycle1, cycle2);*/
                 model_3.applyTransform(spotAnim.animationSequence.primaryFrames[super.currentAnimation]);
                 model_3.faceGroups = null;
                 model_3.vertexGroups = null;
