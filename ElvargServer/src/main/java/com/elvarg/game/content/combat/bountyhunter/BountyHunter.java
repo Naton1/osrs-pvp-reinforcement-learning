@@ -3,6 +3,7 @@ package com.elvarg.game.content.combat.bountyhunter;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.model.BrokenItem;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.util.ItemIdentifiers;
@@ -262,12 +263,12 @@ public class BountyHunter {
 		}
 
 		// Should the player be rewarded for this kill?
-		boolean rewardPlayer = true;
+		boolean fullRewardPlayer = true;
 
 		// Check if we recently killed this player
 		if (killer.getRecentKills().contains(killed.getHostAddress())
 				|| killer.getHostAddress().equals(killed.getHostAddress())) {
-			rewardPlayer = false;
+//			 fullRewardPlayer = false;
 		} else {
 			killer.getRecentKills().add(killed.getHostAddress());
 		}
@@ -288,7 +289,7 @@ public class BountyHunter {
 			unassign(killer);
 
 			// If player isnt farming kills..
-			if (rewardPlayer) {
+			if (fullRewardPlayer) {
 
 				// Search for emblem in the player's inventory
 				Emblem inventoryEmblem = null;
@@ -339,13 +340,15 @@ public class BountyHunter {
 				}
 			}
 		} else {
-			if (rewardPlayer) {
+			if (fullRewardPlayer) {
 				// Increment regular kills since we didn't kill a target.
 				killer.incrementKills();
 			}
 		}
 
-		if (rewardPlayer) {
+		var additionalBloodMoneyFromBrokenItems = (BrokenItem.getValueLoseOnDeath(killed)* 3) / 4; // only 75%
+
+		if (fullRewardPlayer) {
 
 			// Increment total kills..
 			killer.incrementTotalKills();
@@ -360,7 +363,7 @@ public class BountyHunter {
 
 			// Reward player for the kill..
 			int rewardAmount = 130 + (100 * enemyKillstreak) + (150 * killer.getKillstreak())
-					+ (10 * killer.getWildernessLevel());
+					+ (10 * killer.getWildernessLevel()) + additionalBloodMoneyFromBrokenItems;
 
 			if (killer.getInventory().contains(ItemIdentifiers.BLOOD_MONEY)
 					|| killer.getInventory().getFreeSlots() > 0) {
@@ -381,9 +384,18 @@ public class BountyHunter {
 			}
 
 		} else {
+			// Reward player for the kill..
+			int rewardAmount = 10 + Misc.getRandom(20) + additionalBloodMoneyFromBrokenItems;
 
-			// Player is probably farming kills.
-			killer.getPacketSender().sendMessage("You did not receive any rewards for that kill.");
+			if (killer.getInventory().contains(ItemIdentifiers.BLOOD_MONEY)
+					|| killer.getInventory().getFreeSlots() > 0) {
+				killer.getInventory().add(ItemIdentifiers.BLOOD_MONEY, rewardAmount);
+			} else {
+				ItemOnGroundManager.registerNonGlobal(killer, new Item(ItemIdentifiers.BLOOD_MONEY, rewardAmount),
+						killed.getLocation());
+			}
+
+			killer.getPacketSender().sendMessage("You've received " + rewardAmount + " blood money for that kill!");
 		}
 
 		// Update interfaces

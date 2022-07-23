@@ -3,6 +3,7 @@ package com.elvarg.game.entity.impl.grounditem;
 import java.util.Iterator;
 import java.util.Optional;
 
+import com.elvarg.game.GameConstants;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGround.State;
 import com.elvarg.game.entity.impl.player.Player;
@@ -135,6 +136,12 @@ public class ItemOnGroundManager {
 	 * @param item
 	 */
 	public static void register(ItemOnGround item) {
+		// No point spamming with spawned items...
+		boolean spawnable = GameConstants.ALLOWED_SPAWNS.contains(item.getItem().getId());
+		if (spawnable) {
+			return;
+		}
+
 		// Check for merge with existing stackables..
 		if (item.getItem().getDefinition().isStackable()) {
 			if (merge(item)) {
