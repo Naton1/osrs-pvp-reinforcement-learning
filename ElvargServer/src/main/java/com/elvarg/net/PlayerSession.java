@@ -66,7 +66,7 @@ public class PlayerSession {
 
         // Update the player
         player.setUsername(msg.getUsername()).setLongUsername(Misc.stringToLong(msg.getUsername()))
-                .setPassword(msg.getPassword()).setHostAddress(msg.getHost());
+                .setHostAddress(msg.getHost());
 
         // Get the response code
         int response = LoginResponses.evaluate(player, msg);

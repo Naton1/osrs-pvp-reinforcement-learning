@@ -4,6 +4,7 @@ import com.elvarg.game.GameBuilder;
 import com.elvarg.game.GameConstants;
 import com.elvarg.net.NetworkBuilder;
 import com.elvarg.net.NetworkConstants;
+import com.elvarg.util.ShutdownHook;
 import com.elvarg.util.flood.Flooder;
 
 import java.util.logging.Level;
@@ -39,6 +40,7 @@ public class Server {
      */
     public static void main(String[] args) {
         try {
+            Runtime.getRuntime().addShutdownHook(new ShutdownHook());
 
             if (args.length == 1) {
                 PRODUCTION = Integer.parseInt(args[0]) == 1;
