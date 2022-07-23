@@ -215,7 +215,7 @@ public class Player extends Mobile {
     private boolean infiniteHealth;
     private FightType fightType = FightType.UNARMED_KICK;
     private WeaponInterface weapon;
-    private boolean autoRetaliate;
+    private boolean autoRetaliate = true;
     
 	// GWD
 	private int[] godwarsKillcount = new int[God.values().length];
@@ -637,6 +637,10 @@ public class Player extends Mobile {
 		increaseStats.start(60);
 
 		getUpdateFlag().flag(Flag.APPEARANCE);
+
+		if (this.newPlayer) {
+			Presetables.load(this, Presetables.GLOBAL_PRESETS[2]);
+		}
 	}
 
 	/**
