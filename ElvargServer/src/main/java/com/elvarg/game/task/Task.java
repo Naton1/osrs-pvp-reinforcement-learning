@@ -1,5 +1,7 @@
 package com.elvarg.game.task;
 
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
+
 import java.util.Objects;
 
 /**

@@ -7,6 +7,7 @@ import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGround;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.EffectTimer;
 import com.elvarg.game.model.Graphic;
@@ -177,6 +178,12 @@ public class PacketSender {
 	 * @return The PacketSender instance.
 	 */
 	public PacketSender sendMessage(String message) {
+		if (player instanceof PlayerBot) {
+			// Bots can't read their own messages, yet ;) - force chat it instead
+			((PlayerBot) player).sendChat(message);
+			return this;
+		}
+
 		PacketBuilder out = new PacketBuilder(253, PacketType.VARIABLE);
 		out.putString(message);
 		player.getSession().write(out);

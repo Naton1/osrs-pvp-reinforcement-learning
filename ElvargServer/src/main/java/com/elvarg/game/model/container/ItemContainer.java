@@ -122,6 +122,14 @@ public abstract class ItemContainer {
         return items;
     }
 
+    public int[] getItemIdsArray() {
+        int[] array = new int[items.length];
+        for (int i = 0; i < items.length; i++) {
+            array[i] = items[i].getId();
+        }
+        return array;
+    }
+
     /**
      * Sets all the items in the container.
      *

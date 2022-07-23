@@ -4,6 +4,7 @@ import com.elvarg.game.World;
 import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.*;
 import com.elvarg.game.model.areas.AreaManager;
 import com.elvarg.game.model.container.impl.Equipment;
@@ -392,7 +393,7 @@ public class PlayerUpdating {
 		}
 		if (flag.flagged(Flag.CHAT) && target.getCurrentChatMessage() != null && !noChat
 				&& !player.getRelations().getIgnoreList().contains(target.getLongUsername())) {
-			updateChat(builder, target);
+			updateChat(builder, target, player);
 		}
 		if (flag.flagged(Flag.ENTITY_INTERACTION)) {
 			updateEntityInteraction(builder, target);
@@ -423,7 +424,7 @@ public class PlayerUpdating {
 	 *            The player to update chat for.
 	 * @return The PlayerUpdating instance.
 	 */
-	private static void updateChat(PacketBuilder builder, Player target) {
+	private static void updateChat(PacketBuilder builder, Player target, Player receiver) {
 		ChatMessage message = target.getCurrentChatMessage();
 		byte[] bytes = message.getText();
 		builder.putShort(((message.getColour() & 0xff) << 8) | (message.getEffects() & 0xff), ByteOrder.LITTLE);
@@ -433,6 +434,11 @@ public class PlayerUpdating {
         for (int ptr = bytes.length - 1; ptr >= 0; ptr--) {
             builder.put(bytes[ptr]);
         }
+
+		if (receiver instanceof PlayerBot && !(target instanceof PlayerBot)) {
+			// Player Bots: Automatically listen to chat messages
+			((PlayerBot) receiver).getChatInteraction().heard(message, target);
+		}
 	}
 
 	/**
@@ -575,7 +581,7 @@ public class PlayerUpdating {
 	 * their equipment, clothing, combat level, gender, head icons, user name and
 	 * animations.
 	 *
-	 * @param builder
+	 * @param out
 	 *            The packet builder to write information on.
 	 * @param target
 	 *            The player to update appearance for.

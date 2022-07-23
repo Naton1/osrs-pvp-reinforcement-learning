@@ -9,6 +9,7 @@ import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.*;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.task.Task;
@@ -68,6 +69,10 @@ public class PlayerDeathTask extends Task {
 		try {
 			switch (ticks) {
 			case 2:
+				if (player instanceof PlayerBot) {
+					((PlayerBot) player).getCombatInteraction().handleDying(this.killer);
+				}
+
 				// Reset combat..
 				player.getCombat().reset();
 
@@ -94,6 +99,9 @@ public class PlayerDeathTask extends Task {
 				}
 				break;
 			case 0:
+				if (player instanceof PlayerBot) {
+					((PlayerBot) player).getCombatInteraction().handleDeath();
+				}
 
 				if (player.getArea() != null) {
 					loseItems = player.getArea().dropItemsOnDeath(player, killer);
