@@ -15,7 +15,7 @@ public class GameConstants {
 	/**
 	 * The name of the game.
 	 */
-	public static final String NAME = "Elvarg";
+	public static final String NAME = "RspsApp";
 
 	/**
 	 * The secure game UID /Unique Identifier/
@@ -55,7 +55,7 @@ public class GameConstants {
 	 * The default position, where players will spawn upon logging in for the first
 	 * time.
 	 */
-	public static final Location DEFAULT_LOCATION = new Location(3086, 3496);
+	public static final Location DEFAULT_LOCATION = new Location(3089, 3524);
 
 	/**
 	 * Should the inventory be refreshed immediately on switching items or should it

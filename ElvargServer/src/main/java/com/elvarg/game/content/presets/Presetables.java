@@ -262,7 +262,7 @@ public class Presetables {
 	 * @param preset
 	 *            The preset to load.
 	 */
-	private static void load(Player player, final Presetable preset) {
+	public static void load(Player player, final Presetable preset) {
 		final int oldCbLevel = player.getSkillManager().getCombatLevel();
 
 		// Close!
