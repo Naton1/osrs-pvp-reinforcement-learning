@@ -634,8 +634,21 @@ public class RegionManager {
         return (getClipping(pos.getX() - 1, pos.getY() - 1, pos.getZ(), privateArea) & 0x128010e) != 0;
     }
     
-    public static boolean canProjectileAttack(Mobile a, Mobile b) {
-        return canProjectileAttack(a.getLocation(), b.getLocation(), a.size(), a.getPrivateArea());
+    public static boolean canProjectileAttack(Mobile from, Mobile to) {
+        Location a = from.getLocation();
+        Location b = to.getLocation();
+
+        if (from.isPlayer() && to.isPlayer()) {
+        // If both participants are players, line of sight is calculated from the player on the western side. I
+            if (a.getX() > b.getX()) {
+                a = to.getLocation();
+                b = from.getLocation();
+            }
+        } else if (to.isPlayer()) {
+            a = to.getLocation();
+            b = from.getLocation();
+        }
+        return canProjectileAttack(a, b, from.size(), from.getPrivateArea());
     }
     
     public static boolean canProjectileAttack(Location a, Location b, int size, PrivateArea area) {
