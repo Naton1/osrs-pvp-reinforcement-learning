@@ -582,9 +582,10 @@ public class CombatFactory {
 			Player p_ = attacker.getAsPlayer();
 
 			// Randomly apply poison if poisonous weapon is equipped.
-			if (Misc.getRandom(10) <= 5) {
+			if (damage > 0 && Misc.getRandom(20) <= 5) { // 1/4
 
 				Optional<PoisonType> poison = Optional.empty();
+				boolean isRanged = false;
 
 				if (combatType == CombatType.MELEE || p_.getWeapon() == WeaponInterface.DART
 						|| p_.getWeapon() == WeaponInterface.KNIFE
@@ -592,10 +593,11 @@ public class CombatFactory {
 						|| p_.getWeapon() == WeaponInterface.JAVELIN) {
 					poison = CombatPoisonData.getPoisonType(p_.getEquipment().get(Equipment.WEAPON_SLOT));
 				} else if (combatType == CombatType.RANGED) {
+					isRanged = true;
 					poison = CombatPoisonData.getPoisonType(p_.getEquipment().get(Equipment.AMMUNITION_SLOT));
 				}
 
-				if (poison.isPresent()) {
+				if (poison.isPresent() && (!isRanged || Misc.getRandom(10) <= 5)) { // Range 1/8
 					CombatFactory.poisonEntity(target, poison.get());
 				}
 			}
