@@ -2949,5 +2949,32 @@
 		},
 		"facing": "NORTH",
 		"radius": 3
+	},
+	{
+		"id": 315,
+		"position": {
+			"x": 3090,
+			"y": 3523
+		},
+		"facing": "NORTH",
+		"radius": 0
+	},
+	{
+		"id": 394,
+		"position": {
+			"x": 3088,
+			"y": 3523
+		},
+		"facing": "NORTH",
+		"radius": 0
+	},
+	{
+		"id": 7456,
+		"position": {
+			"x": 3089,
+			"y": 3523
+		},
+		"facing": "NORTH",
+		"radius": 0
 	}
 ]

@@ -34,6 +34,7 @@ public class ItemDefinition {
     private boolean sellable;
     private boolean noted;
     private int value;
+    private int bloodMoneyValue;
     private int highAlch;
     private int lowAlch;
     private int dropValue;
@@ -75,6 +76,10 @@ public class ItemDefinition {
 
     public int getValue() {
         return value;
+    }
+
+    public int getBloodMoneyValue() {
+        return bloodMoneyValue;
     }
 
     public int getHighAlchValue() {

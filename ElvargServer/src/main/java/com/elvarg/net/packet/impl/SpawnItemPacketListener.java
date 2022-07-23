@@ -30,13 +30,8 @@ public class SpawnItemPacketListener implements PacketExecutor {
             return;
         }
 
-        boolean spawnable = false;
-        for (int i : GameConstants.ALLOWED_SPAWNS) {
-            if (item == i) {
-                spawnable = true;
-                break;
-            }
-        }
+        
+		boolean spawnable = GameConstants.ALLOWED_SPAWNS.contains(item);
 
         ItemDefinition def = ItemDefinition.forId(item);
         if (def == null || !spawnable) {
