@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.Sound;
+import com.elvarg.game.World;
 import com.elvarg.game.content.Dueling;
 import com.elvarg.game.content.PetHandler;
 import com.elvarg.game.content.PrayerHandler;
@@ -39,9 +40,11 @@ import com.elvarg.game.content.skill.skillable.impl.Runecrafting.Pouch;
 import com.elvarg.game.content.skill.skillable.impl.Runecrafting.PouchContainer;
 import com.elvarg.game.content.skill.slayer.ActiveSlayerTask;
 import com.elvarg.game.definition.ItemDefinition;
+import com.elvarg.game.definition.PlayerBotDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NpcAggression;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Appearance;
 import com.elvarg.game.model.ChatMessage;
@@ -242,6 +245,16 @@ public class Player extends Mobile {
 	}
 
 	/**
+	 * Creates this player with pre defined spawn location.
+	 *
+	 * @param playerIO
+	 */
+	public Player(PlayerSession playerIO, Location spawnLocation) {
+		super(spawnLocation);
+		this.session = playerIO;
+	}
+
+	/**
 	 * Actions that should be done when this character is added to the world.
 	 */
 	@Override
@@ -373,7 +386,10 @@ public class Player extends Mobile {
 		getTimers().process();
 
 		// Process incoming packets...
-		getSession().processPackets();
+		PlayerSession session = getSession();
+		if (session != null) {
+			session.processPackets();
+		}
 
 		// Process walk to task..
 		if (walkToTask != null) {
@@ -424,6 +440,10 @@ public class Player extends Mobile {
 				getPacketSender().sendRunEnergy();
 				lastRunRecovery.reset();
 			}
+		}
+
+		if (this instanceof PlayerBot) {
+			((PlayerBot) this).getMovementInteraction().process();
 		}
 
 		/**
@@ -543,7 +563,7 @@ public class Player extends Mobile {
 		TaskManager.cancelTasks(this);
 		PlayerSaveDb.save(this);
 
-		if (getSession().getChannel().isOpen()) {
+		if (getSession() != null && getSession().getChannel().isOpen()) {
 			getSession().getChannel().close();
 		}
 	}
@@ -640,6 +660,21 @@ public class Player extends Mobile {
 
 		if (this.newPlayer) {
 			Presetables.load(this, Presetables.GLOBAL_PRESETS[2]);
+		}
+
+		if (!(this instanceof PlayerBot)) {
+			// Spawn player bots when a real player logs in
+			for (PlayerBotDefinition definition : GameConstants.PLAYER_BOTS) {
+				if (World.getPlayerBots().containsKey(definition.getUsername())) {
+					continue;
+				}
+
+				PlayerBot playerBot = new PlayerBot(definition);
+
+				World.getPlayerBots().put(definition.getUsername(), playerBot);
+			}
+
+			System.out.println(GameConstants.PLAYER_BOTS + " player bots now online.");
 		}
 	}
 

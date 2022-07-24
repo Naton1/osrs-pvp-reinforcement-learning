@@ -7,6 +7,7 @@ import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.entity.impl.player.PlayerSaveDb;
 import com.elvarg.game.entity.updating.NPCUpdating;
 import com.elvarg.game.entity.updating.PlayerUpdating;
@@ -28,10 +29,16 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class World {
 
 	private static final int MAX_PLAYERS = 500;
+
 	/**
 	 * The collection of active {@link Player}s.
 	 */
 	private static MobileList<Player> players = new MobileList<>(MAX_PLAYERS);
+
+	/**
+	 * The collection of active {@link PlayerBot}s.
+	 */
+	private static HashMap<String, PlayerBot> playerBots = new HashMap<>(GameConstants.PLAYER_BOTS.length);
 
 	/**
 	 * The collection of active {@link NPC}s.
@@ -244,6 +251,8 @@ public class World {
 	public static MobileList<NPC> getNpcs() {
 		return npcs;
 	}
+
+	public static HashMap<String, PlayerBot> getPlayerBots() { return playerBots; }
 
 	public static List<ItemOnGround> getItems() {
 		return items;

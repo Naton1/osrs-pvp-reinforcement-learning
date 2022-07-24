@@ -2,6 +2,7 @@ package com.elvarg.game.content;
 
 import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.PlayerStatus;
 import com.elvarg.game.model.SecondsTimer;
@@ -218,6 +219,11 @@ public class Trading {
             } else {
                 player.getPacketSender().sendMessage("You've sent a trade request to " + t_.getUsername() + ".");
                 t_.getPacketSender().sendMessage(player.getUsername() + ":tradereq:");
+
+                if (t_ instanceof PlayerBot) {
+                    // Player Bots: Automatically accept any trade request
+                    ((PlayerBot) t_).getTradingInteraction().acceptTradeRequest(player);
+                }
             }
 
             // Set the request delay to 2 seconds at least.
@@ -244,6 +250,11 @@ public class Trading {
 
         // Refresh and send container...
         container.refreshItems();
+
+        if (player instanceof PlayerBot) {
+            // For Player Bots, auto add items being given to the player
+            ((PlayerBot) player).getTradingInteraction().addItemsToTrade(container, interact);
+        }
     }
 
     public void closeTrade() {
@@ -333,6 +344,10 @@ public class Trading {
                 // Go into confirm screen!
                 player.getTrading().confirmScreen();
                 interact_.getTrading().confirmScreen();
+            } else {
+                if (interact_ instanceof PlayerBot) {
+                    ((PlayerBot) interact_).getTradingInteraction().acceptTrade();
+                }
             }
         } else if (state == TradeState.CONFIRM_SCREEN) {
 
@@ -349,11 +364,18 @@ public class Trading {
             if (state == TradeState.ACCEPTED_CONFIRM_SCREEN && t_state == TradeState.ACCEPTED_CONFIRM_SCREEN) {
 
                 // Give items to both players...
-                for (Item item : interact_.getTrading().getContainer().getValidItems()) {
+                ArrayList<Item> receivingItems = interact_.getTrading().getContainer().getValidItems();
+                for (Item item : receivingItems) {
                     player.getInventory().add(item);
                 }
-                for (Item item : player.getTrading().getContainer().getValidItems()) {
+
+                ArrayList<Item> givingItems = player.getTrading().getContainer().getValidItems();
+                for (Item item : givingItems) {
                     interact_.getInventory().add(item);
+                }
+
+                if (player instanceof PlayerBot && receivingItems.size() > 0) {
+                    ((PlayerBot) player).getTradingInteraction().receivedItems(receivingItems, interact_);
                 }
 
                 // Reset attributes for both players...
@@ -367,7 +389,10 @@ public class Trading {
                 // Send successful trade message!
                 player.getPacketSender().sendMessage("Trade accepted!");
                 interact_.getPacketSender().sendMessage("Trade accepted!");
-
+            } else {
+                if (interact_ instanceof PlayerBot) {
+                    ((PlayerBot) interact_).getTradingInteraction().acceptTrade();
+                }
             }
         }
         button_delay.start(1);
@@ -453,6 +478,11 @@ public class Trading {
                             Misc.insertCommasToNumber(other_plr_value) + " bm");
                     interact.getPacketSender().sendString(ITEM_VALUE_2_FRAME,
                             Misc.insertCommasToNumber(plr_value) + " bm");
+
+                    if (interact instanceof PlayerBot) {
+                        // Automatically accept the trade whenever an item is added by the player
+                        interact.getTrading().acceptTrade();
+                    }
                 }
             } else {
                 player.getPacketSender().sendInterfaceRemoval();

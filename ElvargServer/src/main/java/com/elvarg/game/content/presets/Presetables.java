@@ -14,6 +14,8 @@ import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.content.combat.magic.Autocasting;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
+import com.elvarg.game.model.Flag;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.areas.impl.WildernessArea;
@@ -268,9 +270,9 @@ public class Presetables {
 		// Close!
 		player.getPacketSender().sendInterfaceRemoval();
 
-		// Check if we can load..
+		// Check if we can load...
 		if (player.getArea() instanceof WildernessArea) {
-			if (player.getRights() != PlayerRights.DEVELOPER) {
+			if (!(player instanceof PlayerBot) && player.getRights() != PlayerRights.DEVELOPER) {
 				player.getPacketSender().sendMessage("You can't load a preset in the wilderness!");
 				return;
 			}
@@ -392,6 +394,8 @@ public class Presetables {
 		// Restore special attack
 		player.setSpecialPercentage(100);
 		CombatSpecial.updateBar(player);
+
+		player.getUpdateFlag().flag(Flag.APPEARANCE);
 	}
 
 	/**
@@ -402,7 +406,7 @@ public class Presetables {
 	 * @return
 	 */
 	public static boolean handleButton(Player player, int button) {
-		if (player.getInterfaceId() != INTERFACE_ID) {
+		if (player.getInterfaceId() != INTERFACE_ID && !(player instanceof PlayerBot)) {
 			return false;
 		}
 		switch (button) {

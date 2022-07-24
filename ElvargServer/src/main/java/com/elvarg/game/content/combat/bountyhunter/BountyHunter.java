@@ -240,7 +240,7 @@ public class BountyHunter {
 	 * @param killer
 	 * @param killed
 	 */
-	public static void onDeath(Player killer, Player killed) {
+	public static void onDeath(Player killer, Player killed, boolean canGetFullReward) {
 		// Cache the killed player's killstreak
 		final int enemyKillstreak = killed.getKillstreak();
 
@@ -263,7 +263,7 @@ public class BountyHunter {
 		}
 
 		// Should the player be rewarded for this kill?
-		boolean fullRewardPlayer = true;
+		boolean fullRewardPlayer = canGetFullReward;
 
 		// Check if we recently killed this player
 		if (killer.getRecentKills().contains(killed.getHostAddress())

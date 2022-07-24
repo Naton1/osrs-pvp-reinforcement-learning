@@ -19,6 +19,10 @@ public class TradeRequestPacketListener implements PacketExecutor {
 
         Player player2 = World.getPlayers().get(index);
 
+        send(player, player2);
+    }
+
+    public static void send(Player player, Player player2) {
         if (player == null
                 || player.getHitpoints() <= 0
                 || !player.isRegistered()
@@ -65,6 +69,5 @@ public class TradeRequestPacketListener implements PacketExecutor {
                 return player.calculateDistance(player2) == 1;
             }
         });
-
     }
 }

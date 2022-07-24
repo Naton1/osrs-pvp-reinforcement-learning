@@ -32,6 +32,7 @@ import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NPCMovementCoordinator.CoordinateState;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.EffectTimer;
 import com.elvarg.game.model.Flag;
@@ -645,6 +646,10 @@ public class CombatFactory {
 
 		// Add damage to target damage map
 		target.getCombat().addDamage(attacker, qHit.getTotalDamage());
+
+		if (target instanceof PlayerBot) {
+			((PlayerBot) target).getCombatInteraction().takenDamage(qHit.getTotalDamage(), attacker);
+		}
 	}
 
 	/**

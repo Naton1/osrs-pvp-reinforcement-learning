@@ -1,5 +1,6 @@
 package com.elvarg.game.entity.impl.player;
 
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
@@ -17,7 +18,7 @@ public class PlayerSaveDb {
     private static final TableSchema<PlayerSaveRecord> PLAYER_SAVE_TABLE_SCHEMA = TableSchema.fromClass(PlayerSaveRecord.class);
 
     public static void save(Player player) {
-        if (playerTableName == null) {
+        if (playerTableName == null || player instanceof PlayerBot) {
             return;
         }
 
