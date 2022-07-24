@@ -52,15 +52,23 @@ public class EmblemTraderDialogue extends DynamicDialogueBuilder {
             }
         }));
 
-        add(new ActionDialogue(5, () -> {
-            if (player.isSkulled()) {
-                add(new NpcDialogue(6, NpcIdentifiers.EMBLEM_TRADER, "Heh you are skilled already..."));
-                player.getDialogueManager().start(this, 6);
-            } else {
-                CombatFactory.skull(player, SkullType.WHITE_SKULL, 300);
-                add(new NpcDialogue(6, NpcIdentifiers.EMBLEM_TRADER, "Here you go! Now have some fun!", DialogueExpression.LAUGHING));
-                player.getDialogueManager().start(this, 6);
+        add(new OptionDialogue(5, (option) -> {
+            switch (option) {
+                case FIRST_OPTION:
+                    CombatFactory.skull(player, SkullType.WHITE_SKULL, 300);
+                    add(new NpcDialogue(6, NpcIdentifiers.EMBLEM_TRADER, "Here you go! Now have some fun!", DialogueExpression.LAUGHING));
+                    player.getDialogueManager().start(this, 6);
+                    break;
+                case SECOND_OPTION:
+                    CombatFactory.skull(player, SkullType.RED_SKULL, 300);
+                    add(new NpcDialogue(6, NpcIdentifiers.EMBLEM_TRADER, "Here you go! Don't cry if you die!!", DialogueExpression.LAUGHING));
+                    player.getDialogueManager().start(this, 6);
+                    break;
+                default:
+                    player.getPacketSender().sendInterfaceRemoval();
+                    break;
             }
-        }));
+        }, "Give me white skull!", "Give me red skull! (No item protect)", "Eh.. Nothing..."));
+
     }
 }
