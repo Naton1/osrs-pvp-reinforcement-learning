@@ -489,7 +489,7 @@ public abstract class ItemContainer {
         return this.getFreeSlots() <= 0 && !(this.contains(itemId) && ItemDefinition.forId(itemId).isStackable());
     }
 
-    public ItemContainer addItems(Item[] items, boolean refresh) {
+    public ItemContainer addItems(List<Item> items, boolean refresh) {
         if (items == null) {
             return this;
         }

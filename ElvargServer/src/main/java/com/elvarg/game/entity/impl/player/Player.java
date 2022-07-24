@@ -133,7 +133,7 @@ public class Player extends Mobile {
 	private boolean openPresetsOnDeath = true;
 
 	private String username;
-	private String password;
+	private String passwordHashWithSalt;
 	private String hostAddress;
 	private Long longUsername;
 	private PlayerSession session;
@@ -561,7 +561,7 @@ public class Player extends Mobile {
 		BountyHunter.unassign(this);
 		ClanChatManager.leave(this, false);
 		TaskManager.cancelTasks(this);
-		PlayerSaving.save(this);
+		PlayerSaveDb.save(this);
 
 		if (getSession() != null && getSession().getChannel().isOpen()) {
 			getSession().getChannel().close();
@@ -790,12 +790,12 @@ public class Player extends Mobile {
 		return this;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getPasswordHashWithSalt() {
+		return passwordHashWithSalt;
 	}
 
-	public Player setPassword(String password) {
-		this.password = password;
+	public Player setPasswordHashWithSalt(String passwordHashWithSalt) {
+		this.passwordHashWithSalt = passwordHashWithSalt;
 		return this;
 	}
 

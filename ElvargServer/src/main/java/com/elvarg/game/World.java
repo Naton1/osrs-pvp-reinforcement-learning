@@ -9,6 +9,7 @@ import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.player.PlayerSaving;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
+import com.elvarg.game.entity.impl.player.PlayerSaveDb;
 import com.elvarg.game.entity.updating.NPCUpdating;
 import com.elvarg.game.entity.updating.PlayerUpdating;
 import com.elvarg.game.entity.updating.sync.GameSyncExecutor;
@@ -241,7 +242,7 @@ public class World {
 	 * Saves all players in the game.
 	 */
 	public static void savePlayers() {
-		players.forEach(PlayerSaving::save);
+		players.forEach(PlayerSaveDb::save);
 	}
 
 	public static MobileList<Player> getPlayers() {
