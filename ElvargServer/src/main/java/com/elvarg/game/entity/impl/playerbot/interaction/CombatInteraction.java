@@ -3,6 +3,7 @@ package com.elvarg.game.entity.impl.playerbot.interaction;
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.content.Food;
 import com.elvarg.game.content.combat.CombatSpecial;
+import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
@@ -124,6 +125,9 @@ public class CombatInteraction {
 
     // Called when the Player Bot has died
     public void handleDeath(Optional<Player> killer) {
+        if (killer.isPresent()) {
+            BountyHunter.onDeath(killer.get(), this.playerBot, false);
+        }
         // For the most part, keep behaviour as Player-like as possible
         this.playerBot.getInventory().resetItems().refreshItems();
         this.playerBot.getEquipment().resetItems().refreshItems();
