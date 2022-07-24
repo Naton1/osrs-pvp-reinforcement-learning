@@ -1,6 +1,11 @@
 package com.elvarg.game;
 
 import com.elvarg.game.definition.PlayerBotDefinition;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.rights.PlayerRights;
 
@@ -17,7 +22,7 @@ public class GameConstants {
 	/**
 	 * The name of the game.
 	 */
-	public static final String NAME = "Elvarg";
+	public static final String NAME = "RspsApp";
 
 	/**
 	 * The secure game UID /Unique Identifier/
@@ -57,7 +62,7 @@ public class GameConstants {
 	 * The default position, where players will spawn upon logging in for the first
 	 * time.
 	 */
-	public static final Location DEFAULT_LOCATION = new Location(3086, 3496);
+	public static final Location DEFAULT_LOCATION = new Location(3089, 3524);
 
 	/**
 	 * Should the inventory be refreshed immediately on switching items or should it
@@ -85,7 +90,7 @@ public class GameConstants {
 	/**
 	 * Spawnable Items
 	 */
-	public static final int[] ALLOWED_SPAWNS = {
+	public static final Set<Integer> ALLOWED_SPAWNS = new HashSet<>(Arrays.asList(
 			13441, 3144, 391, 397, 385, 7946, 2436, 145, 147, 149, 2440, 157, 159, 161,
 			2442, 163, 165, 167, 9739, 2444, 169, 171, 173, // potions and food
 			3040, 3042, 3044, 3046, 2452, 2454, 2456, 2458, 2448, 181, 183, 185, 6685, 6687, 6689, 6691, 2450, 189, 191, 193, 3024, 3026, 3028, 3030, 2434, // potions and food
@@ -120,7 +125,7 @@ public class GameConstants {
 			4675, 1381, 1383, 1385, 1387, 1379, 4089, 4091, 4093, 4095, 4097, 4099, 4101, 4103, 4105, 4107, 4109, 4111,
 			4113, 4115, 4117, 7400, 7399, 7398, 6918, 6916, 6924, 6922, 6920, 6109, 6107, 6108, 6110, 6106, 3105, 6111,
 			544, 542, 1035, 1033, 579, 577, 1011, 554, 555, 556, 557, 558, 559, 561, 563, 562, 560, 565, 566, 9075,
-			1704, 1731, 1725, 1727, 1729, 8013, };
+			1704, 1731, 1725, 1727, 1729, 8013));
 
 	public static final PlayerBotDefinition[] PLAYER_BOTS = new PlayerBotDefinition[] {
 			new PlayerBotDefinition("Hello123", new Location(3085, 3528), 0),

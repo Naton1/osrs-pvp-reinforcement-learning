@@ -288,13 +288,7 @@ public class Presetables {
 			if (!item.isValid()) {
 				continue;
 			}
-			boolean spawnable = false;
-			for (int i : GameConstants.ALLOWED_SPAWNS) {
-				if (item.getId() == i) {
-					spawnable = true;
-					break;
-				}
-			}
+			boolean spawnable = GameConstants.ALLOWED_SPAWNS.contains(item.getId());
 			if (!spawnable) {
 				player.getBank(Bank.getTabForItem(player, item.getId())).add(item, false);
 				sent = true;
@@ -316,13 +310,7 @@ public class Presetables {
 				if (item == null)
 					continue;
 
-				boolean spawnable = false;
-				for (int i : GameConstants.ALLOWED_SPAWNS) {
-					if (item.getId() == i) {
-						spawnable = true;
-						break;
-					}
-				}
+				boolean spawnable = GameConstants.ALLOWED_SPAWNS.contains(item.getId());
 
 				if (!spawnable) {
 					nonSpawnables.add(item);
