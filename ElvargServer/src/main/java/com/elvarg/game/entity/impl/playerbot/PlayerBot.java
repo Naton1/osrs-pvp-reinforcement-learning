@@ -10,6 +10,7 @@ import com.elvarg.game.entity.impl.playerbot.commands.FollowPlayer;
 import com.elvarg.game.entity.impl.playerbot.commands.HoldItems;
 import com.elvarg.game.entity.impl.playerbot.commands.LoadPreset;
 import com.elvarg.game.entity.impl.playerbot.interaction.*;
+import com.elvarg.game.entity.updating.PlayerUpdating;
 import com.elvarg.game.model.ChatMessage;
 import com.elvarg.game.model.Location;
 import com.elvarg.net.PlayerBotSession;
@@ -109,6 +110,10 @@ public class PlayerBot extends Player {
         return this.combatInteraction;
     }
 
+    /**
+     * Creates this player bot from a given definition.
+     *
+     */
     public PlayerBot(PlayerBotDefinition _definition) {
         super(new PlayerBotSession(), _definition.getSpawnLocation());
 
@@ -126,29 +131,20 @@ public class PlayerBot extends Player {
         }
     }
 
-    /**
-     * Creates this player bot.
-     *
-     */
-    public PlayerBot(String username) {
-        super(new PlayerBotSession());
-
-        this.setUsername(username).setLongUsername(Misc.stringToLong(username))
-                .setPassword(GameConstants.PLAYER_BOT_PASSWORD).setHostAddress("127.0.0.1");
-
-        this.tradingInteraction = new TradingInteraction(this);
-        this.chatInteraction = new ChatInteraction(this);
-        this.movementInteraction = new MovementInteraction(this);
-        this.combatInteraction = new CombatInteraction(this);
-
-        if (!World.getAddPlayerQueue().contains(this)) {
-            World.getAddPlayerQueue().add(this);
-        }
-    }
-
     // Send a regular chat from this PlayerBot
     public void sendChat(String message) {
         this.getChatMessageQueue().add(new ChatMessage(0, 0, Misc.textPack(message)));
+    }
+
+    // Manually update the players local to this PlayerBot
+    public void updateLocalPlayers() {
+        if (this.getLocalPlayers().size() == 0) {
+            return;
+        }
+
+        for (Player localPlayer : this.getLocalPlayers()) {
+            PlayerUpdating.update(localPlayer);
+        }
     }
 
     @Override
@@ -163,5 +159,12 @@ public class PlayerBot extends Player {
 
         this.setCurrentPreset(Presetables.GLOBAL_PRESETS[this.getDefinition().getPresetIndex()]);
         Presetables.handleButton(this, LOAD_PRESET_BUTTON_ID);
+    }
+
+    @Override
+    public void resetAttributes() {
+        super.resetAttributes();
+
+        stopCommand();
     }
 }

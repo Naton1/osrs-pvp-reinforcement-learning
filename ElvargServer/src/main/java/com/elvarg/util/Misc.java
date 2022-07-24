@@ -220,7 +220,8 @@ public class Misc {
             text = text.substring(0, 80);
         }
 
-        byte[] packedData = new byte[text.length()];
+
+        byte[] packedData = new byte[text.getBytes().length];
         text = text.toLowerCase();
         int carryOverNibble = -1;
         int ofs = 0;

@@ -389,11 +389,6 @@ public class Trading {
                 // Send successful trade message!
                 player.getPacketSender().sendMessage("Trade accepted!");
                 interact_.getPacketSender().sendMessage("Trade accepted!");
-
-                if (interact_ instanceof PlayerBot) {
-                    //((PlayerBot) interact_).getTradingInteraction().finishTrade();
-                }
-
             } else {
                 if (interact_ instanceof PlayerBot) {
                     ((PlayerBot) interact_).getTradingInteraction().acceptTrade();

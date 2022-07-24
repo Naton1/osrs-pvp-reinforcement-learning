@@ -8,14 +8,7 @@ import com.elvarg.game.entity.impl.grounditem.ItemOnGround;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
-import com.elvarg.game.model.Animation;
-import com.elvarg.game.model.EffectTimer;
-import com.elvarg.game.model.Graphic;
-import com.elvarg.game.model.Item;
-import com.elvarg.game.model.PlayerInteractingOption;
-import com.elvarg.game.model.PlayerStatus;
-import com.elvarg.game.model.Location;
-import com.elvarg.game.model.Skill;
+import com.elvarg.game.model.*;
 import com.elvarg.game.model.container.ItemContainer;
 import com.elvarg.game.model.container.impl.Bank;
 import com.elvarg.game.model.menu.CreationMenu;
@@ -179,8 +172,8 @@ public class PacketSender {
 	 */
 	public PacketSender sendMessage(String message) {
 		if (player instanceof PlayerBot) {
-			// Bots can't read their own messages, yet ;) - force chat it instead
-			((PlayerBot) player).sendChat(message);
+			// Bots can't read their own messages, yet ;)
+			((PlayerBot) player).getChatInteraction().receivedGameMessage(message);
 			return this;
 		}
 

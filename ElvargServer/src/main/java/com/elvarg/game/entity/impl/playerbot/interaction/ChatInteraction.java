@@ -18,6 +18,7 @@ public class ChatInteraction {
         this.playerBot = _playerBot;
     }
 
+    // Called when a Player hears a message from a player within speaking distance
     public void heard(ChatMessage message, Player fromPlayer) {
         byte[] textByteArray = message.getText();
         String chatMessage = Misc.textUnpack(textByteArray, textByteArray.length).toLowerCase().trim();
@@ -45,5 +46,13 @@ public class ChatInteraction {
             }
         }
 
+    }
+
+    // Called when a Player bot receives an in game message via PacketSender.sendMessage()
+    public void receivedGameMessage(String message) {
+        if (this.playerBot.getInteractingWith() != null) {
+            // If this bot is currently interacting with someone, no need to shout
+            this.playerBot.getPacketSender().sendPrivateMessage(this.playerBot.getInteractingWith(), message.getBytes(), message.getBytes().length);
+        }
     }
 }

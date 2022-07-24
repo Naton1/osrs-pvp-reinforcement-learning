@@ -28,9 +28,7 @@ public class LoadPreset implements BotCommand {
         playerBot.setCurrentPreset(preset);
         Presetables.handleButton(playerBot, LOAD_PRESET_BUTTON_ID);
 
-        if (playerBot.getInteractingWith() != null) {
-            PlayerUpdating.update(playerBot.getInteractingWith());
-        }
+        playerBot.updateLocalPlayers();
 
         // Indicate the command is finished straight away
         playerBot.stopCommand();
