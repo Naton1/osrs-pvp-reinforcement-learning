@@ -8,6 +8,7 @@ import com.elvarg.game.model.container.ItemContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class TradingInteraction {
 
@@ -15,7 +16,7 @@ public class TradingInteraction {
     PlayerBot playerBot;
 
     // Items which this bot is currently attempting to give in a trade
-    public Item[] tradingItems = new Item[] { };
+    public List<Item> tradingItems = new ArrayList<>();
 
     public HashMap<Player, ArrayList<Item>> holdingItems = new HashMap<Player, ArrayList<Item>>();
 
@@ -25,13 +26,13 @@ public class TradingInteraction {
 
     // This method is called when a trade window opens between a Player and a PlayerBot
     public void addItemsToTrade(ItemContainer container, Player tradingWith) {
-        if (this.tradingItems.length > 0) {
+        if (this.tradingItems.size() > 0) {
             // Stage the items the bot is trying to give
             container.addItems(this.tradingItems, true);
         } else if (this.holdingItems.containsKey(tradingWith)) {
             // Return the player back their items
-            ArrayList<Item> storedItems = this.holdingItems.get(tradingWith);
-            container.addItems(storedItems.toArray(new Item[] {}), true);
+            List<Item> storedItems = this.holdingItems.get(tradingWith);
+            container.addItems(storedItems, true);
             playerBot.sendChat("Here's your stuff back, as promised");
         } else {
             // Ask the player to give us something

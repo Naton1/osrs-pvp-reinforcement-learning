@@ -128,10 +128,10 @@ public class GameConstants {
 			1704, 1731, 1725, 1727, 1729));
 
 	public static final PlayerBotDefinition[] PLAYER_BOTS = new PlayerBotDefinition[] {
-			new PlayerBotDefinition("Hello123", new Location(3085, 3528), 0),
-			new PlayerBotDefinition("1337Pk", new Location(3087, 3530), 1),
-			new PlayerBotDefinition("Kids Ranqe", new Location(3089, 3530), 2),
-			new PlayerBotDefinition("Josh", new Location(3091, 3533), 3),
+			new PlayerBotDefinition("Bot Hello123", new Location(3085, 3528), 0),
+			new PlayerBotDefinition("Bot 1337Pk", new Location(3087, 3530), 1),
+			new PlayerBotDefinition("Bot Kids Ranqe", new Location(3089, 3530), 2),
+			new PlayerBotDefinition("Bot Josh", new Location(3091, 3533), 3),
 	};
 
 	// The password for every player bot account

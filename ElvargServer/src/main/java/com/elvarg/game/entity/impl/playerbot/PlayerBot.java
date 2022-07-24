@@ -118,7 +118,7 @@ public class PlayerBot extends Player {
         super(new PlayerBotSession(), _definition.getSpawnLocation());
 
         this.setUsername(_definition.getUsername()).setLongUsername(Misc.stringToLong(_definition.getUsername()))
-                .setPassword(GameConstants.PLAYER_BOT_PASSWORD).setHostAddress("127.0.0.1");
+                .setPasswordHashWithSalt(GameConstants.PLAYER_BOT_PASSWORD).setHostAddress("127.0.0.1");
 
         this.definition = _definition;
         this.tradingInteraction = new TradingInteraction(this);
