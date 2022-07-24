@@ -65,9 +65,12 @@
       "name": "PVP Shops",
       "originalStock":[
          {
+            "id":8013,
+            "amount":2000000000
+         },
+         {
             "id":11128,
             "amount":2000000000
-
          },
          {
             "id":6585,
