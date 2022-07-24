@@ -1,7 +1,7 @@
 package com.elvarg.game.model.commands.impl;
 
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.entity.impl.player.PlayerSaving;
+import com.elvarg.game.entity.impl.player.PlayerSaveDb;
 import com.elvarg.game.model.commands.Command;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.util.PlayerPunishment;
@@ -12,7 +12,7 @@ public class UnBanPlayer implements Command {
     public void execute(Player player, String command, String[] parts) {
         String player2 = command.substring(parts[0].length() + 1);
 
-        if (!PlayerSaving.playerExists(player2)) {
+        if (!PlayerSaveDb.playerExists(player2)) {
             player.getPacketSender().sendMessage("Player " + player2 + " is not online.");
             return;
         }

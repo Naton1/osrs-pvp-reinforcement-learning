@@ -268,7 +268,7 @@ public class BountyHunter {
 		// Check if we recently killed this player
 		if (killer.getRecentKills().contains(killed.getHostAddress())
 				|| killer.getHostAddress().equals(killed.getHostAddress())) {
-//			 fullRewardPlayer = false;
+			 fullRewardPlayer = false;
 		} else {
 			killer.getRecentKills().add(killed.getHostAddress());
 		}
