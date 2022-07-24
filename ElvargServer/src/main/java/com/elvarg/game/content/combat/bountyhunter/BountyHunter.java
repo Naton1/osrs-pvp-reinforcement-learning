@@ -240,7 +240,7 @@ public class BountyHunter {
 	 * @param killer
 	 * @param killed
 	 */
-	public static void onDeath(Player killer, Player killed, boolean canGetFullReward) {
+	public static void onDeath(Player killer, Player killed, boolean canGetFullReward, int minBloodMoneyReward) {
 		// Cache the killed player's killstreak
 		final int enemyKillstreak = killed.getKillstreak();
 
@@ -385,7 +385,7 @@ public class BountyHunter {
 
 		} else {
 			// Reward player for the kill..
-			int rewardAmount = 10 + Misc.getRandom(20) + additionalBloodMoneyFromBrokenItems;
+			int rewardAmount = minBloodMoneyReward + Misc.getRandom(minBloodMoneyReward) + additionalBloodMoneyFromBrokenItems;
 
 			if (killer.getInventory().contains(ItemIdentifiers.BLOOD_MONEY)
 					|| killer.getInventory().getFreeSlots() > 0) {
