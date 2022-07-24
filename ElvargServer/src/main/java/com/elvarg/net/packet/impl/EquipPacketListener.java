@@ -3,6 +3,7 @@ package com.elvarg.net.packet.impl;
 import com.elvarg.Server;
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.content.Dueling.DuelRule;
+import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.combat.WeaponInterfaces;
 import com.elvarg.game.content.combat.magic.Autocasting;
 import com.elvarg.game.entity.impl.player.Player;
@@ -25,8 +26,10 @@ import com.elvarg.util.Misc;
 
 public class EquipPacketListener implements PacketExecutor {
 
-	public static void resetWeapon(Player player) {
-		player.setSpecialActivated(false);
+	public static void resetWeapon(Player player, boolean deactivateSpecialAttack) {
+		if (deactivateSpecialAttack) {
+			player.setSpecialActivated(false);
+		}
 		player.getPacketSender().sendSpecialAttackState(false);
 		WeaponInterfaces.assign(player);
 		if (player.getCombat().getAutocastSpell() != null) {
@@ -161,7 +164,7 @@ public class EquipPacketListener implements PacketExecutor {
 						player.getInventory().setItem(slot, player.getEquipment().getItems()[Equipment.WEAPON_SLOT]);
 						player.getEquipment().setItem(Equipment.WEAPON_SLOT, new Item(-1));
 						player.getEquipment().setItem(Equipment.SHIELD_SLOT, item);
-						resetWeapon(player);
+						resetWeapon(player, true);
 					} else {
 						if (equipmentSlot == equipItem.getDefinition().getEquipmentType().getSlot()
 								&& equipItem.getId() != -1) {
@@ -180,7 +183,8 @@ public class EquipPacketListener implements PacketExecutor {
 				}
 
 				if (equipmentSlot == Equipment.WEAPON_SLOT) {
-					resetWeapon(player);
+					var newWeaponHasSpecial = CombatSpecial.SPECIAL_ATTACK_WEAPON_IDS.contains(id);
+					resetWeapon(player, !newWeaponHasSpecial);
 				}
 
 				if (player.getEquipment().get(Equipment.WEAPON_SLOT).getId() != 4153) {
