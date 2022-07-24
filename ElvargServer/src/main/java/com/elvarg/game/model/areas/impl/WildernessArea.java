@@ -144,7 +144,7 @@ public class WildernessArea extends Area {
 	@Override
 	public void defeated(Player player, Mobile character) {
 		if (character.isPlayer()) {
-			BountyHunter.onDeath(player, character.getAsPlayer(), true);
+			BountyHunter.onDeath(player, character.getAsPlayer(), true, 50);
 		}
 	}
 	

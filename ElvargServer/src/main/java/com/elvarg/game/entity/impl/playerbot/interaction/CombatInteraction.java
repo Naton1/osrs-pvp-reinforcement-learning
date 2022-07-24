@@ -119,14 +119,14 @@ public class CombatInteraction {
     // Called when the Player Bot is just about to die
     public void handleDying(Optional<Player> killer) {
         if (killer.isPresent()) {
-            this.playerBot.sendChat("Gg " + killer.get().getUsername());
+            this.playerBot.sendChat("Gf " + killer.get().getUsername());
         }
     }
 
     // Called when the Player Bot has died
     public void handleDeath(Optional<Player> killer) {
         if (killer.isPresent()) {
-            BountyHunter.onDeath(killer.get(), this.playerBot, false);
+            BountyHunter.onDeath(killer.get(), this.playerBot, false, 80);
         }
         // For the most part, keep behaviour as Player-like as possible
         this.playerBot.getInventory().resetItems().refreshItems();

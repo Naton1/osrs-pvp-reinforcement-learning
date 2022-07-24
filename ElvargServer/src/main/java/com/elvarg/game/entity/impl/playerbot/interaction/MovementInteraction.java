@@ -5,7 +5,10 @@ import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.entity.impl.npc.NPCMovementCoordinator;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Location;
+import com.elvarg.game.model.movement.MovementQueue;
 import com.elvarg.game.model.movement.path.RS317PathFinder;
+import com.elvarg.game.model.teleportation.TeleportHandler;
+import com.elvarg.game.model.teleportation.TeleportType;
 import com.elvarg.util.Misc;
 
 public class MovementInteraction {
@@ -38,10 +41,14 @@ public class MovementInteraction {
                         Location pos = generateLocalPosition();
                         if (pos != null) {
 
-                            playerBot.getMovementQueue().clippedStep(playerBot);
+                            MovementQueue.clippedStep(playerBot);
                         //.walkStep(pos.getX(), pos.getY());
                         }
                     }
+                }
+                // Teleport this bot back
+                if (playerBot.getLocation().getDistance(playerBot.getDefinition().getSpawnLocation()) > 20) {
+                    TeleportHandler.teleport(playerBot, playerBot.getDefinition().getSpawnLocation(), TeleportType.NORMAL, false);
                 }
                 break;
         }
