@@ -1,6 +1,8 @@
 package com.elvarg.game.content.combat;
 
 import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.elvarg.game.content.Dueling.DuelRule;
 import com.elvarg.game.content.combat.WeaponInterfaces.WeaponInterface;
@@ -95,6 +97,8 @@ public enum CombatSpecial {
     BALLISTA(new int[]{19481},
             65, 1.25, 1.45, new BallistaCombatMethod(), WeaponInterface.BALLISTA),
     ;
+
+    public static final Set<Integer> SPECIAL_ATTACK_WEAPON_IDS = Arrays.stream(CombatSpecial.values()).flatMap(cs -> Arrays.stream(cs.getIdentifiers()).boxed()).collect(Collectors.toSet());
 
     /**
      * The weapon ID's that perform this special when activated.
