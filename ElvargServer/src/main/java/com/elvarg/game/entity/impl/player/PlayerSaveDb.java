@@ -4,6 +4,7 @@ import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 
@@ -11,7 +12,7 @@ import java.time.Instant;
 
 public class PlayerSaveDb {
 
-    private static DynamoDbClient dynamoDbClient = DynamoDbClient.builder().build();
+    private static DynamoDbClient dynamoDbClient = DynamoDbClient.builder().region(Region.EU_WEST_1).build();
     private static DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder().dynamoDbClient(dynamoDbClient).build();
     private static String playerTableName = System.getenv("PLAYER_TABLE_NAME");
 
