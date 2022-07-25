@@ -36,6 +36,14 @@ public enum PotionConsumable {
 			PotionConsumable.onBasicEffect(player, Skill.STRENGTH, BoostType.LOW);
 		}
 	},
+	SUPER_COMBAT_POTIONS(12695, 12697, 12699, 12701) {
+		@Override
+		public void onEffect(Player player) {
+			PotionConsumable.onBasicEffect(player, Skill.ATTACK, BoostType.SUPER);
+			PotionConsumable.onBasicEffect(player, Skill.STRENGTH, BoostType.SUPER);
+			PotionConsumable.onBasicEffect(player, Skill.DEFENCE, BoostType.SUPER);
+		}
+	},
 	MAGIC_POTIONS(3040, 3042, 3044, 3046) {
 		@Override
 		public void onEffect(Player player) {
