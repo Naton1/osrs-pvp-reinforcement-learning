@@ -68,7 +68,7 @@ public class EmblemTraderDialogue extends DynamicDialogueBuilder {
                     player.getPacketSender().sendInterfaceRemoval();
                     break;
             }
-        }, "Give me white skull!", "Give me red skull! (No item protect)", "Eh.. Nothing..."));
+        }, "Give me white skull!", "Give me red skull! (No item protect)", "Nothing..."));
 
     }
 }
