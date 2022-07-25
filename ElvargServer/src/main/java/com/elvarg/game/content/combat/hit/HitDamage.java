@@ -9,10 +9,12 @@ public class HitDamage {
 
 	private int damage;
 	private HitMask hitmask;
+    private HitMask startHitmask;
 
 	public HitDamage(int damage, HitMask hitmask) {
 		this.damage = damage;
 		this.hitmask = hitmask;
+		this.startHitmask = hitmask;
 		update();
 	}
 
@@ -37,7 +39,7 @@ public class HitDamage {
 
 	public void update() {
 	    if (damage > 0) {
-            hitmask = HitMask.RED;
+            hitmask = startHitmask == HitMask.BLUE ? HitMask.RED : startHitmask;
         } else {
             damage = 0;
             hitmask = HitMask.BLUE;

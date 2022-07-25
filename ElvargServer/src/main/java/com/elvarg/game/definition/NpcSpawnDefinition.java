@@ -11,8 +11,16 @@ public class NpcSpawnDefinition extends DefaultSpawnDefinition {
 		this.radius = radius;
 	}
 
+    public NpcSpawnDefinition(int id, Location position, FacingDirection facing, int radius, String descripton) {
+        super(id, position);
+        this.facing = facing;
+        this.radius = radius;
+        this.description = descripton;
+    }
+
 	private FacingDirection facing;
     private int radius;
+    private String description;
 
     public FacingDirection getFacing() {
         return facing;

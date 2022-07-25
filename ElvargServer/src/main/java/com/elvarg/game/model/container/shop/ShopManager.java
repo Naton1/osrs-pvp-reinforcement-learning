@@ -450,15 +450,9 @@ public class ShopManager extends ShopIdentifiers {
      * @return
      */
     private static int getItemValue(Player player, ItemDefinition itemDef, int shopId) {
-
-        switch (itemDef.getId()) {
-            case ItemIdentifiers.HEAVY_BALLISTA:
-                if (shopId == PVP_SHOP) {
-                    return 150;
-                }
-                break;
+        if (shopId == PVP_SHOP) {
+            return itemDef.getBloodMoneyValue();
         }
-
         return itemDef.getValue();
     }
 

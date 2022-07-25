@@ -1,6 +1,7 @@
 package com.elvarg.game.model;
 
 import com.elvarg.game.definition.ItemDefinition;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 
 /**
  * Represents an item.
@@ -8,6 +9,7 @@ import com.elvarg.game.definition.ItemDefinition;
  * @author Professor Oak
  */
 
+@DynamoDbBean
 public class Item {
 
     /**

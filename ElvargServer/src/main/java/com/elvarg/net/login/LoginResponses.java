@@ -3,8 +3,9 @@ package com.elvarg.net.login;
 import com.elvarg.Server;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.entity.impl.player.PlayerLoading;
+import com.elvarg.game.entity.impl.player.PlayerSaveDb;
 import com.elvarg.util.Misc;
+import com.elvarg.util.PasswordUtil;
 import com.elvarg.util.PlayerPunishment;
 
 import java.sql.Timestamp;
@@ -87,9 +88,9 @@ public final class LoginResponses {
                 || !Misc.isValidName(player.getUsername())) {
             return INVALID_CREDENTIALS_COMBINATION;
         }
-        
+
         if (World.getPlayerByName(player.getUsername()).isPresent()) {
-        	return LOGIN_ACCOUNT_ONLINE;
+            return LOGIN_ACCOUNT_ONLINE;
         }
 
         if (PlayerPunishment.banned(player.getUsername())) {
@@ -101,7 +102,7 @@ public final class LoginResponses {
         }
 
         // Attempt to load the character file..
-        int playerLoadingResponse = PlayerLoading.getResult(player);
+        int playerLoadingResponse = getPlayerResult(player, msg.getPassword());
 
         // New player?
         if (playerLoadingResponse == NEW_ACCOUNT) {
@@ -111,6 +112,23 @@ public final class LoginResponses {
         }
 
         return playerLoadingResponse;
+    }
+
+    private static int getPlayerResult(Player player, String plainPassword) {
+        var playerSave = PlayerSaveDb.fetch(player.getUsername());
+        if (playerSave == null) {
+            player.setPasswordHashWithSalt(PasswordUtil.generatePasswordHashWithSalt(plainPassword));
+            return LoginResponses.NEW_ACCOUNT;
+        }
+
+        String passwordHashWithSalt = playerSave.getPasswordHashWithSalt();
+        if (!PasswordUtil.passwordsMatch(plainPassword, passwordHashWithSalt)) {
+            return LoginResponses.LOGIN_INVALID_CREDENTIALS;
+        }
+
+        playerSave.applyToPlayer(player);
+
+        return LoginResponses.LOGIN_SUCCESSFUL;
     }
 
 }

@@ -5,6 +5,7 @@ import com.elvarg.game.content.combat.hit.HitMask;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.task.Task;
+import com.elvarg.util.ItemIdentifiers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,8 @@ public class CombatPoisonEffect extends Task {
 	 */
 	private Mobile entity;
 
+	private int tick;
+
 	/**
 	 * Create a new {@link CombatPoisonEffect}.
 	 *
@@ -31,10 +34,13 @@ public class CombatPoisonEffect extends Task {
 	public CombatPoisonEffect(Mobile entity) {
 		super(30, entity, false);
 		this.entity = entity;
+		this.tick = 0;
 	}
 
 	@Override
 	public void execute() {
+		this.tick++;
+
 		// Stop the task if the entity is unregistered.
 		if (!entity.isRegistered()) {
 			this.stop();
@@ -54,7 +60,7 @@ public class CombatPoisonEffect extends Task {
 		}
 
 		// Deal the damage, then try and decrement the damage count.
-		int poisonDamage = entity.getPoisonDamage() - 1;
+		int poisonDamage = (this.tick % 5 == 0) ? entity.getPoisonDamage() - 1 : entity.getPoisonDamage();
 		entity.setPoisonDamage(poisonDamage);
 		entity.getCombat().getHitQueue().addPendingDamage(new HitDamage(poisonDamage, HitMask.GREEN));
 
@@ -82,7 +88,7 @@ public class CombatPoisonEffect extends Task {
 	 * @author lare96
 	 */
 	public enum PoisonType {
-		MILD(4), EXTRA(5), SUPER(6), VENOM(12);
+		VERY_WEAK(2), WEAK(3), MILD(4), EXTRA(5), SUPER(6), VENOM(12);
 
 		/**
 		 * The starting damage for this poison type.
@@ -133,108 +139,207 @@ public class CombatPoisonEffect extends Task {
 		 * Load all of the poison data.
 		 */
 		public static void init() {
-			types.put(817, PoisonType.MILD);
-			types.put(816, PoisonType.MILD);
-			types.put(818, PoisonType.MILD);
-			types.put(831, PoisonType.MILD);
-			types.put(812, PoisonType.MILD);
-			types.put(813, PoisonType.MILD);
-			types.put(814, PoisonType.MILD);
-			types.put(815, PoisonType.MILD);
-			types.put(883, PoisonType.MILD);
-			types.put(885, PoisonType.MILD);
-			types.put(887, PoisonType.MILD);
-			types.put(889, PoisonType.MILD);
-			types.put(891, PoisonType.MILD);
-			types.put(893, PoisonType.MILD);
-			types.put(870, PoisonType.MILD);
-			types.put(871, PoisonType.MILD);
-			types.put(872, PoisonType.MILD);
-			types.put(873, PoisonType.MILD);
-			types.put(874, PoisonType.MILD);
-			types.put(875, PoisonType.MILD);
-			types.put(876, PoisonType.MILD);
-			types.put(834, PoisonType.MILD);
-			types.put(835, PoisonType.MILD);
-			types.put(832, PoisonType.MILD);
-			types.put(833, PoisonType.MILD);
-			types.put(836, PoisonType.MILD);
-			types.put(1221, PoisonType.MILD);
-			types.put(1223, PoisonType.MILD);
-			types.put(1219, PoisonType.MILD);
-			types.put(1229, PoisonType.MILD);
-			types.put(1231, PoisonType.MILD);
-			types.put(1225, PoisonType.MILD);
-			types.put(1227, PoisonType.MILD);
-			types.put(1233, PoisonType.MILD);
-			types.put(1253, PoisonType.MILD);
-			types.put(1251, PoisonType.MILD);
-			types.put(1263, PoisonType.MILD);
-			types.put(1261, PoisonType.MILD);
-			types.put(1259, PoisonType.MILD);
-			types.put(1257, PoisonType.MILD);
-			types.put(3094, PoisonType.MILD);
+			types.put(ItemIdentifiers.BRONZE_DART_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.IRON_DART_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.STEEL_DART_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.MITHRIL_DART_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.ADAMANT_DART_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.RUNE_DART_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.BRONZE_JAVELIN_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.IRON_JAVELIN_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.STEEL_JAVELIN_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.MITHRIL_JAVELIN_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.ADAMANT_JAVELIN_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.RUNE_JAVELIN_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.BRONZE_KNIFE_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.IRON_KNIFE_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.STEEL_KNIFE_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.MITHRIL_KNIFE_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.BLACK_KNIFE_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.ADAMANT_KNIFE_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.RUNE_KNIFE_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.BRONZE_BOLTS_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.BRONZE_ARROW_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.IRON_ARROW_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.STEEL_ARROW_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.MITHRIL_ARROW_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.ADAMANT_ARROW_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.RUNE_ARROW_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.IRON_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BRONZE_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.STEEL_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.MITHRIL_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.ADAMANT_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.RUNE_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.DRAGON_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BLACK_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.POISONED_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BRONZE_SPEAR_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.IRON_SPEAR_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.STEEL_SPEAR_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.MITHRIL_SPEAR_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.ADAMANT_SPEAR_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.RUNE_SPEAR_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.DRAGON_SPEAR_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BLACK_DART_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.BLACK_SPEAR_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BRONZE_ARROW_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.IRON_ARROW_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.STEEL_ARROW_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.MITHRIL_ARROW_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.ADAMANT_ARROW_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.RUNE_ARROW_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.BRONZE_ARROW_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.IRON_ARROW_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.STEEL_ARROW_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.MITHRIL_ARROW_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.ADAMANT_ARROW_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.RUNE_ARROW_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BRONZE_DART_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.IRON_DART_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.STEEL_DART_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.BLACK_DART_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.MITHRIL_DART_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.ADAMANT_DART_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.RUNE_DART_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.BRONZE_DART_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.IRON_DART_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.STEEL_DART_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BLACK_DART_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.MITHRIL_DART_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.ADAMANT_DART_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.RUNE_DART_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BRONZE_JAVELIN_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.IRON_JAVELIN_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.STEEL_JAVELIN_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.MITHRIL_JAVELIN_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.ADAMANT_JAVELIN_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.RUNE_JAVELIN_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.BRONZE_JAVELIN_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.IRON_JAVELIN_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.STEEL_JAVELIN_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.MITHRIL_JAVELIN_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.ADAMANT_JAVELIN_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.RUNE_JAVELIN_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BRONZE_KNIFE_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.IRON_KNIFE_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.STEEL_KNIFE_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.MITHRIL_KNIFE_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.BLACK_KNIFE_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.ADAMANT_KNIFE_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.RUNE_KNIFE_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.BRONZE_KNIFE_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.IRON_KNIFE_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.STEEL_KNIFE_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.MITHRIL_KNIFE_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BLACK_KNIFE_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.ADAMANT_KNIFE_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.RUNE_KNIFE_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.IRON_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.BRONZE_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.STEEL_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.MITHRIL_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.ADAMANT_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.RUNE_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.DRAGON_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.BLACK_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.POISON_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.IRON_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.BRONZE_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.STEEL_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.MITHRIL_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.ADAMANT_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.RUNE_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.DRAGON_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.BLACK_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.POISON_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.BRONZE_SPEAR_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.IRON_SPEAR_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.STEEL_SPEAR_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.MITHRIL_SPEAR_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.ADAMANT_SPEAR_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.RUNE_SPEAR_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.DRAGON_SPEAR_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.BRONZE_SPEAR_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.IRON_SPEAR_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.STEEL_SPEAR_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.MITHRIL_SPEAR_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.ADAMANT_SPEAR_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.RUNE_SPEAR_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.DRAGON_SPEAR_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.BLACK_SPEAR_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.BLACK_SPEAR_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.BRONZE_BOLTS_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.BRONZE_BOLTS_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.WHITE_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.WHITE_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.WHITE_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.BONE_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BONE_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.BONE_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.BLURITE_BOLTS_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.IRON_BOLTS_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.STEEL_BOLTS_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.MITHRIL_BOLTS_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.ADAMANT_BOLTS_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.RUNITE_BOLTS_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.SILVER_BOLTS_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.BLURITE_BOLTS_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.IRON_BOLTS_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.STEEL_BOLTS_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.MITHRIL_BOLTS_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.ADAMANT_BOLTS_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.RUNITE_BOLTS_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.SILVER_BOLTS_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.BLURITE_BOLTS_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.IRON_BOLTS_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.STEEL_BOLTS_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.MITHRIL_BOLTS_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.ADAMANT_BOLTS_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.RUNITE_BOLTS_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.SILVER_BOLTS_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.KERIS_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.KERIS_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.KERIS_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.DRAGON_ARROW_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.DRAGON_ARROW_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.DRAGON_ARROW_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.DRAGON_DART_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.DRAGON_DART_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.DRAGON_DART_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.BRONZE_HASTA_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.BRONZE_HASTA_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.BRONZE_HASTA_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.IRON_HASTA_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.IRON_HASTA_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.IRON_HASTA_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.STEEL_HASTA_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.STEEL_HASTA_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.STEEL_HASTA_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.MITHRIL_HASTA_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.MITHRIL_HASTA_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.MITHRIL_HASTA_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.ADAMANT_HASTA_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.ADAMANT_HASTA_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.ADAMANT_HASTA_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.RUNE_HASTA_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.RUNE_HASTA_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.RUNE_HASTA_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.ABYSSAL_DAGGER_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.ABYSSAL_DAGGER_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.ABYSSAL_DAGGER_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.DRAGON_JAVELIN_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.DRAGON_JAVELIN_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.DRAGON_JAVELIN_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.AMETHYST_JAVELIN_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.AMETHYST_JAVELIN_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.AMETHYST_JAVELIN_P_PLUS_PLUS_, PoisonType.MILD);
+			types.put(ItemIdentifiers.AMETHYST_ARROW_P_, PoisonType.VERY_WEAK);
+			types.put(ItemIdentifiers.AMETHYST_ARROW_P_PLUS_, PoisonType.WEAK);
+			types.put(ItemIdentifiers.AMETHYST_ARROW_P_PLUS_PLUS_, PoisonType.MILD);
 
-			types.put(5621, PoisonType.EXTRA);
-			types.put(5620, PoisonType.EXTRA);
-			types.put(5617, PoisonType.EXTRA);
-			types.put(5616, PoisonType.EXTRA);
-			types.put(5619, PoisonType.EXTRA);
-			types.put(5618, PoisonType.EXTRA);
-			types.put(5629, PoisonType.EXTRA);
-			types.put(5628, PoisonType.EXTRA);
-			types.put(5631, PoisonType.EXTRA);
-			types.put(5630, PoisonType.EXTRA);
-			types.put(5645, PoisonType.EXTRA);
-			types.put(5644, PoisonType.EXTRA);
-			types.put(5647, PoisonType.EXTRA);
-			types.put(5646, PoisonType.EXTRA);
-			types.put(5643, PoisonType.EXTRA);
-			types.put(5642, PoisonType.EXTRA);
-			types.put(5633, PoisonType.EXTRA);
-			types.put(5632, PoisonType.EXTRA);
-			types.put(5634, PoisonType.EXTRA);
-			types.put(5660, PoisonType.EXTRA);
-			types.put(5656, PoisonType.EXTRA);
-			types.put(5657, PoisonType.EXTRA);
-			types.put(5658, PoisonType.EXTRA);
-			types.put(5659, PoisonType.EXTRA);
-			types.put(5654, PoisonType.EXTRA);
-			types.put(5655, PoisonType.EXTRA);
-			types.put(5680, PoisonType.EXTRA);
-
-			types.put(5623, PoisonType.SUPER);
-			types.put(5622, PoisonType.SUPER);
-			types.put(5625, PoisonType.SUPER);
-			types.put(5624, PoisonType.SUPER);
-			types.put(5627, PoisonType.SUPER);
-			types.put(5626, PoisonType.SUPER);
-			types.put(5698, PoisonType.SUPER);
-			types.put(5730, PoisonType.SUPER);
-			types.put(5641, PoisonType.SUPER);
-			types.put(5640, PoisonType.SUPER);
-			types.put(5637, PoisonType.SUPER);
-			types.put(5636, PoisonType.SUPER);
-			types.put(5639, PoisonType.SUPER);
-			types.put(5638, PoisonType.SUPER);
-			types.put(5635, PoisonType.SUPER);
-			types.put(5661, PoisonType.SUPER);
-			types.put(5662, PoisonType.SUPER);
-			types.put(5663, PoisonType.SUPER);
-			types.put(5652, PoisonType.SUPER);
-			types.put(5653, PoisonType.SUPER);
-			types.put(5648, PoisonType.SUPER);
-			types.put(5649, PoisonType.SUPER);
-			types.put(5650, PoisonType.SUPER);
-			types.put(5651, PoisonType.SUPER);
-			types.put(5667, PoisonType.SUPER);
-			types.put(5666, PoisonType.SUPER);
-			types.put(5665, PoisonType.SUPER);
-			types.put(5664, PoisonType.SUPER);
-			types.put(13271, PoisonType.SUPER);
-
-			types.put(12926, PoisonType.VENOM);
-			types.put(12006, PoisonType.VENOM);
+			types.put(ItemIdentifiers.TOXIC_BLOWPIPE, PoisonType.VENOM);
+			types.put(ItemIdentifiers.ABYSSAL_TENTACLE, PoisonType.VENOM);
 		}
 
 		/**

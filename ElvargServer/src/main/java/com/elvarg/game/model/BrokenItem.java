@@ -51,7 +51,29 @@ public enum BrokenItem {
         for (BrokenItem b : BrokenItem.values()) {
             final int amt = player.getInventory().getAmount(b.getBrokenItem());
             if (amt > 0) {
-                cost += ((int) (ItemDefinition.forId(b.getOriginalItem()).getValue() * REPAIR_COST_MULTIPLIER) * amt);
+                cost += ((int) (ItemDefinition.forId(b.getOriginalItem()).getBloodMoneyValue() * REPAIR_COST_MULTIPLIER) * amt);
+            }
+        }
+        return cost;
+    }
+
+    /**
+     * Gets amount of money player would need to pay if he dies
+     *
+     * @param player
+     * @param deleteEmblems
+     * @return
+     */
+    public static int getValueLoseOnDeath(Player player) {
+        int cost = 0;
+        for (BrokenItem b : BrokenItem.values()) {
+            final int amt = player.getInventory().getAmount(b.getOriginalItem());
+            if (amt > 0) {
+                cost += ((int) (ItemDefinition.forId(b.getOriginalItem()).getBloodMoneyValue() * REPAIR_COST_MULTIPLIER) * amt);
+            }
+            final int amtEq = player.getEquipment().getAmount(b.getOriginalItem());
+            if (amtEq > 0) {
+                cost += ((int) (ItemDefinition.forId(b.getOriginalItem()).getBloodMoneyValue() * REPAIR_COST_MULTIPLIER) * amt);
             }
         }
         return cost;
@@ -62,30 +84,28 @@ public enum BrokenItem {
      *
      * @param player
      */
-    public static void repair(Player player) {
-        boolean fixed = false;
+    public static boolean repair(Player player) {
+        var fullCost = getRepairCost(player);
+
+        if (fullCost > player.getInventory().getAmount(ItemIdentifiers.BLOOD_MONEY)) {
+            return false;
+        }
 
         for (BrokenItem b : BrokenItem.values()) {
             final int amt = player.getInventory().getAmount(b.getBrokenItem());
             if (amt > 0) {
-                final int cost = ((int) (ItemDefinition.forId(b.getOriginalItem()).getValue() * REPAIR_COST_MULTIPLIER) * amt);
-                if (player.getInventory().getAmount(ItemIdentifiers.COINS) >= cost) {
-                    player.getInventory().delete(ItemIdentifiers.COINS, cost);
+                final int cost = ((int) (ItemDefinition.forId(b.getOriginalItem()).getBloodMoneyValue() * REPAIR_COST_MULTIPLIER) * amt);
+                if (player.getInventory().getAmount(ItemIdentifiers.BLOOD_MONEY) >= cost) {
+                    player.getInventory().delete(ItemIdentifiers.BLOOD_MONEY, cost);
                     player.getInventory().delete(b.getBrokenItem(), amt);
                     player.getInventory().add(b.getOriginalItem(), amt);
-                    fixed = true;
                 } else {
-                    player.getPacketSender().sendMessage("You could not afford repairing all your items.");
-                    break;
+                    return false;
                 }
             }
         }
 
-        if (fixed) {
-      //      DialogueManager.start(player, 21);
-        } else {
-            player.getPacketSender().sendInterfaceRemoval();
-        }
+        return true;
     }
 
     public static BrokenItem get(int originalId) {

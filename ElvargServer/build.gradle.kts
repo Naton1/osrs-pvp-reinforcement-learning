@@ -22,6 +22,9 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("com.google.guava:guava:31.0.1-jre")
     implementation("commons-lang:commons-lang:2.6")
+    implementation("com.password4j:password4j:1.6.0")
+    implementation("software.amazon.awssdk:dynamodb:2.17.237")
+    implementation("software.amazon.awssdk:dynamodb-enhanced:2.17.237")
 }
 
 application {

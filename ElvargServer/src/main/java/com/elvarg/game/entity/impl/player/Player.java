@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.Sound;
+import com.elvarg.game.World;
 import com.elvarg.game.content.Dueling;
 import com.elvarg.game.content.PetHandler;
 import com.elvarg.game.content.PrayerHandler;
@@ -39,9 +40,11 @@ import com.elvarg.game.content.skill.skillable.impl.Runecrafting.Pouch;
 import com.elvarg.game.content.skill.skillable.impl.Runecrafting.PouchContainer;
 import com.elvarg.game.content.skill.slayer.ActiveSlayerTask;
 import com.elvarg.game.definition.ItemDefinition;
+import com.elvarg.game.definition.PlayerBotDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NpcAggression;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Appearance;
 import com.elvarg.game.model.ChatMessage;
@@ -130,7 +133,7 @@ public class Player extends Mobile {
 	private boolean openPresetsOnDeath = true;
 
 	private String username;
-	private String password;
+	private String passwordHashWithSalt;
 	private String hostAddress;
 	private Long longUsername;
 	private PlayerSession session;
@@ -215,7 +218,7 @@ public class Player extends Mobile {
     private boolean infiniteHealth;
     private FightType fightType = FightType.UNARMED_KICK;
     private WeaponInterface weapon;
-    private boolean autoRetaliate;
+    private boolean autoRetaliate = true;
     
 	// GWD
 	private int[] godwarsKillcount = new int[God.values().length];
@@ -238,6 +241,16 @@ public class Player extends Mobile {
 	 */
 	public Player(PlayerSession playerIO) {
 		super(GameConstants.DEFAULT_LOCATION.clone());
+		this.session = playerIO;
+	}
+
+	/**
+	 * Creates this player with pre defined spawn location.
+	 *
+	 * @param playerIO
+	 */
+	public Player(PlayerSession playerIO, Location spawnLocation) {
+		super(spawnLocation);
 		this.session = playerIO;
 	}
 
@@ -373,7 +386,10 @@ public class Player extends Mobile {
 		getTimers().process();
 
 		// Process incoming packets...
-		getSession().processPackets();
+		PlayerSession session = getSession();
+		if (session != null) {
+			session.processPackets();
+		}
 
 		// Process walk to task..
 		if (walkToTask != null) {
@@ -424,6 +440,10 @@ public class Player extends Mobile {
 				getPacketSender().sendRunEnergy();
 				lastRunRecovery.reset();
 			}
+		}
+
+		if (this instanceof PlayerBot) {
+			((PlayerBot) this).getMovementInteraction().process();
 		}
 
 		/**
@@ -541,9 +561,9 @@ public class Player extends Mobile {
 		BountyHunter.unassign(this);
 		ClanChatManager.leave(this, false);
 		TaskManager.cancelTasks(this);
-		PlayerSaving.save(this);
+		PlayerSaveDb.save(this);
 
-		if (getSession().getChannel().isOpen()) {
+		if (getSession() != null && getSession().getChannel().isOpen()) {
 			getSession().getChannel().close();
 		}
 	}
@@ -637,6 +657,25 @@ public class Player extends Mobile {
 		increaseStats.start(60);
 
 		getUpdateFlag().flag(Flag.APPEARANCE);
+
+		if (this.newPlayer) {
+			Presetables.load(this, Presetables.GLOBAL_PRESETS[2]);
+		}
+
+		if (!(this instanceof PlayerBot)) {
+			// Spawn player bots when a real player logs in
+			for (PlayerBotDefinition definition : GameConstants.PLAYER_BOTS) {
+				if (World.getPlayerBots().containsKey(definition.getUsername())) {
+					continue;
+				}
+
+				PlayerBot playerBot = new PlayerBot(definition);
+
+				World.getPlayerBots().put(definition.getUsername(), playerBot);
+			}
+
+			System.out.println(GameConstants.PLAYER_BOTS + " player bots now online.");
+		}
 	}
 
 	/**
@@ -751,12 +790,12 @@ public class Player extends Mobile {
 		return this;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getPasswordHashWithSalt() {
+		return passwordHashWithSalt;
 	}
 
-	public Player setPassword(String password) {
-		this.password = password;
+	public Player setPasswordHashWithSalt(String passwordHashWithSalt) {
+		this.passwordHashWithSalt = passwordHashWithSalt;
 		return this;
 	}
 

@@ -122,6 +122,14 @@ public abstract class ItemContainer {
         return items;
     }
 
+    public int[] getItemIdsArray() {
+        int[] array = new int[items.length];
+        for (int i = 0; i < items.length; i++) {
+            array[i] = items[i].getId();
+        }
+        return array;
+    }
+
     /**
      * Sets all the items in the container.
      *
@@ -481,7 +489,7 @@ public abstract class ItemContainer {
         return this.getFreeSlots() <= 0 && !(this.contains(itemId) && ItemDefinition.forId(itemId).isStackable());
     }
 
-    public ItemContainer addItems(Item[] items, boolean refresh) {
+    public ItemContainer addItems(List<Item> items, boolean refresh) {
         if (items == null) {
             return this;
         }

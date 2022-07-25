@@ -189,6 +189,8 @@ public class Food {
 			this.name = (toString().toLowerCase().replaceAll("__", "-").replaceAll("_", " "));
 		}
 
+		public Item getItem() { return item; }
+
 		public int getHeal() {
 			return heal;
 		}

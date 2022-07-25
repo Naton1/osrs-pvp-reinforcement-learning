@@ -1,13 +1,11 @@
 package com.elvarg.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.ZonedDateTime;
@@ -217,10 +215,13 @@ public class Misc {
      * @param packedData The destination of the packed text.
      * @param text       The unpacked text.
      */
-    public static void textPack(byte packedData[], String text) {
+    public static byte[] textPack(String text) {
         if (text.length() > 80) {
             text = text.substring(0, 80);
         }
+
+
+        byte[] packedData = new byte[text.getBytes().length];
         text = text.toLowerCase();
         int carryOverNibble = -1;
         int ofs = 0;
@@ -253,6 +254,8 @@ public class Misc {
         if (carryOverNibble != -1) {
             packedData[ofs++] = (byte) (carryOverNibble << 4);
         }
+
+        return packedData;
     }
 
     public static String anOrA(String s) {
@@ -810,5 +813,15 @@ public class Misc {
     @Deprecated
     private static int _hash(String string) {
         return IntStream.range(0, string.length()).reduce(0, (hash, index) -> hash * 61 + string.charAt(index) - 32);
+    }
+
+    public static Path getUsersProjectRootDirectory() {
+        String envRootDir = System.getProperty("user.dir");
+        Path rootDir = Paths.get(".").normalize().toAbsolutePath();
+        if ( rootDir.startsWith(envRootDir) ) {
+            return rootDir;
+        } else {
+            throw new RuntimeException("Root dir not found in user directory.");
+        }
     }
 }
