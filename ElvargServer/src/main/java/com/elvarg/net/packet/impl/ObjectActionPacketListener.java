@@ -2,7 +2,9 @@ package com.elvarg.net.packet.impl;
 
 import com.elvarg.Server;
 import com.elvarg.game.collision.RegionManager;
+import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.minigames.FightCaves;
+import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.content.skill.skillable.impl.Smithing;
 import com.elvarg.game.content.skill.skillable.impl.Smithing.Bar;
 import com.elvarg.game.content.skill.skillable.impl.Smithing.EquipmentMaking;
@@ -12,6 +14,7 @@ import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
+import com.elvarg.game.model.Flag;
 import com.elvarg.game.model.ForceMovement;
 import com.elvarg.game.model.Graphic;
 import com.elvarg.game.model.Location;
@@ -140,7 +143,25 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
         case ORNATE_REJUVENATION_POOL:
             player.getPacketSender().sendMessage("You feel slightly renewed.");
             player.performGraphic(new Graphic(683));
-            player.resetAttributes();
+            // Restore special attack
+            player.setSpecialPercentage(100);
+            CombatSpecial.updateBar(player);
+
+            // Restore run energy
+            player.setRunEnergy(100);
+            player.getPacketSender().sendRunEnergy();
+
+            for (Skill skill : Skill.values()) {
+                SkillManager skillManager = player.getSkillManager();
+                if (skillManager.getCurrentLevel(skill) < skillManager.getMaxLevel(skill)) {
+                    skillManager.setCurrentLevel(skill,  skillManager.getMaxLevel(skill));
+                }
+            }
+
+            player.setPoisonDamage(0);
+
+
+            player.getUpdateFlag().flag(Flag.APPEARANCE);
             break;
 
         }
