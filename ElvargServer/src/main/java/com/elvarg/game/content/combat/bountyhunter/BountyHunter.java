@@ -3,6 +3,7 @@ package com.elvarg.game.content.combat.bountyhunter;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.BrokenItem;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.areas.impl.WildernessArea;
@@ -77,6 +78,11 @@ public class BountyHunter {
 
 							// Check if we aren't looping ourselves..
 							if (player.equals(player2)) {
+								continue;
+							}
+
+							// Check that we aren't both bots
+							if (player instanceof PlayerBot && player2 instanceof PlayerBot) {
 								continue;
 							}
 
@@ -163,6 +169,13 @@ public class BountyHunter {
 			// Update interfaces..
 			updateInterface(player1);
 			updateInterface(player2);
+
+			// Handle Player Bot behaviour..
+			if (player1 instanceof PlayerBot) {
+				player1.getAsPlayerBot().getCombatInteraction().targetAssigned(player2);
+			} else if (player2 instanceof PlayerBot) {
+				player2.getAsPlayerBot().getCombatInteraction().targetAssigned(player1);
+			}
 		}
 	}
 

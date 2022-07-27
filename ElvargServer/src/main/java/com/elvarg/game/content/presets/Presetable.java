@@ -1,5 +1,6 @@
 package com.elvarg.game.content.presets;
 
+import com.elvarg.game.entity.impl.playerbot.fightstyle.PlayerBotFightStyle;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.MagicSpellbook;
 import com.elvarg.util.Misc;
@@ -14,7 +15,7 @@ public class Presetable {
 	/**
 	 * This set's name.
 	 */
-	private String name;
+	protected String name;
 	
 	/**
 	 * This set's inventory.
@@ -45,7 +46,12 @@ public class Presetable {
 	 * Is this a global preset?
 	 */
 	private final boolean isGlobal;
-	
+
+	public Presetable() {
+	index = 0;
+	isGlobal = false;
+	}
+
 	/**
 	 * Constructs a new {@link Presetable}.
 	 * @param name			The set's name.
@@ -124,4 +130,6 @@ public class Presetable {
 	public int getIndex() {
 		return index;
 	}
+
+	public PlayerBotFightStyle getPlayerBotFightStyle() { return null; }
 }

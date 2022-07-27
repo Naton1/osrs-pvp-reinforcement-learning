@@ -1,9 +1,12 @@
 package com.elvarg.game.model.areas;
 
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,13 +14,48 @@ public abstract class Area {
 
     private final List<Boundary> boundaries;
 
+    private final List<NPC> npcs;
+    private final List<Player> players;
+    private final List<PlayerBot> playerBots;
+
     public Area(List<Boundary> boundaries) {
         this.boundaries = boundaries;
+        this.npcs = new ArrayList<NPC>();
+        this.players = new ArrayList<Player>();
+        this.playerBots = new ArrayList<PlayerBot>();
     }
 
-    public abstract void enter(Mobile character);
+    public void enter(Mobile character) {
+        if (character.isPlayerBot()) {
+            this.playerBots.add(character.getAsPlayerBot());
+            return;
+        }
 
-    public abstract void leave(Mobile character, boolean logout);
+        if (character.isPlayer()) {
+            this.players.add(character.getAsPlayer());
+            return;
+        }
+
+        if (character.isNpc()) {
+            this.npcs.add(character.getAsNpc());
+        }
+    }
+
+    public void leave(Mobile character, boolean logout) {
+        if (character.isPlayerBot()) {
+            this.playerBots.remove(character.getAsPlayerBot());
+            return;
+        }
+
+        if (character.isPlayer()) {
+            this.players.remove(character.getAsPlayer());
+            return;
+        }
+
+        if (character.isNpc()) {
+            this.npcs.remove(character.getAsNpc());
+        }
+    }
 
     public abstract void process(Mobile character);
 
@@ -51,5 +89,17 @@ public abstract class Area {
 
     public String getName() {
         return this.getClass().getSimpleName();
+    }
+
+    public List<NPC> getNpcs() {
+        return this.npcs;
+    }
+
+    public List<Player> getPlayers() {
+        return this.players;
+    }
+
+    public List<PlayerBot> getPlayerBots() {
+        return this.playerBots;
     }
 }

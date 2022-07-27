@@ -27,9 +27,16 @@ public class ChatInteraction {
             return;
         }
 
-        if (chatMessage.contains("stop") && this.playerBot.getActiveCommand() != null &&
-                (fromPlayer == this.playerBot.getInteractingWith() || GameConstants.PLAYER_BOT_OVERRIDE.contains(fromPlayer.getRights()))) {
-            playerBot.stopCommand();
+        if (chatMessage.contains("stop")) {
+            if(this.playerBot.getActiveCommand() != null &&
+                    (fromPlayer == this.playerBot.getInteractingWith() || GameConstants.PLAYER_BOT_OVERRIDE.contains(fromPlayer.getRights()))) {
+                playerBot.stopCommand();
+            }
+
+            // If the player is currently under attack from the Bot, stop combat
+            if(this.playerBot.getCombat().getAttacker() == fromPlayer) {
+                this.playerBot.getCombat().setUnderAttack(null);
+            }
         }
 
         BotCommand[] chatCommands = this.playerBot.getChatCommands();

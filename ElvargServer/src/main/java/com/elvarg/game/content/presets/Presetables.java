@@ -12,6 +12,7 @@ import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.content.combat.magic.Autocasting;
+import com.elvarg.game.content.presets.impl.*;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
@@ -45,7 +46,12 @@ public class Presetables {
 	/**
 	 * Pre-made sets by the server which everyone can use.
 	 */
-	public static final Presetable[] GLOBAL_PRESETS = new Presetable[MAX_PRESETS];
+	public static final Presetable[] GLOBAL_PRESETS = new Presetable[] {
+		new ObbyMauler_57(), new GMauler_70(), new DDSPure_M_73(), new DDSPure_R_73(),
+		new NHPure_83(), new Att60Zerker_94(), new Att70Zerker_97(), new MainRune_126(),
+		new MainHybrid_126(), new MainTribrid_126()
+
+	};
 
 	/**
 	 * Opens the presets interface for a player.
@@ -429,7 +435,7 @@ public class Presetables {
 		// Global presets selection
 		if (button >= 45070 && button <= 45079) {
 			final int index = button - 45070;
-			if (GLOBAL_PRESETS[index] == null) {
+			if (GLOBAL_PRESETS.length <= index || GLOBAL_PRESETS[index] == null) {
 				player.getPacketSender().sendMessage("That preset is currently unavailable.");
 				return true;
 			}

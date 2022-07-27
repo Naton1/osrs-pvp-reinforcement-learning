@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.rights.PlayerRights;
 
@@ -129,9 +128,11 @@ public class GameConstants {
 
 	public static final PlayerBotDefinition[] PLAYER_BOTS = new PlayerBotDefinition[] {
 			new PlayerBotDefinition("Bot Hello123", new Location(3085, 3528), 0),
-			new PlayerBotDefinition("Bot 1337Pk", new Location(3087, 3530), 1),
-			new PlayerBotDefinition("Bot Kids Ranqe", new Location(3089, 3530), 2),
-			new PlayerBotDefinition("Bot Josh", new Location(3091, 3533), 3),
+			new PlayerBotDefinition("Elvemage", new Location(3093, 3529), 1),
+			new PlayerBotDefinition("Bot 1337Pk", new Location(3087, 3530), 2),
+			new PlayerBotDefinition("Bot Kids Ranqe", new Location(3089, 3530), 3),
+			new PlayerBotDefinition("Bot Josh", new Location(3091, 3533), 4),
+			new PlayerBotDefinition("Bot Josh", new Location(3091, 3533), 5),
 	};
 
 	// The password for every player bot account
