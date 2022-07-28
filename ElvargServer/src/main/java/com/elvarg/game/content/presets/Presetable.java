@@ -1,6 +1,6 @@
 package com.elvarg.game.content.presets;
 
-import com.elvarg.game.entity.impl.playerbot.fightstyle.PlayerBotFightStyle;
+import com.elvarg.game.entity.impl.playerbot.fightstyle.PlayerBotFightLogic;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.MagicSpellbook;
 import com.elvarg.util.Misc;
@@ -130,6 +130,4 @@ public class Presetable {
 	public int getIndex() {
 		return index;
 	}
-
-	public PlayerBotFightStyle getPlayerBotFightStyle() { return null; }
 }

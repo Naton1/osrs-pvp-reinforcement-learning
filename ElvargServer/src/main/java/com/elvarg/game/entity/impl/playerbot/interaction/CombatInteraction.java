@@ -8,20 +8,18 @@ import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
-import com.elvarg.game.entity.impl.playerbot.fightstyle.PlayerBotFightStyle;
+import com.elvarg.game.entity.impl.playerbot.fightstyle.PlayerBotFightLogic;
 import com.elvarg.game.entity.impl.playerbot.fightstyle.WeaponSwitch;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.ItemInSlot;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.container.impl.Equipment;
-import com.elvarg.game.model.container.impl.Inventory;
 import com.elvarg.game.model.teleportation.TeleportHandler;
 import com.elvarg.game.model.teleportation.TeleportType;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.net.packet.impl.EquipPacketListener;
 import com.elvarg.util.Misc;
-import org.apache.commons.lang.ArrayUtils;
 
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -40,35 +38,31 @@ public class CombatInteraction {
         this.playerBot = _playerBot;
     }
 
-    // Called when the PlayerBot takes damage
-    public void takenDamage(int damage, Mobile attacker) {
-        int finalHitpoints = this.playerBot.getHitpoints() - damage;
-        if (finalHitpoints <= 0 || attacker == null) {
-            // We're already gonna be dead XD
-            return;
-        }
-
-        // Get fight style
-        PlayerBotFightStyle fightStyle = this.playerBot.getCurrentPreset().getPlayerBotFightStyle();
-
-        if (fightStyle != null) {
+    public void process() {
+        PlayerBotFightLogic fightStyle = this.playerBot.getDefinition().getFightLogic();
+        var attacker = this.playerBot.getCombat().getAttacker();
+        if (fightStyle != null && attacker != null) {
             boolean shouldSwitchBackToMainWeapon = true;
 
             for (WeaponSwitch weaponSwitch : fightStyle.getWeaponSwitches()) {
-                if (!weaponSwitch.shouldSwitch(this.playerBot, attacker)) {
+                if (!weaponSwitch.shouldUse(this.playerBot, attacker)) {
                     continue;
                 }
 
-                weaponSwitch.beforeSwitch(playerBot);
+                weaponSwitch.beforeUse(playerBot);
 
-                if (weaponSwitch.getItemInSlot() != null) {
-                    EquipPacketListener.equipFromInventory(this.playerBot, weaponSwitch.getItemInSlot());
+                var switchWeapon = ItemInSlot.getFromInventory(weaponSwitch.getItemId(), this.playerBot.getInventory());
+
+                if (switchWeapon != null) {
+                    EquipPacketListener.equipFromInventory(this.playerBot, switchWeapon);
                 }
                 if (weaponSwitch.getCombatSpell() != null) {
                     this.playerBot.getCombat().setCastSpell(weaponSwitch.getCombatSpell());
                 }
 
-                weaponSwitch.afterSwitch(playerBot);
+                weaponSwitch.afterUse(playerBot);
+
+                this.playerBot.getCombat().attack(attacker);
 
                 // We are switching to a new weapon so don't switch back
                 shouldSwitchBackToMainWeapon = false;
@@ -77,10 +71,23 @@ public class CombatInteraction {
 
             // Switch back to main weapon
             Item equippedWeapon = this.playerBot.getEquipment().getItems()[Equipment.WEAPON_SLOT];
-            if (shouldSwitchBackToMainWeapon && equippedWeapon.getId() != fightStyle.getMainWeaponId()) {
-                ItemInSlot mainWeaponInInventory = new ItemInSlot(fightStyle.getMainWeaponId(), this.playerBot.getInventory());
+            var mainWeaponInInventory = ItemInSlot.getFromInventory(fightStyle.getMainWeaponId(), this.playerBot.getInventory());
+            if (mainWeaponInInventory != null && shouldSwitchBackToMainWeapon && equippedWeapon.getId() != fightStyle.getMainWeaponId()) {
                 EquipPacketListener.equipFromInventory(this.playerBot, mainWeaponInInventory);
+                // Deactivate special attack
+                if (playerBot.isSpecialActivated()) {
+                    CombatSpecial.activate(playerBot);
+                }
             }
+        }
+    }
+
+    // Called when the PlayerBot takes damage
+    public void takenDamage(int damage, Mobile attacker) {
+        int finalHitpoints = this.playerBot.getHitpoints() - damage;
+        if (finalHitpoints <= 0 || attacker == null) {
+            // We're already gonna be dead XD
+            return;
         }
 
         this.handleEating(finalHitpoints);
@@ -141,7 +148,7 @@ public class CombatInteraction {
             @Override
             protected void execute() {
                 // Load this Bot's preset
-                playerBot.setCurrentPreset(PlayerBot.PLAYER_BOT_PRESETS[playerBot.getDefinition().getPresetIndex()]);
+                playerBot.setCurrentPreset(playerBot.getDefinition().getPreset());
                 Presetables.handleButton(playerBot, LOAD_PRESET_BUTTON_ID);
 
                 // Teleport this bot back to their home location after some time

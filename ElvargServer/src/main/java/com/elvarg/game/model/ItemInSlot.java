@@ -28,21 +28,9 @@ public class ItemInSlot {
      * @param id     Item id.
      * @param slot Item slot.
      */
-    public ItemInSlot(int id, int slot) {
+    private ItemInSlot(int id, int slot) {
         this.id = id;
         this.slot = slot;
-    }
-
-    public ItemInSlot(int id, Inventory inventory) {
-        this.id = id;
-
-        // Search player's inventory for this.id
-        int[] itemIds = inventory.getItemIdsArray();
-
-        this.slot = IntStream.range(0, itemIds.length)
-                .filter(i -> id == itemIds[i])
-                .findFirst()
-                .orElse(-1);
     }
 
     /**
@@ -57,5 +45,20 @@ public class ItemInSlot {
      */
     public int getSlot() {
         return slot;
+    }
+
+    public static ItemInSlot getFromInventory(int itemId, Inventory inventory) {
+
+        // Search player's inventory for this.id
+        int[] itemIds = inventory.getItemIdsArray();
+
+        int slot = IntStream.range(0, itemIds.length)
+                .filter(i -> itemId == itemIds[i])
+                .findFirst()
+                .orElse(-1);
+        if (slot == -1) {
+            return null;
+        }
+        return new ItemInSlot(itemId, slot);
     }
 }

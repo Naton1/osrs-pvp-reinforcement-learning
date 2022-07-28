@@ -2,13 +2,11 @@ package com.elvarg.game.entity.impl.playerbot.fightstyle;
 
 import com.elvarg.game.content.combat.magic.CombatSpell;
 import com.elvarg.game.entity.impl.Mobile;
-import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
-import com.elvarg.game.model.ItemInSlot;
 
 public abstract class WeaponSwitch {
 
-    private ItemInSlot itemInSlot;
+    private int itemId;
 
     private CombatSpell combatSpell;
 
@@ -16,12 +14,12 @@ public abstract class WeaponSwitch {
         this.combatSpell = combatSpell;
     }
 
-    public WeaponSwitch(ItemInSlot itemInSlot) {
-        this.itemInSlot = itemInSlot;
+    public WeaponSwitch(int itemId) {
+        this.itemId = itemId;
     }
 
-    public ItemInSlot getItemInSlot() {
-        return this.itemInSlot;
+    public int getItemId() {
+        return this.itemId;
     }
 
     public CombatSpell getCombatSpell() {
@@ -31,17 +29,17 @@ public abstract class WeaponSwitch {
     /**
      * Should the player switch
      */
-    public abstract boolean shouldSwitch(PlayerBot playerBot, Mobile enemy);
+    public abstract boolean shouldUse(PlayerBot playerBot, Mobile enemy);
 
     /**
      * Called before weapon is switched
      */
-    public void beforeSwitch(PlayerBot playerBot) {
+    public void beforeUse(PlayerBot playerBot) {
     };
 
     /**
      * Called after weapon is switched
      */
-    public void afterSwitch(PlayerBot playerBot) {
+    public void afterUse(PlayerBot playerBot) {
     };
 }

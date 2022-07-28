@@ -172,9 +172,9 @@ public class BountyHunter {
 
 			// Handle Player Bot behaviour..
 			if (player1 instanceof PlayerBot) {
-				player1.getAsPlayerBot().getCombatInteraction().targetAssigned(player2);
+				((PlayerBot)player1).getCombatInteraction().targetAssigned(player2);
 			} else if (player2 instanceof PlayerBot) {
-				player2.getAsPlayerBot().getCombatInteraction().targetAssigned(player1);
+				((PlayerBot)player2).getCombatInteraction().targetAssigned(player1);
 			}
 		}
 	}

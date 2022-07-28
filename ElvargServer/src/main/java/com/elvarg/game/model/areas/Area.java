@@ -6,56 +6,49 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class Area {
 
     private final List<Boundary> boundaries;
 
-    private final List<NPC> npcs;
-    private final List<Player> players;
-    private final List<PlayerBot> playerBots;
+    private final HashMap<Integer, NPC> npcs;
+    private final HashMap<Integer, Player> players;
+    private final HashMap<Integer, PlayerBot> playerBots;
 
     public Area(List<Boundary> boundaries) {
         this.boundaries = boundaries;
-        this.npcs = new ArrayList<NPC>();
-        this.players = new ArrayList<Player>();
-        this.playerBots = new ArrayList<PlayerBot>();
+        this.npcs = new HashMap<>();
+        this.players = new HashMap<>();
+        this.playerBots = new HashMap<>();
     }
 
-    public void enter(Mobile character) {
+    public final void enter(Mobile character) {
         if (character.isPlayerBot()) {
-            this.playerBots.add(character.getAsPlayerBot());
-            return;
+            this.playerBots.put(character.getIndex(), character.getAsPlayerBot());
+        } else if (character.isPlayer()) {
+            this.players.put(character.getIndex(), character.getAsPlayer());
+        } else if (character.isNpc()) {
+            this.npcs.put(character.getIndex(), character.getAsNpc());
         }
-
-        if (character.isPlayer()) {
-            this.players.add(character.getAsPlayer());
-            return;
-        }
-
-        if (character.isNpc()) {
-            this.npcs.add(character.getAsNpc());
-        }
+        this.postEnter(character);
     }
 
-    public void leave(Mobile character, boolean logout) {
+    public void postEnter(Mobile character) {}
+
+    public final void leave(Mobile character, boolean logout) {
         if (character.isPlayerBot()) {
-            this.playerBots.remove(character.getAsPlayerBot());
-            return;
+            this.playerBots.remove(character.getIndex());
+        } else if (character.isPlayer()) {
+            this.players.remove(character.getIndex());
+        } else if (character.isNpc()) {
+            this.npcs.remove(character.getIndex());
         }
 
-        if (character.isPlayer()) {
-            this.players.remove(character.getAsPlayer());
-            return;
-        }
-
-        if (character.isNpc()) {
-            this.npcs.remove(character.getAsNpc());
-        }
+        this.postLeave(character, logout);
     }
+
+    public void postLeave(Mobile character, boolean logout) {}
 
     public abstract void process(Mobile character);
 
@@ -91,15 +84,15 @@ public abstract class Area {
         return this.getClass().getSimpleName();
     }
 
-    public List<NPC> getNpcs() {
-        return this.npcs;
+    public Collection<NPC> getNpcs() {
+        return this.npcs.values();
     }
 
-    public List<Player> getPlayers() {
-        return this.players;
+    public Collection<Player> getPlayers() {
+        return this.players.values();
     }
 
-    public List<PlayerBot> getPlayerBots() {
-        return this.playerBots;
+    public Collection<PlayerBot> getPlayerBots() {
+        return this.playerBots.values();
     }
 }

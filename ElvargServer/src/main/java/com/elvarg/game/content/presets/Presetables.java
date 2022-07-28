@@ -12,7 +12,6 @@ import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.content.combat.magic.Autocasting;
-import com.elvarg.game.content.presets.impl.*;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
@@ -47,9 +46,16 @@ public class Presetables {
 	 * Pre-made sets by the server which everyone can use.
 	 */
 	public static final Presetable[] GLOBAL_PRESETS = new Presetable[] {
-		new ObbyMauler_57(), new GMauler_70(), new DDSPure_M_73(), new DDSPure_R_73(),
-		new NHPure_83(), new Att60Zerker_94(), new Att70Zerker_97(), new MainRune_126(),
-		new MainHybrid_126(), new MainTribrid_126()
+			PredefinedPresets.OBBY_MAULER_57,
+			PredefinedPresets.G_MAULER_70,
+			PredefinedPresets.DDS_PURE_M_73,
+			PredefinedPresets.DDS_PURE_R_73,
+			PredefinedPresets.NH_PURE_83,
+			PredefinedPresets.ATT_60_ZERKER_94,
+			PredefinedPresets.ATT_70_ZERKER_97,
+			PredefinedPresets.MAIN_RUNE_126,
+			PredefinedPresets.MAIN_HYBRID_126,
+			PredefinedPresets.MAIN_TRIBRID_126,
 
 	};
 

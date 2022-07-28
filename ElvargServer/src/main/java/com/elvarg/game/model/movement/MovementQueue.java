@@ -89,6 +89,10 @@ public final class MovementQueue {
 	 */
 	public static void clippedStep(Mobile character) {
 	    int size = character.size();
+		clippedStep(character, size);
+	}
+
+	public static void clippedStep(Mobile character, int size) {
 		if (character.getMovementQueue().canWalk(-size, 0))
 			character.getMovementQueue().walkStep(-size, 0);
 		else if (character.getMovementQueue().canWalk(size, 0))
