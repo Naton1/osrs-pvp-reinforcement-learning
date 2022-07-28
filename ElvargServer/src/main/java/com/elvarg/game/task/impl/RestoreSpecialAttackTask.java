@@ -16,7 +16,7 @@ public class RestoreSpecialAttackTask extends Task {
     private final Mobile character;
 
     public RestoreSpecialAttackTask(Mobile character) {
-        super(20, character, false);
+        super(50, character, false);
         this.character = character;
         character.setRecoveringSpecialAttack(true);
     }
@@ -28,7 +28,7 @@ public class RestoreSpecialAttackTask extends Task {
             stop();
             return;
         }
-        int amount = character.getSpecialPercentage() + 5;
+        int amount = character.getSpecialPercentage() + 10;
         if (amount >= 100) {
             amount = 100;
             character.setRecoveringSpecialAttack(false);
@@ -39,9 +39,6 @@ public class RestoreSpecialAttackTask extends Task {
         if (character.isPlayer()) {
             Player player = character.getAsPlayer();
             CombatSpecial.updateBar(player);
-            if (amount == 25 || amount == 50 || amount == 75 || amount == 100) {
-                player.getPacketSender().sendMessage("Your special attack energy is now " + player.getSpecialPercentage() + "%.");
-            }
         }
     }
 }
