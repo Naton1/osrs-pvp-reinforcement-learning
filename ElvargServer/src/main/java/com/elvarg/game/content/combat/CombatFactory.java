@@ -53,6 +53,7 @@ import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.CombatPoisonEffect;
 import com.elvarg.game.task.impl.CombatPoisonEffect.CombatPoisonData;
 import com.elvarg.game.task.impl.CombatPoisonEffect.PoisonType;
+import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
 import com.elvarg.util.NpcIdentifiers;
 import com.elvarg.util.timers.TimerKey;
@@ -629,7 +630,7 @@ public class CombatFactory {
 		if (qHit.getTotalDamage() > 0) {
 			if (target.isPlayer()) {
 				Player player = target.getAsPlayer();
-				if (player.getEquipment().get(Equipment.RING_SLOT).getId() == CombatConstants.RING_OF_RECOIL_ID) {
+				if (player.getEquipment().get(Equipment.RING_SLOT).getId() == ItemIdentifiers.RING_OF_RECOIL) {
 					handleRecoil(player, attacker, qHit.getTotalDamage());
 				}
 			}
@@ -794,10 +795,10 @@ public class CombatFactory {
 	 * @param damage
 	 */
 	public static void handleRecoil(Player player, Mobile attacker, int damage) {
-		final int returnDmg = (int) Math.ceil(damage * 0.1D);
-		if (returnDmg <= 0) {
+		if (damage == 0) {
 			return;
 		}
+		final int returnDmg = (int) (damage * 0.1) + 1;
 
 		// Increase recoil damage for a player.
 		player.setRecoilDamage(player.getRecoilDamage() + returnDmg);
@@ -806,7 +807,7 @@ public class CombatFactory {
 		attacker.getCombat().getHitQueue().addPendingDamage(new HitDamage(returnDmg, HitMask.RED));
 
 		// Degrading ring of recoil for a player.
-		if (player.getRecoilDamage() >= 40 || Misc.getRandom(200) >= 195) {
+		if (player.getRecoilDamage() >= 40) {
 			player.getEquipment().set(Equipment.RING_SLOT, new Item(-1));
 			player.getEquipment().refreshItems();
 			player.getPacketSender().sendMessage("Your ring of recoil has degraded.");

@@ -16,8 +16,6 @@ import com.elvarg.game.model.Location;
 import com.elvarg.net.PlayerBotSession;
 import com.elvarg.util.Misc;
 
-import static com.elvarg.game.entity.impl.playerbot.commands.LoadPreset.LOAD_PRESET_BUTTON_ID;
-
 public class PlayerBot extends Player {
 
     public enum InteractionState {
@@ -168,8 +166,7 @@ public class PlayerBot extends Player {
     public void onLogin() {
         super.onLogin();
 
-        this.setCurrentPreset(this.getDefinition().getPreset());
-        Presetables.handleButton(this, LOAD_PRESET_BUTTON_ID);
+        Presetables.load(this, this.getDefinition().getFighterPreset().getItemPreset());
     }
 
     @Override

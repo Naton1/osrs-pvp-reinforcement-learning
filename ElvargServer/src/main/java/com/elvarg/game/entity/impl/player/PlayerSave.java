@@ -2,6 +2,7 @@ package com.elvarg.game.entity.impl.player;
 
 import com.elvarg.game.content.PrayerHandler;
 import com.elvarg.game.content.combat.FightType;
+import com.elvarg.game.content.presets.Presetable;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.content.skill.skillable.impl.Runecrafting;
 import com.elvarg.game.model.Item;
@@ -67,6 +68,7 @@ public class PlayerSave {
     private List<Long> friends;
     private List<Long> ignores;
     private Map<Integer, List<Item>> banks;
+    private Presetable[] presets;
 
     public String getPasswordHashWithSalt() {
         return passwordHashWithSalt;
@@ -468,6 +470,14 @@ public class PlayerSave {
         this.banks = banks;
     }
 
+    public Presetable[] getPresets() {
+        return presets;
+    }
+
+    public void setPresets(Presetable[] presets) {
+        this.presets = presets;
+    }
+
     public void applyToPlayer(Player player) {
         player.setPasswordHashWithSalt(this.passwordHashWithSalt);
         player.setLoyaltyTitle(this.title);
@@ -526,6 +536,10 @@ public class PlayerSave {
         player.getAppearance().set(this.appearance);
         player.getSkillManager().setSkills(this.skills);
         player.getQuickPrayers().setPrayers(this.quickPrayers);
+
+        if (this.presets != null) {
+            player.setPresets(this.presets);
+        }
 
         for (long l : this.friends) {
             player.getRelations().getFriendList().add(l);
@@ -608,6 +622,8 @@ public class PlayerSave {
 
         playerSave.friends = player.getRelations().getFriendList();
         playerSave.ignores = player.getRelations().getIgnoreList();
+
+        playerSave.presets = player.getPresets();
 
         var banks = new HashMap<Integer, List<Item>>();
 

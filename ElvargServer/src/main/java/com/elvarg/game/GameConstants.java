@@ -129,11 +129,11 @@ public class GameConstants {
 			1704, 1731, 1725, 1727, 1729));
 
 	public static final PlayerBotDefinition[] PLAYER_BOTS = new PlayerBotDefinition[]{
-			new PlayerBotDefinition("Bot Hello123", new Location(3085, 3528), PredefinedPresets.OBBY_MAULER_57, new ObbyMaulerFightLogic()),
-			new PlayerBotDefinition("Elvemage", new Location(3093, 3529), PredefinedPresets.NH_PURE_83, new NHPureFightLogic()),
-			new PlayerBotDefinition("Bot 1337Pk", new Location(3087, 3530), PredefinedPresets.DDS_PURE_R_73, new DDSPureRFightLogic()),
-			new PlayerBotDefinition("Bot Kids Ranqe", new Location(3089, 3530), PredefinedPresets.G_MAULER_70, new GMaulerFightLogic()),
-			new PlayerBotDefinition("Bot Josh", new Location(3091, 3533), PredefinedPresets.DDS_PURE_M_73, new DDSPureMFightLogic()),
+			new PlayerBotDefinition("Bot Hello123", new Location(3085, 3528), new ObbyMaulerFighterPreset()),
+			new PlayerBotDefinition("Elvemage", new Location(3093, 3529), new NHPureFighterPreset()),
+			new PlayerBotDefinition("Bot 1337Pk", new Location(3087, 3530),  new DDSPureRFighterPreset()),
+			new PlayerBotDefinition("Bot Kids Ranqe", new Location(3089, 3530), new GRangerFighterPreset()),
+			new PlayerBotDefinition("Bot Josh", new Location(3091, 3533), new DDSPureMFighterPreset()),
 	};
 
 	// The password for every player bot account

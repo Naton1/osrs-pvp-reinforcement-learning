@@ -114,6 +114,16 @@ public final class MovementQueue {
 			character.getMovementQueue().walkStep(0, size);
 	}
 
+	public static void randomClippedStepNotSouth(Mobile character, int size) {
+		var rng = RANDOM.inclusive(1,3);
+		if (rng == 1 && character.getMovementQueue().canWalk(-size, 0))
+			character.getMovementQueue().walkStep(-size, 0);
+		else if (rng == 2 && character.getMovementQueue().canWalk(size, 0))
+			character.getMovementQueue().walkStep(size, 0);
+		else if (rng == 3 && character.getMovementQueue().canWalk(0, size))
+			character.getMovementQueue().walkStep(0, size);
+	}
+
 	/**
 	 * Adds the first step to the queue, attempting to connect the server and client
 	 * position by looking at the previous queue.
