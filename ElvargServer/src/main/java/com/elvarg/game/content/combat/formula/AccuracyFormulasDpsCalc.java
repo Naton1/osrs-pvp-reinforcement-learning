@@ -227,12 +227,11 @@ public class AccuracyFormulasDpsCalc {
 
         if (entity.isNpc()) {
             // Prayer bonuses don't apply to NPCs (yet)
-            rngStrength += entity.getAsNpc().getDefinition().getStats()[3];
-            return rngStrength;
+            return rngStrength + entity.getAsNpc().getDefinition().getStats()[3];
         }
 
         Player player = entity.getAsPlayer();
-        player.getSkillManager().getCurrentLevel(Skill.RANGED);
+        rngStrength += player.getSkillManager().getCurrentLevel(Skill.RANGED);
 
         // Prayers
         float prayerMod = 1.0f;

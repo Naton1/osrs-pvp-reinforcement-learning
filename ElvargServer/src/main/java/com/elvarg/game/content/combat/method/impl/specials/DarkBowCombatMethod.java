@@ -17,8 +17,8 @@ public class DarkBowCombatMethod extends RangedCombatMethod {
 
 	@Override
     public PendingHit[] hits(Mobile character, Mobile target) {
-        return new PendingHit[] { new PendingHit(character, target, this, 3),
-                new PendingHit(character, target, this, 2) };
+        return new PendingHit[] { new PendingHit(character, target, this, false, 3),
+                new PendingHit(character, target, this, false, 2) };
     }
 
 	@Override

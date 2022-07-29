@@ -90,7 +90,7 @@ public enum CombatSpecial {
     // Ranged
     MAGIC_SHORTBOW(new int[]{861}, 55, 1, 1, new MagicShortbowCombatMethod(),
             WeaponInterface.SHORTBOW),
-    DARK_BOW(new int[]{11235}, 55, 1, 1.35, new DarkBowCombatMethod(),
+    DARK_BOW(new int[]{11235}, 55, 1.5, 1.35, new DarkBowCombatMethod(),
             WeaponInterface.DARK_BOW),
     ARMADYL_CROSSBOW(new int[]{11785}, 40, 1, 2.0,
             new ArmadylCrossbowCombatMethod(), WeaponInterface.CROSSBOW),
