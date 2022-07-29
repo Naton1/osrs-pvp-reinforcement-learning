@@ -285,7 +285,7 @@ public class PredefinedPresets {
                     new Item(AMULET_OF_GLORY),
                     new Item(IRON_PLATEBODY),
                     new Item(UNHOLY_BOOK),
-                    new Item(IRON_PLATELEGS),
+                    new Item(BLACK_DHIDE_CHAPS),
                     new Item(MITHRIL_GLOVES),
                     new Item(CLIMBING_BOOTS),
                     new Item(RING_OF_RECOIL)

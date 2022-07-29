@@ -1,7 +1,6 @@
 package com.elvarg.game.definition;
 
-import com.elvarg.game.content.presets.Presetable;
-import com.elvarg.game.entity.impl.playerbot.fightstyle.PlayerBotFightLogic;
+import com.elvarg.game.entity.impl.playerbot.fightstyle.FighterPreset;
 import com.elvarg.game.model.Location;
 
 public class PlayerBotDefinition {
@@ -10,15 +9,12 @@ public class PlayerBotDefinition {
 
     private final Location spawnLocation;
 
-    private final Presetable preset;
+    private final FighterPreset fighterPreset;
 
-    private final PlayerBotFightLogic fightLogic;
-
-    public PlayerBotDefinition(String _username, Location _spawnLocation, Presetable preset, PlayerBotFightLogic fightLogic) {
+    public PlayerBotDefinition(String _username, Location _spawnLocation, FighterPreset fighterPreset) {
         this.username = _username;
         this.spawnLocation = _spawnLocation;
-        this.preset = preset;
-        this.fightLogic = fightLogic;
+        this.fighterPreset = fighterPreset;
     }
 
     public String getUsername() {
@@ -29,11 +25,7 @@ public class PlayerBotDefinition {
         return this.spawnLocation;
     }
 
-    public Presetable getPreset() {
-        return this.preset;
-    }
-
-    public PlayerBotFightLogic getFightLogic() {
-        return fightLogic;
+    public FighterPreset getFighterPreset() {
+        return this.fighterPreset;
     }
 }

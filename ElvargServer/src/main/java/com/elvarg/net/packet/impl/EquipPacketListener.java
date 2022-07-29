@@ -49,7 +49,7 @@ public class EquipPacketListener implements PacketExecutor {
 	}
 
 	public static void equipFromInventory(Player player, ItemInSlot itemInSlot) {
-		EquipPacketListener.equip(player, itemInSlot.getId(), itemInSlot.getSlot(),  Inventory.INTERFACE_ID);
+		EquipPacketListener.equip(player, itemInSlot.getId(), itemInSlot.getSlot(), Inventory.INTERFACE_ID);
 	}
 
 	public static void equip(Player player, int id, int slot, int interfaceId) {
