@@ -263,7 +263,7 @@ public class PredefinedPresets {
                     new Item(RUNE_ARROW, 175),
             },
             /* atk, def, str, hp, range, pray, mage */
-            new int[]{60, 1, 99, 99, 99, 52, 94},
+            new int[]{60, 1, 85, 99, 99, 1, 99},
             MagicSpellbook.ANCIENT,
             true
     );

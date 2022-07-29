@@ -2,9 +2,11 @@ package com.elvarg.game.entity.impl.playerbot.interaction;
 
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.content.Food;
+import com.elvarg.game.content.PotionConsumable;
 import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.content.presets.Presetables;
+import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
@@ -19,11 +21,14 @@ import com.elvarg.game.model.teleportation.TeleportType;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.net.packet.impl.EquipPacketListener;
+import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
+import static com.elvarg.game.content.PotionConsumable.*;
 import static com.elvarg.game.entity.impl.playerbot.commands.LoadPreset.LOAD_PRESET_BUTTON_ID;
 
 public class CombatInteraction {
@@ -62,8 +67,6 @@ public class CombatInteraction {
 
                 weaponSwitch.afterUse(playerBot);
 
-                this.playerBot.getCombat().attack(attacker);
-
                 // We are switching to a new weapon so don't switch back
                 shouldSwitchBackToMainWeapon = false;
                 break; // No need to process any more weapon switches
@@ -78,6 +81,60 @@ public class CombatInteraction {
                 if (playerBot.isSpecialActivated()) {
                     CombatSpecial.activate(playerBot);
                 }
+            }
+            if (playerBot.getMovementQueue().size() == 0) {
+                this.playerBot.getCombat().attack(attacker);
+            }
+        }
+        var area = this.playerBot.getArea();
+        if (area != null && !area.getPlayers().isEmpty()) {
+            this.potUp();
+        }
+
+        if (area != null && area.getPlayers().isEmpty()) {
+            boolean shouldReset = this.playerBot.getInventory().getFreeSlots() > 5 || this.playerBot.getSpecialPercentage() < 50;
+
+            if (shouldReset) {
+                this.reset();
+            }
+        }
+    }
+
+    private void potUp() {
+        // Boost range
+        if (!playerBot.getSkillManager().isBoosted(Skill.RANGED)) {
+            var pot = Arrays.stream(RANGE_POTIONS.getIds())
+                    .mapToObj(id -> ItemInSlot.getFromInventory(id, this.playerBot.getInventory()))
+                    .filter(Objects::nonNull)
+                    .findFirst();
+
+            if (pot.isPresent()) {
+                PotionConsumable.drink(playerBot, pot.get().getId(), pot.get().getSlot());
+                return;
+            }
+        }
+        // Boost strength
+        if (!playerBot.getSkillManager().isBoosted(Skill.STRENGTH)) {
+            var pot = Arrays.stream(SUPER_STRENGTH_POTIONS.getIds())
+                    .mapToObj(id -> ItemInSlot.getFromInventory(id, this.playerBot.getInventory()))
+                    .filter(Objects::nonNull)
+                    .findFirst();
+
+            if (pot.isPresent()) {
+                PotionConsumable.drink(playerBot, pot.get().getId(), pot.get().getSlot());
+                return;
+            }
+        }
+        //Boost attack
+        if (!playerBot.getSkillManager().isBoosted(Skill.ATTACK)) {
+            var pot = Arrays.stream(SUPER_ATTACK_POTIONS.getIds())
+                    .mapToObj(id -> ItemInSlot.getFromInventory(id, this.playerBot.getInventory()))
+                    .filter(Objects::nonNull)
+                    .findFirst();
+
+            if (pot.isPresent()) {
+                PotionConsumable.drink(playerBot, pot.get().getId(), pot.get().getSlot());
+                return;
             }
         }
     }
@@ -97,32 +154,27 @@ public class CombatInteraction {
         float max = this.playerBot.getSkillManager().getMaxLevel(Skill.HITPOINTS);
         if (finalHitpoints <= ((max / 100) * CombatInteraction.HEAL_AT_HEALTH_PERCENT)) {
             // Player Bot needs to eat
-            int slot = edibleItemSlot();
-            if (slot == -1) {
+            var edible = edibleItemSlot();
+            if (edible == null) {
                 return;
             }
-            Item item =  this.playerBot.getInventory().get(slot);
-            Food.consume(this.playerBot, item.getId(), slot);
+            Food.consume(this.playerBot, edible.getId(), edible.getSlot());
+            if (edible.getId() != ItemIdentifiers.COOKED_KARAMBWAN) {
+                var karambwan = ItemInSlot.getFromInventory(ItemIdentifiers.COOKED_KARAMBWAN, this.playerBot.getInventory());
+                if (karambwan != null) {
+                    Food.consume(this.playerBot, karambwan.getId(), karambwan.getSlot());
+                }
+            }
         }
     }
 
-    private int edibleItemSlot() {
-        for (Food.Edible f : Food.Edible.values()) {
+    private ItemInSlot edibleItemSlot() {
+        var edible = Arrays.stream(Food.Edible.values())
+                .map(food -> ItemInSlot.getFromInventory(food.getItem().getId(), this.playerBot.getInventory()))
+                .filter(Objects::nonNull)
+                .findFirst();
 
-            int[] itemIds = this.playerBot.getInventory().getItemIdsArray();
-
-            int slot = IntStream.range(0, itemIds.length)
-                    .filter(i -> f.getItem().getId() == itemIds[i])
-                    .findFirst()
-                    .orElse(-1);
-
-            if (slot > -1) {
-                // We've found an item with a special attack
-                return slot;
-            }
-        }
-
-        return -1;
+        return edible.orElse(null);
     }
 
     // Called when the Player Bot is just about to die
@@ -142,17 +194,13 @@ public class CombatInteraction {
         this.playerBot.getEquipment().resetItems().refreshItems();
 
         this.playerBot.resetAttributes();
+        this.playerBot.setFollowing(null);
         this.playerBot.moveTo(GameConstants.DEFAULT_LOCATION);
 
         TaskManager.submit(new Task(Misc.randomInclusive(10,20), playerBot, false) {
             @Override
             protected void execute() {
-                // Load this Bot's preset
-                playerBot.setCurrentPreset(playerBot.getDefinition().getPreset());
-                Presetables.handleButton(playerBot, LOAD_PRESET_BUTTON_ID);
-
-                // Teleport this bot back to their home location after some time
-                TeleportHandler.teleport(playerBot, playerBot.getDefinition().getSpawnLocation(), TeleportType.NORMAL, false);
+                reset();
                 stop();
             }
         });
@@ -166,5 +214,15 @@ public class CombatInteraction {
         }
 
         this.playerBot.getCombat().attack(target);
+    }
+
+    private void reset() {
+        // Load this Bot's preset
+        playerBot.setCurrentPreset(playerBot.getDefinition().getPreset());
+        Presetables.handleButton(playerBot, LOAD_PRESET_BUTTON_ID);
+
+        // Teleport this bot back to their home location after some time
+        TeleportHandler.teleport(playerBot, playerBot.getDefinition().getSpawnLocation(), TeleportType.NORMAL, false);
+
     }
 }

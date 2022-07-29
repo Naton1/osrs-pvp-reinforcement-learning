@@ -597,6 +597,10 @@ public class SkillManager {
 		decreaseCurrentLevel(skill, amount, getMaxLevel(skill) - amount);
 	}
 
+	public boolean isBoosted(Skill skill) {
+		return this.getCurrentLevel(skill) > this.getMaxLevel(skill);
+	}
+
 	/**
 	 * Checks if a skill should be started based on the {@link GameObject} that was
 	 * given.

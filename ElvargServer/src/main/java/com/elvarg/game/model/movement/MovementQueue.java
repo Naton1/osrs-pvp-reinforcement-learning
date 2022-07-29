@@ -18,6 +18,7 @@ import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.movement.path.RS317PathFinder;
 import com.elvarg.util.Misc;
 import com.elvarg.util.NpcIdentifiers;
+import com.elvarg.util.RandomGen;
 import com.elvarg.util.timers.TimerKey;
 
 /**
@@ -26,6 +27,8 @@ import com.elvarg.util.timers.TimerKey;
  * @author Graham Edgecombe
  */
 public final class MovementQueue {
+
+	private static final RandomGen RANDOM = new RandomGen();
 
 	/**
 	 * The maximum size of the queue. If any additional steps are added, they are
@@ -89,10 +92,6 @@ public final class MovementQueue {
 	 */
 	public static void clippedStep(Mobile character) {
 	    int size = character.size();
-		clippedStep(character, size);
-	}
-
-	public static void clippedStep(Mobile character, int size) {
 		if (character.getMovementQueue().canWalk(-size, 0))
 			character.getMovementQueue().walkStep(-size, 0);
 		else if (character.getMovementQueue().canWalk(size, 0))
@@ -100,6 +99,18 @@ public final class MovementQueue {
 		else if (character.getMovementQueue().canWalk(0, -size))
 			character.getMovementQueue().walkStep(0, -size);
 		else if (character.getMovementQueue().canWalk(0, size))
+			character.getMovementQueue().walkStep(0, size);
+	}
+
+	public static void randomClippedStep(Mobile character, int size) {
+		var rng = RANDOM.inclusive(1,4);
+		if (rng == 1 && character.getMovementQueue().canWalk(-size, 0))
+			character.getMovementQueue().walkStep(-size, 0);
+		else if (rng == 2 && character.getMovementQueue().canWalk(size, 0))
+			character.getMovementQueue().walkStep(size, 0);
+		else if (rng == 3 && character.getMovementQueue().canWalk(0, -size))
+			character.getMovementQueue().walkStep(0, -size);
+		else if (rng == 4 && character.getMovementQueue().canWalk(0, size))
 			character.getMovementQueue().walkStep(0, size);
 	}
 

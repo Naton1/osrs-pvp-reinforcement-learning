@@ -9,6 +9,9 @@ import com.elvarg.game.entity.impl.playerbot.fightstyle.PlayerBotFightLogic;
 import com.elvarg.game.entity.impl.playerbot.fightstyle.WeaponSwitch;
 import com.elvarg.game.model.ItemInSlot;
 import com.elvarg.game.model.movement.MovementQueue;
+import com.elvarg.game.task.Task;
+import com.elvarg.game.task.TaskManager;
+import com.elvarg.util.timers.TimerKey;
 
 import static com.elvarg.util.ItemIdentifiers.*;
 
@@ -19,12 +22,23 @@ public class NHPureFightLogic extends PlayerBotFightLogic {
                 @Override
                 public boolean shouldUse(PlayerBot playerBot, Mobile enemy) {
                     // Freeze the player if they can move
-                    return enemy.getMovementQueue().canMove();
+                    return enemy.getMovementQueue().canMove() && !enemy.getTimers().has(TimerKey.FREEZE_IMMUNITY);
                 }
 
                 @Override
                 public void afterUse(PlayerBot playerBot) {
-                    MovementQueue.clippedStep(playerBot, 3);
+                    TaskManager.submit(new Task(2, this, false) {
+                        @Override
+                        public void execute() {
+                            if (playerBot.getMovementQueue().size()> 0) {
+                                return;
+                            }
+                            playerBot.setFollowing(null);
+                            MovementQueue.randomClippedStep(playerBot, 1);
+                            this.stop();
+                        }
+                    });
+
                 }
             },
 

@@ -361,6 +361,8 @@ public class BountyHunter {
 
 		var additionalBloodMoneyFromBrokenItems = (BrokenItem.getValueLoseOnDeath(killed)* 3) / 4; // only 75%
 
+
+
 		if (fullRewardPlayer) {
 
 			// Increment total kills..
