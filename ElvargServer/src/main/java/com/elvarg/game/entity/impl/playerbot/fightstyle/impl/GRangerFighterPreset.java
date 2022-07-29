@@ -2,7 +2,6 @@ package com.elvarg.game.entity.impl.playerbot.fightstyle.impl;
 
 import com.elvarg.game.content.PrayerHandler;
 import com.elvarg.game.content.combat.CombatSpecial;
-import com.elvarg.game.content.presets.PredefinedPresets;
 import com.elvarg.game.content.presets.Presetable;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
@@ -16,7 +15,7 @@ import static com.elvarg.util.ItemIdentifiers.*;
 
 public class GRangerFighterPreset implements FighterPreset {
 
-    private static final Presetable BOT_G_MAULER_70 = new Presetable("G Mauler (R)", 1,
+    private static final Presetable BOT_G_MAULER_70 = new Presetable("G Mauler (R)",
             new Item[]{
                     new Item(RUNE_CROSSBOW), new Item(DRAGONSTONE_BOLTS_E_, 75), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
                     new Item(COOKED_KARAMBWAN), new Item(GRANITE_MAUL), new Item(SUPER_RESTORE_4_), new Item(SUPER_ATTACK_4_),

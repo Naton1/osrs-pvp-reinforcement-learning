@@ -1,8 +1,6 @@
 package com.elvarg.game.entity.impl.playerbot.fightstyle.impl;
 
-import com.elvarg.game.content.PrayerHandler;
 import com.elvarg.game.content.combat.CombatSpecial;
-import com.elvarg.game.content.presets.PredefinedPresets;
 import com.elvarg.game.content.presets.Presetable;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
@@ -16,7 +14,7 @@ import static com.elvarg.util.ItemIdentifiers.*;
 
 public class DDSPureMFighterPreset implements FighterPreset {
 
-    private static final Presetable BOT_DDS_PURE_M_73 = new Presetable("DDS Pure (M)", 1,
+    private static final Presetable BOT_DDS_PURE_M_73 = new Presetable("DDS Pure (M)",
             new Item[]{
                     new Item(DRAGON_DAGGER_P_PLUS_PLUS_), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(SUPER_STRENGTH_4_),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(COOKED_KARAMBWAN), new Item(SUPER_ATTACK_4_),

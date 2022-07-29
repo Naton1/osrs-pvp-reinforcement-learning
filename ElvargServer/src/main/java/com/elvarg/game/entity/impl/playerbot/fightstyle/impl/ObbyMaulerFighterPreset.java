@@ -16,7 +16,7 @@ import static com.elvarg.util.ItemIdentifiers.*;
 
 public class ObbyMaulerFighterPreset implements FighterPreset {
 
-    private static final Presetable BOT_OBBY_MAULER_57 = new Presetable("Obby Mauler", 0,
+    private static final Presetable BOT_OBBY_MAULER_57 = new Presetable("Obby Mauler",
             new Item[]{
                     new Item(SUPER_STRENGTH_4_), new Item(RANGING_POTION_4_), new Item(MAGIC_SHORTBOW), new Item(RING_OF_RECOIL),
                     new Item(RUNE_ARROW, 175), new Item(COOKED_KARAMBWAN), new Item(COOKED_KARAMBWAN), new Item(COOKED_KARAMBWAN),

@@ -43,7 +43,4 @@ public class CombatConstants {
     // effect.
     public static final int RETRIBUTION_RADIUS = 3;
 
-    //Recoil item id
-    public static final int RING_OF_RECOIL_ID = 2550;
-
 }

@@ -3,7 +3,6 @@ package com.elvarg.game.entity.impl.playerbot.fightstyle.impl;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.combat.magic.CombatSpells;
-import com.elvarg.game.content.combat.method.impl.MeleeCombatMethod;
 import com.elvarg.game.content.presets.Presetable;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
@@ -20,7 +19,7 @@ import static com.elvarg.util.ItemIdentifiers.*;
 
 public class NHPureFighterPreset implements FighterPreset {
 
-    private static final Presetable BOT_NH_PURE_83 = new Presetable("BOT NH Pure", 1,
+    private static final Presetable BOT_NH_PURE_83 = new Presetable("BOT NH Pure",
             new Item[]{
                     new Item(RUNE_CROSSBOW), new Item(BLACK_DHIDE_CHAPS), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
                     new Item(AVAS_ACCUMULATOR), new Item(GRANITE_MAUL), new Item(MANTA_RAY), new Item(MANTA_RAY),
