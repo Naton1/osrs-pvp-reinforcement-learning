@@ -1,11 +1,12 @@
 package com.elvarg.game;
 
+import com.elvarg.game.content.presets.PredefinedPresets;
 import com.elvarg.game.definition.PlayerBotDefinition;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.elvarg.game.definition.ItemDefinition;
+import com.elvarg.game.entity.impl.playerbot.fightstyle.impl.*;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.rights.PlayerRights;
 
@@ -127,11 +128,12 @@ public class GameConstants {
 			544, 542, 1035, 1033, 579, 577, 1011, 554, 555, 556, 557, 558, 559, 561, 563, 562, 560, 565, 566, 9075,
 			1704, 1731, 1725, 1727, 1729));
 
-	public static final PlayerBotDefinition[] PLAYER_BOTS = new PlayerBotDefinition[] {
-			new PlayerBotDefinition("Bot Hello123", new Location(3085, 3528), 0),
-			new PlayerBotDefinition("Bot 1337Pk", new Location(3087, 3530), 1),
-			new PlayerBotDefinition("Bot Kids Ranqe", new Location(3089, 3530), 2),
-			new PlayerBotDefinition("Bot Josh", new Location(3091, 3533), 3),
+	public static final PlayerBotDefinition[] PLAYER_BOTS = new PlayerBotDefinition[]{
+			new PlayerBotDefinition("Bot Hello123", new Location(3085, 3528), PredefinedPresets.OBBY_MAULER_57, new ObbyMaulerFightLogic()),
+			new PlayerBotDefinition("Elvemage", new Location(3093, 3529), PredefinedPresets.NH_PURE_83, new NHPureFightLogic()),
+			new PlayerBotDefinition("Bot 1337Pk", new Location(3087, 3530), PredefinedPresets.DDS_PURE_R_73, new DDSPureRFightLogic()),
+			new PlayerBotDefinition("Bot Kids Ranqe", new Location(3089, 3530), PredefinedPresets.G_MAULER_70, new GMaulerFightLogic()),
+			new PlayerBotDefinition("Bot Josh", new Location(3091, 3533), PredefinedPresets.DDS_PURE_M_73, new DDSPureMFightLogic()),
 	};
 
 	// The password for every player bot account

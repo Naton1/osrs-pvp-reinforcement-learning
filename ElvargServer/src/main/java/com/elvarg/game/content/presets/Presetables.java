@@ -45,7 +45,19 @@ public class Presetables {
 	/**
 	 * Pre-made sets by the server which everyone can use.
 	 */
-	public static final Presetable[] GLOBAL_PRESETS = new Presetable[MAX_PRESETS];
+	public static final Presetable[] GLOBAL_PRESETS = new Presetable[] {
+			PredefinedPresets.OBBY_MAULER_57,
+			PredefinedPresets.G_MAULER_70,
+			PredefinedPresets.DDS_PURE_M_73,
+			PredefinedPresets.DDS_PURE_R_73,
+			PredefinedPresets.NH_PURE_83,
+			PredefinedPresets.ATT_60_ZERKER_94,
+			PredefinedPresets.ATT_70_ZERKER_97,
+			PredefinedPresets.MAIN_RUNE_126,
+			PredefinedPresets.MAIN_HYBRID_126,
+			PredefinedPresets.MAIN_TRIBRID_126,
+
+	};
 
 	/**
 	 * Opens the presets interface for a player.
@@ -429,7 +441,7 @@ public class Presetables {
 		// Global presets selection
 		if (button >= 45070 && button <= 45079) {
 			final int index = button - 45070;
-			if (GLOBAL_PRESETS[index] == null) {
+			if (GLOBAL_PRESETS.length <= index || GLOBAL_PRESETS[index] == null) {
 				player.getPacketSender().sendMessage("That preset is currently unavailable.");
 				return true;
 			}

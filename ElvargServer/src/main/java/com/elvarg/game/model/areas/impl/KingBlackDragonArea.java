@@ -17,14 +17,6 @@ public class KingBlackDragonArea extends Area {
 	}
 
 	@Override
-	public void enter(Mobile character) {
-	}
-
-	@Override
-	public void leave(Mobile character, boolean logout) {
-	}
-
-	@Override
 	public void process(Mobile character) {
 	}
 

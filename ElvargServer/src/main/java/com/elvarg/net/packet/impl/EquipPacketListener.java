@@ -9,6 +9,7 @@ import com.elvarg.game.content.combat.magic.Autocasting;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Flag;
 import com.elvarg.game.model.Item;
+import com.elvarg.game.model.ItemInSlot;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.model.container.impl.Inventory;
@@ -45,6 +46,10 @@ public class EquipPacketListener implements PacketExecutor {
 		int interfaceId = packet.readShortA();
 
 		EquipPacketListener.equip(player, id, slot, interfaceId);
+	}
+
+	public static void equipFromInventory(Player player, ItemInSlot itemInSlot) {
+		EquipPacketListener.equip(player, itemInSlot.getId(), itemInSlot.getSlot(),  Inventory.INTERFACE_ID);
 	}
 
 	public static void equip(Player player, int id, int slot, int interfaceId) {

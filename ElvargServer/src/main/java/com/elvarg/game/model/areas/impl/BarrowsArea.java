@@ -16,7 +16,7 @@ public class BarrowsArea extends Area {
     }
 
     @Override
-    public void enter(Mobile character) {
+    public void postEnter(Mobile character) {
         if (character.isPlayer()) {
             Player player = character.getAsPlayer();
             player.getPacketSender().sendWalkableInterface(Barrows.KILLCOUNTER_INTERFACE_ID);
@@ -25,7 +25,7 @@ public class BarrowsArea extends Area {
     }
 
     @Override
-    public void leave(Mobile character, boolean logout) {
+    public void postLeave(Mobile character, boolean logout) {
         if (character.isPlayer()) {
             character.getAsPlayer().getPacketSender().sendWalkableInterface(-1);
         }

@@ -41,7 +41,7 @@ public class MovementInteraction {
                         Location pos = generateLocalPosition();
                         if (pos != null) {
 
-                            MovementQueue.clippedStep(playerBot);
+                            MovementQueue.randomClippedStep(playerBot, 1);
                         //.walkStep(pos.getX(), pos.getY());
                         }
                     }

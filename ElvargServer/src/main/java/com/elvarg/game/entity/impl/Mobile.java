@@ -8,6 +8,7 @@ import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.entity.Entity;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Direction;
 import com.elvarg.game.model.Flag;
@@ -559,6 +560,10 @@ public abstract class Mobile extends Entity {
     public boolean isPlayer() {
         return (this instanceof Player);
     }
+
+    public boolean isPlayerBot() {
+        return (this instanceof PlayerBot);
+    }
     
     public boolean isNpc() {
         return (this instanceof NPC);
@@ -569,6 +574,13 @@ public abstract class Mobile extends Entity {
             return null;
         }
         return ((Player) this);
+    }
+
+    public PlayerBot getAsPlayerBot() {
+        if (!isPlayerBot()) {
+            return null;
+        }
+        return ((PlayerBot) this);
     }
     
     public NPC getAsNpc() {

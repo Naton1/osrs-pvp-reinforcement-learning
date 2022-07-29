@@ -1040,10 +1040,10 @@ public class ItemIdentifiers {
     public static final int PURPLE_CAPE_2 = 1030;
     public static final int ORANGE_CAPE = 1031;
     public static final int ORANGE_CAPE_2 = 1032;
-    public static final int ZAMORAK_ROBE = 1033;
-    public static final int ZAMORAK_ROBE_2 = 1034;
-    public static final int ZAMORAK_ROBE_3 = 1035;
-    public static final int ZAMORAK_ROBE_4 = 1036;
+    public static final int ZAMORAK_ROBE_BOTTOMS_ORIGINAL_ = 1033;
+    public static final int ZAMORAK_ROBE_BOTTOMS_ORIGINAL_2 = 1034;
+    public static final int ZAMORAK_ROBE_TOP_ORIGINAL_ = 1035;
+    public static final int ZAMORAK_ROBE_TOP_ORIGINAL_2 = 1036;
     public static final int BUNNY_EARS = 1037;
     public static final int RED_PARTYHAT = 1038;
     public static final int RED_PARTYHAT_2 = 1039;
@@ -9251,7 +9251,7 @@ public class ItemIdentifiers {
     public static final int EMERALD_BOLTS_E_ = 9241;
     public static final int RUBY_BOLTS_E_ = 9242;
     public static final int DIAMOND_BOLTS_E_ = 9243;
-    public static final int DRAGON_BOLTS_E_ = 9244;
+    public static final int DRAGONSTONE_BOLTS_E_ = 9244;
     public static final int ONYX_BOLTS_E_ = 9245;
     public static final int NULL_978 = 9246;
     public static final int NULL_979 = 9247;

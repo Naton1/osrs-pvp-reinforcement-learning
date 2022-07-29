@@ -21,11 +21,10 @@ public class FightCavesArea extends PrivateArea {
     }
     
     @Override
-    public void leave(Mobile mobile, boolean logout) {
+    public void postLeave(Mobile mobile, boolean logout) {
         if (mobile.isPlayer() && logout) {
             mobile.moveTo(FightCaves.EXIT);
         }
-        super.leave(mobile, logout);
     }
 
     @Override

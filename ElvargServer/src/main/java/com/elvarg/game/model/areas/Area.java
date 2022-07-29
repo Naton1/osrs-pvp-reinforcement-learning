@@ -1,23 +1,54 @@
 package com.elvarg.game.model.areas;
 
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class Area {
 
     private final List<Boundary> boundaries;
 
+    private final HashMap<Integer, NPC> npcs;
+    private final HashMap<Integer, Player> players;
+    private final HashMap<Integer, PlayerBot> playerBots;
+
     public Area(List<Boundary> boundaries) {
         this.boundaries = boundaries;
+        this.npcs = new HashMap<>();
+        this.players = new HashMap<>();
+        this.playerBots = new HashMap<>();
     }
 
-    public abstract void enter(Mobile character);
+    public final void enter(Mobile character) {
+        if (character.isPlayerBot()) {
+            this.playerBots.put(character.getIndex(), character.getAsPlayerBot());
+        } else if (character.isPlayer()) {
+            this.players.put(character.getIndex(), character.getAsPlayer());
+        } else if (character.isNpc()) {
+            this.npcs.put(character.getIndex(), character.getAsNpc());
+        }
+        this.postEnter(character);
+    }
 
-    public abstract void leave(Mobile character, boolean logout);
+    public void postEnter(Mobile character) {}
+
+    public final void leave(Mobile character, boolean logout) {
+        if (character.isPlayerBot()) {
+            this.playerBots.remove(character.getIndex());
+        } else if (character.isPlayer()) {
+            this.players.remove(character.getIndex());
+        } else if (character.isNpc()) {
+            this.npcs.remove(character.getIndex());
+        }
+
+        this.postLeave(character, logout);
+    }
+
+    public void postLeave(Mobile character, boolean logout) {}
 
     public abstract void process(Mobile character);
 
@@ -51,5 +82,17 @@ public abstract class Area {
 
     public String getName() {
         return this.getClass().getSimpleName();
+    }
+
+    public Collection<NPC> getNpcs() {
+        return this.npcs.values();
+    }
+
+    public Collection<Player> getPlayers() {
+        return this.players.values();
+    }
+
+    public Collection<PlayerBot> getPlayerBots() {
+        return this.playerBots.values();
     }
 }
