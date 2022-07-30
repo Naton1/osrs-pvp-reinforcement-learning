@@ -25,6 +25,14 @@ public class TimerRepository {
 		return timer.ticks();
 	}
 
+	public boolean willEndIn(TimerKey key, int ticks) {
+		Timer timer = timers.get(key);
+		if(timer == null) {
+			return true;
+		}
+		return timer.ticks() <= ticks;
+	}
+
 	public void register(TimerKey key, int ticks) {
 		timers.put(key, new Timer(key, ticks));
 	}

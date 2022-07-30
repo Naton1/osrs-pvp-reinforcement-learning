@@ -3,6 +3,8 @@ package com.elvarg.game.entity.impl.playerbot.interaction;
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.content.Food;
 import com.elvarg.game.content.PotionConsumable;
+import com.elvarg.game.content.PrayerHandler;
+import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.entity.impl.Mobile;
@@ -26,9 +28,6 @@ import static com.elvarg.game.entity.impl.playerbot.commands.LoadPreset.LOAD_PRE
 
 public class CombatInteraction {
 
-    // The PlayerBot this interaction belongs to
-    PlayerBot playerBot;
-
     // The percentage of health a Player Bot will eat at (and below)
     private static final int HEAL_AT_HEALTH_PERCENT = 40;
 
@@ -36,19 +35,38 @@ public class CombatInteraction {
         this.playerBot = _playerBot;
     }
 
+    // The PlayerBot this interaction belongs to
+    PlayerBot playerBot;
+    private Mobile attackTarget;
+
     public void process() {
         var fighterPreset = this.playerBot.getDefinition().getFighterPreset();
-        var attacker = this.playerBot.getCombat().getAttacker();
-        if (attacker != null) {
+        if (attackTarget == null) {
+            var combatAttacker = this.playerBot.getCombat().getAttacker();
+            if (combatAttacker != null) {
+                attackTarget = combatAttacker;
+            }
+        }
+
+        var combatMethod = CombatFactory.getMethod(this.playerBot);
+        if (attackTarget != null) {
+            if (!CombatFactory.canAttack(this.playerBot, combatMethod, attackTarget )) {
+                attackTarget = null;
+                this.playerBot.getCombat().setUnderAttack(null);
+                return;
+            }
             for (var combatAction : fighterPreset.getCombatActions()) {
-                if (!combatAction.shouldPerform(this.playerBot, attacker)) {
+                if (!combatAction.shouldPerform(this.playerBot, attackTarget)) {
                     continue;
                 }
 
-                combatAction.perform(playerBot, attacker);
-
-                break; // No need to process any more weapon switches
+                combatAction.perform(playerBot, attackTarget);
+                if (combatAction.stopAfter()) {
+                    break; // No need to process any more weapon switches
+                }
             }
+        } else {
+            PrayerHandler.resetAll(this.playerBot);
         }
 
         if (this.playerBot.getHitpoints() < 30) {
@@ -56,12 +74,12 @@ public class CombatInteraction {
         }
 
         var area = this.playerBot.getArea();
-        if (area != null && !area.getPlayers().isEmpty()) {
+        if (area != null && area.getPlayers().stream().anyMatch(p -> CombatFactory.canAttack(this.playerBot, combatMethod, p))) {
             this.potUp();
         }
 
         if (area != null && area.getPlayers().isEmpty()) {
-            boolean shouldReset = this.playerBot.getInventory().getFreeSlots() > 5 || this.playerBot.getSpecialPercentage() < 50;
+            boolean shouldReset = this.playerBot.getInventory().getFreeSlots() > 2 || this.playerBot.getSpecialPercentage() < 76;
 
             if (shouldReset) {
                 this.reset();
@@ -73,6 +91,18 @@ public class CombatInteraction {
         // Boost range
         if (!playerBot.getSkillManager().isBoosted(Skill.RANGED)) {
             var pot = Arrays.stream(RANGE_POTIONS.getIds())
+                    .mapToObj(id -> ItemInSlot.getFromInventory(id, this.playerBot.getInventory()))
+                    .filter(Objects::nonNull)
+                    .findFirst();
+
+            if (pot.isPresent()) {
+                PotionConsumable.drink(playerBot, pot.get().getId(), pot.get().getSlot());
+                return;
+            }
+        }
+        // Boost all
+        if (!playerBot.getSkillManager().isBoosted(Skill.STRENGTH)) {
+            var pot = Arrays.stream(SUPER_COMBAT_POTIONS.getIds())
                     .mapToObj(id -> ItemInSlot.getFromInventory(id, this.playerBot.getInventory()))
                     .filter(Objects::nonNull)
                     .findFirst();
@@ -164,17 +194,8 @@ public class CombatInteraction {
 
     // Called when the Player Bot has died
     public void handleDeath(Optional<Player> killer) {
-        if (killer.isPresent()) {
-            BountyHunter.onDeath(killer.get(), this.playerBot, false, 170);
-        }
-        // For the most part, keep behaviour as Player-like as possible
-        this.playerBot.getInventory().resetItems().refreshItems();
-        this.playerBot.getEquipment().resetItems().refreshItems();
-
-        this.playerBot.resetAttributes();
         this.playerBot.setFollowing(null);
         this.playerBot.getCombat().setUnderAttack(null);
-        this.playerBot.moveTo(GameConstants.DEFAULT_LOCATION);
 
         TaskManager.submit(new Task(Misc.randomInclusive(10,20), playerBot, false) {
             @Override

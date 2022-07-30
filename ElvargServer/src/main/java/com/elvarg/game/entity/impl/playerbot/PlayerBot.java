@@ -4,6 +4,7 @@ import com.elvarg.game.GameConstants;
 import com.elvarg.game.World;
 import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.definition.PlayerBotDefinition;
+import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.commands.BotCommand;
 import com.elvarg.game.entity.impl.playerbot.commands.FollowPlayer;
@@ -25,14 +26,15 @@ public class PlayerBot extends Player {
         COMMAND;
     }
 
+    private static final BotCommand[] CHAT_COMMANDS = new BotCommand[]{
+//            new FollowPlayer(), new HoldItems(), new LoadPreset()
+    };
+
     private final Location spawnPosition = GameConstants.DEFAULT_LOCATION;
 
     // The current interaction of this PlayerBot
     private InteractionState currentState = InteractionState.IDLE;
 
-    private static final BotCommand[] CHAT_COMMANDS = new BotCommand[]{
-            new FollowPlayer(), new HoldItems(), new LoadPreset()
-    };
 
     private BotCommand activeCommand;
 
@@ -71,6 +73,9 @@ public class PlayerBot extends Player {
         this.movementInteraction = new MovementInteraction(this);
         this.combatInteraction = new CombatInteraction(this);
 
+        this.setRigourUnlocked(true);
+        this.setAuguryUnlocked(true);
+
         if (!World.getAddPlayerQueue().contains(this)) {
             World.getAddPlayerQueue().add(this);
         }
@@ -89,7 +94,7 @@ public class PlayerBot extends Player {
     }
 
     public BotCommand[] getChatCommands() {
-        return this.CHAT_COMMANDS;
+        return CHAT_COMMANDS;
     }
 
     public ChatInteraction getChatInteraction() {
@@ -152,7 +157,6 @@ public class PlayerBot extends Player {
     @Override
     public void process() {
         super.process();
-        // PlayerBots always retaliate
         this.combatInteraction.process();
     }
 

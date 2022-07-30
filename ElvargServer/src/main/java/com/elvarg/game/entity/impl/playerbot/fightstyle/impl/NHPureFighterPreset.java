@@ -1,14 +1,14 @@
 package com.elvarg.game.entity.impl.playerbot.fightstyle.impl;
 
+import com.elvarg.game.content.PrayerHandler;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatSpecial;
+import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.magic.CombatSpells;
 import com.elvarg.game.content.presets.Presetable;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
-import com.elvarg.game.entity.impl.playerbot.fightstyle.CombatAction;
-import com.elvarg.game.entity.impl.playerbot.fightstyle.CombatSwitch;
-import com.elvarg.game.entity.impl.playerbot.fightstyle.FighterPreset;
+import com.elvarg.game.entity.impl.playerbot.fightstyle.*;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.ItemInSlot;
 import com.elvarg.game.model.MagicSpellbook;
@@ -23,20 +23,20 @@ public class NHPureFighterPreset implements FighterPreset {
             new Item[]{
                     new Item(RUNE_CROSSBOW), new Item(BLACK_DHIDE_CHAPS), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
                     new Item(AVAS_ACCUMULATOR), new Item(GRANITE_MAUL), new Item(MANTA_RAY), new Item(MANTA_RAY),
-                    new Item(DRAGON_BOLTS_E_, 75), new Item(MANTA_RAY), new Item(SUPER_RESTORE_4_), new Item(COOKED_KARAMBWAN),
+                    new Item(DRAGON_BOLTS_E_, 75), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(COOKED_KARAMBWAN),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(COOKED_KARAMBWAN),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY),
                     new Item(WATER_RUNE, 1000), new Item(BLOOD_RUNE, 1000), new Item(DEATH_RUNE, 1000), new Item(ANGLERFISH),
             },
             new Item[]{
-                    new Item(GREY_HAT),
+                    new Item(GHOSTLY_HOOD),
                     new Item(ZAMORAK_CAPE),
                     new Item(MAGIC_SHORTBOW),
                     new Item(AMULET_OF_GLORY),
-                    new Item(ZAMORAK_ROBE),
+                    new Item(GHOSTLY_ROBE),
                     null,
-                    new Item(ZAMORAK_ROBE_3),
+                    new Item(GHOSTLY_ROBE_2),
                     new Item(MITHRIL_GLOVES),
                     new Item(CLIMBING_BOOTS),
                     new Item(RING_OF_RECOIL),
@@ -86,7 +86,10 @@ public class NHPureFighterPreset implements FighterPreset {
                     var combatMethod = CombatFactory.getMethod(enemy);
                     int distance = playerBot.calculateDistance(enemy);
 
-                    return !enemy.getMovementQueue().canMove()
+                    boolean cantAttack = playerBot.getTimers().has(TimerKey.COMBAT_ATTACK) && playerBot.getTimers().left(TimerKey.COMBAT_ATTACK) > 1;
+
+                    return cantAttack
+                            &&!enemy.getMovementQueue().canMove()
                             && distance == 1
                             && CombatFactory.canReach(enemy, combatMethod, playerBot);
                 }
@@ -101,7 +104,7 @@ public class NHPureFighterPreset implements FighterPreset {
                 }
 
             },
-            new CombatSwitch(new int[]{ZAMORAK_CAPE, ZAMORAK_ROBE_LEGS}) {
+            new CombatSwitch(new int[]{ZAMORAK_CAPE, GHOSTLY_ROBE_2, GHOSTLY_ROBE}) {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
@@ -128,19 +131,43 @@ public class NHPureFighterPreset implements FighterPreset {
                     playerBot.getCombat().attack(enemy);
                 }
             },
-            new CombatSwitch(new int[]{MAGIC_SHORTBOW, RUNE_ARROW, AVAS_ACCUMULATOR, BLACK_DHIDE_CHAPS}) {
+            new EnemyDefenseAwareCombatSwitch(new AttackStyleSwitch[]{
+                    new AttackStyleSwitch(CombatType.MAGIC,
+                            new CombatSwitch(new int[]{ZAMORAK_CAPE, GHOSTLY_ROBE_2, GHOSTLY_ROBE}) {
 
+                                @Override
+                                public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
+                                    return CombatSpells.ICE_BARRAGE.getSpell().canCast(playerBot, false);
+                                }
+
+                                @Override
+                                public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
+                                    playerBot.getCombat().setCastSpell(CombatSpells.ICE_BARRAGE.getSpell());
+                                    playerBot.getCombat().attack(enemy);
+                                }
+                            }
+                    ),
+                    new AttackStyleSwitch(CombatType.RANGED,
+                            new CombatSwitch(new int[]{MAGIC_SHORTBOW, RUNE_ARROW, AVAS_ACCUMULATOR, BLACK_DHIDE_CHAPS}) {
+
+                                @Override
+                                public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
+                                    return true;
+                                }
+
+                                @Override
+                                public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
+                                    if (playerBot.isSpecialActivated()) {
+                                        CombatSpecial.activate(playerBot);
+                                    }
+                                    playerBot.getCombat().attack(enemy);
+                                }
+                            }
+                    ),
+            }) {
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
                     return true;
-                }
-
-                @Override
-                public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
-                    if (playerBot.isSpecialActivated()) {
-                        CombatSpecial.activate(playerBot);
-                    }
-                    playerBot.getCombat().attack(enemy);
                 }
             },
     };

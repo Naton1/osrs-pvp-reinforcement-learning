@@ -30,13 +30,13 @@ public class AccuracyFormulasDpsCalc {
 
         } else if (style == CombatType.RANGED) {
             int attRoll = attackRangedRoll(entity);
-            int defRoll = defenseRangedRoll(entity, enemy);
+            int defRoll = defenseRangedRoll(enemy);
 
             float hitChance = hitChance(attRoll, defRoll);
             return hitChance > srand.nextFloat();
         } else if (style == CombatType.MAGIC) {
             int attRoll = attackMagicRoll(entity);
-            int defRoll = defenseMagicRoll(entity, enemy);
+            int defRoll = defenseMagicRoll(enemy);
 
             float hitChance = hitChance(attRoll, defRoll);
             return hitChance > srand.nextFloat();
@@ -44,7 +44,7 @@ public class AccuracyFormulasDpsCalc {
         return false;
     }
 
-    private static float hitChance(int attRoll, int defRoll) {
+    public static float hitChance(int attRoll, int defRoll) {
 
         if (attRoll > defRoll) {
             return 1f - ((defRoll + 2f) / (2f * attRoll + 1f));
@@ -99,7 +99,7 @@ public class AccuracyFormulasDpsCalc {
         return att;
     }
 
-    private static int attackMeleeRoll(Mobile entity) {
+    public static int attackMeleeRoll(Mobile entity) {
         float attRoll = effectiveAttackLevel(entity);
 
         if (entity.isNpc()) {
@@ -178,11 +178,15 @@ public class AccuracyFormulasDpsCalc {
     }
 
     private static int defenseMeleeRoll(Mobile entity, Mobile enemy) {
+        int bonusType = (entity.isNpc() ? 3 /* Default case */ : entity.getAsPlayer().getFightType().getBonusType());
+
+        return defenseMeleeRoll(enemy, bonusType);
+    }
+
+    public static int defenseMeleeRoll(Mobile enemy, int bonusType) {
         float defLevel = effectiveDefenseLevel(enemy);
 
         Player enemyPlayer = enemy.getAsPlayer();
-
-        int bonusType = (entity.isNpc() ? 3 /* Default case */ : entity.getAsPlayer().getFightType().getBonusType());
 
         // NPCs don't have defence bonuses currently
         int defStab = (enemy.isNpc() ? 0 : enemyPlayer.getBonusManager().getDefenceBonus()[BonusManager.DEFENCE_STAB]);
@@ -209,7 +213,7 @@ public class AccuracyFormulasDpsCalc {
 
     // Ranged
 
-    private static int defenseRangedRoll(Mobile entity, Mobile enemy) {
+    public static int defenseRangedRoll(Mobile enemy) {
         float defLevel = effectiveDefenseLevel(enemy);
 
         int defRange = (enemy.isPlayer() ?
@@ -311,7 +315,7 @@ public class AccuracyFormulasDpsCalc {
         return mag;
     }
 
-    private static int defenseMagicRoll(Mobile entity, Mobile enemy) {
+    public static int defenseMagicRoll(Mobile enemy) {
         float defLevel = effectiveMagicLevel(enemy);
 
         int defRange = (enemy.isNpc() ? 0 : enemy.getAsPlayer().getBonusManager().getDefenceBonus()[BonusManager.DEFENCE_MAGIC]);

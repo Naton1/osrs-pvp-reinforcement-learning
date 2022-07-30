@@ -104,10 +104,10 @@ public class ItemActionPacketListener implements PacketExecutor {
 				player.getPacketSender().sendMessage("You cannot use this in the Wilderness!");
 			}
 			break;
-		case 8013:
+		case ItemIdentifiers.TELEPORT_TO_HOUSE:
 			if (TeleportHandler.checkReqs(player, GameConstants.DEFAULT_LOCATION)) {
 				TeleportHandler.teleport(player, GameConstants.DEFAULT_LOCATION, TeleportType.TELE_TAB, false);
-				player.getInventory().delete(8013, 1);
+				player.getInventory().delete(ItemIdentifiers.TELEPORT_TO_HOUSE, 1);
 			}
 			break;
 		case 2542:

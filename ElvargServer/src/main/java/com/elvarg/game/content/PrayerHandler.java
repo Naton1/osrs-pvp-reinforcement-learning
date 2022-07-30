@@ -103,6 +103,9 @@ public class PrayerHandler {
         return false;
     }
 
+    public static void activatePrayer(Mobile character, final PrayerData pd) {
+        activatePrayer(character, pd.ordinal());
+    }
     /**
      * Activates said prayer with specified <code>prayerId</code> and de-activates
      * all non-stackable prayers.
