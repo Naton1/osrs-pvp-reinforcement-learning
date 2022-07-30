@@ -86,6 +86,20 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
             return;
         }
 
+        //Hilt on dragon defender
+        if ((used.getId() == DRAGON_DEFENDER || usedWith.getId() == DRAGON_DEFENDER)
+                && (used.getId() == AVERNIC_DEFENDER_HILT || usedWith.getId() == AVERNIC_DEFENDER_HILT)) {
+            if (player.busy() || CombatFactory.inCombat(player)) {
+                player.getPacketSender().sendMessage("You cannot do that right now.");
+                return;
+            }
+            if (player.getInventory().contains(DRAGON_DEFENDER) && player.getInventory().contains(AVERNIC_DEFENDER_HILT)) {
+                player.getInventory().delete(DRAGON_DEFENDER, 1).delete(AVERNIC_DEFENDER_HILT, 1).add(AVERNIC_DEFENDER, 1);
+                player.getPacketSender().sendMessage("You attach your Avernic hilt onto the Dragon defender..");
+            }
+            return;
+        }
+
         //Blowpipe reload
         else if (used.getId() == TOXIC_BLOWPIPE || usedWith.getId() == TOXIC_BLOWPIPE) {
             int reload = used.getId() == TOXIC_BLOWPIPE ? usedWith.getId() : used.getId();

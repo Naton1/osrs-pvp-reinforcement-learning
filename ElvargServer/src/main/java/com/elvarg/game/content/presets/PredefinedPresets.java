@@ -96,7 +96,7 @@ public class PredefinedPresets {
 
     public static final Presetable DDS_PURE_R_73 = new Presetable("DDS Pure (R)",
             new Item[]{
-                    new Item(RUNE_CROSSBOW), new Item(DRAGONSTONE_BOLTS_E_, 75), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
+                    new Item(RUNE_CROSSBOW), new Item(DRAGON_BOLTS_E_, 75), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
                     new Item(COOKED_KARAMBWAN), new Item(DRAGON_DAGGER_P_PLUS_PLUS_), new Item(SUPER_RESTORE_4_), new Item(SUPER_ATTACK_4_),
                     new Item(COOKED_KARAMBWAN), new Item(SHARK), new Item(SARADOMIN_BREW_4_), new Item(SARADOMIN_BREW_4_),
                     new Item(COOKED_KARAMBWAN), new Item(SHARK), new Item(SHARK), new Item(SHARK),
@@ -125,7 +125,7 @@ public class PredefinedPresets {
 
     public static final Presetable G_MAULER_70 = new Presetable("G Mauler (R)",
             new Item[]{
-                    new Item(RUNE_CROSSBOW), new Item(DRAGONSTONE_BOLTS_E_, 75), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
+                    new Item(RUNE_CROSSBOW), new Item(DRAGON_BOLTS_E_, 75), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
                     new Item(COOKED_KARAMBWAN), new Item(GRANITE_MAUL), new Item(SUPER_RESTORE_4_), new Item(SUPER_ATTACK_4_),
                     new Item(COOKED_KARAMBWAN), new Item(SHARK), new Item(SARADOMIN_BREW_4_), new Item(SARADOMIN_BREW_4_),
                     new Item(COOKED_KARAMBWAN), new Item(SHARK), new Item(SHARK), new Item(SHARK),
@@ -231,7 +231,7 @@ public class PredefinedPresets {
                     new Item(BARROWS_GLOVES),
                     new Item(CLIMBING_BOOTS),
                     new Item(RING_OF_RECOIL),
-                    new Item(DRAGONSTONE_BOLTS_E_, 500),
+                    new Item(DRAGON_BOLTS_E_, 500),
             },
             /* atk, def, str, hp, range, pray, mage */
             new int[]{99, 99, 99, 99, 99, 99, 99},
@@ -243,7 +243,7 @@ public class PredefinedPresets {
             new Item[]{
                     new Item(RUNE_CROSSBOW), new Item(BLACK_DHIDE_CHAPS), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
                     new Item(AVAS_ACCUMULATOR), new Item(DRAGON_DAGGER_P_PLUS_PLUS_), new Item(SUPER_RESTORE_4_), new Item(SUPER_ATTACK_4_),
-                    new Item(DRAGONSTONE_BOLTS_E_, 75), new Item(BOOK_OF_WAR), new Item(SUPER_RESTORE_4_), new Item(SARADOMIN_BREW_4_),
+                    new Item(DRAGON_BOLTS_E_, 75), new Item(BOOK_OF_WAR), new Item(SUPER_RESTORE_4_), new Item(SARADOMIN_BREW_4_),
                     new Item(COOKED_KARAMBWAN), new Item(SHARK), new Item(SHARK), new Item(SARADOMIN_BREW_4_),
                     new Item(COOKED_KARAMBWAN), new Item(SHARK), new Item(SHARK), new Item(SHARK),
                     new Item(COOKED_KARAMBWAN), new Item(SHARK), new Item(SHARK), new Item(SHARK),
@@ -254,9 +254,9 @@ public class PredefinedPresets {
                     new Item(ZAMORAK_CAPE),
                     new Item(MAGIC_SHORTBOW),
                     new Item(AMULET_OF_GLORY),
-                    new Item(ZAMORAK_ROBE_TOP_ORIGINAL_),
+                    new Item(ZAMORAK_ROBE_TOP),
                     null,
-                    new Item(ZAMORAK_ROBE_BOTTOMS_ORIGINAL_),
+                    new Item(ZAMORAK_ROBE_LEGS),
                     new Item(MITHRIL_GLOVES),
                     new Item(CLIMBING_BOOTS),
                     new Item(RING_OF_RECOIL),

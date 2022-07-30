@@ -17,7 +17,7 @@ public class DDSPureRFighterPreset implements FighterPreset {
 
     public static final Presetable BOT_DDS_PURE_R_73 = new Presetable("DDS Pure (R)",
             new Item[]{
-                    new Item(RUNE_CROSSBOW), new Item(DRAGONSTONE_BOLTS_E_, 75), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
+                    new Item(RUNE_CROSSBOW), new Item(DRAGON_BOLTS_E_, 75), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
                     new Item(COOKED_KARAMBWAN), new Item(DRAGON_DAGGER_P_PLUS_PLUS_), new Item(COOKED_KARAMBWAN), new Item(COOKED_KARAMBWAN),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY),
@@ -62,7 +62,7 @@ public class DDSPureRFighterPreset implements FighterPreset {
                     playerBot.getCombat().attack(enemy);
                 }
             },
-            new CombatSwitch(new int[]{RUNE_CROSSBOW, DRAGONSTONE_BOLTS_E_}) {
+            new CombatSwitch(new int[]{RUNE_CROSSBOW, DRAGON_BOLTS_E_}) {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {

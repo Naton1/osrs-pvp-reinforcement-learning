@@ -271,7 +271,7 @@ public class BountyHunter {
 				"@or1@K/D Ratio: " + killed.getKillDeathRatio());
 
 		// Remove first index if we've killed 1
-		if (killer.getRecentKills().size() >= 2) {
+		if (killer.getRecentKills().size() >= 1) {
 			killer.getRecentKills().remove(0);
 		}
 
@@ -281,7 +281,7 @@ public class BountyHunter {
 		// Check if we recently killed this player
 		if (killer.getRecentKills().contains(killed.getHostAddress())
 				|| killer.getHostAddress().equals(killed.getHostAddress())) {
-//			 fullRewardPlayer = false; 1v1 ing alot someone else should still give ok profit
+			 fullRewardPlayer = false;
 		} else {
 			killer.getRecentKills().add(killed.getHostAddress());
 		}
