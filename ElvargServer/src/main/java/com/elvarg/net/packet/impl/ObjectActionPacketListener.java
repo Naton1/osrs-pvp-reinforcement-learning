@@ -21,6 +21,8 @@ import com.elvarg.game.model.Location;
 import com.elvarg.game.model.MagicSpellbook;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.areas.impl.PrivateArea;
+import com.elvarg.game.model.dialogues.builders.impl.EmblemTraderDialogue;
+import com.elvarg.game.model.dialogues.builders.impl.SpellBookDialogue;
 import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportHandler;
@@ -114,30 +116,9 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
             }
             break;
 
-        case MAGICAL_ALTAR:
-           /* //DialogueManager.start(player, 8);
-            player.setDialogueOptions(new DialogueOptions() {
-                @Override
-                public void handleOption(Player player, int option) {
-                    switch (option) {
-                    case 1: // Normal spellbook option
-                        player.getPacketSender().sendInterfaceRemoval();
-                        MagicSpellbook.changeSpellbook(player, MagicSpellbook.NORMAL);
-                        break;
-                    case 2: // Ancient spellbook option
-                        player.getPacketSender().sendInterfaceRemoval();
-                        MagicSpellbook.changeSpellbook(player, MagicSpellbook.ANCIENT);
-                        break;
-                    case 3: // Lunar spellbook option
-                        player.getPacketSender().sendInterfaceRemoval();
-                        MagicSpellbook.changeSpellbook(player, MagicSpellbook.LUNAR);
-                        break;
-                    case 4: // Cancel option
-                        player.getPacketSender().sendInterfaceRemoval();
-                        break;
-                    }
-                }
-            });*/
+        case ANCIENT_ALTAR:
+            player.performAnimation(new Animation(645));
+            player.getDialogueManager().start(new SpellBookDialogue());
             break;
 
         case ORNATE_REJUVENATION_POOL:
@@ -199,7 +180,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
         case BANK_BOOTH_4:
             player.getBank(player.getCurrentBankTab()).open();
             break;
-        case MAGICAL_ALTAR:
+        case ANCIENT_ALTAR:
             player.getPacketSender().sendInterfaceRemoval();
             MagicSpellbook.changeSpellbook(player, MagicSpellbook.NORMAL);
             break;
@@ -219,7 +200,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
         case PORTAL_51:
             //DialogueManager.sendStatement(player, "Construction will be avaliable in the future.");
             break;
-        case MAGICAL_ALTAR:
+        case ANCIENT_ALTAR:
             player.getPacketSender().sendInterfaceRemoval();
             MagicSpellbook.changeSpellbook(player, MagicSpellbook.ANCIENT);
             break;
@@ -239,7 +220,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
         case PORTAL_51:
             //DialogueManager.sendStatement(player, "Construction will be avaliable in the future.");
             break;
-        case MAGICAL_ALTAR:
+        case ANCIENT_ALTAR:
             player.getPacketSender().sendInterfaceRemoval();
             MagicSpellbook.changeSpellbook(player, MagicSpellbook.LUNAR);
             break;

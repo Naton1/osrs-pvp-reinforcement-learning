@@ -122,7 +122,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
             objectDef.interactions = null;
         }
 
-        if (id == 29150) {
+        if (id == 6552) {
             objectDef.interactions = new String[5];
             objectDef.interactions[0] = "Venerate";
             objectDef.interactions[1] = "Switch-normal";
