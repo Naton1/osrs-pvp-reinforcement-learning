@@ -135,6 +135,7 @@ public class GameConstants {
 			new PlayerBotDefinition("Bot Kids Ranqe", new Location(3089, 3530), new GRangerFighterPreset()),
 			new PlayerBotDefinition("Bot Josh", new Location(3091, 3533), new DDSPureMFighterPreset()),
 			new PlayerBotDefinition("Bot Odablock", new Location(3091, 3536), new TribridMaxFighterPreset()),
+			new PlayerBotDefinition("Bot SKillSpecs", new Location(3095, 3535), new MidTribridMaxFighterPreset()),
 	};
 
 	// The password for every player bot account
