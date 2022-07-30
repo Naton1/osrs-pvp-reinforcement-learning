@@ -167,7 +167,11 @@ public class TribridMaxFighterPreset implements FighterPreset {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    return playerBot.getSkillManager().getCurrentLevel(Skill.PRAYER) < 50;
+                    var pot = Arrays.stream(SUPER_RESTORE_POTIONS.getIds())
+                            .mapToObj(id -> ItemInSlot.getFromInventory(id, playerBot.getInventory()))
+                            .filter(Objects::nonNull)
+                            .findFirst();
+                    return pot.isPresent() && playerBot.getSkillManager().getCurrentLevel(Skill.PRAYER) < 50;
                 }
 
                 @Override
