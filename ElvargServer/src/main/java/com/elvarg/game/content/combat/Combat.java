@@ -227,7 +227,11 @@ public class Combat {
 	}
 
 	public boolean damageMapContains(Player player) {
-		return damageMap.containsKey(player);
+		HitDamageCache damageCache = damageMap.get(player);
+		if (damageCache == null) {
+			return false;
+		}
+		return damageCache.getStopwatch().elapsed() < CombatConstants.DAMAGE_CACHE_TIMEOUT;
 	}
 
 	/**
