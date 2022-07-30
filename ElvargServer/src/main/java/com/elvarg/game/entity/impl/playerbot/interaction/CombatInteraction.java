@@ -18,6 +18,7 @@ import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
+import com.elvarg.util.timers.TimerKey;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -26,9 +27,6 @@ import java.util.Optional;
 import static com.elvarg.game.content.PotionConsumable.*;
 
 public class CombatInteraction {
-
-    // The percentage of health a Player Bot will eat at (and below)
-    private static final int HEAL_AT_HEALTH_PERCENT = 40;
 
     public CombatInteraction(PlayerBot _playerBot) {
         this.playerBot = _playerBot;
@@ -40,15 +38,14 @@ public class CombatInteraction {
 
     public void process() {
         var fighterPreset = this.playerBot.getDefinition().getFighterPreset();
-        if (attackTarget == null) {
-            var combatAttacker = this.playerBot.getCombat().getAttacker();
-            if (combatAttacker != null) {
-                attackTarget = combatAttacker;
-            }
+        var combatAttacker = this.playerBot.getCombat().getAttacker();
+        if (combatAttacker != null) {
+            attackTarget = combatAttacker;
         }
 
         var combatMethod = CombatFactory.getMethod(this.playerBot);
         if (attackTarget != null) {
+//            playerBot.sendChat(""+playerBot.getTimers().left(TimerKey.COMBAT_ATTACK));
             if (!CombatFactory.canAttack(this.playerBot, combatMethod, attackTarget )) {
                 attackTarget = null;
                 this.playerBot.getCombat().setUnderAttack(null);
@@ -77,7 +74,7 @@ public class CombatInteraction {
             this.potUp();
         }
 
-        if (area != null && area.getPlayers().isEmpty()) {
+        if (attackTarget == null) {
             boolean shouldReset = this.playerBot.getInventory().getFreeSlots() > 2 || this.playerBot.getSpecialPercentage() < 76;
 
             if (shouldReset) {
@@ -158,8 +155,10 @@ public class CombatInteraction {
     }
 
     private void handleEating(int finalHitpoints) {
+
+        var fighterPreset = this.playerBot.getDefinition().getFighterPreset();
         float max = this.playerBot.getSkillManager().getMaxLevel(Skill.HITPOINTS);
-        if (finalHitpoints <= ((max / 100) * CombatInteraction.HEAL_AT_HEALTH_PERCENT)) {
+        if (finalHitpoints <= (max * fighterPreset.eatAtPercent()) / 100) {
             // Player Bot needs to eat
             var edible = edibleItemSlot();
             if (edible == null) {

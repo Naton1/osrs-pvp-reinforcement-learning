@@ -8,4 +8,8 @@ public interface FighterPreset {
 
     CombatAction[] getCombatActions();
 
+    default int eatAtPercent() {
+        return 40;
+    }
+
 }

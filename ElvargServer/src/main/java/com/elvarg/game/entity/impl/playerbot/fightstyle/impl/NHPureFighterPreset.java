@@ -55,7 +55,7 @@ public class NHPureFighterPreset implements FighterPreset {
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
                     return playerBot.getSpecialPercentage() >= 50 && playerBot.getMovementQueue().canMove() &&
                             // Switch if the enemy has lowish health
-                            enemy.getHitpoints() <= 45;
+                            enemy.getHitpointsAfterPendingDamage() <= 45;
                 }
 
                 @Override

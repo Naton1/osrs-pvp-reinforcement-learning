@@ -228,6 +228,10 @@ public abstract class Mobile extends Entity {
 
 	public abstract void heal(int damage);
 
+	public int getHitpointsAfterPendingDamage() {
+		return this.getHitpoints() - getCombat().getHitQueue().getAccumulatedDamage();
+	}
+
 	public abstract int getHitpoints();
 
 	public abstract Mobile setHitpoints(int hitpoints);

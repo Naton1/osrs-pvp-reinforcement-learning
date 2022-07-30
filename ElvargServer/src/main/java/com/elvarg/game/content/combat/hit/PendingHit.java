@@ -61,6 +61,10 @@ public class PendingHit {
         return delay--;
     }
 
+    public int getExecutedInTicks() {
+        return delay;
+    }
+
     public int getTotalDamage() {
         return totalDamage;
     }
