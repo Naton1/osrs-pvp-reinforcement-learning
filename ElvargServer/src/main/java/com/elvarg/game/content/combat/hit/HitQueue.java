@@ -101,6 +101,13 @@ public class HitQueue {
 		Arrays.stream(hits).filter(h -> !Objects.isNull(h)).forEach(h -> pendingDamage.add(h));
 	}
 
+	public int getAccumulatedDamage() {
+		var hitDmg = this.pendingHits.stream().filter(pd -> pd.getExecutedInTicks() < 2).mapToInt(PendingHit::getTotalDamage).sum();
+		var dmg = this.pendingDamage.stream().mapToInt(HitDamage::getDamage).sum();
+
+		return hitDmg + dmg;
+	}
+
 	/***
 	 * Checks if the pending hit queue is empty, except from the specified
 	 * {@link Mobile}. Used for anti-pjing.

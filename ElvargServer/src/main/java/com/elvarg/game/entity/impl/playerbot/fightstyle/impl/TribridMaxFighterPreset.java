@@ -73,6 +73,10 @@ public class TribridMaxFighterPreset implements FighterPreset {
 
                 @Override
                 public void perform(PlayerBot playerBot, Mobile enemy) {
+                    System.out.println("Escape");
+                    if (enemy.isPlayer()) {
+                        playerBot.sendChat("Cya " + enemy.getAsPlayer().getUsername());
+                    }
                     if (TeleportHandler.checkReqs(playerBot, GameConstants.DEFAULT_LOCATION)) {
                         TeleportHandler.teleport(playerBot, GameConstants.DEFAULT_LOCATION, TeleportType.TELE_TAB, false);
                         playerBot.getInventory().delete(ItemIdentifiers.TELEPORT_TO_HOUSE, 1);
@@ -122,15 +126,17 @@ public class TribridMaxFighterPreset implements FighterPreset {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 1);
+                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 2);
                     return canAttackNextTick && playerBot.getMovementQueue().canMove()
-                            && enemy.getHitpoints() <= 49
+                            && enemy.getHitpointsAfterPendingDamage() <= 49
                             && playerBot.getSpecialPercentage() >= 50
                             && !enemy.getPrayerActive()[PrayerHandler.PROTECT_FROM_MELEE];
                 }
 
                 @Override
                 public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
+                    System.out.println("AGS Spec");
+                    playerBot.getCombat().setCastSpell(null);
                     if (!playerBot.isSpecialActivated()) {
                         CombatSpecial.activate(playerBot);
                     }
@@ -144,9 +150,10 @@ public class TribridMaxFighterPreset implements FighterPreset {
                     var combatMethod = CombatFactory.getMethod(enemy);
                     int distance = playerBot.calculateDistance(enemy);
 
-                    boolean cantAttack = playerBot.getTimers().has(TimerKey.COMBAT_ATTACK) && playerBot.getTimers().left(TimerKey.COMBAT_ATTACK) > 1;
+                    boolean cantAttack = playerBot.getTimers().has(TimerKey.COMBAT_ATTACK) && playerBot.getTimers().left(TimerKey.COMBAT_ATTACK) > 2;
 
                     return cantAttack
+                            && playerBot.getMovementQueue().size() == 0
                             && !enemy.getMovementQueue().canMove()
                             && distance == 1
                             && CombatFactory.canReach(enemy, combatMethod, playerBot);
@@ -154,10 +161,9 @@ public class TribridMaxFighterPreset implements FighterPreset {
 
                 @Override
                 public void perform(PlayerBot playerBot, Mobile enemy) {
-                    if (playerBot.getMovementQueue().size() > 0) {
-                        return;
-                    }
+                    System.out.println("Retreat");
                     playerBot.setFollowing(null);
+//                    playerBot.setAutoRetaliate(false);
                     MovementQueue.randomClippedStepNotSouth(playerBot, 3);
                 }
 
@@ -176,14 +182,14 @@ public class TribridMaxFighterPreset implements FighterPreset {
 
                 @Override
                 public void perform(PlayerBot playerBot, Mobile enemy) {
+                    System.out.println("Pot up");
+
                     var pot = Arrays.stream(SUPER_RESTORE_POTIONS.getIds())
                             .mapToObj(id -> ItemInSlot.getFromInventory(id, playerBot.getInventory()))
                             .filter(Objects::nonNull)
                             .findFirst();
 
-                    if (pot.isPresent()) {
-                        PotionConsumable.drink(playerBot, pot.get().getId(), pot.get().getSlot());
-                    }
+                    PotionConsumable.drink(playerBot, pot.get().getId(), pot.get().getSlot());
                 }
 
             },
@@ -192,13 +198,16 @@ public class TribridMaxFighterPreset implements FighterPreset {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    // Freeze the player if they can move
-                    return enemy.getMovementQueue().canMove() && !enemy.getTimers().has(TimerKey.FREEZE_IMMUNITY)
+                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 2);
+
+                    return canAttackNextTick
+                            && enemy.getMovementQueue().canMove() && !enemy.getTimers().has(TimerKey.FREEZE_IMMUNITY)
                             && CombatSpells.ICE_BARRAGE.getSpell().canCast(playerBot, false);
                 }
 
                 @Override
                 public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
+                    System.out.println("Freeze");
                     playerBot.getCombat().setCastSpell(CombatSpells.ICE_BARRAGE.getSpell());
                     playerBot.getCombat().attack(enemy);
                 }
@@ -215,6 +224,7 @@ public class TribridMaxFighterPreset implements FighterPreset {
 
                                 @Override
                                 public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
+                                    System.out.println("Magic");
                                     playerBot.getCombat().setCastSpell(CombatSpells.ICE_BARRAGE.getSpell());
                                     playerBot.getCombat().attack(enemy);
                                 }
@@ -231,6 +241,8 @@ public class TribridMaxFighterPreset implements FighterPreset {
 
                                 @Override
                                 public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
+                                    System.out.println("Ranged");
+                                    playerBot.getCombat().setCastSpell(null);
                                     if (playerBot.isSpecialActivated()) {
                                         CombatSpecial.activate(playerBot);
                                     }
@@ -245,11 +257,13 @@ public class TribridMaxFighterPreset implements FighterPreset {
                                 @Override
                                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
                                     return playerBot.getMovementQueue().canMove()
-                                            && enemy.getHitpoints() <= 45;
+                                            && enemy.getHitpointsAfterPendingDamage() <= 45;
                                 }
 
                                 @Override
                                 public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
+                                    System.out.println("Melee");
+                                    playerBot.getCombat().setCastSpell(null);
                                     playerBot.getCombat().attack(enemy);
                                 }
                             }
@@ -257,7 +271,9 @@ public class TribridMaxFighterPreset implements FighterPreset {
             }) {
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    return true;
+                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 2);
+
+                    return canAttackNextTick;
                 }
             },
     };
@@ -270,5 +286,10 @@ public class TribridMaxFighterPreset implements FighterPreset {
     @Override
     public CombatAction[] getCombatActions() {
         return COMBAT_ACTIONS;
+    }
+
+    @Override
+    public int eatAtPercent() {
+        return 62;
     }
 }

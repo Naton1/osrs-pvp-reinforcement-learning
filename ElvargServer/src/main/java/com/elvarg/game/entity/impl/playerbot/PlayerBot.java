@@ -75,6 +75,7 @@ public class PlayerBot extends Player {
 
         this.setRigourUnlocked(true);
         this.setAuguryUnlocked(true);
+        this.setAutoRetaliate(true);
 
         if (!World.getAddPlayerQueue().contains(this)) {
             World.getAddPlayerQueue().add(this);
@@ -158,12 +159,6 @@ public class PlayerBot extends Player {
     public void process() {
         super.process();
         this.combatInteraction.process();
-    }
-
-    @Override
-    public boolean autoRetaliate() {
-        // PlayerBots always retaliate
-        return true;
     }
 
     @Override

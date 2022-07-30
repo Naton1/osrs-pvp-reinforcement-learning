@@ -53,7 +53,7 @@ public class GRangerFighterPreset implements FighterPreset {
                             // Don't switch to Melee if we're frozen
                             playerBot.getMovementQueue().canMove() &&
                             // Switch if the enemy has enabled protect from missles or has lowish health
-                            (!enemy.getPrayerActive()[PrayerHandler.PROTECT_FROM_MELEE] && enemy.getHitpoints() < 45);
+                            (!enemy.getPrayerActive()[PrayerHandler.PROTECT_FROM_MELEE] && enemy.getHitpointsAfterPendingDamage() < 45);
                 }
 
                 @Override
