@@ -8,4 +8,8 @@ public interface CombatAction {
     boolean shouldPerform(PlayerBot playerBot, Mobile enemy);
 
     void perform(PlayerBot playerBot, Mobile enemy);
+
+    default boolean stopAfter() {
+        return true;
+    }
 }

@@ -12,6 +12,7 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.model.equipment.BonusManager;
+import com.elvarg.util.ItemIdentifiers;
 
 public class DamageFormulas {
 
@@ -122,20 +123,14 @@ public class DamageFormulas {
 
         if (c.isPlayer()) {
             switch (c.getAsPlayer().getEquipment().getItems()[Equipment.WEAPON_SLOT].getId()) {
-                case 4675:
-                case 6914:
-                case 21006:
-                    maxHit *= 1.10;
+                case ItemIdentifiers.AHRIMS_STAFF:
+                    maxHit *= 1.05;
                     break;
-                case 11791:
+                case ItemIdentifiers.KODAI_WAND:
+                case ItemIdentifiers.STAFF_OF_THE_DEAD:
+                case ItemIdentifiers.STAFF_OF_LIGHT:
+                case ItemIdentifiers.TOXIC_STAFF_OF_THE_DEAD:
                     maxHit *= 1.15;
-                    break;
-                case 12904:
-                    maxHit *= 1.18;
-                    break;
-                case 12899:
-                case 11905:
-                    maxHit *= 1.16;
                     break;
             }
         }

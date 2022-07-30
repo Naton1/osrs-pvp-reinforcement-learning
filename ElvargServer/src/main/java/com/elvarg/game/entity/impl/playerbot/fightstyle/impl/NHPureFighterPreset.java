@@ -23,7 +23,7 @@ public class NHPureFighterPreset implements FighterPreset {
             new Item[]{
                     new Item(RUNE_CROSSBOW), new Item(BLACK_DHIDE_CHAPS), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
                     new Item(AVAS_ACCUMULATOR), new Item(GRANITE_MAUL), new Item(MANTA_RAY), new Item(MANTA_RAY),
-                    new Item(DRAGON_BOLTS_E_, 75), new Item(MANTA_RAY), new Item(SUPER_RESTORE_4_), new Item(COOKED_KARAMBWAN),
+                    new Item(DRAGON_BOLTS_E_, 75), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(COOKED_KARAMBWAN),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(COOKED_KARAMBWAN),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY),

@@ -302,7 +302,7 @@ public class BountyHunter {
 			unassign(killer);
 
 			// If player isnt farming kills..
-			if (fullRewardPlayer) {
+			if (fullRewardPlayer && !(killed instanceof PlayerBot)) {
 
 				// Search for emblem in the player's inventory
 				Emblem inventoryEmblem = null;
@@ -376,19 +376,20 @@ public class BountyHunter {
 					.sendString(52030, "@or1@Kills: " + killer.getTotalKills())
 					.sendString(52033, "@or1@K/D Ratio: " + killer.getKillDeathRatio());
 
-			// Reward player for the kill..
-			int rewardAmount = 130 + (100 * enemyKillstreak) + (150 * killer.getKillstreak())
-					+ (10 * killer.getWildernessLevel()) + additionalBloodMoneyFromBrokenItems;
+			if (!(killer instanceof PlayerBot)) {
+				// Reward player for the kill..
+				int rewardAmount = 130 + (100 * enemyKillstreak) + (150 * killer.getKillstreak())
+						+ (10 * killer.getWildernessLevel()) + additionalBloodMoneyFromBrokenItems;
 
-			if (killer.getInventory().contains(ItemIdentifiers.BLOOD_MONEY)
-					|| killer.getInventory().getFreeSlots() > 0) {
-				killer.getInventory().add(ItemIdentifiers.BLOOD_MONEY, rewardAmount);
-			} else {
-				ItemOnGroundManager.registerNonGlobal(killer, new Item(ItemIdentifiers.BLOOD_MONEY, rewardAmount),
-						killed.getLocation());
+				if (killer.getInventory().contains(ItemIdentifiers.BLOOD_MONEY)
+						|| killer.getInventory().getFreeSlots() > 0) {
+					killer.getInventory().add(ItemIdentifiers.BLOOD_MONEY, rewardAmount);
+				} else {
+					ItemOnGroundManager.registerNonGlobal(killer, new Item(ItemIdentifiers.BLOOD_MONEY, rewardAmount),
+							killed.getLocation());
+				}
+				killer.getPacketSender().sendMessage("You've received " + rewardAmount + " blood money for that kill!");
 			}
-			killer.getPacketSender().sendMessage("You've received " + rewardAmount + " blood money for that kill!");
-
 			// Check if the killstreak is their highest yet..
 			if (killer.getKillstreak() > killer.getHighestKillstreak()) {
 				killer.setHighestKillstreak(killer.getKillstreak());

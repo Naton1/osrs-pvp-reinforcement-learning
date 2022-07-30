@@ -195,9 +195,16 @@ public class CombatFactory {
 			damage = Misc.inclusive(0, DamageFormulas.calculateMaxMeleeHit(entity));
 
 			// Do melee effects with the calculated damage..
+			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MELEE]) {
+				damage *= 0.7;
+			}
 
 		} else if (type == CombatType.RANGED) {
 			damage = Misc.inclusive(0, DamageFormulas.calculateMaxRangedHit(entity));
+
+			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MISSILES]) {
+				damage *= 0.7;
+			}
 
 			// Do ranged effects with the calculated damage..
 			if (entity.isPlayer()) {
@@ -223,6 +230,9 @@ public class CombatFactory {
 			}
 		} else if (type == CombatType.MAGIC) {
 			damage = Misc.inclusive(0, DamageFormulas.getMagicMaxhit(entity));
+			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MAGIC]) {
+				damage *= 0.7;
+			}
 
 			// Do magic effects with the calculated damage..
 		}
