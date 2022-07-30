@@ -23,7 +23,7 @@ public class NHPureFighterPreset implements FighterPreset {
             new Item[]{
                     new Item(RUNE_CROSSBOW), new Item(BLACK_DHIDE_CHAPS), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
                     new Item(AVAS_ACCUMULATOR), new Item(GRANITE_MAUL), new Item(MANTA_RAY), new Item(MANTA_RAY),
-                    new Item(DRAGONSTONE_BOLTS_E_, 75), new Item(MANTA_RAY), new Item(SUPER_RESTORE_4_), new Item(COOKED_KARAMBWAN),
+                    new Item(DRAGON_BOLTS_E_, 75), new Item(MANTA_RAY), new Item(SUPER_RESTORE_4_), new Item(COOKED_KARAMBWAN),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(COOKED_KARAMBWAN),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY),
@@ -34,9 +34,9 @@ public class NHPureFighterPreset implements FighterPreset {
                     new Item(ZAMORAK_CAPE),
                     new Item(MAGIC_SHORTBOW),
                     new Item(AMULET_OF_GLORY),
-                    new Item(ZAMORAK_ROBE_TOP_ORIGINAL_),
+                    new Item(ZAMORAK_ROBE),
                     null,
-                    new Item(ZAMORAK_ROBE_BOTTOMS_ORIGINAL_),
+                    new Item(ZAMORAK_ROBE_3),
                     new Item(MITHRIL_GLOVES),
                     new Item(CLIMBING_BOOTS),
                     new Item(RING_OF_RECOIL),
@@ -101,7 +101,7 @@ public class NHPureFighterPreset implements FighterPreset {
                 }
 
             },
-            new CombatSwitch(new int[]{ZAMORAK_CAPE, ZAMORAK_ROBE_BOTTOMS_ORIGINAL_}) {
+            new CombatSwitch(new int[]{ZAMORAK_CAPE, ZAMORAK_ROBE_LEGS}) {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
@@ -116,7 +116,7 @@ public class NHPureFighterPreset implements FighterPreset {
                     playerBot.getCombat().attack(enemy);
                 }
             },
-            new CombatSwitch(new int[]{RUNE_CROSSBOW, DRAGONSTONE_BOLTS_E_, AVAS_ACCUMULATOR, BLACK_DHIDE_CHAPS}) {
+            new CombatSwitch(new int[]{RUNE_CROSSBOW, DRAGON_BOLTS_E_, AVAS_ACCUMULATOR, BLACK_DHIDE_CHAPS}) {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {

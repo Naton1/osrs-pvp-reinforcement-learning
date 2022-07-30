@@ -17,7 +17,7 @@ public class GRangerFighterPreset implements FighterPreset {
 
     private static final Presetable BOT_G_MAULER_70 = new Presetable("G Mauler (R)",
             new Item[]{
-                    new Item(RUNE_CROSSBOW), new Item(DRAGONSTONE_BOLTS_E_, 75), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
+                    new Item(RUNE_CROSSBOW), new Item(DRAGON_BOLTS_E_, 75), new Item(RANGING_POTION_4_), new Item(SUPER_STRENGTH_4_),
                     new Item(COOKED_KARAMBWAN), new Item(GRANITE_MAUL), new Item(SUPER_RESTORE_4_), new Item(SUPER_ATTACK_4_),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(SARADOMIN_BREW_4_), new Item(MONKFISH),
                     new Item(COOKED_KARAMBWAN), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY),
@@ -63,7 +63,7 @@ public class GRangerFighterPreset implements FighterPreset {
                     CombatSpecial.activate(playerBot);
                 }
             },
-            new CombatSwitch(new int[]{RUNE_CROSSBOW, DRAGONSTONE_BOLTS_E_}) {
+            new CombatSwitch(new int[]{RUNE_CROSSBOW, DRAGON_BOLTS_E_}) {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
