@@ -24,7 +24,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static com.elvarg.game.content.PotionConsumable.*;
-import static com.elvarg.game.entity.impl.playerbot.commands.LoadPreset.LOAD_PRESET_BUTTON_ID;
 
 public class CombatInteraction {
 
@@ -88,6 +87,15 @@ public class CombatInteraction {
     }
 
     private void potUp() {
+        //Boost health
+        if (!playerBot.getSkillManager().isBoosted(Skill.HITPOINTS)) {
+            var fish = ItemInSlot.getFromInventory(ItemIdentifiers.ANGLERFISH, this.playerBot.getInventory());
+
+            if (fish != null) {
+                Food.consume(playerBot, fish.getId(), fish.getSlot());
+                return;
+            }
+        }
         // Boost range
         if (!playerBot.getSkillManager().isBoosted(Skill.RANGED)) {
             var pot = Arrays.stream(RANGE_POTIONS.getIds())
@@ -133,15 +141,6 @@ public class CombatInteraction {
 
             if (pot.isPresent()) {
                 PotionConsumable.drink(playerBot, pot.get().getId(), pot.get().getSlot());
-                return;
-            }
-        }
-        //Boost health
-        if (!playerBot.getSkillManager().isBoosted(Skill.HITPOINTS)) {
-            var fish = ItemInSlot.getFromInventory(ItemIdentifiers.ANGLERFISH, this.playerBot.getInventory());
-
-            if (fish != null) {
-                Food.consume(playerBot, fish.getId(), fish.getSlot());
                 return;
             }
         }
