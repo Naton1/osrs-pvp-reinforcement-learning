@@ -65,6 +65,20 @@ import com.elvarg.util.timers.TimerKey;
  */
 public class CombatFactory {
 
+	public enum CanAttackResponse {
+		INVALID_TARGET,
+		ALREADY_UNDER_ATTACK,
+		CANT_ATTACK_IN_AREA,
+		COMBAT_METHOD_NOT_ALLOWED,
+		NOT_ENOUGH_SPECIAL_ENERGY,
+		STUNNED,
+		DUEL_MELEE_DISABLED,
+		DUEL_RANGED_DISABLED,
+		DUEL_MAGIC_DISABLED,
+		TARGET_IS_IMMUNE,
+		CAN_ATTACK,
+	}
+
 	/**
 	 * The default melee combat method.
 	 */
@@ -391,10 +405,9 @@ public class CombatFactory {
 	 *            The victim.
 	 * @return True if attacker has the requirements to attack, otherwise false.
 	 */
-	public static boolean canAttack(Mobile attacker, CombatMethod method, Mobile target) {
+	public static CanAttackResponse canAttack(Mobile attacker, CombatMethod method, Mobile target) {
 		if (!validTarget(attacker, target)) {
-		    attacker.getCombat().reset();
-			return false;
+			return CanAttackResponse.INVALID_TARGET;
 		}
 
 		// Here we check if we are already in combat with another entity.
@@ -403,32 +416,24 @@ public class CombatFactory {
 			if (isBeingAttacked(attacker) && attacker.getCombat().getAttacker() != target
 					&& attacker.getCombat().getAttacker().getHitpoints() > 0
 					|| !attacker.getCombat().getHitQueue().isEmpty(target)) {
-				if (attacker.isPlayer()) {
-					attacker.getAsPlayer().getPacketSender().sendMessage("You are already under attack!");
-				}
-				attacker.getCombat().reset();
-				return false;
+
+				return CanAttackResponse.ALREADY_UNDER_ATTACK;
 			}
 
 			// Here we check if we are already in combat with another entity.
 			if (isBeingAttacked(target) && target.getCombat().getAttacker() != attacker
 					|| !target.getCombat().getHitQueue().isEmpty(attacker)) {
-				if (attacker.isPlayer()) {
-					attacker.getAsPlayer().getPacketSender().sendMessage("They are already under attack!");
-				}
-				attacker.getCombat().reset();
-				return false;
+				return CanAttackResponse.ALREADY_UNDER_ATTACK;
 			}
 		}
 
 		// Check if we can attack in this area
 		if (!AreaManager.canAttack(attacker, target)) {
-			attacker.getCombat().reset();
-			return false;
+			return CanAttackResponse.CANT_ATTACK_IN_AREA;
 		}
 
 		if (!method.canAttack(attacker, target)) {
-			return false;
+			return CanAttackResponse.COMBAT_METHOD_NOT_ALLOWED;
 		}
 
 		// Check special attack
@@ -440,34 +445,23 @@ public class CombatFactory {
 				// Check if we have enough special attack percentage.
 				// If not, reset special attack.
 				if (p.getSpecialPercentage() < p.getCombatSpecial().getDrainAmount()) {
-					p.getPacketSender().sendMessage("You do not have enough special attack energy left!");
-					p.setSpecialActivated(false);
-					CombatSpecial.updateBar(p);
-					p.getCombat().reset();
-					return false;
+					return CanAttackResponse.NOT_ENOUGH_SPECIAL_ENERGY;
 				}
 			}
 
 			if (p.getTimers().has(TimerKey.STUN)) {
-				p.getPacketSender().sendMessage("You're currently stunned and cannot attack.");
-				p.getCombat().reset();
-				return false;
+				return CanAttackResponse.STUNNED;
 			}
 			
 			// Duel rules
             if (p.getDueling().inDuel()) {
                 String errorStatement = null;
                 if (method.type() == CombatType.MELEE && p.getDueling().getRules()[DuelRule.NO_MELEE.ordinal()]) {
-                    errorStatement = "Melee has been disabled in this duel!";
+					return CanAttackResponse.DUEL_MELEE_DISABLED;
                 } else if (method.type() == CombatType.RANGED && p.getDueling().getRules()[DuelRule.NO_RANGED.ordinal()]) {
-                    errorStatement = "Ranged has been disabled in this duel!";
+					return CanAttackResponse.DUEL_RANGED_DISABLED;
                 } else if (method.type() == CombatType.MAGIC && p.getDueling().getRules()[DuelRule.NO_MAGIC.ordinal()]) {
-                    errorStatement = "Magic has been disabled in this duel!";
-                }
-                if (errorStatement != null) {
-                    StatementDialogue.send(p, errorStatement);
-                    p.getCombat().reset();
-                    return false;
+					return CanAttackResponse.DUEL_MAGIC_DISABLED;
                 }
             }
 		}
@@ -476,15 +470,11 @@ public class CombatFactory {
 		if (target.isNpc()) {
 			NPC npc = (NPC) target;
 			if (npc.getTimers().has(TimerKey.ATTACK_IMMUNITY)) {
-				if (attacker.isPlayer()) {
-					((Player) attacker).getPacketSender().sendMessage("This npc is currently immune to attacks.");
-				}
-				attacker.getCombat().reset();
-				return false;
+				return CanAttackResponse.TARGET_IS_IMMUNE;
 			}
 		}
 
-		return true;
+		return CanAttackResponse.CAN_ATTACK;
 	}
 
 	/**

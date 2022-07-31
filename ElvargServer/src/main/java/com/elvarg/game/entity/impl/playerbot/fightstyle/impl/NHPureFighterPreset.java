@@ -100,7 +100,7 @@ public class NHPureFighterPreset implements FighterPreset {
                         return;
                     }
                     playerBot.setFollowing(null);
-                    MovementQueue.randomClippedStepNotSouth(playerBot, 4);
+                    MovementQueue.randomClippedStepNotSouth(playerBot, 3);
                 }
 
             },
@@ -157,9 +157,7 @@ public class NHPureFighterPreset implements FighterPreset {
 
                                 @Override
                                 public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
-                                    if (playerBot.isSpecialActivated()) {
-                                        CombatSpecial.activate(playerBot);
-                                    }
+                                    playerBot.setSpecialActivated(false);
                                     playerBot.getCombat().attack(enemy);
                                 }
                             }

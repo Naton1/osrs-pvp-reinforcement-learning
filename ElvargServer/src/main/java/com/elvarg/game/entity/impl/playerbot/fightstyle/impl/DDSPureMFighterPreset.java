@@ -9,6 +9,7 @@ import com.elvarg.game.entity.impl.playerbot.fightstyle.CombatSwitch;
 import com.elvarg.game.entity.impl.playerbot.fightstyle.FighterPreset;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.MagicSpellbook;
+import com.elvarg.util.timers.TimerKey;
 
 import static com.elvarg.util.ItemIdentifiers.*;
 
@@ -48,9 +49,10 @@ public class DDSPureMFighterPreset implements FighterPreset {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    return playerBot.getSpecialPercentage() >= 25 &&
+                    boolean canAttackNextTick = playerBot.getTimers().getTicks(TimerKey.COMBAT_ATTACK) <= 1;
+                    return canAttackNextTick && playerBot.getSpecialPercentage() >= 25 &&
                             // Switch if the enemy has lowish health
-                            enemy.getHitpoints() < 45;
+                            enemy.getHitpoints() < 46;
                 }
 
                 @Override
@@ -70,9 +72,7 @@ public class DDSPureMFighterPreset implements FighterPreset {
 
                 @Override
                 public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
-                    if (playerBot.isSpecialActivated()) {
-                        CombatSpecial.activate(playerBot);
-                    }
+                    playerBot.setSpecialActivated(false);
                     playerBot.getCombat().attack(enemy);
                 }
             },
