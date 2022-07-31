@@ -33,6 +33,14 @@ public class TimerRepository {
 		return timer.ticks() <= ticks;
 	}
 
+	public int getTicks(TimerKey key) {
+		Timer timer = timers.get(key);
+		if (timer == null) {
+			return 0;
+		}
+		return timer.ticks();
+	}
+
 	public void register(TimerKey key, int ticks) {
 		timers.put(key, new Timer(key, ticks));
 	}

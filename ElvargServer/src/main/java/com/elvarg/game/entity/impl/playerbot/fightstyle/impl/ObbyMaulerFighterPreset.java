@@ -11,6 +11,7 @@ import com.elvarg.game.entity.impl.playerbot.fightstyle.FighterPreset;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.ItemInSlot;
 import com.elvarg.game.model.MagicSpellbook;
+import com.elvarg.util.timers.TimerKey;
 
 import static com.elvarg.util.ItemIdentifiers.*;
 
@@ -19,7 +20,7 @@ public class ObbyMaulerFighterPreset implements FighterPreset {
     private static final Presetable BOT_OBBY_MAULER_57 = new Presetable("Obby Mauler",
             new Item[]{
                     new Item(SUPER_STRENGTH_4_), new Item(RANGING_POTION_4_), new Item(MAGIC_SHORTBOW), new Item(RING_OF_RECOIL),
-                    new Item(RUNE_ARROW, 175), new Item(COOKED_KARAMBWAN), new Item(COOKED_KARAMBWAN), new Item(COOKED_KARAMBWAN),
+                    new Item(BERSERKER_NECKLACE), new Item(FIRE_CAPE), new Item(COOKED_KARAMBWAN), new Item(COOKED_KARAMBWAN),
                     new Item(COOKED_KARAMBWAN), new Item(COOKED_KARAMBWAN), new Item(COOKED_KARAMBWAN), new Item(COOKED_KARAMBWAN),
                     new Item(TZHAAR_KET_OM), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY),
                     new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY), new Item(MANTA_RAY),
@@ -29,30 +30,29 @@ public class ObbyMaulerFighterPreset implements FighterPreset {
             new Item[]{
                     new Item(COIF),
                     new Item(AVAS_ACCUMULATOR),
-                    new Item(RUNE_KNIFE, 250),
+                    new Item(MAGIC_SHORTBOW),
+                    new Item(RUNE_ARROW, 200),
                     new Item(AMULET_OF_GLORY),
-                    new Item(IRON_PLATEBODY),
-                    new Item(UNHOLY_BOOK),
+                    new Item(LEATHER_BODY),
                     new Item(BLACK_DHIDE_CHAPS),
                     new Item(MITHRIL_GLOVES),
                     new Item(CLIMBING_BOOTS),
                     new Item(RING_OF_RECOIL)
             },
             /* atk, def, str, hp, range, pray, mage */
-            new int[]{1, 1, 99, 80, 60, 31, 1},
+            new int[]{1, 1, 99, 80, 70, 13, 1},
             MagicSpellbook.NORMAL,
             true
     );
 
     public static final CombatAction[] COMBAT_ACTIONS = {
-            new CombatSwitch(new int[]{MAGIC_SHORTBOW, RUNE_ARROW}) {
+            new CombatSwitch(new int[]{MAGIC_SHORTBOW, RUNE_ARROW, AVAS_ACCUMULATOR}, new PrayerHandler.PrayerData[]{ PrayerHandler.PrayerData.SHARP_EYE }) {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    return playerBot.getInventory().getFreeSlots() > 0 &&
-                            playerBot.getSpecialPercentage() >= 50 &&
-                            // Switch if the enemy has enabled protect from missles or has lowish health
-                            (!enemy.getPrayerActive()[PrayerHandler.PROTECT_FROM_MISSILES] && enemy.getHitpoints() < 40);
+                    return playerBot.getSpecialPercentage() >= 55 &&
+                            (!enemy.getPrayerActive()[PrayerHandler.PROTECT_FROM_MISSILES]
+                                    && enemy.getHitpointsAfterPendingDamage() < 40);
                 }
 
                 @Override
@@ -63,15 +63,13 @@ public class ObbyMaulerFighterPreset implements FighterPreset {
                     playerBot.getCombat().attack(enemy);
                 }
             },
-            new CombatSwitch(new int[]{TZHAAR_KET_OM}) {
+            new CombatSwitch(new int[]{TZHAAR_KET_OM, BERSERKER_NECKLACE, FIRE_CAPE}, new PrayerHandler.PrayerData[]{ PrayerHandler.PrayerData.SUPERHUMAN_STRENGTH }) {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    return playerBot.getInventory().getFreeSlots() > 0 &&
-                            // Don't switch if we're frozen
-                            playerBot.getMovementQueue().canMove() &&
-                            // Switch if the enemy has enabled protect from missles or has low health
-                            (enemy.getPrayerActive()[PrayerHandler.PROTECT_FROM_MISSILES] || enemy.getHitpoints() < 35);
+                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 1);
+                    return canAttackNextTick && playerBot.getMovementQueue().canMove() &&
+                            enemy.getHitpointsAfterPendingDamage() < 38;
                 }
 
                 @Override
@@ -92,7 +90,7 @@ public class ObbyMaulerFighterPreset implements FighterPreset {
                     playerBot.getCombat().attack(enemy);
                 }
             },
-            new CombatSwitch(new int[]{RUNE_KNIFE, UNHOLY_BOOK}) {
+            new CombatSwitch(new int[]{MAGIC_SHORTBOW, RUNE_ARROW, AVAS_ACCUMULATOR}, new PrayerHandler.PrayerData[]{ PrayerHandler.PrayerData.SHARP_EYE }) {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
