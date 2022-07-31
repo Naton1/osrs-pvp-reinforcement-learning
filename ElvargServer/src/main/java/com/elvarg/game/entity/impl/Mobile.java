@@ -365,8 +365,10 @@ public abstract class Mobile extends Entity {
 	}
 
 	public HitDamage decrementHealth(HitDamage hit) {
-		if (getHitpoints() <= 0)
+		if (getHitpoints() <= 0) {
+			hit.setDamage(0);
 			return hit;
+		}
 		if (hit.getDamage() > getHitpoints())
 			hit.setDamage(getHitpoints());
 		if (hit.getDamage() < 0)
