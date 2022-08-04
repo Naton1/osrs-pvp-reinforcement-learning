@@ -123,7 +123,7 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 2);
+                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 1);
                     return canAttackNextTick && playerBot.getMovementQueue().canMove()
                             && enemy.getHitpointsAfterPendingDamage() <= 49
                             && playerBot.getSpecialPercentage() >= 50
@@ -191,7 +191,7 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 2);
+                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 1);
 
                     return canAttackNextTick
                             && enemy.getMovementQueue().canMove() && !enemy.getTimers().has(TimerKey.FREEZE_IMMUNITY)
@@ -233,9 +233,7 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
                                 @Override
                                 public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
                                     playerBot.getCombat().setCastSpell(null);
-                                    if (playerBot.isSpecialActivated()) {
-                                        CombatSpecial.activate(playerBot);
-                                    }
+                                    playerBot.setSpecialActivated(false);
                                     playerBot.getCombat().attack(enemy);
                                 }
                             }
@@ -260,7 +258,7 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
             }) {
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    return playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 2);
+                    return playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 1);
                 }
             },
     };

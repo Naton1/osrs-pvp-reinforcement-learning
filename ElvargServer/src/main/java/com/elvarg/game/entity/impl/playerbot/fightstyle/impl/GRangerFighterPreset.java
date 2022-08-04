@@ -84,9 +84,7 @@ public class GRangerFighterPreset implements FighterPreset {
 
                 @Override
                 public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
-                    if (playerBot.isSpecialActivated()) {
-                        CombatSpecial.activate(playerBot);
-                    }
+                    playerBot.setSpecialActivated(false);
                     playerBot.getCombat().attack(enemy);
                 }
             },

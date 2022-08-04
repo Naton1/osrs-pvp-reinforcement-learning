@@ -157,8 +157,8 @@ public class PlayerBot extends Player {
 
     @Override
     public void process() {
-        super.process();
         this.combatInteraction.process();
+        super.process();
     }
 
     @Override

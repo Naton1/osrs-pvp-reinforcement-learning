@@ -101,7 +101,7 @@ public final class NpcAggression {
             if (distanceToPlayer < npc.getDefinition().getCombatFollowDistance() && distanceToPlayer <= aggressionDistance) {
 
                 // Make sure that we can actually attack the player.
-                if (CombatFactory.canAttack(npc, method, player)) {
+                if (CombatFactory.canAttack(npc, method, player) == CombatFactory.CanAttackResponse.CAN_ATTACK) {
 
                     // Bandits
                     if (bandits) {

@@ -126,7 +126,7 @@ public class TribridMaxFighterPreset implements FighterPreset {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 2);
+                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 1);
                     return canAttackNextTick && playerBot.getMovementQueue().canMove()
                             && enemy.getHitpointsAfterPendingDamage() <= 49
                             && playerBot.getSpecialPercentage() >= 50
@@ -198,7 +198,7 @@ public class TribridMaxFighterPreset implements FighterPreset {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 2);
+                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 1);
 
                     return canAttackNextTick
                             && enemy.getMovementQueue().canMove() && !enemy.getTimers().has(TimerKey.FREEZE_IMMUNITY)
@@ -226,6 +226,7 @@ public class TribridMaxFighterPreset implements FighterPreset {
                                 public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
                                     System.out.println("Magic");
                                     playerBot.getCombat().setCastSpell(CombatSpells.ICE_BARRAGE.getSpell());
+                                    playerBot.setSpecialActivated(false);
                                     playerBot.getCombat().attack(enemy);
                                 }
                             }
@@ -243,9 +244,7 @@ public class TribridMaxFighterPreset implements FighterPreset {
                                 public void performAfterSwitch(PlayerBot playerBot, Mobile enemy) {
                                     System.out.println("Ranged");
                                     playerBot.getCombat().setCastSpell(null);
-                                    if (playerBot.isSpecialActivated()) {
-                                        CombatSpecial.activate(playerBot);
-                                    }
+                                    playerBot.setSpecialActivated(false);
                                     playerBot.getCombat().attack(enemy);
                                 }
                             }
@@ -271,7 +270,7 @@ public class TribridMaxFighterPreset implements FighterPreset {
             }) {
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 2);
+                    boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 1);
 
                     return canAttackNextTick;
                 }

@@ -45,8 +45,8 @@ public class CombatInteraction {
 
         var combatMethod = CombatFactory.getMethod(this.playerBot);
         if (attackTarget != null) {
-//            playerBot.sendChat(""+playerBot.getTimers().left(TimerKey.COMBAT_ATTACK));
-            if (!CombatFactory.canAttack(this.playerBot, combatMethod, attackTarget )) {
+//            playerBot.sendChat("" + playerBot.getTimers().getTicks(TimerKey.COMBAT_ATTACK));
+            if (CombatFactory.canAttack(this.playerBot, combatMethod, attackTarget) != CombatFactory.CanAttackResponse.CAN_ATTACK) {
                 attackTarget = null;
                 this.playerBot.getCombat().setUnderAttack(null);
                 return;
@@ -70,7 +70,7 @@ public class CombatInteraction {
         }
 
         var area = this.playerBot.getArea();
-        if (area != null && area.getPlayers().stream().anyMatch(p -> CombatFactory.canAttack(this.playerBot, combatMethod, p))) {
+        if (area != null && area.getPlayers().stream().anyMatch(p -> CombatFactory.canAttack(this.playerBot, combatMethod, p) == CombatFactory.CanAttackResponse.CAN_ATTACK)) {
             this.potUp();
         }
 
@@ -195,7 +195,7 @@ public class CombatInteraction {
         this.playerBot.setFollowing(null);
         this.playerBot.getCombat().setUnderAttack(null);
 
-        TaskManager.submit(new Task(Misc.randomInclusive(10,20), playerBot, false) {
+        TaskManager.submit(new Task(Misc.randomInclusive(10, 20), playerBot, false) {
             @Override
             protected void execute() {
                 reset();
@@ -206,7 +206,7 @@ public class CombatInteraction {
 
     // Called when this bot is assigned a Player target in the wilderness
     public void targetAssigned(Player target) {
-        if (this.playerBot.getArea() == null || this.playerBot.getArea().getPlayers().size() > 1 || Misc.randomInclusive(1,3) != 1) {
+        if (this.playerBot.getArea() == null || this.playerBot.getArea().getPlayers().size() > 1 || Misc.randomInclusive(1, 3) != 1) {
             // Don't attack if there's another real player in the same area, and attack 1/3 times
             return;
         }
