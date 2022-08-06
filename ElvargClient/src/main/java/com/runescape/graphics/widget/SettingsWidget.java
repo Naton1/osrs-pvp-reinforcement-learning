@@ -85,8 +85,8 @@ public class SettingsWidget extends Widget {
 		/* Mouse zoom */
         hoverButton(42521, "Restore Default Zoom", 189, 190);
 		/* Screen sizes */
-        configHoverButton(FIXED_MODE, "Fixed mode", 185, 185, 485, 186, true, 42523);
-        configHoverButton(RESIZABLE_MODE, "Resizable mode", 187, 188, 484, 484, false, 42522);
+        configHoverButton(FIXED_MODE, "Fixed mode", 485, 186, 185, 185, true, RESIZABLE_MODE);
+        configHoverButton(RESIZABLE_MODE, "Resizable mode", 484, 484, 187, 188, false, FIXED_MODE);
 		/* Advanced options */
         hoverButton(42524, "Configure @lre@Advanced options", 353, 353, "Advanced options", Widget.newFonts[1], 0xff981f, 0xffffff, true);
 		/* Sliders */
@@ -313,7 +313,8 @@ public class SettingsWidget extends Widget {
         Widget.interfaceCache[SPLIT_PRIVATE_CHAT].active = false;
         Widget.interfaceCache[MOUSE_BUTTONS].active = true;
         Widget.interfaceCache[SHIFT_CLICK_DROP].active = Configuration.enableShiftClickDrop;
-
+        Widget.interfaceCache[FIXED_MODE].active = Client.frameMode == ScreenMode.FIXED;
+        Widget.interfaceCache[RESIZABLE_MODE].active = Client.frameMode == ScreenMode.RESIZABLE;
         Widget.interfaceCache[PLAYER_ATTACK_DROPDOWN].dropdown.setSelected(Widget.interfaceCache[42554].dropdown.getOptions()[Configuration.playerAttackOptionPriority]);
         Widget.interfaceCache[NPC_ATTACK_DROPDOWN].dropdown.setSelected(Widget.interfaceCache[42556].dropdown.getOptions()[Configuration.npcAttackOptionPriority]);
 
@@ -329,7 +330,6 @@ public class SettingsWidget extends Widget {
         Widget.interfaceCache[ROOF_REMOVAL].active = Configuration.enableRoofs;
         Widget.interfaceCache[ORBS].active = Configuration.enableOrbs;
         Widget.interfaceCache[SPEC_ORB].active = Configuration.enableSpecOrb;
-
 
         Widget.interfaceCache[COMBAT_OVERLAY].active = Configuration.combatOverlayBox;
         Widget.interfaceCache[BUFF_OVERLAY].active = Configuration.enableBuffOverlay;
