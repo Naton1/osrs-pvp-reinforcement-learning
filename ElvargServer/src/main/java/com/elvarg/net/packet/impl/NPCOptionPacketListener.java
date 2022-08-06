@@ -15,6 +15,7 @@ import com.elvarg.game.model.dialogues.builders.impl.NieveDialogue;
 import com.elvarg.game.model.dialogues.builders.impl.ParduDialogue;
 import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
+import com.elvarg.game.system.NPCInteractionSystem;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
@@ -79,6 +80,8 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 					return;
 				}
 
+				NPCInteractionSystem.handleFirstOption(player, npc);
+
 				switch (npc.getId()) {
 				case SHOP_KEEPER_4:
 					ShopManager.open(player, ShopIdentifiers.GENERAL_STORE);
@@ -98,25 +101,12 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 				case ARMOUR_SALESMAN:
 					ShopManager.open(player, ShopIdentifiers.RANGE_SHOP);
 					break;
-				case BANKER_2:
-				case TZHAAR_KET_ZUH:
-					player.getBank(player.getCurrentBankTab()).open();
-					break;
 				case MAKE_OVER_MAGE:
 					player.getPacketSender().sendInterfaceRemoval().sendInterface(3559);
 					player.getAppearance().setCanChangeAppearance(true);
 					break;
 				case SECURITY_GUARD:
 					//DialogueManager.start(player, 2500);
-					break;
-				case EMBLEM_TRADER:
-				case EMBLEM_TRADER_2:
-				case EMBLEM_TRADER_3:
-					player.getDialogueManager().start(new EmblemTraderDialogue());
-					break;
-
-				case PERDU:
-					player.getDialogueManager().start(new ParduDialogue());
 					break;
 
 				case FINANCIAL_ADVISOR:
@@ -169,20 +159,12 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 					return;
 				}
 
+				NPCInteractionSystem.handleSecondOption(player, npc);
+
 				switch (npc.getId()) {
 				case NIEVE:
                     player.getDialogueManager().start(new NieveDialogue(), 2);
                     break;
-				case BANKER:
-				case BANKER_2:
-				case BANKER_3:
-				case BANKER_4:
-				case BANKER_5:
-				case BANKER_6:
-				case BANKER_7:
-				case TZHAAR_KET_ZUH:
-					player.getBank(player.getCurrentBankTab()).open();
-					break;
 				case 1497: // Net and bait
 				case 1498: // Net and bait
 					player.getSkillManager().startSkillable(new Fishing(npc, FishingTool.FISHING_ROD));
@@ -190,15 +172,9 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 				case RICHARD_2:
 					ShopManager.open(player, ShopIdentifiers.TEAMCAPE_SHOP);
 					break;
-				case EMBLEM_TRADER:
-				case EMBLEM_TRADER_2:
-				case EMBLEM_TRADER_3:
-					ShopManager.open(player, ShopIdentifiers.PVP_SHOP);
-					break;
 				case MAGIC_INSTRUCTOR:
 					ShopManager.open(player, ShopIdentifiers.MAGE_ARMOR_SHOP);
 					break;
-
 				}
 			}
 			
@@ -235,11 +211,11 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
                 if (PetHandler.morph(player, npc)) {
                     return;
                 }
+
+				NPCInteractionSystem.handleThirdOption(player, npc);
+
                 switch (npc.getId()) {
 
-                case EMBLEM_TRADER:
-					player.getDialogueManager().start(new EmblemTraderDialogue(), 2);
-                    break;
                 case MAGIC_INSTRUCTOR:
                     ShopManager.open(player, ShopIdentifiers.MAGE_RUNES_SHOP);
                     break;
@@ -276,11 +252,8 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
                 npc.setPositionToFace(player.getLocation());
                 player.setPositionToFace(npc.getLocation());
 
-                switch (npc.getId()) {
-                case EMBLEM_TRADER:
-					player.getDialogueManager().start(new EmblemTraderDialogue(), 5);
-                    break;
-                }
+
+				NPCInteractionSystem.handleForthOption(player, npc);
             }
 
             @Override
