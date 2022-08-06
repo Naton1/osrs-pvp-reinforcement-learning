@@ -1,16 +1,19 @@
-package com.elvarg.game.entity.impl.player;
+package com.elvarg.game.entity.impl.player.persistence.dynamodb;
 
+import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.player.persistence.PersistenceMethod;
+import com.elvarg.game.entity.impl.player.persistence.PlayerSave;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 
 import java.time.Instant;
 
-public class PlayerSaveDb {
+public class DynamoDBPersistence extends PersistenceMethod {
 
     private static DynamoDbClient dynamoDbClient = DynamoDbClient.builder().region(Region.EU_WEST_1).build();
     private static DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder().dynamoDbClient(dynamoDbClient).build();
@@ -18,7 +21,8 @@ public class PlayerSaveDb {
 
     private static final TableSchema<PlayerSaveRecord> PLAYER_SAVE_TABLE_SCHEMA = TableSchema.fromClass(PlayerSaveRecord.class);
 
-    public static void save(Player player) {
+    @Override
+    public void save(Player player) {
         if (playerTableName == null || player instanceof PlayerBot) {
             return;
         }
@@ -29,7 +33,8 @@ public class PlayerSaveDb {
         playerTable.putItem(new PlayerSaveRecord(player.getUsername(), playerSave, Instant.now()));
     }
 
-    public static PlayerSave fetch(String username) {
+    @Override
+    public PlayerSave retrieve(String username) {
         if (playerTableName == null) {
             return null;
         }
@@ -45,7 +50,8 @@ public class PlayerSaveDb {
         return playerSaveRecord.getPlayerSave();
     }
 
-    public static boolean playerExists(String username) {
+    @Override
+    public boolean exists(String username) {
         // Have to do it properly later. Have to make sure we dont block main loop
         return true;
     }

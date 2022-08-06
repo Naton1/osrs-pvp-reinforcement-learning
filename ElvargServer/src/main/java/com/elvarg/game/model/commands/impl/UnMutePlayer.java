@@ -2,7 +2,6 @@ package com.elvarg.game.model.commands.impl;
 
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.entity.impl.player.PlayerSaveDb;
 import com.elvarg.game.model.commands.Command;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.util.PlayerPunishment;
@@ -16,7 +15,7 @@ public class UnMutePlayer implements Command {
         String player2 = command.substring(parts[0].length() + 1);
         Optional<Player> plr = World.getPlayerByName(player2);
 
-        if (!PlayerSaveDb.playerExists(player2) && !plr.isPresent()) {
+        if (!Player.Persistence.exists(player2) && !plr.isPresent()) {
             player.getPacketSender().sendMessage("Player " + player2 + " does not exist.");
             return;
         }

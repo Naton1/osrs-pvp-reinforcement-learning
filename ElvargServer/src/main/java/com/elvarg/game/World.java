@@ -7,8 +7,8 @@ import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.player.persistence.PersistenceMethod;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
-import com.elvarg.game.entity.impl.player.PlayerSaveDb;
 import com.elvarg.game.entity.updating.NPCUpdating;
 import com.elvarg.game.entity.updating.PlayerUpdating;
 import com.elvarg.game.entity.updating.sync.GameSyncExecutor;
@@ -241,7 +241,7 @@ public class World {
 	 * Saves all players in the game.
 	 */
 	public static void savePlayers() {
-		players.forEach(PlayerSaveDb::save);
+		players.forEach(Player.Persistence::save);
 	}
 
 	public static MobileList<Player> getPlayers() {

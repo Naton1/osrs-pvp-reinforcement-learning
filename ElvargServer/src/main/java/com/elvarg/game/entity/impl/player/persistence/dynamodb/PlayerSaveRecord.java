@@ -1,5 +1,7 @@
-package com.elvarg.game.entity.impl.player;
+package com.elvarg.game.entity.impl.player.persistence.dynamodb;
 
+import com.elvarg.game.entity.impl.player.persistence.PlayerSave;
+import com.elvarg.game.entity.impl.player.persistence.PlayerSaveConverter;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbConvertedBy;
