@@ -53,6 +53,7 @@ import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.CombatPoisonEffect;
 import com.elvarg.game.task.impl.CombatPoisonEffect.CombatPoisonData;
 import com.elvarg.game.task.impl.CombatPoisonEffect.PoisonType;
+import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
 import com.elvarg.util.NpcIdentifiers;
 import com.elvarg.util.timers.TimerKey;
@@ -63,6 +64,20 @@ import com.elvarg.util.timers.TimerKey;
  * @author Professor Oak
  */
 public class CombatFactory {
+
+	public enum CanAttackResponse {
+		INVALID_TARGET,
+		ALREADY_UNDER_ATTACK,
+		CANT_ATTACK_IN_AREA,
+		COMBAT_METHOD_NOT_ALLOWED,
+		NOT_ENOUGH_SPECIAL_ENERGY,
+		STUNNED,
+		DUEL_MELEE_DISABLED,
+		DUEL_RANGED_DISABLED,
+		DUEL_MAGIC_DISABLED,
+		TARGET_IS_IMMUNE,
+		CAN_ATTACK,
+	}
 
 	/**
 	 * The default melee combat method.
@@ -194,9 +209,16 @@ public class CombatFactory {
 			damage = Misc.inclusive(0, DamageFormulas.calculateMaxMeleeHit(entity));
 
 			// Do melee effects with the calculated damage..
+			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MELEE]) {
+				damage *= 0.7;
+			}
 
 		} else if (type == CombatType.RANGED) {
 			damage = Misc.inclusive(0, DamageFormulas.calculateMaxRangedHit(entity));
+
+			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MISSILES]) {
+				damage *= 0.7;
+			}
 
 			// Do ranged effects with the calculated damage..
 			if (entity.isPlayer()) {
@@ -222,6 +244,9 @@ public class CombatFactory {
 			}
 		} else if (type == CombatType.MAGIC) {
 			damage = Misc.inclusive(0, DamageFormulas.getMagicMaxhit(entity));
+			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MAGIC]) {
+				damage *= 0.7;
+			}
 
 			// Do magic effects with the calculated damage..
 		}
@@ -380,10 +405,9 @@ public class CombatFactory {
 	 *            The victim.
 	 * @return True if attacker has the requirements to attack, otherwise false.
 	 */
-	public static boolean canAttack(Mobile attacker, CombatMethod method, Mobile target) {
+	public static CanAttackResponse canAttack(Mobile attacker, CombatMethod method, Mobile target) {
 		if (!validTarget(attacker, target)) {
-		    attacker.getCombat().reset();
-			return false;
+			return CanAttackResponse.INVALID_TARGET;
 		}
 
 		// Here we check if we are already in combat with another entity.
@@ -392,32 +416,24 @@ public class CombatFactory {
 			if (isBeingAttacked(attacker) && attacker.getCombat().getAttacker() != target
 					&& attacker.getCombat().getAttacker().getHitpoints() > 0
 					|| !attacker.getCombat().getHitQueue().isEmpty(target)) {
-				if (attacker.isPlayer()) {
-					attacker.getAsPlayer().getPacketSender().sendMessage("You are already under attack!");
-				}
-				attacker.getCombat().reset();
-				return false;
+
+				return CanAttackResponse.ALREADY_UNDER_ATTACK;
 			}
 
 			// Here we check if we are already in combat with another entity.
 			if (isBeingAttacked(target) && target.getCombat().getAttacker() != attacker
 					|| !target.getCombat().getHitQueue().isEmpty(attacker)) {
-				if (attacker.isPlayer()) {
-					attacker.getAsPlayer().getPacketSender().sendMessage("They are already under attack!");
-				}
-				attacker.getCombat().reset();
-				return false;
+				return CanAttackResponse.ALREADY_UNDER_ATTACK;
 			}
 		}
 
 		// Check if we can attack in this area
 		if (!AreaManager.canAttack(attacker, target)) {
-			attacker.getCombat().reset();
-			return false;
+			return CanAttackResponse.CANT_ATTACK_IN_AREA;
 		}
 
 		if (!method.canAttack(attacker, target)) {
-			return false;
+			return CanAttackResponse.COMBAT_METHOD_NOT_ALLOWED;
 		}
 
 		// Check special attack
@@ -429,34 +445,23 @@ public class CombatFactory {
 				// Check if we have enough special attack percentage.
 				// If not, reset special attack.
 				if (p.getSpecialPercentage() < p.getCombatSpecial().getDrainAmount()) {
-					p.getPacketSender().sendMessage("You do not have enough special attack energy left!");
-					p.setSpecialActivated(false);
-					CombatSpecial.updateBar(p);
-					p.getCombat().reset();
-					return false;
+					return CanAttackResponse.NOT_ENOUGH_SPECIAL_ENERGY;
 				}
 			}
 
 			if (p.getTimers().has(TimerKey.STUN)) {
-				p.getPacketSender().sendMessage("You're currently stunned and cannot attack.");
-				p.getCombat().reset();
-				return false;
+				return CanAttackResponse.STUNNED;
 			}
 			
 			// Duel rules
             if (p.getDueling().inDuel()) {
                 String errorStatement = null;
                 if (method.type() == CombatType.MELEE && p.getDueling().getRules()[DuelRule.NO_MELEE.ordinal()]) {
-                    errorStatement = "Melee has been disabled in this duel!";
+					return CanAttackResponse.DUEL_MELEE_DISABLED;
                 } else if (method.type() == CombatType.RANGED && p.getDueling().getRules()[DuelRule.NO_RANGED.ordinal()]) {
-                    errorStatement = "Ranged has been disabled in this duel!";
+					return CanAttackResponse.DUEL_RANGED_DISABLED;
                 } else if (method.type() == CombatType.MAGIC && p.getDueling().getRules()[DuelRule.NO_MAGIC.ordinal()]) {
-                    errorStatement = "Magic has been disabled in this duel!";
-                }
-                if (errorStatement != null) {
-                    StatementDialogue.send(p, errorStatement);
-                    p.getCombat().reset();
-                    return false;
+					return CanAttackResponse.DUEL_MAGIC_DISABLED;
                 }
             }
 		}
@@ -465,15 +470,11 @@ public class CombatFactory {
 		if (target.isNpc()) {
 			NPC npc = (NPC) target;
 			if (npc.getTimers().has(TimerKey.ATTACK_IMMUNITY)) {
-				if (attacker.isPlayer()) {
-					((Player) attacker).getPacketSender().sendMessage("This npc is currently immune to attacks.");
-				}
-				attacker.getCombat().reset();
-				return false;
+				return CanAttackResponse.TARGET_IS_IMMUNE;
 			}
 		}
 
-		return true;
+		return CanAttackResponse.CAN_ATTACK;
 	}
 
 	/**
@@ -629,7 +630,7 @@ public class CombatFactory {
 		if (qHit.getTotalDamage() > 0) {
 			if (target.isPlayer()) {
 				Player player = target.getAsPlayer();
-				if (player.getEquipment().get(Equipment.RING_SLOT).getId() == CombatConstants.RING_OF_RECOIL_ID) {
+				if (player.getEquipment().get(Equipment.RING_SLOT).getId() == ItemIdentifiers.RING_OF_RECOIL) {
 					handleRecoil(player, attacker, qHit.getTotalDamage());
 				}
 			}
@@ -794,10 +795,10 @@ public class CombatFactory {
 	 * @param damage
 	 */
 	public static void handleRecoil(Player player, Mobile attacker, int damage) {
-		final int returnDmg = (int) Math.ceil(damage * 0.1D);
-		if (returnDmg <= 0) {
+		if (damage == 0) {
 			return;
 		}
+		final int returnDmg = (int) (damage * 0.1) + 1;
 
 		// Increase recoil damage for a player.
 		player.setRecoilDamage(player.getRecoilDamage() + returnDmg);
@@ -806,7 +807,7 @@ public class CombatFactory {
 		attacker.getCombat().getHitQueue().addPendingDamage(new HitDamage(returnDmg, HitMask.RED));
 
 		// Degrading ring of recoil for a player.
-		if (player.getRecoilDamage() >= 40 || Misc.getRandom(200) >= 195) {
+		if (player.getRecoilDamage() >= 40) {
 			player.getEquipment().set(Equipment.RING_SLOT, new Item(-1));
 			player.getEquipment().refreshItems();
 			player.getPacketSender().sendMessage("Your ring of recoil has degraded.");

@@ -9,6 +9,7 @@ import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.util.Misc;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -34,11 +35,11 @@ public final class NpcAggression {
         runAggression(player, player.getLocalNpcs());
 
         if (player.getArea() instanceof PrivateArea) {
-            runAggression(player, ((PrivateArea) player.getArea()).getNpcs());
+            runAggression(player, (player.getArea()).getNpcs());
         }
     }
 
-    private static void runAggression(Player player, List<NPC> npcs) {
+    private static void runAggression(Player player, Collection<NPC> npcs) {
         // Loop through all of the aggressive npcs.
         for (NPC npc : npcs) {
 
@@ -100,7 +101,7 @@ public final class NpcAggression {
             if (distanceToPlayer < npc.getDefinition().getCombatFollowDistance() && distanceToPlayer <= aggressionDistance) {
 
                 // Make sure that we can actually attack the player.
-                if (CombatFactory.canAttack(npc, method, player)) {
+                if (CombatFactory.canAttack(npc, method, player) == CombatFactory.CanAttackResponse.CAN_ATTACK) {
 
                     // Bandits
                     if (bandits) {

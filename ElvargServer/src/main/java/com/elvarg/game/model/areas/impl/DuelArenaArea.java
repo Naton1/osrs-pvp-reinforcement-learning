@@ -17,7 +17,7 @@ public class DuelArenaArea extends Area {
     }
 
     @Override
-    public void enter(Mobile character) {
+    public void postEnter(Mobile character) {
         if (character.isPlayer()) {
             Player player = character.getAsPlayer();
             player.getPacketSender().sendInteractionOption("Challenge", 1, false);
@@ -26,7 +26,7 @@ public class DuelArenaArea extends Area {
     }
 
     @Override
-    public void leave(Mobile character, boolean logout) {
+    public void postLeave(Mobile character, boolean logout) {
         if (character.isPlayer()) {
             Player player = character.getAsPlayer();
             if (player.getDueling().inDuel()) {

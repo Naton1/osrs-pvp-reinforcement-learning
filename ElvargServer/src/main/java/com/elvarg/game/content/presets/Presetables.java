@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.content.PrayerHandler;
@@ -17,6 +18,7 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Flag;
 import com.elvarg.game.model.Item;
+import com.elvarg.game.model.MagicSpellbook;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Bank;
@@ -45,7 +47,19 @@ public class Presetables {
 	/**
 	 * Pre-made sets by the server which everyone can use.
 	 */
-	public static final Presetable[] GLOBAL_PRESETS = new Presetable[MAX_PRESETS];
+	public static final Presetable[] GLOBAL_PRESETS = new Presetable[] {
+			PredefinedPresets.OBBY_MAULER_57,
+			PredefinedPresets.G_MAULER_70,
+			PredefinedPresets.DDS_PURE_M_73,
+			PredefinedPresets.DDS_PURE_R_73,
+			PredefinedPresets.NH_PURE_83,
+			PredefinedPresets.ATT_60_ZERKER_94,
+			PredefinedPresets.ATT_70_ZERKER_97,
+			PredefinedPresets.MAIN_RUNE_126,
+			PredefinedPresets.MAIN_HYBRID_126,
+			PredefinedPresets.MAIN_TRIBRID_126,
+
+	};
 
 	/**
 	 * Opens the presets interface for a player.
@@ -143,6 +157,25 @@ public class Presetables {
 
 		// Update current preset
 		player.setCurrentPreset(preset);
+	}
+
+	private static Presetable loadoutToPreset(String name, Player player) {
+		return new Presetable(name,
+				player.getInventory().getItems().clone(),
+				player.getEquipment().getItems().clone(),
+				/* atk, def, str, hp, range, pray, mage */
+				new int[]{
+						player.getSkillManager().getMaxLevel(Skill.ATTACK),
+						player.getSkillManager().getMaxLevel(Skill.DEFENCE),
+						player.getSkillManager().getMaxLevel(Skill.STRENGTH),
+						player.getSkillManager().getMaxLevel(Skill.HITPOINTS),
+						player.getSkillManager().getMaxLevel(Skill.RANGED),
+						player.getSkillManager().getMaxLevel(Skill.PRAYER),
+						player.getSkillManager().getMaxLevel(Skill.MAGIC),
+				},
+				player.getSpellbook(),
+				false
+		);
 	}
 
 	/**
@@ -415,7 +448,37 @@ public class Presetables {
 			player.getPacketSender().sendConfig(987, player.isOpenPresetsOnDeath() ? 0 : 1);
 			return true;
 		case 45061: // Edit preset
-			player.getPacketSender().sendMessage("This feature is currently disabled.");
+			Presetable currentPreset = player.getCurrentPreset();
+			if (currentPreset != null && currentPreset.isGlobal()) {
+				player.getPacketSender().sendMessage("You can't edit this preset!");
+			}
+
+			player.setEnteredSyntaxAction((input) -> {
+				input = Misc.formatText(input);
+
+				if(!Misc.isValidName(input)) {
+					player.getPacketSender().sendMessage("Invalid name for preset. Please enter characters only.");
+					player.setCurrentPreset(null);
+					Presetables.open(player);
+					return;
+				}
+
+				int changeIndex = IntStream.range(0, player.getPresets().length)
+						.filter(i -> player.getPresets()[i] == player.getCurrentPreset())
+						.findFirst()
+						.orElse(-1);
+
+				if (changeIndex == -1) {
+					player.getPacketSender().sendMessage("You don't have free space left!!");
+					return;
+				}
+
+				var preset = loadoutToPreset(input, player);
+				player.getPresets()[changeIndex] = preset;
+				player.setCurrentPreset(player.getPresets()[changeIndex]);
+				load(player, player.getCurrentPreset());
+			});
+			player.getPacketSender().sendEnterInputPrompt("How would you like to call your preset?");
 			return true;
 		case 45064: // Load preset
 			if (player.getCurrentPreset() == null) {
@@ -429,7 +492,7 @@ public class Presetables {
 		// Global presets selection
 		if (button >= 45070 && button <= 45079) {
 			final int index = button - 45070;
-			if (GLOBAL_PRESETS[index] == null) {
+			if (GLOBAL_PRESETS.length <= index || GLOBAL_PRESETS[index] == null) {
 				player.getPacketSender().sendMessage("That preset is currently unavailable.");
 				return true;
 			}
@@ -448,6 +511,7 @@ public class Presetables {
 			final int index = button - 45082;
 
 			if (player.getPresets()[index] == null) {
+				open(player, null);
 				/*DialogueManager.start(player, 10);
 				player.setDialogueOptions(new DialogueOptions() {
 					@Override

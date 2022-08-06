@@ -14,7 +14,7 @@ public class Presetable {
 	/**
 	 * This set's name.
 	 */
-	private String name;
+	protected String name;
 	
 	/**
 	 * This set's inventory.
@@ -37,31 +37,28 @@ public class Presetable {
 	private MagicSpellbook spellbook;
 	
 	/**
-	 * This set's index
-	 */
-	private final int index;
-	
-	/**
 	 * Is this a global preset?
 	 */
 	private final boolean isGlobal;
-	
+
+	public Presetable() {
+		isGlobal = false;
+	}
+
 	/**
 	 * Constructs a new {@link Presetable}.
-	 * @param name			The set's name.
-	 * @param index			The set's index.
-	 * @param inventory		The set's inventory items.
-	 * @param equipment		The set's equipment items.
-	 * @param stats			The set's skill levels.
-	 * @param spellbook		The set's magic spellbook.
+	 * @param name            The set's name.
+	 * @param inventory        The set's inventory items.
+	 * @param equipment        The set's equipment items.
+	 * @param stats            The set's skill levels.
+	 * @param spellbook        The set's magic spellbook.
 	 */
-	public Presetable(String name, int index, Item[] inventory, Item[] equipment, int[] stats, MagicSpellbook spellbook, boolean isGlobal) {
+	public Presetable(String name, Item[] inventory, Item[] equipment, int[] stats, MagicSpellbook spellbook, boolean isGlobal) {
 		this.name = name;
 		this.inventory = inventory;
 		this.equipment = equipment;
 		this.stats = stats;
 		this.spellbook = spellbook;
-		this.index = index;
 		this.isGlobal = isGlobal;
 	}
 	
@@ -119,9 +116,5 @@ public class Presetable {
 
 	public boolean isGlobal() {
 		return isGlobal;
-	}
-
-	public int getIndex() {
-		return index;
 	}
 }

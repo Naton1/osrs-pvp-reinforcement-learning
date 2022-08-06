@@ -101,7 +101,6 @@ public class PlayerDeathTask extends Task {
 			case 0:
 				if (player instanceof PlayerBot) {
 					((PlayerBot) player).getCombatInteraction().handleDeath(killer);
-					break;
 				}
 
 				if (player.getArea() != null) {

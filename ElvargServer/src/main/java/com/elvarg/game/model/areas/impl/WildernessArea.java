@@ -36,7 +36,7 @@ public class WildernessArea extends Area {
 	}
 
 	@Override
-	public void enter(Mobile character) {
+	public void postEnter(Mobile character) {
 		if (character.isPlayer()) {
 			Player player = character.getAsPlayer();
 			player.getPacketSender().sendInteractionOption("Attack", 2, true);
@@ -49,7 +49,7 @@ public class WildernessArea extends Area {
 	}
 
 	@Override
-	public void leave(Mobile character, boolean logout) {
+	public void postLeave(Mobile character, boolean logout) {
 		if (character.isPlayer()) {
 			Player player = character.getAsPlayer();
 			player.getPacketSender().sendWalkableInterface(-1);
@@ -90,15 +90,9 @@ public class WildernessArea extends Area {
 			int combatDifference = CombatFactory.combatLevelDifference(a.getSkillManager().getCombatLevel(),
 					t.getSkillManager().getCombatLevel());
 			if (combatDifference > a.getWildernessLevel() + 5 || combatDifference > t.getWildernessLevel() + 5) {
-				a.getPacketSender().sendMessage("Your combat level difference is too great to attack that player here.")
-						.sendMessage("Move deeper into the wilderness first.");
-				a.getMovementQueue().reset();
 				return false;
 			}
 			if (!(t.getArea() instanceof WildernessArea)) {
-				a.getPacketSender()
-						.sendMessage("That player cannot be attacked, because they are not in the Wilderness.");
-				a.getMovementQueue().reset();
 				return false;
 			}
 		}

@@ -662,7 +662,8 @@ public class Player extends Mobile {
 		getUpdateFlag().flag(Flag.APPEARANCE);
 
 		if (this.newPlayer) {
-			Presetables.load(this, Presetables.GLOBAL_PRESETS[2]);
+			int presetIndex = Misc.randomInclusive(0, Presetables.GLOBAL_PRESETS.length-1);
+			Presetables.load(this, Presetables.GLOBAL_PRESETS[presetIndex]);
 		}
 
 		if (!(this instanceof PlayerBot)) {
@@ -677,7 +678,7 @@ public class Player extends Mobile {
 				World.getPlayerBots().put(definition.getUsername(), playerBot);
 			}
 
-			System.out.println(GameConstants.PLAYER_BOTS + " player bots now online.");
+			System.out.println(GameConstants.PLAYER_BOTS.length + " player bots now online.");
 		}
 	}
 

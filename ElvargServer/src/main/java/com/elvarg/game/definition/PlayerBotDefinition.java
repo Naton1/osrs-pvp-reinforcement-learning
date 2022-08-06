@@ -1,20 +1,20 @@
 package com.elvarg.game.definition;
 
-import com.elvarg.game.entity.impl.playerbot.PlayerBot;
+import com.elvarg.game.entity.impl.playerbot.fightstyle.FighterPreset;
 import com.elvarg.game.model.Location;
 
 public class PlayerBotDefinition {
 
-    private String username;
+    private final String username;
 
-    private Location spawnLocation;
+    private final Location spawnLocation;
 
-    private int presetIndex;
+    private final FighterPreset fighterPreset;
 
-    public PlayerBotDefinition(String _username, Location _spawnLocation, int _presetIndex) {
+    public PlayerBotDefinition(String _username, Location _spawnLocation, FighterPreset fighterPreset) {
         this.username = _username;
         this.spawnLocation = _spawnLocation;
-        this.presetIndex = _presetIndex;
+        this.fighterPreset = fighterPreset;
     }
 
     public String getUsername() {
@@ -25,7 +25,7 @@ public class PlayerBotDefinition {
         return this.spawnLocation;
     }
 
-    public int getPresetIndex() {
-        return this.presetIndex;
+    public FighterPreset getFighterPreset() {
+        return this.fighterPreset;
     }
 }

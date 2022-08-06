@@ -3,6 +3,7 @@ package com.elvarg.game.content.combat.bountyhunter;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.BrokenItem;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.areas.impl.WildernessArea;
@@ -77,6 +78,11 @@ public class BountyHunter {
 
 							// Check if we aren't looping ourselves..
 							if (player.equals(player2)) {
+								continue;
+							}
+
+							// Check that we aren't both bots
+							if (player instanceof PlayerBot && player2 instanceof PlayerBot) {
 								continue;
 							}
 
@@ -163,6 +169,13 @@ public class BountyHunter {
 			// Update interfaces..
 			updateInterface(player1);
 			updateInterface(player2);
+
+			// Handle Player Bot behaviour..
+			if (player1 instanceof PlayerBot) {
+				((PlayerBot)player1).getCombatInteraction().targetAssigned(player2);
+			} else if (player2 instanceof PlayerBot) {
+				((PlayerBot)player2).getCombatInteraction().targetAssigned(player1);
+			}
 		}
 	}
 
@@ -258,7 +271,7 @@ public class BountyHunter {
 				"@or1@K/D Ratio: " + killed.getKillDeathRatio());
 
 		// Remove first index if we've killed 1
-		if (killer.getRecentKills().size() >= 2) {
+		if (killer.getRecentKills().size() >= 1) {
 			killer.getRecentKills().remove(0);
 		}
 
@@ -268,7 +281,7 @@ public class BountyHunter {
 		// Check if we recently killed this player
 		if (killer.getRecentKills().contains(killed.getHostAddress())
 				|| killer.getHostAddress().equals(killed.getHostAddress())) {
-//			 fullRewardPlayer = false; 1v1 ing alot someone else should still give ok profit
+			 fullRewardPlayer = false;
 		} else {
 			killer.getRecentKills().add(killed.getHostAddress());
 		}
@@ -289,7 +302,7 @@ public class BountyHunter {
 			unassign(killer);
 
 			// If player isnt farming kills..
-			if (fullRewardPlayer) {
+			if (fullRewardPlayer && !(killed instanceof PlayerBot)) {
 
 				// Search for emblem in the player's inventory
 				Emblem inventoryEmblem = null;
@@ -348,6 +361,8 @@ public class BountyHunter {
 
 		var additionalBloodMoneyFromBrokenItems = (BrokenItem.getValueLoseOnDeath(killed)* 3) / 4; // only 75%
 
+
+
 		if (fullRewardPlayer) {
 
 			// Increment total kills..
@@ -361,19 +376,20 @@ public class BountyHunter {
 					.sendString(52030, "@or1@Kills: " + killer.getTotalKills())
 					.sendString(52033, "@or1@K/D Ratio: " + killer.getKillDeathRatio());
 
-			// Reward player for the kill..
-			int rewardAmount = 130 + (100 * enemyKillstreak) + (150 * killer.getKillstreak())
-					+ (10 * killer.getWildernessLevel()) + additionalBloodMoneyFromBrokenItems;
+			if (!(killer instanceof PlayerBot)) {
+				// Reward player for the kill..
+				int rewardAmount = 130 + (100 * enemyKillstreak) + (150 * killer.getKillstreak())
+						+ (10 * killer.getWildernessLevel()) + additionalBloodMoneyFromBrokenItems;
 
-			if (killer.getInventory().contains(ItemIdentifiers.BLOOD_MONEY)
-					|| killer.getInventory().getFreeSlots() > 0) {
-				killer.getInventory().add(ItemIdentifiers.BLOOD_MONEY, rewardAmount);
-			} else {
-				ItemOnGroundManager.registerNonGlobal(killer, new Item(ItemIdentifiers.BLOOD_MONEY, rewardAmount),
-						killed.getLocation());
+				if (killer.getInventory().contains(ItemIdentifiers.BLOOD_MONEY)
+						|| killer.getInventory().getFreeSlots() > 0) {
+					killer.getInventory().add(ItemIdentifiers.BLOOD_MONEY, rewardAmount);
+				} else {
+					ItemOnGroundManager.registerNonGlobal(killer, new Item(ItemIdentifiers.BLOOD_MONEY, rewardAmount),
+							killed.getLocation());
+				}
+				killer.getPacketSender().sendMessage("You've received " + rewardAmount + " blood money for that kill!");
 			}
-			killer.getPacketSender().sendMessage("You've received " + rewardAmount + " blood money for that kill!");
-
 			// Check if the killstreak is their highest yet..
 			if (killer.getKillstreak() > killer.getHighestKillstreak()) {
 				killer.setHighestKillstreak(killer.getKillstreak());

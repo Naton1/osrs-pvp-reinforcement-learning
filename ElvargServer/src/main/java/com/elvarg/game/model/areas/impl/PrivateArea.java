@@ -32,7 +32,7 @@ public abstract class PrivateArea extends Area {
     }
 
     @Override
-    public void leave(Mobile mobile, boolean logout) {
+    public void postLeave(Mobile mobile, boolean logout) {
         remove(mobile);
         if (getPlayers().isEmpty()) {
             destroy();
@@ -40,7 +40,7 @@ public abstract class PrivateArea extends Area {
     }
 
     @Override
-    public void enter(Mobile mobile) {
+    public void postEnter(Mobile mobile) {
         add(mobile);
     }
 
@@ -83,27 +83,7 @@ public abstract class PrivateArea extends Area {
         clips.clear();
         destroyed = true;
     }
-    
-    public List<NPC> getNpcs() {
-        List<NPC> npcs = new ArrayList<>();
-        for (Entity entity : entities) {
-            if (entity instanceof NPC) {
-                npcs.add((NPC) entity);
-            }
-        }
-        return npcs;
-    }
-    
-    private List<Player> getPlayers() {
-        List<Player> players = new ArrayList<>();
-        for (Entity entity : entities) {
-            if (entity instanceof Player) {
-                players.add((Player) entity);
-            }
-        }
-        return players;
-    }
-    
+
     public List<GameObject> getObjects() {
         List<GameObject> objects = new ArrayList<>();
         for (Entity entity : entities) {

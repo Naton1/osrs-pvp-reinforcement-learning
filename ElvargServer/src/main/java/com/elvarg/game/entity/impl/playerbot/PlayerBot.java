@@ -4,6 +4,7 @@ import com.elvarg.game.GameConstants;
 import com.elvarg.game.World;
 import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.definition.PlayerBotDefinition;
+import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.commands.BotCommand;
 import com.elvarg.game.entity.impl.playerbot.commands.FollowPlayer;
@@ -14,30 +15,9 @@ import com.elvarg.game.entity.updating.PlayerUpdating;
 import com.elvarg.game.model.ChatMessage;
 import com.elvarg.game.model.Location;
 import com.elvarg.net.PlayerBotSession;
-import com.elvarg.net.PlayerSession;
 import com.elvarg.util.Misc;
 
-import java.util.HashMap;
-
-import static com.elvarg.game.entity.impl.playerbot.commands.LoadPreset.LOAD_PRESET_BUTTON_ID;
-
 public class PlayerBot extends Player {
-
-    private Location spawnPosition = GameConstants.DEFAULT_LOCATION;
-
-    public Location getSpawnPosition() {
-        return this.spawnPosition;
-    }
-
-    // The current interaction of this PlayerBot
-    private InteractionState currentState = InteractionState.IDLE;
-
-    private static final BotCommand[] chatCommands = new BotCommand[] {
-            new FollowPlayer(), new HoldItems(), new LoadPreset()
-    };
-
-    private BotCommand activeCommand;
-
 
     public enum InteractionState {
         IDLE,
@@ -46,42 +26,66 @@ public class PlayerBot extends Player {
         COMMAND;
     }
 
-    public BotCommand getActiveCommand() { return this.activeCommand; }
+    private static final BotCommand[] CHAT_COMMANDS = new BotCommand[]{
+//            new FollowPlayer(), new HoldItems(), new LoadPreset()
+    };
 
-    public void stopCommand() {
-        if (this.getActiveCommand() != null) {
-            this.getActiveCommand().stop(this);
-        }
+    private final Location spawnPosition = GameConstants.DEFAULT_LOCATION;
 
-        this.setInteractingWith(null);
-        this.activeCommand = null;
-        this.setCurrentState(PlayerBot.InteractionState.IDLE);
-    }
+    // The current interaction of this PlayerBot
+    private InteractionState currentState = InteractionState.IDLE;
 
-    public void startCommand(BotCommand _command, Player _player, String[] args) {
-        this.setInteractingWith(_player);
-        this.activeCommand = _command;
-        this.setCurrentState(InteractionState.COMMAND);
-        _command.start(this, args);
-    }
 
-    private PlayerBotDefinition definition;
+    private BotCommand activeCommand;
+
+    private final PlayerBotDefinition definition;
 
     private Player interactingWith;
 
-    public Player getInteractingWith() { return this.interactingWith; }
+    public Player getInteractingWith() {
+        return this.interactingWith;
+    }
 
-    public void setInteractingWith(Player _interact) { this.interactingWith = _interact; }
+    public void setInteractingWith(Player _interact) {
+        this.interactingWith = _interact;
+    }
 
-    private MovementInteraction movementInteraction;
+    private final MovementInteraction movementInteraction;
 
-    private ChatInteraction chatInteraction;
+    private final ChatInteraction chatInteraction;
 
-    private TradingInteraction tradingInteraction;
+    private final TradingInteraction tradingInteraction;
 
-    private CombatInteraction combatInteraction;
+    private final CombatInteraction combatInteraction;
 
-    public PlayerBotDefinition getDefinition() { return this.definition; }
+    /**
+     * Creates this player bot from a given definition.
+     */
+    public PlayerBot(PlayerBotDefinition definition) {
+        super(new PlayerBotSession(), definition.getSpawnLocation());
+
+        this.setUsername(definition.getUsername()).setLongUsername(Misc.stringToLong(definition.getUsername()))
+                .setPasswordHashWithSalt(GameConstants.PLAYER_BOT_PASSWORD).setHostAddress("127.0.0.1");
+
+        this.definition = definition;
+        this.tradingInteraction = new TradingInteraction(this);
+        this.chatInteraction = new ChatInteraction(this);
+        this.movementInteraction = new MovementInteraction(this);
+        this.combatInteraction = new CombatInteraction(this);
+
+        this.setRigourUnlocked(true);
+        this.setAuguryUnlocked(true);
+        this.setAutoRetaliate(true);
+
+        if (!World.getAddPlayerQueue().contains(this)) {
+            World.getAddPlayerQueue().add(this);
+        }
+    }
+
+    public PlayerBotDefinition getDefinition() {
+        return this.definition;
+    }
+
     public InteractionState getCurrentState() {
         return this.currentState;
     }
@@ -91,7 +95,7 @@ public class PlayerBot extends Player {
     }
 
     public BotCommand[] getChatCommands() {
-        return this.chatCommands;
+        return CHAT_COMMANDS;
     }
 
     public ChatInteraction getChatInteraction() {
@@ -110,25 +114,29 @@ public class PlayerBot extends Player {
         return this.combatInteraction;
     }
 
-    /**
-     * Creates this player bot from a given definition.
-     *
-     */
-    public PlayerBot(PlayerBotDefinition _definition) {
-        super(new PlayerBotSession(), _definition.getSpawnLocation());
+    public Location getSpawnPosition() {
+        return this.spawnPosition;
+    }
 
-        this.setUsername(_definition.getUsername()).setLongUsername(Misc.stringToLong(_definition.getUsername()))
-                .setPasswordHashWithSalt(GameConstants.PLAYER_BOT_PASSWORD).setHostAddress("127.0.0.1");
+    public BotCommand getActiveCommand() {
+        return this.activeCommand;
+    }
 
-        this.definition = _definition;
-        this.tradingInteraction = new TradingInteraction(this);
-        this.chatInteraction = new ChatInteraction(this);
-        this.movementInteraction = new MovementInteraction(this);
-        this.combatInteraction = new CombatInteraction(this);
-
-        if (!World.getAddPlayerQueue().contains(this)) {
-            World.getAddPlayerQueue().add(this);
+    public void stopCommand() {
+        if (this.getActiveCommand() != null) {
+            this.getActiveCommand().stop(this);
         }
+
+        this.setInteractingWith(null);
+        this.activeCommand = null;
+        this.setCurrentState(PlayerBot.InteractionState.IDLE);
+    }
+
+    public void startCommand(BotCommand _command, Player _player, String[] args) {
+        this.setInteractingWith(_player);
+        this.activeCommand = _command;
+        this.setCurrentState(InteractionState.COMMAND);
+        _command.start(this, args);
     }
 
     // Send a regular chat from this PlayerBot
@@ -148,17 +156,16 @@ public class PlayerBot extends Player {
     }
 
     @Override
-    public boolean autoRetaliate() {
-        // PlayerBots always retaliate
-        return true;
+    public void process() {
+        this.combatInteraction.process();
+        super.process();
     }
 
     @Override
     public void onLogin() {
         super.onLogin();
 
-        this.setCurrentPreset(Presetables.GLOBAL_PRESETS[this.getDefinition().getPresetIndex()]);
-        Presetables.handleButton(this, LOAD_PRESET_BUTTON_ID);
+        Presetables.load(this, this.getDefinition().getFighterPreset().getItemPreset());
     }
 
     @Override

@@ -10,7 +10,6 @@ import com.elvarg.game.definition.loader.impl.NpcDefinitionLoader;
 import com.elvarg.game.definition.loader.impl.NpcDropDefinitionLoader;
 import com.elvarg.game.definition.loader.impl.NpcSpawnDefinitionLoader;
 import com.elvarg.game.definition.loader.impl.ObjectSpawnDefinitionLoader;
-import com.elvarg.game.definition.loader.impl.PresetDefinitionLoader;
 import com.elvarg.game.definition.loader.impl.ShopDefinitionLoader;
 import com.elvarg.game.task.impl.CombatPoisonEffect.CombatPoisonData;
 import com.elvarg.util.BackgroundLoader;
@@ -73,8 +72,7 @@ public class GameBuilder {
         tasks.add(new ShopDefinitionLoader());
         tasks.add(new NpcDefinitionLoader());
         tasks.add(new NpcDropDefinitionLoader());
-        tasks.add(new NpcSpawnDefinitionLoader());
-        tasks.add(new PresetDefinitionLoader());        
+        tasks.add(new NpcSpawnDefinitionLoader());;
     //    tasks.add(new NPCSpawnDumper());        
         return tasks;
     }
