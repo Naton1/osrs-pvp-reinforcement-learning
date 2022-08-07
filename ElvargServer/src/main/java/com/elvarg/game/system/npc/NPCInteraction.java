@@ -1,4 +1,4 @@
-package com.elvarg.game.system;
+package com.elvarg.game.system.npc;
 
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;

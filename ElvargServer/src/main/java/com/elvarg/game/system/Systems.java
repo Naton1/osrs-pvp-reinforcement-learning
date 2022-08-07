@@ -1,5 +1,6 @@
 package com.elvarg.game.system;
 
+import com.elvarg.game.system.npc.NPCInteractionSystem;
 import com.google.common.reflect.ClassPath;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ public class Systems {
                 .getAllClasses()
                 .stream()
                 .filter(clazz -> clazz.getPackageName()
-                        .startsWith("com.elvarg"))
+                        .startsWith("com.elvarg.game.system"))
                 .map(clazz -> clazz.load())
                 .filter(clazz -> clazz.getAnnotation(InteractIds.class) != null)
                 .collect(Collectors.toList());
@@ -22,3 +23,4 @@ public class Systems {
 
     }
 }
+

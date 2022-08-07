@@ -1,10 +1,10 @@
-package com.elvarg.game.content.banking;
+package com.elvarg.game.system.npc.impl;
 
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.dialogues.builders.impl.BankerDialogue;
 import com.elvarg.game.system.InteractIds;
-import com.elvarg.game.system.NPCInteraction;
+import com.elvarg.game.system.npc.NPCInteraction;
 
 import static com.elvarg.util.NpcIdentifiers.*;
 

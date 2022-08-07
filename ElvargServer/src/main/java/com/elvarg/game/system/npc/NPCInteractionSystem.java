@@ -1,7 +1,8 @@
-package com.elvarg.game.system;
+package com.elvarg.game.system.npc;
 
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.system.InteractIds;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.lang.reflect.InvocationTargetException;
