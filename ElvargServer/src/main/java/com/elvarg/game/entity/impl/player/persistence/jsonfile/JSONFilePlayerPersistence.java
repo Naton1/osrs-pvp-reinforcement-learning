@@ -2,7 +2,7 @@ package com.elvarg.game.entity.impl.player.persistence.jsonfile;
 
 import com.elvarg.Server;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.entity.impl.player.persistence.PersistenceMethod;
+import com.elvarg.game.entity.impl.player.persistence.PlayerPersistence;
 import com.elvarg.game.entity.impl.player.persistence.PlayerSave;
 import com.elvarg.util.Misc;
 import com.google.gson.Gson;
@@ -17,12 +17,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 
-public class JSONFilePersistence extends PersistenceMethod {
+public class JSONFilePlayerPersistence extends PlayerPersistence {
 
     private static final String PATH = "./data/saves/characters/";
+    private static final Gson BUILDER = new GsonBuilder().create();
 
     @Override
-    public PlayerSave retrieve(String username) {
+    public PlayerSave load(String username) {
         if (!exists(username)) {
             return null;
         }
@@ -31,16 +32,9 @@ public class JSONFilePersistence extends PersistenceMethod {
         File file = path.toFile();
 
         try (FileReader fileReader = new FileReader(file)) {
-            JsonParser fileParser = new JsonParser();
-            Gson builder = new GsonBuilder().create();
-            JsonObject reader = (JsonObject) fileParser.parse(fileReader);
-
-            PlayerSave result = builder.fromJson(reader, PlayerSave.class);
-
-            return result;
+            return BUILDER.fromJson(fileReader, PlayerSave.class);
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -58,13 +52,14 @@ public class JSONFilePersistence extends PersistenceMethod {
 			writer.write(builder.toJson(save));
 		} catch (Exception e) {
 			Server.getLogger().log(Level.SEVERE, "An error has occurred while saving a character file!", e);
+            throw new RuntimeException(e);
 		}
     }
 
     @Override
     public boolean exists(String username) {
-        username = Misc.formatPlayerName(username.toLowerCase());
-        return new File(PATH + username + ".json").exists();
+        String formattedUsername = Misc.formatPlayerName(username.toLowerCase());
+        return new File(PATH + formattedUsername + ".json").exists();
     }
 
     @Override
@@ -85,6 +80,7 @@ public class JSONFilePersistence extends PersistenceMethod {
                 file.getParentFile().mkdirs();
             } catch (SecurityException e) {
                 System.out.println("Unable to create directory for player data!");
+                throw new RuntimeException(e);
             }
         }
     }

@@ -44,7 +44,7 @@ import com.elvarg.game.definition.PlayerBotDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NpcAggression;
-import com.elvarg.game.entity.impl.player.persistence.PersistenceMethod;
+import com.elvarg.game.entity.impl.player.persistence.PlayerPersistence;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Appearance;
@@ -93,10 +93,9 @@ import com.elvarg.util.timers.TimerKey;
 
 import io.netty.buffer.ByteBuf;
 
-public class Player extends Mobile {
+import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
 
-	public static PersistenceMethod Persistence = PersistenceMethod.getSingleton();
-		
+public class Player extends Mobile {
 	public final SecondsTimer increaseStats = new SecondsTimer();
 	public final SecondsTimer decreaseStats = new SecondsTimer();
 	private final List<Player> localPlayers = new LinkedList<Player>();
@@ -564,7 +563,7 @@ public class Player extends Mobile {
 		BountyHunter.unassign(this);
 		ClanChatManager.leave(this, false);
 		TaskManager.cancelTasks(this);
-		Persistence.save(this);
+		PLAYER_PERSISTENCE.save(this);
 
 		if (getSession() != null && getSession().getChannel().isOpen()) {
 			getSession().getChannel().close();

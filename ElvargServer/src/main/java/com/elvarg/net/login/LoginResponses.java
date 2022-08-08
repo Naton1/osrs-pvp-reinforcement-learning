@@ -9,6 +9,8 @@ import com.elvarg.util.PlayerPunishment;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
+
 public final class LoginResponses {
 
     /**
@@ -113,13 +115,13 @@ public final class LoginResponses {
     }
 
     private static int getPlayerResult(Player player, String plainPassword) {
-        var playerSave = Player.Persistence.retrieve(player.getUsername());
+        var playerSave = PLAYER_PERSISTENCE.load(player.getUsername());
         if (playerSave == null) {
-            player.setPasswordHashWithSalt(Player.Persistence.encryptPassword(plainPassword));
+            player.setPasswordHashWithSalt(PLAYER_PERSISTENCE.encryptPassword(plainPassword));
             return LoginResponses.NEW_ACCOUNT;
         }
 
-        if (!Player.Persistence.checkPassword(plainPassword, playerSave)) {
+        if (!PLAYER_PERSISTENCE.checkPassword(plainPassword, playerSave)) {
             return LoginResponses.LOGIN_INVALID_CREDENTIALS;
         }
 

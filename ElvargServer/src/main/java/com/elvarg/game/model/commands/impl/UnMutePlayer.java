@@ -8,6 +8,8 @@ import com.elvarg.util.PlayerPunishment;
 
 import java.util.Optional;
 
+import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
+
 public class UnMutePlayer implements Command {
 
     @Override
@@ -15,7 +17,7 @@ public class UnMutePlayer implements Command {
         String player2 = command.substring(parts[0].length() + 1);
         Optional<Player> plr = World.getPlayerByName(player2);
 
-        if (!Player.Persistence.exists(player2) && !plr.isPresent()) {
+        if (!PLAYER_PERSISTENCE.exists(player2) && !plr.isPresent()) {
             player.getPacketSender().sendMessage("Player " + player2 + " does not exist.");
             return;
         }

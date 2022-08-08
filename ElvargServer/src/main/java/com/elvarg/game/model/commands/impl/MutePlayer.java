@@ -7,6 +7,8 @@ import com.elvarg.game.model.rights.PlayerRights;
 
 import java.util.Optional;
 
+import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
+
 public class MutePlayer implements Command {
 
     @Override
@@ -14,7 +16,7 @@ public class MutePlayer implements Command {
         String player2 = command.substring(parts[0].length() + 1);
         Optional<Player> plr = World.getPlayerByName(player2);
 
-        if (!Player.Persistence.exists(player2) && plr == null) {
+        if (!PLAYER_PERSISTENCE.exists(player2) && plr == null) {
             player.getPacketSender().sendMessage("Player " + player2 + " does not exist.");
             return;
         }

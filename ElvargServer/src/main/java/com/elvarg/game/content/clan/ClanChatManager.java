@@ -19,6 +19,8 @@ import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.util.Misc;
 import com.elvarg.util.PlayerPunishment;
 
+import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
+
 public class ClanChatManager {
 
 	public static final int CLAN_CHAT_SETUP_INTERFACE_ID = 38300;
@@ -373,7 +375,7 @@ public class ClanChatManager {
     }
 
 	public static void setName(Player player, String newName) {
-		if (Player.Persistence.exists(newName)) {
+		if (PLAYER_PERSISTENCE.exists(newName)) {
 			player.getPacketSender().sendMessage("That clanchat name is already taken.");
 			return;
 		}
