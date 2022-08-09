@@ -4,7 +4,7 @@
 
 The vision of this project is to have a very stable and functional RuneScape Private Server source which is open source to the entire community. As an added bonus, 
 all copies of this source are compatible with our webclient, which we will be opening for other servers to use in the near future. 
-We believe more can be achieved when we work together as a community. Your code isn't that valuable.
+We believe more can be achieved when we work together as a community.
 
 ## Branching strategy:
 
