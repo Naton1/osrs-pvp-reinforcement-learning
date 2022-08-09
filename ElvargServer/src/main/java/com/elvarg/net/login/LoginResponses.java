@@ -3,13 +3,13 @@ package com.elvarg.net.login;
 import com.elvarg.Server;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.entity.impl.player.PlayerSaveDb;
 import com.elvarg.util.Misc;
-import com.elvarg.util.PasswordUtil;
 import com.elvarg.util.PlayerPunishment;
 
 import java.sql.Timestamp;
 import java.util.Date;
+
+import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
 
 public final class LoginResponses {
 
@@ -115,14 +115,13 @@ public final class LoginResponses {
     }
 
     private static int getPlayerResult(Player player, String plainPassword) {
-        var playerSave = PlayerSaveDb.fetch(player.getUsername());
+        var playerSave = PLAYER_PERSISTENCE.load(player.getUsername());
         if (playerSave == null) {
-            player.setPasswordHashWithSalt(PasswordUtil.generatePasswordHashWithSalt(plainPassword));
+            player.setPasswordHashWithSalt(PLAYER_PERSISTENCE.encryptPassword(plainPassword));
             return LoginResponses.NEW_ACCOUNT;
         }
 
-        String passwordHashWithSalt = playerSave.getPasswordHashWithSalt();
-        if (!PasswordUtil.passwordsMatch(plainPassword, passwordHashWithSalt)) {
+        if (!PLAYER_PERSISTENCE.checkPassword(plainPassword, playerSave)) {
             return LoginResponses.LOGIN_INVALID_CREDENTIALS;
         }
 

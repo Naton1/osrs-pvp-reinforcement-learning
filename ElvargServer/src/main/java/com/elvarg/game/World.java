@@ -8,7 +8,6 @@ import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
-import com.elvarg.game.entity.impl.player.PlayerSaveDb;
 import com.elvarg.game.entity.updating.NPCUpdating;
 import com.elvarg.game.entity.updating.PlayerUpdating;
 import com.elvarg.game.entity.updating.sync.GameSyncExecutor;
@@ -19,6 +18,8 @@ import com.elvarg.util.Misc;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
 
 /**
  * Represents the world, processing it and its characters.
@@ -241,7 +242,7 @@ public class World {
 	 * Saves all players in the game.
 	 */
 	public static void savePlayers() {
-		players.forEach(PlayerSaveDb::save);
+		players.forEach(PLAYER_PERSISTENCE::save);
 	}
 
 	public static MobileList<Player> getPlayers() {

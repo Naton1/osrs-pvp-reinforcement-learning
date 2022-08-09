@@ -1,12 +1,14 @@
 package com.elvarg.game;
 
-import com.elvarg.game.content.presets.PredefinedPresets;
 import com.elvarg.game.definition.PlayerBotDefinition;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.elvarg.game.entity.impl.player.persistence.dynamodb.DynamoDBPlayerPersistence;
+import com.elvarg.game.entity.impl.player.persistence.jsonfile.JSONFilePlayerPersistence;
 import com.elvarg.game.entity.impl.playerbot.fightstyle.impl.*;
+import com.elvarg.game.entity.impl.player.persistence.PlayerPersistence;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.rights.PlayerRights;
 
@@ -39,6 +41,13 @@ public class GameConstants {
 	 * The directory of the clipping files.
 	 */
 	public static final String CLIPPING_DIRECTORY = "./data/clipping/";
+
+	/**
+	 * The method used to save/load players.
+	 *
+	 * Currently supports DynamoDBPlayerPersistence or JSONFilePlayerPersistence
+	 */
+	public static final PlayerPersistence PLAYER_PERSISTENCE = new JSONFilePlayerPersistence(); // new DynamoDBPlayerPersistence();
 
 	/**
 	 * The flag that determines if processing should be parallelized, improving the

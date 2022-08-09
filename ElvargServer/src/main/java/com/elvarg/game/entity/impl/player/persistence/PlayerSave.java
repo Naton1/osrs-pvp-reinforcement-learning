@@ -1,10 +1,11 @@
-package com.elvarg.game.entity.impl.player;
+package com.elvarg.game.entity.impl.player.persistence;
 
 import com.elvarg.game.content.PrayerHandler;
 import com.elvarg.game.content.combat.FightType;
 import com.elvarg.game.content.presets.Presetable;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.content.skill.skillable.impl.Runecrafting;
+import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.MagicSpellbook;

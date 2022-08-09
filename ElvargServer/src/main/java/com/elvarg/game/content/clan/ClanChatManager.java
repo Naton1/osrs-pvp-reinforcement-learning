@@ -14,11 +14,12 @@ import java.util.Optional;
 import com.elvarg.game.GameLogic;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.entity.impl.player.PlayerSaveDb;
 import com.elvarg.game.model.rights.DonatorRights;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.util.Misc;
 import com.elvarg.util.PlayerPunishment;
+
+import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
 
 public class ClanChatManager {
 
@@ -374,7 +375,7 @@ public class ClanChatManager {
     }
 
 	public static void setName(Player player, String newName) {
-		if (PlayerSaveDb.playerExists(newName)) {
+		if (PLAYER_PERSISTENCE.exists(newName)) {
 			player.getPacketSender().sendMessage("That clanchat name is already taken.");
 			return;
 		}
