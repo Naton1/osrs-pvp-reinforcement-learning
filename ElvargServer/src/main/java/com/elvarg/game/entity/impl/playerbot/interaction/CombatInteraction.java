@@ -65,6 +65,10 @@ public class CombatInteraction {
             PrayerHandler.resetAll(this.playerBot);
         }
 
+        if (this.playerBot.getHitpoints() <= 0) {
+            return;
+        }
+
         if (this.playerBot.getHitpoints() < 30) {
             this.handleEating(this.playerBot.getHitpoints());
         }
@@ -74,8 +78,10 @@ public class CombatInteraction {
             this.potUp();
         }
 
-        if (attackTarget == null) {
-            boolean shouldReset = this.playerBot.getInventory().getFreeSlots() > 2 || this.playerBot.getSpecialPercentage() < 76;
+        if (attackTarget == null && this.playerBot.getHitpoints() > 0) {
+            boolean shouldReset = (this.playerBot.getInventory().getFreeSlots() > 2
+                    || this.playerBot.getSpecialPercentage() < 76)
+                    && this.playerBot.getWildernessLevel() > 0;
 
             if (shouldReset) {
                 this.reset();

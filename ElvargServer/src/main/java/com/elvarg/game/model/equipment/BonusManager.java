@@ -25,7 +25,7 @@ public class BonusManager {
 
             { "1680", "Stab" }, { "1681", "Slash" }, { "1682", "Crush" }, { "1683", "Magic" }, { "1684", "Range" },
 
-            { "1686", "Strength" }, { "1670", "Ranged Strength" }, { "1671", "Magic Strength" },
+            { "1686", "Strength" }, { "15118", "Ranged Strength" }, { "1671", "Magic Strength" },
             { "1687", "Prayer" }, };
     private static final int MELEE_MAXHIT_FRAME = 15115;
     private static final int RANGED_MAXHIT_FRAME = 15116;
@@ -57,6 +57,10 @@ public class BonusManager {
             ItemDefinition definition = ItemDefinition.forId(item.getId());
             if (definition.getBonuses() != null) {
                 for (int i = 0; i < definition.getBonuses().length; i++) {
+                    // Count range str only once.
+                    if (i == 11 && bonuses[i] != 0) {
+                        continue;
+                    }
                     bonuses[i] += definition.getBonuses()[i];
                 }
             }
