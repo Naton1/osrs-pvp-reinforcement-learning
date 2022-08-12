@@ -1,5 +1,6 @@
 package com.elvarg.game.model.container.impl;
 
+import com.elvarg.game.content.combat.WeaponInterfaces;
 import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Item;
@@ -145,5 +146,15 @@ public class Equipment extends ItemContainer {
                 count++;
         }
         return count >= 3;
+    }
+
+    public boolean hasStaffEquipped() {
+        Item staff = get(Equipment.WEAPON_SLOT);
+        return (staff != null && (getPlayer().getWeapon() == WeaponInterfaces.WeaponInterface.STAFF
+                || getPlayer().getWeapon() == WeaponInterfaces.WeaponInterface.ANCIENT_STAFF));
+    }
+
+    public Item getWeapon() {
+        return get(Equipment.WEAPON_SLOT);
     }
 }

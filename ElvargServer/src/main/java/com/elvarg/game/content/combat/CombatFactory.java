@@ -111,7 +111,9 @@ public class CombatFactory {
 			p.getCombat().setRangedWeapon(RangedWeapon.getFor(p));
 
 			// Check if player is maging..
-			if (p.getCombat().getCastSpell() != null || p.getCombat().getAutocastSpell() != null) {
+			if (p.getCombat().getCastSpell() != null ||
+					// Ensure player needs staff equipped to use autocast
+					(p.getCombat().getAutocastSpell() != null && p.getEquipment().hasStaffEquipped())) {
 				return MAGIC_COMBAT;
 			}
 

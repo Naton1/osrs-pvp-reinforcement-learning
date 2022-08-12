@@ -862,4 +862,13 @@ public abstract class ItemContainer {
 
         return Long.toString(value);
     }
+
+    public boolean hasAt(int slot, int item) {
+        Item at = items[slot];
+        return at != null && at.getId() == item;
+    }
+
+    public boolean hasAt(int slot) {
+        return slot >= 0 & slot < items.length && items[slot] != null;
+    }
 }

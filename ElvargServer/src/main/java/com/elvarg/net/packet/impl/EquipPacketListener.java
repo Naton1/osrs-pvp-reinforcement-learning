@@ -33,10 +33,6 @@ public class EquipPacketListener implements PacketExecutor {
 		}
 		player.getPacketSender().sendSpecialAttackState(false);
 		WeaponInterfaces.assign(player);
-		if (player.getCombat().getAutocastSpell() != null) {
-			Autocasting.setAutocast(player, null);
-			player.getPacketSender().sendMessage("Autocast spell cleared.");
-		}
 	}
 
 	@Override
