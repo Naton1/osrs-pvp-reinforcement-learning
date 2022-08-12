@@ -28,7 +28,7 @@ public class Autocasting {
     public static final Set<Integer> ANCIENT_SPELL_AUTOCAST_STAFFS = Set.of(KODAI_WAND, MASTER_WAND,
             ANCIENT_STAFF,NIGHTMARE_STAFF,VOLATILE_NIGHTMARE_STAFF,ELDRITCH_NIGHTMARE_STAFF, TOXIC_STAFF_OF_THE_DEAD, ELDER_WAND, STAFF_OF_THE_DEAD, STAFF_OF_LIGHT);
 
-    public static HashMap<Integer, CombatSpells> AUTOCAST_SPELLS = new HashMap<>();
+    public static final HashMap<Integer, CombatSpells> AUTOCAST_SPELLS = new HashMap<>();
 
     static {
         // Modern
