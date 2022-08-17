@@ -92,13 +92,11 @@ public class Mining extends DefaultSkillable {
 
     @Override
     public int cyclesRequired(Player player) {
-        int cycles = rock.getCycles() + Misc.getRandom(4);
-        cycles -= (int) player.getSkillManager().getMaxLevel(Skill.MINING) * 0.1;
+        float cycles = rock.getCycles() + Misc.getRandom(4);
+        cycles -= player.getSkillManager().getCurrentLevel(Skill.MINING) * 0.1;
         cycles -= cycles * pickaxe.get().getSpeed();
-        if (cycles < 3) {
-            cycles = 3;
-        }
-        return cycles;
+
+        return Math.max(3, (int) cycles);
     }
 
     @Override
@@ -212,14 +210,14 @@ public class Mining extends DefaultSkillable {
      */
     public static enum Rock {
         CLAY(new int[]{9711, 9712, 9713, 15503, 15504, 15505}, 1, 5, 434, 11, 2),
-        COPPER(new int[]{9708, 9709, 9710, 11936, 11960, 11961, 11962, 11189, 11190, 11191, 29231, 29230, 2090}, 1, 18, 436, 12, 4),
-        TIN(new int[]{9714, 9715, 9716, 11933, 11957, 11958, 11959, 11186, 11187, 11188, 2094, 29227, 29229}, 1, 18, 438, 12, 4),
-        IRON(new int[]{7455, 9717, 9718, 9719, 2093, 2092, 11954, 11955, 11956, 29221, 29222, 29223}, 15, 35, 440, 13, 5),
-        SILVER(new int[]{2100, 2101, 29226, 29225, 11948, 11949}, 20, 40, 442, 14, 7),
-        COAL(new int[]{5770, 29216, 29215, 29217, 11965, 11964, 11963, 11930, 11931, 11932}, 30, 50, 453, 15, 7),
+        COPPER(new int[]{7453}, 1, 18, 436, 12, 4),
+        TIN(new int[]{7486}, 1, 18, 438, 12, 4),
+        IRON(new int[]{7455, 7488}, 15, 35, 440, 13, 5),
+        SILVER(new int[]{7457}, 20, 40, 442, 14, 7),
+        COAL(new int[]{7456}, 30, 50, 453, 15, 7),
         GOLD(new int[]{9720, 9721, 9722, 11951, 11183, 11184, 11185, 2099}, 40, 65, 444, 15, 10),
-        MITHRIL(new int[]{25370, 25368, 5786, 5784, 11942, 11943, 11944, 11945, 11946, 29236, 11947, 11942, 11943}, 50, 80, 447, 17, 11),
-        ADAMANTITE(new int[]{11941, 11939, 29233, 29235}, 70, 95, 449, 18, 14),
+        MITHRIL(new int[]{7492, 7459}, 50, 80, 447, 17, 11),
+        ADAMANTITE(new int[]{7460}, 70, 95, 449, 18, 14),
         RUNITE(new int[]{14859, 4860, 2106, 2107}, 85, 125, 451, 23, 45),;
 
         private static final Map<Integer, Rock> rocks = new HashMap<Integer, Rock>();
