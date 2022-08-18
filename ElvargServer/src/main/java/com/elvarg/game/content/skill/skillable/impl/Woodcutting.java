@@ -94,13 +94,11 @@ public class Woodcutting extends DefaultSkillable {
 
     @Override
     public int cyclesRequired(Player player) {
-        int cycles = tree.getCycles() + Misc.getRandom(4);
-        cycles -= (int) player.getSkillManager().getMaxLevel(Skill.WOODCUTTING) * 0.1;
+        float cycles = tree.getCycles() + Misc.getRandom(4);
+        cycles -= player.getSkillManager().getMaxLevel(Skill.WOODCUTTING) * 0.1;
         cycles -= cycles * axe.get().getSpeed();
-        if (cycles < 3) {
-            cycles = 3;
-        }
-        return cycles;
+
+        return Math.max(3, (int) cycles);
     }
 
     @Override
@@ -222,10 +220,10 @@ public class Woodcutting extends DefaultSkillable {
         WILLOW(30, 68, 1519, new int[]{1308, 5551, 5552, 5553}, 15, 14, true),
         TEAK(35, 85, 6333, new int[]{9036}, 16, 16, true),
         DRAMEN(36, 88, 771, new int[]{1292}, 16, 17, true),
-        MAPLE(45, 100, 1517, new int[]{1307, 4677}, 17, 18, true),
+        MAPLE(45, 100, 1517, new int[]{1759, 4674}, 17, 18, true),
         MAHOGANY(50, 125, 6332, new int[]{9034}, 17, 20, true),
         YEW(60, 175, 1515, new int[]{1309, 1753}, 18, 28, true),
-        MAGIC(75, 250, 1513, new int[]{1306}, 20, 40, true),
+        MAGIC(75, 250, 1513, new int[]{1761}, 20, 40, true),
         REDWOOD(90, 380, 19669, new int[]{}, 22, 43, true);
 
         private static final Map<Integer, Tree> trees = new HashMap<Integer, Tree>();
