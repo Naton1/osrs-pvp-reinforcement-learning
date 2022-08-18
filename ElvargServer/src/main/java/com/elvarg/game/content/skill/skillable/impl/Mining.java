@@ -218,7 +218,7 @@ public class Mining extends DefaultSkillable {
         GOLD(new int[]{9720, 9721, 9722, 11951, 11183, 11184, 11185, 2099}, 40, 65, 444, 15, 10),
         MITHRIL(new int[]{7492, 7459}, 50, 80, 447, 17, 11),
         ADAMANTITE(new int[]{7460}, 70, 95, 449, 18, 14),
-        RUNITE(new int[]{14859, 4860, 2106, 2107}, 85, 125, 451, 23, 45),;
+        RUNITE(new int[]{14859, 4860, 2106, 2107, 7461}, 85, 125, 451, 23, 45),;
 
         private static final Map<Integer, Rock> rocks = new HashMap<Integer, Rock>();
 
