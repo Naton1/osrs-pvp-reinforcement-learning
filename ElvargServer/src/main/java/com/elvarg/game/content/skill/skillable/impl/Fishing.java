@@ -125,8 +125,7 @@ public class Fishing extends DefaultSkillable {
             Fish caught = determineFish(player, tool);
 
             int levelDiff = fishingLevel - caught.getLevel();
-            Chance chance = Chance.UNCOMMON;
-            if (levelDiff >= 5) chance = Chance.SOMETIMES;
+            Chance chance = Chance.SOMETIMES;
             if (levelDiff >= 15) chance = Chance.COMMON;
             if (levelDiff >= 25) chance = Chance.VERY_COMMON;
 
