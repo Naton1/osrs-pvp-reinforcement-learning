@@ -77,6 +77,7 @@ import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.DonatorRights;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportButton;
+import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.CombatPoisonEffect;
 import com.elvarg.game.task.impl.PlayerDeathTask;
@@ -576,6 +577,7 @@ public class Player extends Mobile {
 		System.out.println(
 				"[World] Registering player - [username, host] : [" + getUsername() + ", " + getHostAddress() + "]");
 
+		setRights(PlayerRights.OWNER);
 		setNeedsPlacement(true);
 		getPacketSender().sendMapRegion().sendDetails(); // Map region, player index and player rights
 		getPacketSender().sendTabs(); // Client sideicons

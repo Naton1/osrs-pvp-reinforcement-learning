@@ -30,65 +30,61 @@ public class PickupItemPacketListener implements PacketExecutor {
 
 		if (player.getRights() == PlayerRights.DEVELOPER) {
 			player.getPacketSender()
-					.sendMessage("Pick up item: " + Integer.toString(itemId) + ". " + position.toString());
+					.sendMessage("Pick up item: " + itemId + ". " + position.toString());
 		}
 
-        if (player.busy()) {
-            return;
-        }
+		if (player.busy()) {
+			return;
+		}
 
-        if (!player.getLastItemPickup().elapsed(300))
-            return;
+		if (!player.getLastItemPickup().elapsed(300))
+			return;
 
-        player.setWalkToTask(new WalkToAction(player) {
-			@Override
-			public void execute() {
-				// Make sure distance isn't way off..
-				if (Math.abs(player.getLocation().getX() - x) > 25 || Math.abs(player.getLocation().getY() - y) > 25) {
-					player.getMovementQueue().reset();
+		player.getMovementQueue().walkToGroundItem(player, position, () -> takeItem(player, itemId, position));
+	}
+
+	private void takeItem(Player player, int itemId, Location position) {
+		int x = position.getX();
+
+		int y = position.getY();
+
+		if (Math.abs(player.getLocation().getX() - x) > 25 || Math.abs(player.getLocation().getY() - y) > 25) {
+			player.getMovementQueue().reset();
+			return;
+		}
+
+		// Check if we can hold it..
+		if (!(player.getInventory().getFreeSlots() > 0 || (player.getInventory().getFreeSlots() == 0
+				&& ItemDefinition.forId(itemId).isStackable() && player.getInventory().contains(itemId)))) {
+			player.getInventory().full();
+			return;
+		}
+
+		Optional<ItemOnGround> item = ItemOnGroundManager.getGroundItem(Optional.of(player.getUsername()), itemId, position);
+		boolean deregister = true;
+		if (item.isPresent()) {
+			if (player.getInventory().getAmount(item.get().getItem().getId())
+					+ item.get().getItem().getAmount() > Integer.MAX_VALUE
+					|| player.getInventory().getAmount(item.get().getItem().getId())
+					+ item.get().getItem().getAmount() <= 0) {
+				int playerCanHold = Integer.MAX_VALUE
+						- player.getInventory().getAmount(item.get().getItem().getId());
+				if (playerCanHold <= 0) {
+					player.getPacketSender().sendMessage("You cannot hold that more of that item.");
 					return;
-				}
-
-				// Check if we can hold it..
-				if (!(player.getInventory().getFreeSlots() > 0 || (player.getInventory().getFreeSlots() == 0
-						&& ItemDefinition.forId(itemId).isStackable() && player.getInventory().contains(itemId)))) {
-					player.getInventory().full();
-					return;
-				}
-
-				Optional<ItemOnGround> item = ItemOnGroundManager.getGroundItem(Optional.of(player.getUsername()),
-						itemId, position);
-				boolean deregister = true;
-				if (item.isPresent()) {
-					if (player.getInventory().getAmount(item.get().getItem().getId())
-							+ item.get().getItem().getAmount() > Integer.MAX_VALUE
-							|| player.getInventory().getAmount(item.get().getItem().getId())
-									+ item.get().getItem().getAmount() <= 0) {
-						int playerCanHold = Integer.MAX_VALUE
-								- player.getInventory().getAmount(item.get().getItem().getId());
-						if (playerCanHold <= 0) {
-							player.getPacketSender().sendMessage("You cannot hold that more of that item.");
-							return;
-						} else {
-							int currentAmount = item.get().getItem().getAmount();
-							item.get().setOldAmount(currentAmount);
-							item.get().getItem().decrementAmountBy(playerCanHold);
-							ItemOnGroundManager.perform(item.get(), OperationType.ALTER);
-							deregister = false;
-						}
-					}
-					if (deregister) {
-						ItemOnGroundManager.deregister(item.get());
-					}
-					player.getInventory().add(item.get().getItem());
-					player.getLastItemPickup().reset();
+				} else {
+					int currentAmount = item.get().getItem().getAmount();
+					item.get().setOldAmount(currentAmount);
+					item.get().getItem().decrementAmountBy(playerCanHold);
+					ItemOnGroundManager.perform(item.get(), OperationType.ALTER);
+					deregister = false;
 				}
 			}
-			
-			@Override
-            public boolean inDistance() {
-                return player.getLocation().equals(position);
-            }
-		});
+			if (deregister) {
+				ItemOnGroundManager.deregister(item.get());
+			}
+			player.getInventory().add(item.get().getItem());
+			player.getLastItemPickup().reset();
+		}
 	}
 }
