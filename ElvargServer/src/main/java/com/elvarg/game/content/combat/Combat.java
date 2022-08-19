@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.hit.HitDamageCache;
 import com.elvarg.game.content.combat.hit.HitQueue;
 import com.elvarg.game.content.combat.hit.PendingHit;
@@ -15,11 +14,9 @@ import com.elvarg.game.content.combat.method.impl.specials.GraniteMaulCombatMeth
 import com.elvarg.game.content.combat.ranged.RangedData.Ammunition;
 import com.elvarg.game.content.combat.ranged.RangedData.RangedWeapon;
 import com.elvarg.game.entity.impl.Mobile;
-import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.SecondsTimer;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
-import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.util.Stopwatch;
 import com.elvarg.util.timers.TimerKey;
 
@@ -56,10 +53,10 @@ public class Combat {
         setTarget(target);
 
         // Start facing the target
-        //character.setMobileInteraction(target);
+        character.setMobileInteraction(target);
 
         // Start following the target
-        //character.setFollowing(target);
+        character.setFollowing(target);
     }
 
     /**
@@ -87,31 +84,11 @@ public class Combat {
             // Fetch the combat method the character will be attacking with
             method = CombatFactory.getMethod(character);
 
+            // Follow target
+            character.setFollowing(target);
+
             // Face target
-            //character.setMobileInteraction(target);
-
-            int attackDistance = target.getMovementQueue().isMoving() && method.type() == CombatType.MELEE ? 2 : method.attackDistance(character);
-
-            int distanceFromTarget = character.getLocation().getDistance(target.getLocation());
-
-            boolean canReach = RegionManager.canProjectileAttack(character, target);
-
-            boolean needsPath = distanceFromTarget > attackDistance || !canReach;
-
-            System.err.println("MaxAttackDistance=" + attackDistance + ", CurrentDistance=" + distanceFromTarget + ", path=" + needsPath + " canReach=" + canReach);
-
-            if (needsPath) {
-                character.getMovementQueue().reset();
-                if (method.type() == CombatType.MELEE) {
-                    PathFinder.calculateCombatRoute(character, target);
-                } else {
-                    PathFinder.pathClosestAttackableTile(character, target, attackDistance - 1);
-                }
-                return;
-            }
-
             character.setMobileInteraction(target);
-
 
             // Check if the character can reach the target before attempting attack
             if (CombatFactory.canReach(character, method, target)) {
@@ -205,7 +182,6 @@ public class Combat {
                 }
             }
         }
-
     }
 
     /**

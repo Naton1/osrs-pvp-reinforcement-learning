@@ -172,7 +172,8 @@ public class RS317PathFinder {
             tileQueueX.set(tail, curX);
             tileQueueY.set(tail++, curY);
             int l5;
-            for (int j5 = l5 = via[curX][curY]; curX != gc.getLocation().getLocalX() || curY != gc.getLocation().getLocalY(); j5 = via[curX][curY]) {
+            for (int j5 = l5 = via[curX][curY]; curX != gc.getLocation().getLocalX()
+                    || curY != gc.getLocation().getLocalY(); j5 = via[curX][curY]) {
                 if (j5 != l5) {
                     l5 = j5;
                     tileQueueX.set(tail, curX);

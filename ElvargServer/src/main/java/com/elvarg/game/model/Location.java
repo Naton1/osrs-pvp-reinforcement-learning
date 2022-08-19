@@ -1,7 +1,6 @@
 package com.elvarg.game.model;
 
 import com.elvarg.util.Misc;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a single world tile position.
@@ -349,14 +348,6 @@ public class Location {
             return false;
         Location p = Misc.delta(this, other);
         return p.x <= 14 && p.x >= -15 && p.y <= 14 && p.y >= -15;
-    }
-
-    public Location translate(int x, int y) {
-        return translate(x, y, 0);
-    }
-
-    public Location translate(int x, int y, int z) {
-        return new Location(this.x + x, this.y + y, this.z + z);
     }
 
 }

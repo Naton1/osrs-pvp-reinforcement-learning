@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class PlayerPunishment {
 
-    private static final String BAN_DIRECTORY = "./ElvargServer/data/saves/";
-    private static final String MUTE_DIRECTORY = "./ElvargServer/data/saves/";
+    private static final String BAN_DIRECTORY = "./data/saves/";
+    private static final String MUTE_DIRECTORY = "./data/saves/";
 
     public static ArrayList<String> IPSBanned = new ArrayList<String>();
     public static ArrayList<String> IPSMuted = new ArrayList<String>();

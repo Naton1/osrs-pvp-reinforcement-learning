@@ -13,8 +13,15 @@ import com.elvarg.game.definition.ObjectDefinition;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.model.*;
+import com.elvarg.game.model.Animation;
+import com.elvarg.game.model.Flag;
+import com.elvarg.game.model.ForceMovement;
+import com.elvarg.game.model.Graphic;
+import com.elvarg.game.model.Location;
+import com.elvarg.game.model.MagicSpellbook;
+import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.areas.impl.PrivateArea;
+import com.elvarg.game.model.dialogues.builders.impl.EmblemTraderDialogue;
 import com.elvarg.game.model.dialogues.builders.impl.SpellBookDialogue;
 import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
@@ -222,37 +229,38 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 
     private static void objectInteract(Player player, int id, int x, int y, int clickType) {
         final Location location = new Location(x, y, player.getLocation().getZ());
-
+        
         if (player.getRights() == PlayerRights.DEVELOPER) {
             player.getPacketSender().sendMessage("" + clickType + "-click object: " + id + ". " + location.toString());
         }
-
+        
         final GameObject object = MapObjects.get(player, id, location);
-
         if (object == null) {
             return;
         }
 
         // Get object definition
         final ObjectDefinition def = ObjectDefinition.forId(id);
-
         if (def == null) {
             Server.getLogger().info("ObjectDefinition for object " + id + " is null.");
             return;
         }
 
-        player.getMovementQueue().walkToObject(player, object, () -> {
-            // Face object..
-            player.setPositionToFace(location);
+        player.setWalkToTask(new WalkToAction(player) {
+            @Override
+            public void execute() {
 
-            // Areas
-            if (player.getArea() != null) {
-                if (player.getArea().handleObjectClick(player, id, clickType)) {
-                    return;
+                // Face object..
+                player.setPositionToFace(location);
+
+                // Areas
+                if (player.getArea() != null) {
+                    if (player.getArea().handleObjectClick(player, id, clickType)) {
+                        return;
+                    }
                 }
-            }
-
-            switch (clickType) {
+                
+                switch (clickType) {
                 case 1:
                     firstClick(player, object);
                     break;
@@ -265,8 +273,51 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
                 case 4:
                     fourthClick(player, object);
                     break;
+                }
+            }
+            
+            @Override
+            public boolean inDistance() {
+                int type = object.getType();
+                int orientation = object.getFace();
+                int width;
+                int height;
+                if (orientation == 0 || orientation == 2) {
+                    width = def.objectSizeX;
+                    height = def.objectSizeY;
+                } else {
+                    width = def.objectSizeY;
+                    height = def.objectSizeX;
+                }
+                int rotation = def.surroundings;
+                if (orientation != 0)
+                    rotation = (rotation << orientation & 0xf) + (rotation >> 4 - orientation);
+                if (type == 10 || type == 11 || type == 22) {
+                    return atObject(location.getY(), location.getX(), player.getLocation().getX(), height, rotation,
+                            width, player.getLocation().getY(), player.getPrivateArea());
+                }
+                
+                return atObject(location.getY(), location.getX(), player.getLocation().getX(), 0, 0,
+                            width, player.getLocation().getY(), player.getPrivateArea());
             }
         });
+    }
+
+    private static boolean atObject(int finalY, int finalX, int x, int height, int rotation, int width, int y, PrivateArea privateArea) {
+        int maxX = (finalX + width) - 1;
+        int maxY = (finalY + height) - 1;
+        if (x >= finalX && x <= maxX && y >= finalY && y <= maxY)
+            return true;
+        if (x == finalX - 1 && y >= finalY && y <= maxY && (RegionManager.getClipping(x, y, height, privateArea) & 8) == 0
+                && (rotation & 8) == 0)
+            return true;
+        if (x == maxX + 1 && y >= finalY && y <= maxY && (RegionManager.getClipping(x, y, height, privateArea) & 0x80) == 0
+                && (rotation & 2) == 0)
+            return true;
+        return y == finalY - 1 && x >= finalX && x <= maxX && (RegionManager.getClipping(x, y, height, privateArea) & 2) == 0
+                && (rotation & 4) == 0
+                || y == maxY + 1 && x >= finalX && x <= maxX && (RegionManager.getClipping(x, y, height, privateArea) & 0x20) == 0
+                        && (rotation & 1) == 0;
     }
 
 	@Override
