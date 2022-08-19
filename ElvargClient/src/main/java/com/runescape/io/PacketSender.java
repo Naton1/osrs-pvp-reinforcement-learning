@@ -17,6 +17,13 @@ public class PacketSender {
         buffer.writeOpcode(0);
     }
 
+    public void sendPathRequest(int x, int y, int plane) {
+        buffer.writeOpcode(164);
+        buffer.writeShort(x);
+        buffer.writeShort(y);
+        buffer.writeByte(plane);
+    }
+
     public void sendFriendAddition(long friend) {
         buffer.writeOpcode(188);
         buffer.writeLong(friend);
@@ -71,7 +78,7 @@ public class PacketSender {
 
     public void sendAttackNPC(int npcIndex) {
         buffer.writeOpcode(72);
-        buffer.writeShortA(npcIndex);
+        buffer.writeLEShortA(npcIndex);
     }
 
     public void sendAttackPlayer(int playerIndex) {
@@ -331,7 +338,7 @@ public class PacketSender {
 
     public void sendNPCOption1(int npcIndex) {
         buffer.writeOpcode(155);
-        buffer.writeLEShort(npcIndex);
+        buffer.writeLEShortA(npcIndex);
     }
 
     public void sendNPCOption2(int npcIndex) {
@@ -341,12 +348,12 @@ public class PacketSender {
 
     public void sendNPCOption3(int npcIndex) {
         buffer.writeOpcode(21);
-        buffer.writeShort(npcIndex);
+        buffer.writeLEShortA(npcIndex);
     }
 
     public void sendNPCOption4(int npcIndex) {
         buffer.writeOpcode(18);
-        buffer.writeLEShort(npcIndex);
+        buffer.writeLEShortA(npcIndex);
     }
 
     public void sendObjectOption1(int x, int id, int y) {

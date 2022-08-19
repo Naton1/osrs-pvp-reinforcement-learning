@@ -28,8 +28,8 @@ public final class Configuration {
      * Sends client-related debug messages to the client output stream
      */
     public static boolean PRODUCTION_MODE = false;
-    public static String SERVER_ADDRESS = PRODUCTION_MODE ? "" : "localhost";
-    public static int SERVER_PORT = 43595;
+    public static String SERVER_ADDRESS = PRODUCTION_MODE ? "" : "127.0.0.1";
+    public static int SERVER_PORT = 43592;
     /**
      * Dumps map region images when new regions are loaded.
      */

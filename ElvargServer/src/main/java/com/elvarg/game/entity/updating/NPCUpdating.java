@@ -67,7 +67,8 @@ public class NPCUpdating {
             }
         }
         if (update.buffer().writerIndex() > 0) {
-            packet.putBits(14, 16383);
+            packet.putBits(14, 16383);//todo npcindex
+
             packet.initializeAccess(AccessType.BYTE);
             packet.writeBuffer(update.buffer());
         } else {
