@@ -5985,11 +5985,11 @@ public class Client extends GameApplet {
 
         // using item on ground item
         if (action == 511) {
-            boolean flag2 = doWalkTo(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, button,
-                    localPlayer.pathX[0], false, first);
-            if (!flag2)
-                flag2 = doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, button,
-                        localPlayer.pathX[0], false, first);
+            //boolean flag2 = doWalkTo(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, button,
+                  //  localPlayer.pathX[0], false, first);
+           // if (!flag2)
+             //   flag2 = doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, button,
+              //         localPlayer.pathX[0], false, first);
             crossX = super.saveClickX;
             crossY = super.saveClickY;
             crossType = 2;
