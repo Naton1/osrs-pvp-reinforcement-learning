@@ -21,6 +21,9 @@ import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.NpcIdentifiers;
 import com.elvarg.util.ShopIdentifiers;
 
+/**
+ * @author Ynneh
+ */
 public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExecutor {
 
     @Override

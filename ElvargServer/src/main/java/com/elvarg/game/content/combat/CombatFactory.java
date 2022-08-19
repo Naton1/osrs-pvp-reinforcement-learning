@@ -112,7 +112,9 @@ public class CombatFactory {
 			p.getCombat().setRangedWeapon(RangedWeapon.getFor(p));
 
 			// Check if player is maging..
-			if (p.getCombat().getCastSpell() != null || p.getCombat().getAutocastSpell() != null) {
+			if (p.getCombat().getCastSpell() != null ||
+					// Ensure player needs staff equipped to use autocast
+					(p.getCombat().getAutocastSpell() != null && p.getEquipment().hasStaffEquipped())) {
 				return MAGIC_COMBAT;
 			}
 
@@ -211,14 +213,14 @@ public class CombatFactory {
 
 			// Do melee effects with the calculated damage..
 			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MELEE]) {
-				damage *= 0.7;
+				damage *= 0.6;
 			}
 
 		} else if (type == CombatType.RANGED) {
 			damage = Misc.inclusive(0, DamageFormulas.calculateMaxRangedHit(entity));
 
 			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MISSILES]) {
-				damage *= 0.7;
+				damage *= 0.6;
 			}
 
 			// Do ranged effects with the calculated damage..
@@ -246,7 +248,7 @@ public class CombatFactory {
 		} else if (type == CombatType.MAGIC) {
 			damage = Misc.inclusive(0, DamageFormulas.getMagicMaxhit(entity));
 			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MAGIC]) {
-				damage *= 0.7;
+				damage *= 0.6;
 			}
 
 			// Do magic effects with the calculated damage..

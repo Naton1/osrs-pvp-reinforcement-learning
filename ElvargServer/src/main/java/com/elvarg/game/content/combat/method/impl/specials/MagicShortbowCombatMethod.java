@@ -41,8 +41,8 @@ public class MagicShortbowCombatMethod extends RangedCombatMethod {
         CombatSpecial.drain(player, CombatSpecial.MAGIC_SHORTBOW.getDrainAmount());
         player.performAnimation(ANIMATION);
         player.performGraphic(GRAPHIC);
-        new Projectile(player, target, 249, 40, 70, 43, 31).sendProjectile();
-        new Projectile(character, target, 249, 33, 74, 48, 31).sendProjectile();
+        new Projectile(player, target, 249, 40, 57, 43, 31).sendProjectile();
+        new Projectile(character, target, 249, 33, 57, 48, 31).sendProjectile();
         CombatFactory.decrementAmmo(player, target.getLocation(), 2);
     }
 

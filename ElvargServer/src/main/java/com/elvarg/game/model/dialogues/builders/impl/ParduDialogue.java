@@ -1,12 +1,11 @@
 package com.elvarg.game.model.dialogues.builders.impl;
 
-import com.elvarg.game.content.skill.SkillManager;
-import com.elvarg.game.content.skill.slayer.Slayer;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.BrokenItem;
-import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.dialogues.builders.DynamicDialogueBuilder;
-import com.elvarg.game.model.dialogues.entries.impl.*;
+import com.elvarg.game.model.dialogues.entries.impl.ActionDialogue;
+import com.elvarg.game.model.dialogues.entries.impl.NpcDialogue;
+import com.elvarg.game.model.dialogues.entries.impl.OptionDialogue;
 import com.elvarg.util.NpcIdentifiers;
 
 public class ParduDialogue extends DynamicDialogueBuilder {
