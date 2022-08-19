@@ -15804,9 +15804,14 @@ public class Client extends GameApplet {
     }
 
     private void createPathRequest(int x, int y, int plane) {
+        if (shiftTeleport()) {
+            packetSender.sendCommand("tele " + (x) + " " + (y) + " " + plane + "");
+            return;
+        }
         packetSender.sendPathRequest(x, y, plane);
         this.destinationX = x - regionBaseX;
         this.destinationY = y - regionBaseY;
+        return;
     }
 
     public enum ScreenMode {
