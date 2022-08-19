@@ -3,7 +3,6 @@ package com.elvarg.game.entity.impl.npc;
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.model.Location;
-import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.game.model.movement.path.RS317PathFinder;
 import com.elvarg.util.Misc;
 
@@ -71,7 +70,7 @@ public class NPCMovementCoordinator {
                 break;
             case RETREATING:
             case AWAY:
-                PathFinder.calculateWalkRoute(npc, npc.getSpawnPosition().getX(), npc.getSpawnPosition().getY());
+                RS317PathFinder.findPath(npc, npc.getSpawnPosition().getX(), npc.getSpawnPosition().getY(), true, 1, 1);
                 break;
         }
     }
