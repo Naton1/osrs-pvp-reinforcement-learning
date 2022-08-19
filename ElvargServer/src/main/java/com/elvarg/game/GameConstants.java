@@ -35,12 +35,12 @@ public class GameConstants {
 	/**
 	 * The directory of the definition files.
 	 */
-	public static final String DEFINITIONS_DIRECTORY = "./ElvargServer/data/definitions/";
+	public static final String DEFINITIONS_DIRECTORY = "./data/definitions/";
 
 	/**
 	 * The directory of the clipping files.
 	 */
-	public static final String CLIPPING_DIRECTORY = "./ElvargServer/data/clipping/";
+	public static final String CLIPPING_DIRECTORY = "./data/clipping/";
 
 	/**
 	 * The method used to save/load players.
