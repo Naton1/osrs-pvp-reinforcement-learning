@@ -46,6 +46,7 @@ import com.elvarg.game.model.areas.AreaManager;
 import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
+import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.game.model.movement.path.RS317PathFinder;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.task.Task;
@@ -381,7 +382,7 @@ public class CombatFactory {
 
 		// Don't allow diagonal attacks for smaller entities
 		if (method.type() == CombatType.MELEE && attacker.size() == 1 && target.size() == 1) {
-			if (RS317PathFinder.isInDiagonalBlock(attackerPosition, targetPosition)) {
+			if (PathFinder.isInDiagonalBlock(attackerPosition, targetPosition)) {
 				return false;
 			}
 		}

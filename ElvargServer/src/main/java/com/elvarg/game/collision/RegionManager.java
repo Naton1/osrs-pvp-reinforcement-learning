@@ -54,7 +54,6 @@ public class RegionManager {
     public static void init() throws Exception {
         // Load object definitions..
         ObjectDefinition.init();
-
         // Load regions..
         File map_index = new File(GameConstants.CLIPPING_DIRECTORY + "map_index");
         if (!map_index.exists()) {
@@ -520,20 +519,20 @@ public class RegionManager {
      * @return
      */
     public static int getClipping(int x, int y, int height, PrivateArea privateArea) {
-        if (privateArea != null) {            
+        if (privateArea != null) {
             int privateClip = privateArea.getClip(new Location(x, y, height));
             if (privateClip != 0) {
                 return privateClip;
             }
         }
-        
+
         Optional<Region> r = getRegion(x, y);
         if (r.isPresent()) {
             return r.get().getClip(x, y, height);
         }
         return 0;
     }
-    
+
     public static boolean wallExists(Location location, PrivateArea area, int type) {
         GameObject object = MapObjects.get(location, type, area);
         if (object != null) {
@@ -544,7 +543,7 @@ public class RegionManager {
         }
         return false;
     }
-    
+
     public static boolean wallsExist(Location location, PrivateArea area) {
         if (wallExists(location, area, 0)) {
             return true;
@@ -563,7 +562,7 @@ public class RegionManager {
         }
         return false;
     }
-    
+
     /**
      * Tells you if this direction is walkable.
      *
@@ -633,13 +632,23 @@ public class RegionManager {
     public static boolean blockedSouthWest(Location pos, PrivateArea privateArea) {
         return (getClipping(pos.getX() - 1, pos.getY() - 1, pos.getZ(), privateArea) & 0x128010e) != 0;
     }
-    
+
+    public static boolean canProjectileAttack(Mobile attacker, Location from, Location to) {
+        Location a = from;
+        Location b = to;
+        if (a.getX() > b.getX()) {
+            a = to;
+            b = from;
+        }
+        return canProjectileAttack(a, b, attacker.size(), attacker.getPrivateArea());
+    }
+
     public static boolean canProjectileAttack(Mobile from, Mobile to) {
         Location a = from.getLocation();
         Location b = to.getLocation();
 
         if (from.isPlayer() && to.isPlayer()) {
-        // If both participants are players, line of sight is calculated from the player on the western side. I
+            // If both participants are players, line of sight is calculated from the player on the western side. I
             if (a.getX() > b.getX()) {
                 a = to.getLocation();
                 b = from.getLocation();
@@ -650,12 +659,12 @@ public class RegionManager {
         }
         return canProjectileAttack(a, b, from.size(), from.getPrivateArea());
     }
-    
+
     public static boolean canProjectileAttack(Location a, Location b, int size, PrivateArea area) {
         return canProjectileMove(a.getX(), a.getY(), b.getX(),
                 b.getY(), a.getZ(), size, size, area);
     }
-    
+
     public static boolean canProjectileMove(int startX, int startY, int endX, int endY, int height, int xLength,
                                             int yLength, PrivateArea privateArea) {
         int diffX = endX - startX;
@@ -730,15 +739,15 @@ public class RegionManager {
                     } else if (diffX == 0 && diffY > 0) {
                         if ((getClipping(currentX + i, currentY + i2 + 1, height, privateArea) & (UNLOADED_TILE
                                 | /*
-                                     * BLOCKED_TILE |
-									 */UNKNOWN | PROJECTILE_TILE_BLOCKED | PROJECTILE_SOUTH_BLOCKED)) != 0) {
+                         * BLOCKED_TILE |
+                         */UNKNOWN | PROJECTILE_TILE_BLOCKED | PROJECTILE_SOUTH_BLOCKED)) != 0) {
                             return false;
                         }
                     } else if (diffX == 0 && diffY < 0) {
                         if ((getClipping(currentX + i, currentY + i2 - 1, height, privateArea) & (UNLOADED_TILE
                                 | /*
-									 * BLOCKED_TILE |
-									 */UNKNOWN | PROJECTILE_TILE_BLOCKED | PROJECTILE_NORTH_BLOCKED)) != 0) {
+                         * BLOCKED_TILE |
+                         */UNKNOWN | PROJECTILE_TILE_BLOCKED | PROJECTILE_NORTH_BLOCKED)) != 0) {
                             return false;
                         }
                     }
@@ -818,7 +827,7 @@ public class RegionManager {
     public static boolean canMove(Location start, Location end, int xLength, int yLength, PrivateArea privateArea) {
         return canMove(start.getX(), start.getY(), end.getX(), end.getY(), start.getZ(), xLength, yLength, privateArea);
     }
-    
+
     public static boolean canMove(Location position, Direction direction, int size, PrivateArea privateArea) {
         Location end = position.transform(direction.getX(), direction.getY());
         return canMove(position.getX(), position.getY(), end.getX(), end.getY(), position.getZ(), size, size, privateArea);
