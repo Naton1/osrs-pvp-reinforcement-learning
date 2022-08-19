@@ -79,7 +79,7 @@ public class RangedCombatMethod extends CombatMethod {
 
         int projectileId = ammo.getProjectileId();
         int delay = 40;
-        int speed = 60;
+        int speed = 57;
         int heightEnd = 31;
         int heightStart = 43;
 

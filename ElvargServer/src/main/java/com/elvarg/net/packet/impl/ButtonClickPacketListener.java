@@ -60,10 +60,7 @@ public class ButtonClickPacketListener implements PacketExecutor {
 	private static final int PRICE_CHECKER_DEPOSIT_ALL = 18252;
 	private static final int TOGGLE_EXP_LOCK = 476;
 	private static final int OPEN_WORLD_MAP = 156;
-	
-	// Autocast buttons
-	private static final int AUTOCAST_BUTTON_1 = 349;
-	private static final int AUTOCAST_BUTTON_2 = 24111;
+
 	// Trade buttons
 	private static final int TRADE_ACCEPT_BUTTON_1 = 3420;
 	private static final int TRADE_ACCEPT_BUTTON_2 = 3546;
@@ -83,7 +80,9 @@ public class ButtonClickPacketListener implements PacketExecutor {
 		if (PrayerHandler.togglePrayer(player, button)) {
 			return true;
 		}
-		if (Autocasting.toggleAutocast(player, button)) {
+		if (Autocasting.handleWeaponInterface(player, button)
+				|| Autocasting.handleAutocastTab(player, button)
+				|| Autocasting.toggleAutocast(player, button)) {
 			return true;
 		}
 		if (WeaponInterfaces.changeCombatSettings(player, button)) {
@@ -247,13 +246,6 @@ public class ButtonClickPacketListener implements PacketExecutor {
 
 		case CANCEL_DESTROY_ITEM:
 			player.getPacketSender().sendInterfaceRemoval();
-			break;
-
-		case AUTOCAST_BUTTON_1:
-		case AUTOCAST_BUTTON_2:
-			player.getPacketSender()
-					.sendMessage("A spell can be autocast by simply right-clicking on it in your Magic spellbook and ")
-					.sendMessage("selecting the \"Autocast\" option.");
 			break;
 
 		case TOGGLE_EXP_LOCK:

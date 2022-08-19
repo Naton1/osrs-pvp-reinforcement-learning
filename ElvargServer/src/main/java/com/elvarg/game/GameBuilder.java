@@ -11,6 +11,7 @@ import com.elvarg.game.definition.loader.impl.NpcDropDefinitionLoader;
 import com.elvarg.game.definition.loader.impl.NpcSpawnDefinitionLoader;
 import com.elvarg.game.definition.loader.impl.ObjectSpawnDefinitionLoader;
 import com.elvarg.game.definition.loader.impl.ShopDefinitionLoader;
+import com.elvarg.game.system.Systems;
 import com.elvarg.game.task.impl.CombatPoisonEffect.CombatPoisonData;
 import com.elvarg.util.BackgroundLoader;
 import com.elvarg.util.PlayerPunishment;
@@ -36,6 +37,9 @@ public class GameBuilder {
      * @throws Exception if any issues occur while starting the network.
      */
     public void initialize() throws Exception {
+        // Setup systems
+        Systems.init();
+
         // Start immediate tasks..
         RegionManager.init();
 
