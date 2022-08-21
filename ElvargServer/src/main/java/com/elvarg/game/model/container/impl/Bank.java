@@ -1,16 +1,21 @@
 package com.elvarg.game.model.container.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.content.combat.WeaponInterfaces;
 import com.elvarg.game.definition.ItemDefinition;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Flag;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.PlayerStatus;
 import com.elvarg.game.model.container.ItemContainer;
 import com.elvarg.game.model.container.StackType;
+import com.elvarg.game.model.dialogues.DialogueOption;
+import com.elvarg.game.model.dialogues.builders.DialogueChainBuilder;
+import com.elvarg.game.model.dialogues.entries.impl.OptionDialogue;
 import com.elvarg.game.model.equipment.BonusManager;
 
 /**
@@ -134,6 +139,63 @@ public class Bank extends ItemContainer {
         }
     }
 
+    private static final int[] DEPOSIT_BOX_OBJECT_IDS = {9398, 6948};
+
+    public static boolean useItemOnDepositBox(Player player, Item item, int slot, GameObject object) {
+        if(Arrays.stream(DEPOSIT_BOX_OBJECT_IDS).noneMatch(id -> id == object.getId())) {
+            return false;
+        }
+
+        if(player.getInventory().getAmount(item.getId()) == 1) {
+            Bank.deposit(player, item.getId(), slot, 1, true);
+            return true;
+        }
+
+        DialogueChainBuilder builder = new DialogueChainBuilder();
+
+        if(player.getInventory().getAmount(item.getId()) <= 5) {
+            builder.add(new OptionDialogue(0, (option) -> {
+                if(option == DialogueOption.FIRST_OPTION) {
+                    Bank.deposit(player, item.getId(), slot, 1, true);
+                } else {
+                    Bank.deposit(player, item.getId(), slot, 5, true);
+                }
+                player.getPacketSender().sendInterfaceRemoval();
+            }, "One", "Five"));
+        } else if(player.getInventory().getAmount(item.getId()) <= 10) {
+            builder.add(new OptionDialogue(0, (option) -> {
+                if(option == DialogueOption.FIRST_OPTION) {
+                    Bank.deposit(player, item.getId(), slot, 1, true);
+                } else if(option == DialogueOption.SECOND_OPTION) {
+                    Bank.deposit(player, item.getId(), slot, 5, true);
+                } else {
+                    Bank.deposit(player, item.getId(), slot, 10, true);
+                }
+                player.getPacketSender().sendInterfaceRemoval();
+            }, "One", "Five", "Ten"));
+        } else {
+            builder.add(new OptionDialogue(0, (option) -> {
+                if(option == DialogueOption.FIRST_OPTION) {
+                    Bank.deposit(player, item.getId(), slot, 1, true);
+                } else if(option == DialogueOption.SECOND_OPTION) {
+                    Bank.deposit(player, item.getId(), slot, 5, true);
+                } else if(option == DialogueOption.THIRD_OPTION){
+                    Bank.deposit(player, item.getId(), slot, 10, true);
+                } else {
+                    Bank.deposit(player, item.getId(), slot, player.getInventory().getAmount(item.getId()), true);
+                }
+                player.getPacketSender().sendInterfaceRemoval();
+            }, "One", "Five", "Ten", "All"));
+        }
+
+        player.getDialogueManager().start(builder);
+        return true;
+    }
+
+    public static void deposit(Player player, int item, int slot, int amount) {
+        deposit(player, item, slot, amount, false);
+    }
+
     /**
      * Deposits an item to the bank.
      *
@@ -142,8 +204,8 @@ public class Bank extends ItemContainer {
      * @param slot
      * @param amount
      */
-    public static void deposit(Player player, int item, int slot, int amount) {
-        if (player.getStatus() == PlayerStatus.BANKING && player.getInterfaceId() == 5292) {
+    public static void deposit(Player player, int item, int slot, int amount, boolean ignore) {
+        if (ignore || (player.getStatus() == PlayerStatus.BANKING && player.getInterfaceId() == 5292)) {
             if (player.getInventory().getItems()[slot].getId() != item) {
                 return;
             }
