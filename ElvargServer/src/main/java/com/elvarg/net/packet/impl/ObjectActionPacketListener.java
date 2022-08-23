@@ -2,6 +2,7 @@ package com.elvarg.net.packet.impl;
 
 import com.elvarg.Server;
 import com.elvarg.game.collision.RegionManager;
+import com.elvarg.game.content.DepositBox;
 import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.minigames.FightCaves;
 import com.elvarg.game.content.skill.SkillManager;
@@ -27,6 +28,8 @@ import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.ObjectIdentifiers;
 
+import java.util.Objects;
+
 /**
  * This packet listener is called when a player clicked on a game object.
  *
@@ -44,9 +47,19 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *            The packet containing the object's information.
 	 */
     private static void firstClick(Player player, GameObject object) {
+
+        final ObjectDefinition defs = object.getDefinition();
         // Skills..
         if (player.getSkillManager().startSkillable(object)) {
             return;
+        }
+
+        if (defs != null) {
+            if (defs.name != null && Objects.equals(defs.name, "Bank Deposit Box")) {
+                DepositBox.open(player);
+                return;
+            }
+
         }
 
         switch (object.getId()) {
