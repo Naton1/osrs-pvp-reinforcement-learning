@@ -134,6 +134,7 @@ public class Bank extends ItemContainer {
         }
     }
 
+
     /**
      * Deposits an item to the bank.
      *
@@ -143,7 +144,7 @@ public class Bank extends ItemContainer {
      * @param amount
      */
     public static void deposit(Player player, int item, int slot, int amount) {
-        if (player.getStatus() == PlayerStatus.BANKING && player.getInterfaceId() == 5292) {
+        if (player.getStatus() == PlayerStatus.BANKING && player.getInterfaceId() == 5292 || player.getInterfaceId() == 4465) {
             if (player.getInventory().getItems()[slot].getId() != item) {
                 return;
             }
