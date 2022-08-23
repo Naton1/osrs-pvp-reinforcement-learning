@@ -61,7 +61,6 @@ import com.elvarg.game.model.SecondsTimer;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.SkullType;
 import com.elvarg.game.model.areas.AreaManager;
-import com.elvarg.game.model.commands.BankDeposit;
 import com.elvarg.game.model.container.impl.Bank;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.model.container.impl.Inventory;
