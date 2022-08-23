@@ -576,7 +576,6 @@ public class Player extends Mobile {
 		System.out.println(
 				"[World] Registering player - [username, host] : [" + getUsername() + ", " + getHostAddress() + "]");
 
-		setRights(PlayerRights.OWNER);
 		setNeedsPlacement(true);
 		getPacketSender().sendMapRegion().sendDetails(); // Map region, player index and player rights
 		getPacketSender().sendTabs(); // Client sideicons
