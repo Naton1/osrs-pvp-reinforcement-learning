@@ -11,7 +11,6 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Flag;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.PlayerStatus;
-import com.elvarg.game.model.commands.BankDeposit;
 import com.elvarg.game.model.container.impl.Bank;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.model.container.impl.PriceChecker;
