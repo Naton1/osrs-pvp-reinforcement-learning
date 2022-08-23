@@ -24,6 +24,7 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Action;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
+import com.elvarg.game.model.container.impl.Bank;
 import com.elvarg.game.model.menu.CreationMenu;
 import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.net.packet.Packet;
@@ -168,6 +169,10 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
 
         //Update facing..
         player.setPositionToFace(position);
+
+        if(Bank.useItemOnDepositBox(player, item, itemSlot, object)) {
+            return;
+        }
 
         //Handle object..
 

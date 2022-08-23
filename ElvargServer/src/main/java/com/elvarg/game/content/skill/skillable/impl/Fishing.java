@@ -115,40 +115,32 @@ public class Fishing extends DefaultSkillable {
         }
 
         /** Catch multiple fish with a big net. */
+        int amount = 1;
         if (tool == FishingTool.BIG_NET) {
-            int amount = Misc.getRandom(4) + 1;
-            int freeSlots = player.getInventory().getFreeSlots();
+            amount = Math.min(Misc.getRandom(4) + 1, player.getInventory().getFreeSlots());
+        }
 
-            if (!(freeSlots >= amount)) {
-                amount = freeSlots;
-            }
+        int fishingLevel = player.getSkillManager().getCurrentLevel(Skill.FISHING);
+        for (int i = 0; i < amount; i++) {
+            Fish caught = determineFish(player, tool);
 
-            for (int i = 0; i < amount; i++) {
+            int levelDiff = fishingLevel - caught.getLevel();
+            Chance chance = Chance.SOMETIMES;
+            if (levelDiff >= 15) chance = Chance.COMMON;
+            if (levelDiff >= 25) chance = Chance.VERY_COMMON;
 
-                /** Get a random fish for us. */
-                Fish caught = determineFish(player, tool);
-
-                /** Catch the fish. */
-                player.getPacketSender().sendMessage("You catch a " + caught.name().toLowerCase().replace("_", " ") + ".");
+            if (chance.success()) {
+                player.getPacketSender().sendMessage(
+                        "You catch a " + caught.name().toLowerCase().replace("_", " ") + ".");
                 player.getInventory().add(new Item(caught.getId()));
                 player.getSkillManager().addExperience(Skill.FISHING, caught.getExperience());
             }
 
-            /** Catch fish normally. */
-        } else {
-            /** Get a random fish for us. */
-            Fish caught = determineFish(player, tool);
-
-            /** Catch the fish. */
-            player.getPacketSender().sendMessage("You catch a " + caught.name().toLowerCase().replace("_", " ") + ".");
-            player.getInventory().add(new Item(caught.getId()));
-            player.getSkillManager().addExperience(Skill.FISHING, caught.getExperience());
-
-            /** Delete the item needed for the tools. */
             if (tool.getNeeded() > 0) {
                 player.getInventory().delete(new Item(tool.getNeeded()));
             }
         }
+
     }
 
     @Override
@@ -163,7 +155,10 @@ public class Fishing extends DefaultSkillable {
 
     @Override
     public int cyclesRequired(Player player) {
-        return (11 - (int) Math.floor(player.getSkillManager().getCurrentLevel(Skill.FISHING) / 10));
+        float cycles = 4 + Misc.getRandom(2);
+        cycles -= player.getSkillManager().getCurrentLevel(Skill.FISHING) * 0.03;
+
+        return Math.max(3, (int) cycles);
     }
 
     /**
@@ -476,7 +471,7 @@ public class Fishing extends DefaultSkillable {
          *
          * @param player
          * @param tool
-         * @param spot
+         * @param fishSpot
          */
         public AttackToolRandomEvent(Player player, FishingTool tool, NPC fishSpot) {
             super(1, player, true);
