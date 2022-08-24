@@ -13656,7 +13656,7 @@ public class Client extends GameApplet {
             }
         } else if (loginScreenState == 1) {
             if (discordCode != null) {
-                login("authz_code", discordCode, false);
+                login("authz_code", discordCode, false, true);
 
                 discordCode = null;
                 return;
