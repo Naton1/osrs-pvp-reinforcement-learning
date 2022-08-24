@@ -157,4 +157,9 @@ public final class Configuration {
     private Configuration() {
 
     }
+
+    public static class DiscordConfiguration {
+        public static final String CLIENT_ID = "";
+        public static final String REDIRECT_URL = "https://rsps.app";
+    }
 }

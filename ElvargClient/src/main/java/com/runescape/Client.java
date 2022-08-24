@@ -9072,16 +9072,21 @@ public class Client extends GameApplet {
      * @param reconnecting The flag for the user indicating to attempt to reconnect.
      */
     private void login(String name, String password, boolean reconnecting) {
+        login(name, password, reconnecting, false);
+    }
+    private void login(String name, String password, boolean reconnecting, boolean discordLogin) {
         try {
-            if (name.length() < 3) {
-                firstLoginMessage = "";
-                secondLoginMessage = "Your username is too short.";
-                return;
-            }
-            if (password.length() < 3) {
-                firstLoginMessage = "";
-                secondLoginMessage = "Your password is too short.";
-                return;
+            if (!discordLogin) {
+                if (name.length() < 3) {
+                    firstLoginMessage = "";
+                    secondLoginMessage = "Your username is too short.";
+                    return;
+                }
+                if (password.length() < 3) {
+                    firstLoginMessage = "";
+                    secondLoginMessage = "Your password is too short.";
+                    return;
+                }
             }
             if (!reconnecting) {
                 firstLoginMessage = "";
@@ -9112,7 +9117,7 @@ public class Client extends GameApplet {
                 seed[2] = (int) (serverSeed >> 32);
                 seed[3] = (int) serverSeed;
                 packetSender.getBuffer().resetPosition();
-                packetSender.getBuffer().writeByte(10);
+                packetSender.getBuffer().writeByte(discordLogin ? 11 : 10);
                 packetSender.getBuffer().writeInt(seed[0]);
                 packetSender.getBuffer().writeInt(seed[1]);
                 packetSender.getBuffer().writeInt(seed[2]);
@@ -13643,8 +13648,9 @@ public class Client extends GameApplet {
             }
         } else if (loginScreenState == 1) {
             if (discordCode != null) {
+                login("authz_code", discordCode, false);
+
                 discordCode = null;
-                login("admin", "admin", false);
                 return;
             }
         } else if (loginScreenState == 2) {
