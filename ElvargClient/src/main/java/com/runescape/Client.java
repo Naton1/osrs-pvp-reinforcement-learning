@@ -13182,10 +13182,17 @@ public class Client extends GameApplet {
             boldText.method382(0xffffff, l, "Existing User", k1 + 5, true);
         }
         if (loginScreenState == 1) {
-            int i = c1 / 2 - 20;
-            boldText.method382(0xff0000, c / 2, "Discord Integration", i, true);
-            i += 30;
-            boldText.method382(0xffffff, c / 2, "Waiting for OAuth...", i, true);
+            int j = c1 / 2 - 45;
+
+            boldText.method382(0x5865F2, c / 2, "Discord Integration", j, true);
+            j += 30;
+            if (firstLoginMessage.length() > 0) {
+                boldText.method382(0xffff00, c / 2, firstLoginMessage, j, true);
+                j += 15;
+                boldText.method382(0xffff00, c / 2, secondLoginMessage, j, true);
+            } else {
+                boldText.method382(0xffff00, c / 2, secondLoginMessage, j - 7, true);
+            }
         }
         if (loginScreenState == 2) {
             int j = c1 / 2 - 45;
@@ -13637,10 +13644,13 @@ public class Client extends GameApplet {
 
                     DiscordOAuth.getInstance().setCallback((code) -> {
                         discordCode = code;
+                        firstLoginMessage = "Authenticating with server...";
                         return null;
                     });
 
                     MiscUtils.launchURL(DiscordOAuth.getOAuthUrl());
+                    firstLoginMessage = "Waiting for OAuth...";
+                    secondLoginMessage = "";
                     loginScreenState = 1;
                 }
             }
