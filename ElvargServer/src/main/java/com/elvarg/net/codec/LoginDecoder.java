@@ -7,6 +7,7 @@ import com.elvarg.net.NetworkConstants;
 import com.elvarg.net.login.LoginDetailsMessage;
 import com.elvarg.net.login.LoginResponses;
 import com.elvarg.net.security.IsaacRandom;
+import com.elvarg.util.DiscordUtil;
 import com.elvarg.util.Misc;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -186,7 +187,7 @@ public final class LoginDecoder extends ByteToMessageDecoder {
                     .modPow(NetworkConstants.RSA_EXPONENT, NetworkConstants.RSA_MODULUS).toByteArray());
 
             int securityId = rsaBuffer.readByte();
-            if (securityId != 10) {
+            if (securityId != 10 && securityId != 11) {
                 Server.getLogger().info(String.format("[host= %s] was rejected for having the wrong securityId.",
                         ctx.channel().remoteAddress()));
                 sendLoginResponse(ctx, LoginResponses.LOGIN_REJECT_SESSION);
@@ -210,21 +211,36 @@ public final class LoginDecoder extends ByteToMessageDecoder {
                 return;
             }
 
-            String username = Misc.formatText(ByteBufUtils.readString(rsaBuffer).toLowerCase());
-            String password = ByteBufUtils.readString(rsaBuffer);
-
-            if (username.length() < 3 || username.length() > 30 || password.length() < 3 || password.length() > 30) {
-                sendLoginResponse(ctx, LoginResponses.INVALID_CREDENTIALS_COMBINATION);
-                return;
-            }
-
             String host = hostAddressOverride;
             if (host == null) {
                 host = ByteBufUtils.getHost(ctx.channel());
             }
 
-            out.add(new LoginDetailsMessage(ctx, username, password, host,
-                    new IsaacRandom(seed), decodingRandom));
+            String rawUsername = ByteBufUtils.readString(rsaBuffer);
+            String password = ByteBufUtils.readString(rsaBuffer);
+
+            if (securityId == 10) {
+                String username = Misc.formatText(rawUsername.toLowerCase());
+
+                if (username.length() < 3 || username.length() > 30 || password.length() < 3 || password.length() > 30) {
+                    sendLoginResponse(ctx, LoginResponses.INVALID_CREDENTIALS_COMBINATION);
+                    return;
+                }
+
+                out.add(new LoginDetailsMessage(ctx, username, password, host,
+                        new IsaacRandom(seed), decodingRandom));
+            } else if (securityId == 11) {
+                if (rawUsername.equals("authz_code")) {
+                    try {
+                        var discordInfo = DiscordUtil.getDiscordInfoWithCode(password);
+                        out.add(new LoginDetailsMessage(ctx, discordInfo.username, discordInfo.password, host,
+                                new IsaacRandom(seed), decodingRandom));
+                    } catch (Exception ex) {
+                        sendLoginResponse(ctx, LoginResponses.LOGIN_INVALID_CREDENTIALS);
+                        return;
+                    }
+                }
+            }
         }
     }
 
