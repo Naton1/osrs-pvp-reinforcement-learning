@@ -13616,10 +13616,6 @@ public class Client extends GameApplet {
 
     }
 
-    private void discordLogin(String code) {
-        discordCode = code;
-    }
-
     private void processLoginScreenInput() {
         if (loading)
             return;
@@ -13637,8 +13633,10 @@ public class Client extends GameApplet {
                         loginScreenCursorPos = 0;
                     }
                 } else if (mouseInRegion(229, 375, 271, 312)) {
-                    DiscordOAuth.getInstance().setCallback((s) -> {
-                        discordLogin(s);
+                    if (!Configuration.DiscordConfiguration.ENABLE_DISCORD_OAUTH_LOGIN) return;
+
+                    DiscordOAuth.getInstance().setCallback((code) -> {
+                        discordCode = code;
                         return null;
                     });
 

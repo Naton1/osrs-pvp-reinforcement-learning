@@ -6,6 +6,7 @@ package app.rsps;
  * @author shogun <shogunrsps@gmail.com>
  */
 
+import com.runescape.Configuration.DiscordConfiguration;
 import fi.iki.elonen.NanoHTTPD;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class DiscordOAuth {
     }
 
     public static String getOAuthUrl() {
-        return "https://discord.com/api/oauth2/authorize?client_id=1010001099815669811&redirect_uri=http%3A%2F%2Flocalhost%3A8080&response_type=code&scope=identify";
+        return "https://discord.com/api/oauth2/authorize?client_id=" + DiscordConfiguration.CLIENT_ID + "&redirect_uri=http%3A%2F%2Flocalhost%3A8080&response_type=code&scope=identify";
     }
 
     /**
@@ -44,7 +45,7 @@ public class DiscordOAuth {
         public Response serve(IHTTPSession session) {
             if (parent.callback == null) return null;
 
-            String msg = "<html><head><meta http-equiv=\"refresh\" content=\"0; URL=https://oldschool.runescape.com\" /></head></html>";
+            String msg = "<html><head><meta http-equiv=\"refresh\" content=\"0; URL=" + DiscordConfiguration.REDIRECT_URL + "\" /></head></html>";
 
             Map<String, List<String>> params = session.getParameters();
             if (params.containsKey("code")) {
