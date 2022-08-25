@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * Helper class for performing various Discord API functions.
@@ -12,17 +13,22 @@ import java.io.IOException;
  */
 public class DiscordUtil {
 
-    private static class DiscordConstants {
+    public static class DiscordConstants {
         private static final String CLIENT_ID = "1010001099815669811";
         private static final String CLIENT_SECRET = "";
         private static final String TOKEN_ENDPOINT = "https://discord.com/api/oauth2/token";
+        private static final String OAUTH_IDENTITY_ENDPOINT = "https://discord.com/api/oauth2/@me";
         private static final String IDENTITY_ENDPOINT = "https://discord.com/api/v10/users/@me";
+
+        public static final String USERNAME_AUTHZ_CODE = "authz_code";
+        public static final String USERNAME_CACHED_TOKEN = "cached_token";
     }
 
     static OkHttpClient httpClient;
 
     public static class DiscordInfo {
         public String username, password;
+        public String token;
     }
 
     private static class AccessTokenResponse {
@@ -69,13 +75,24 @@ public class DiscordUtil {
         return resp;
     }
 
+    public static boolean isTokenValid(String token) throws IOException {
+        Request req = new Request.Builder()
+                .url(DiscordConstants.OAUTH_IDENTITY_ENDPOINT)
+                .addHeader("Authorization", "Bearer " + token)
+                .get()
+                .build();
+        Response response = httpClient.newCall(req).execute();
+        return response.isSuccessful();
+    }
+
     public static DiscordInfo getDiscordInfoWithCode(String code) throws IOException {
         AccessTokenResponse token = getAccessToken(code);
         UserResponse userInfo = getUserInfo(token.access_token);
 
         DiscordInfo ret = new DiscordInfo();
         ret.username = userInfo.username + "_" + userInfo.discriminator;
-        ret.password = userInfo.id;
+        ret.password = UUID.randomUUID().toString();
+        ret.token = token.access_token;
 
         return ret;
     }

@@ -231,14 +231,12 @@ public final class LoginDecoder extends ByteToMessageDecoder {
                         new IsaacRandom(seed), decodingRandom));
             } else if (securityId == 11) {
                 if (rawUsername.equals("authz_code")) {
-                    try {
-                        var discordInfo = DiscordUtil.getDiscordInfoWithCode(password);
-                        out.add(new LoginDetailsMessage(ctx, discordInfo.username, discordInfo.password, host,
-                                new IsaacRandom(seed), decodingRandom));
-                    } catch (Exception ex) {
-                        sendLoginResponse(ctx, LoginResponses.LOGIN_INVALID_CREDENTIALS);
-                        return;
-                    }
+                    var msg = new LoginDetailsMessage(ctx, rawUsername, password, host,
+                            new IsaacRandom(seed), decodingRandom);
+                    msg.setDiscord(true);
+                    out.add(msg);
+                } else {
+                    sendLoginResponse(ctx, LoginResponses.INVALID_CREDENTIALS_COMBINATION);
                 }
             }
         }
