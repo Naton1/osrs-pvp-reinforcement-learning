@@ -14,6 +14,10 @@ repositories {
     }
 }
 
+dependencies {
+    implementation("org.nanohttpd:nanohttpd:2.3.1")
+}
+
 group = "Elvarg"
 version = "1.0-SNAPSHOT"
 description = "Elvarg-Game-Client"

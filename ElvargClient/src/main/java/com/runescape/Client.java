@@ -1,5 +1,6 @@
 package com.runescape;
 
+import app.rsps.DiscordOAuth;
 import com.runescape.cache.FileArchive;
 import com.runescape.cache.FileStore;
 import com.runescape.cache.Resource;
@@ -13,18 +14,6 @@ import com.runescape.cache.def.FloorDefinition;
 import com.runescape.cache.def.ItemDefinition;
 import com.runescape.cache.def.NpcDefinition;
 import com.runescape.cache.def.ObjectDefinition;
-import com.runescape.graphics.DropdownMenu;
-import com.runescape.graphics.GameFont;
-import com.runescape.graphics.IndexedImage;
-import com.runescape.graphics.RSFont;
-import com.runescape.graphics.Slider;
-import com.runescape.graphics.sprite.Sprite;
-import com.runescape.graphics.sprite.SpriteCache;
-import com.runescape.graphics.widget.Bank;
-import com.runescape.graphics.widget.Bank.BankTabShow;
-import com.runescape.graphics.widget.OSRSCreationMenu;
-import com.runescape.graphics.widget.SettingsWidget;
-import com.runescape.graphics.widget.Widget;
 import com.runescape.collection.Deque;
 import com.runescape.collection.Linkable;
 import com.runescape.draw.Console;
@@ -33,14 +22,17 @@ import com.runescape.draw.Rasterizer2D;
 import com.runescape.draw.Rasterizer3D;
 import com.runescape.draw.skillorbs.SkillOrbs;
 import com.runescape.draw.teleports.TeleportChatBox;
-import com.runescape.entity.GameObject;
-import com.runescape.entity.Item;
-import com.runescape.entity.Mob;
-import com.runescape.entity.Npc;
-import com.runescape.entity.Player;
-import com.runescape.entity.Renderable;
+import com.runescape.entity.*;
 import com.runescape.entity.model.IdentityKit;
 import com.runescape.entity.model.Model;
+import com.runescape.graphics.*;
+import com.runescape.graphics.sprite.Sprite;
+import com.runescape.graphics.sprite.SpriteCache;
+import com.runescape.graphics.widget.Bank;
+import com.runescape.graphics.widget.Bank.BankTabShow;
+import com.runescape.graphics.widget.OSRSCreationMenu;
+import com.runescape.graphics.widget.SettingsWidget;
+import com.runescape.graphics.widget.Widget;
 import com.runescape.io.Buffer;
 import com.runescape.io.PacketConstants;
 import com.runescape.io.PacketSender;
@@ -50,12 +42,7 @@ import com.runescape.model.EffectTimer;
 import com.runescape.model.content.Keybinding;
 import com.runescape.net.BufferedConnection;
 import com.runescape.net.IsaacCipher;
-import com.runescape.scene.AnimableObject;
-import com.runescape.scene.CollisionMap;
-import com.runescape.scene.MapRegion;
-import com.runescape.scene.Projectile;
-import com.runescape.scene.SceneGraph;
-import com.runescape.scene.SceneObject;
+import com.runescape.scene.*;
 import com.runescape.scene.object.GroundDecoration;
 import com.runescape.scene.object.SpawnedObject;
 import com.runescape.scene.object.WallDecoration;
@@ -64,33 +51,14 @@ import com.runescape.sign.SignLink;
 import com.runescape.sound.SoundConstants;
 import com.runescape.sound.SoundPlayer;
 import com.runescape.sound.Track;
-import com.runescape.util.ChatMessageCodec;
-import com.runescape.util.MessageCensor;
-import com.runescape.util.MiscUtils;
-import com.runescape.util.MouseDetection;
-import com.runescape.util.SecondsTimer;
-import com.runescape.util.SkillConstants;
-import com.runescape.util.StringUtils;
+import com.runescape.util.*;
 
 import javax.imageio.ImageIO;
 import java.applet.AppletContext;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
@@ -730,10 +698,12 @@ public class Client extends GameApplet {
     private long last;
     private int configPercentage;
 
+    private String discordCode;
+
     public Client() {
         expectedCRCs = new int[9];
-    	packetSender = new PacketSender(null);
-    	chatBuffer = new Buffer(new byte[5000]);
+        packetSender = new PacketSender(null);
+        chatBuffer = new Buffer(new byte[5000]);
         fullscreenInterfaceID = -1;
         soundVolume = new int[50];
         chatTypeView = 0;
@@ -8814,7 +8784,6 @@ public class Client extends GameApplet {
         if (chatboxImageProducer != null) {
             return;
         }
-
         nullLoader();
         super.fullGameScreen = null;
         topLeft1BackgroundTile = null;
@@ -9103,16 +9072,21 @@ public class Client extends GameApplet {
      * @param reconnecting The flag for the user indicating to attempt to reconnect.
      */
     private void login(String name, String password, boolean reconnecting) {
+        login(name, password, reconnecting, false);
+    }
+    private void login(String name, String password, boolean reconnecting, boolean discordLogin) {
         try {
-            if (name.length() < 3) {
-                firstLoginMessage = "";
-                secondLoginMessage = "Your username is too short.";
-                return;
-            }
-            if (password.length() < 3) {
-                firstLoginMessage = "";
-                secondLoginMessage = "Your password is too short.";
-                return;
+            if (!discordLogin) {
+                if (name.length() < 3) {
+                    firstLoginMessage = "";
+                    secondLoginMessage = "Your username is too short.";
+                    return;
+                }
+                if (password.length() < 3) {
+                    firstLoginMessage = "";
+                    secondLoginMessage = "Your password is too short.";
+                    return;
+                }
             }
             if (!reconnecting) {
                 firstLoginMessage = "";
@@ -9143,7 +9117,7 @@ public class Client extends GameApplet {
                 seed[2] = (int) (serverSeed >> 32);
                 seed[3] = (int) serverSeed;
                 packetSender.getBuffer().resetPosition();
-                packetSender.getBuffer().writeByte(10);
+                packetSender.getBuffer().writeByte(discordLogin ? 11 : 10);
                 packetSender.getBuffer().writeInt(seed[0]);
                 packetSender.getBuffer().writeInt(seed[1]);
                 packetSender.getBuffer().writeInt(seed[2]);
@@ -13202,10 +13176,23 @@ public class Client extends GameApplet {
             int l = c / 2 - 80;
             int k1 = c1 / 2 + 20;
             titleButtonIndexedImage.draw(l - 73, k1 - 20);
-            boldText.method382(0xffffff, l, "New User", k1 + 5, true);
+            boldText.method382(0xffffff, l, "Discord Login", k1 + 5, true);
             l = c / 2 + 80;
             titleButtonIndexedImage.draw(l - 73, k1 - 20);
             boldText.method382(0xffffff, l, "Existing User", k1 + 5, true);
+        }
+        if (loginScreenState == 1) {
+            int j = c1 / 2 - 45;
+
+            boldText.method382(0x5865F2, c / 2, "Discord Integration", j, true);
+            j += 30;
+            if (firstLoginMessage.length() > 0) {
+                boldText.method382(0xffff00, c / 2, firstLoginMessage, j, true);
+                j += 15;
+                boldText.method382(0xffff00, c / 2, secondLoginMessage, j, true);
+            } else {
+                boldText.method382(0xffff00, c / 2, secondLoginMessage, j - 7, true);
+            }
         }
         if (loginScreenState == 2) {
             int j = c1 / 2 - 45;
@@ -13644,8 +13631,6 @@ public class Client extends GameApplet {
                 Configuration.enableMusic = !Configuration.enableMusic;
             }
 
-            int i = super.myWidth / 2;
-            int l = super.myHeight / 2;
             if (super.clickMode3 == 1) {
                 if (mouseInRegion(394, 530, 275, 307)) {
                     firstLoginMessage = "";
@@ -13655,11 +13640,28 @@ public class Client extends GameApplet {
                         loginScreenCursorPos = 0;
                     }
                 } else if (mouseInRegion(229, 375, 271, 312)) {
-                    MiscUtils.launchURL("www.aqp.io");
+                    if (!Configuration.DiscordConfiguration.ENABLE_DISCORD_OAUTH_LOGIN) return;
+
+                    DiscordOAuth.getInstance().setCallback((code) -> {
+                        discordCode = code;
+                        firstLoginMessage = "Authenticating with server...";
+                        return null;
+                    });
+
+                    MiscUtils.launchURL(DiscordOAuth.getOAuthUrl());
+                    firstLoginMessage = "Waiting for OAuth...";
+                    secondLoginMessage = "";
+                    loginScreenState = 1;
                 }
             }
-        } else if (loginScreenState == 2) {
+        } else if (loginScreenState == 1) {
+            if (discordCode != null) {
+                login("authz_code", discordCode, false, true);
 
+                discordCode = null;
+                return;
+            }
+        } else if (loginScreenState == 2) {
             if (super.clickMode3 == 1) {
                 if (super.saveClickX >= 722 && super.saveClickX <= 753 && super.saveClickY >= 463 && super.saveClickY <= 493) {
                     Configuration.enableMusic = !Configuration.enableMusic;
