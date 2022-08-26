@@ -25,6 +25,12 @@ dependencies {
     implementation("com.password4j:password4j:1.6.0")
     implementation("software.amazon.awssdk:dynamodb:2.17.237")
     implementation("software.amazon.awssdk:dynamodb-enhanced:2.17.237")
+
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+    // define any required OkHttp artifacts without version
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+
 }
 
 application {

@@ -20,6 +20,8 @@ import java.util.Map;
 
 public class PlayerSave {
     private String passwordHashWithSalt;
+    private boolean isDiscordLogin;
+    private String cachedDiscordAccessToken;
     private String title;
     private PlayerRights rights;
     private DonatorRights donatorRights;
@@ -479,8 +481,27 @@ public class PlayerSave {
         this.presets = presets;
     }
 
+    public boolean isDiscordLogin() {
+        return isDiscordLogin;
+    }
+
+    public void setDiscordLogin(boolean discordLogin) {
+        isDiscordLogin = discordLogin;
+    }
+
+    public String getCachedDiscordAccessToken() {
+        return cachedDiscordAccessToken;
+    }
+
+    public void setCachedDiscordAccessToken(String cachedDiscordAccessToken) {
+        this.cachedDiscordAccessToken = cachedDiscordAccessToken;
+    }
+
+
     public void applyToPlayer(Player player) {
         player.setPasswordHashWithSalt(this.passwordHashWithSalt);
+        player.setDiscordLogin(this.isDiscordLogin);
+        player.setCachedDiscordAccessToken(this.cachedDiscordAccessToken);
         player.setLoyaltyTitle(this.title);
 
         player.setLoyaltyTitle(this.title);
@@ -565,6 +586,8 @@ public class PlayerSave {
         var playerSave = new PlayerSave();
 
         playerSave.passwordHashWithSalt = player.getPasswordHashWithSalt().trim();
+        playerSave.isDiscordLogin = player.isDiscordLogin();
+        playerSave.cachedDiscordAccessToken = player.getCachedDiscordAccessToken();
         playerSave.title = player.getLoyaltyTitle();
         playerSave.rights = player.getRights();
         playerSave.donatorRights = player.getDonatorRights();
