@@ -3,9 +3,11 @@ package com.elvarg.net.login;
 import com.elvarg.Server;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.util.DiscordUtil;
 import com.elvarg.util.Misc;
 import com.elvarg.util.PlayerPunishment;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -102,7 +104,7 @@ public final class LoginResponses {
         }
 
         // Attempt to load the character file..
-        int playerLoadingResponse = getPlayerResult(player, msg.getPassword());
+        int playerLoadingResponse = getPlayerResult(player, msg);
 
         // New player?
         if (playerLoadingResponse == NEW_ACCOUNT) {
@@ -114,14 +116,39 @@ public final class LoginResponses {
         return playerLoadingResponse;
     }
 
-    private static int getPlayerResult(Player player, String plainPassword) {
+    private static int getDiscordResult(Player player, LoginDetailsMessage msg) {
+        try {
+            if (msg.getUsername().equals(DiscordUtil.DiscordConstants.USERNAME_AUTHZ_CODE)) {
+                var discordInfo = DiscordUtil.getDiscordInfoWithCode(msg.getPassword());
+                player.setUsername(discordInfo.username);
+
+                var playerSave = PLAYER_PERSISTENCE.load(player.getUsername());
+                if (playerSave == null) {
+                    player.setDiscordLogin(true);
+                    player.setCachedDiscordAccessToken(discordInfo.token);
+                    player.setPasswordHashWithSalt(discordInfo.password);
+                    return LoginResponses.NEW_ACCOUNT;
+                }
+
+                playerSave.applyToPlayer(player);
+                return LoginResponses.LOGIN_SUCCESSFUL;
+            }
+        } catch (IOException ex) {
+        }
+
+        return LoginResponses.LOGIN_INVALID_CREDENTIALS;
+    }
+
+    private static int getPlayerResult(Player player, LoginDetailsMessage msg) {
+        if (msg.isDiscord()) return getDiscordResult(player, msg);
+
         var playerSave = PLAYER_PERSISTENCE.load(player.getUsername());
         if (playerSave == null) {
-            player.setPasswordHashWithSalt(PLAYER_PERSISTENCE.encryptPassword(plainPassword));
+            player.setPasswordHashWithSalt(PLAYER_PERSISTENCE.encryptPassword(msg.getPassword()));
             return LoginResponses.NEW_ACCOUNT;
         }
 
-        if (!PLAYER_PERSISTENCE.checkPassword(plainPassword, playerSave)) {
+        if (!PLAYER_PERSISTENCE.checkPassword(msg, playerSave)) {
             return LoginResponses.LOGIN_INVALID_CREDENTIALS;
         }
 
@@ -129,5 +156,4 @@ public final class LoginResponses {
 
         return LoginResponses.LOGIN_SUCCESSFUL;
     }
-
 }

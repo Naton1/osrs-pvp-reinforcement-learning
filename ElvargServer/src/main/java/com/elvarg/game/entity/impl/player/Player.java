@@ -137,6 +137,8 @@ public class Player extends Mobile {
 	private String username;
 	private String passwordHashWithSalt;
 	private String hostAddress;
+	private boolean isDiscordLogin;
+	private String cachedDiscordAccessToken;
 	private Long longUsername;
 	private PlayerSession session;
 	private PlayerInteractingOption playerInteractingOption = PlayerInteractingOption.NONE;
@@ -1642,4 +1644,21 @@ public class Player extends Mobile {
     public void setAutoRetaliate(boolean autoRetaliate) {
         this.autoRetaliate = autoRetaliate;
     }
+
+
+	public boolean isDiscordLogin() {
+		return isDiscordLogin;
+	}
+
+	public void setDiscordLogin(boolean discordLogin) {
+		isDiscordLogin = discordLogin;
+	}
+
+	public String getCachedDiscordAccessToken() {
+		return cachedDiscordAccessToken;
+	}
+
+	public void setCachedDiscordAccessToken(String cachedDiscordAccessToken) {
+		this.cachedDiscordAccessToken = cachedDiscordAccessToken;
+	}
 }
