@@ -65,8 +65,7 @@ public final class LoginDetailsMessage {
         this.encryptor = encryptor;
         this.decryptor = decryptor;
     }
-
-
+    
     public ChannelHandlerContext getContext() {
         return context;
     }
