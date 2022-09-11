@@ -230,7 +230,7 @@ public final class LoginDecoder extends ByteToMessageDecoder {
                 out.add(new LoginDetailsMessage(ctx, username, password, host,
                         new IsaacRandom(seed), decodingRandom));
             } else if (securityId == 11) {
-                if (rawUsername.equals("authz_code")) {
+                if (rawUsername.equals(DiscordUtil.DiscordConstants.USERNAME_CACHED_TOKEN) || rawUsername.equals(DiscordUtil.DiscordConstants.USERNAME_AUTHZ_CODE)) {
                     var msg = new LoginDetailsMessage(ctx, rawUsername, password, host,
                             new IsaacRandom(seed), decodingRandom);
                     msg.setDiscord(true);

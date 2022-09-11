@@ -118,21 +118,29 @@ public final class LoginResponses {
 
     private static int getDiscordResult(Player player, LoginDetailsMessage msg) {
         try {
+            DiscordUtil.DiscordInfo discordInfo;
             if (msg.getUsername().equals(DiscordUtil.DiscordConstants.USERNAME_AUTHZ_CODE)) {
-                var discordInfo = DiscordUtil.getDiscordInfoWithCode(msg.getPassword());
-                player.setUsername(discordInfo.username);
-
-                var playerSave = PLAYER_PERSISTENCE.load(player.getUsername());
-                if (playerSave == null) {
-                    player.setDiscordLogin(true);
-                    player.setCachedDiscordAccessToken(discordInfo.token);
-                    player.setPasswordHashWithSalt(discordInfo.password);
-                    return LoginResponses.NEW_ACCOUNT;
-                }
-
-                playerSave.applyToPlayer(player);
-                return LoginResponses.LOGIN_SUCCESSFUL;
+                discordInfo = DiscordUtil.getDiscordInfoWithCode(msg.getPassword());
+            } else if (msg.getUsername().equals(DiscordUtil.DiscordConstants.USERNAME_CACHED_TOKEN)) {
+                if (!DiscordUtil.isTokenValid(msg.getPassword())) return LoginResponses.LOGIN_INVALID_CREDENTIALS;
+                discordInfo = DiscordUtil.getDiscordInfoWithToken(msg.getPassword());
+            } else {
+                return LoginResponses.LOGIN_INVALID_CREDENTIALS;
             }
+
+            player.setUsername(discordInfo.username);
+
+            var playerSave = PLAYER_PERSISTENCE.load(player.getUsername());
+            if (playerSave == null) {
+                player.setDiscordLogin(true);
+                player.setCachedDiscordAccessToken(discordInfo.token);
+                player.setPasswordHashWithSalt(discordInfo.password);
+                return LoginResponses.NEW_ACCOUNT;
+            }
+
+            playerSave.applyToPlayer(player);
+            return LoginResponses.LOGIN_SUCCESSFUL;
+
         } catch (IOException ex) {
         }
 

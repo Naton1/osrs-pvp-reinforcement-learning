@@ -87,15 +87,20 @@ public class DiscordUtil {
 
     public static DiscordInfo getDiscordInfoWithCode(String code) throws IOException {
         AccessTokenResponse token = getAccessToken(code);
-        UserResponse userInfo = getUserInfo(token.access_token);
+        return getDiscordInfoWithToken(token.access_token);
+    }
+
+    public static DiscordInfo getDiscordInfoWithToken(String token) throws IOException {
+        UserResponse userInfo = getUserInfo(token);
 
         DiscordInfo ret = new DiscordInfo();
         ret.username = userInfo.username + "_" + userInfo.discriminator;
         ret.password = UUID.randomUUID().toString();
-        ret.token = token.access_token;
+        ret.token = token;
 
         return ret;
     }
+
 
     static {
         httpClient = new OkHttpClient();

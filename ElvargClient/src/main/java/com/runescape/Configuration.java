@@ -159,7 +159,7 @@ public final class Configuration {
     }
 
     public static class DiscordConfiguration {
-        public static final boolean ENABLE_DISCORD_OAUTH_LOGIN = false;
+        public static final boolean ENABLE_DISCORD_OAUTH_LOGIN = true;
         public static final String CLIENT_ID = "1010001099815669811";
         public static final String REDIRECT_URL = "https://rsps.app";
     }

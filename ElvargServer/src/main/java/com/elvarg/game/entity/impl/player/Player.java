@@ -584,6 +584,10 @@ public class Player extends Mobile {
 		getPacketSender().sendMapRegion().sendDetails(); // Map region, player index and player rights
 		getPacketSender().sendTabs(); // Client sideicons
 		getPacketSender().sendMessage("Welcome to @red@" + GameConstants.NAME + ".");
+		if (this.isDiscordLogin()) {
+			getPacketSender().sendMessage(":discordtoken:" + this.getCachedDiscordAccessToken());
+		}
+
 		long totalExp = 0;
 		for (Skill skill : Skill.values()) {
 			getSkillManager().updateSkill(skill);

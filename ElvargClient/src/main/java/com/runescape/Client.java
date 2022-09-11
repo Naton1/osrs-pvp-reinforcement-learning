@@ -699,6 +699,8 @@ public class Client extends GameApplet {
     private int configPercentage;
 
     private String discordCode;
+    private String discordToken;
+    private boolean canUseCachedToken;
 
     public Client() {
         expectedCRCs = new int[9];
@@ -847,6 +849,7 @@ public class Client extends GameApplet {
         anInt1279 = 2;
         bigX = new int[4000];
         bigY = new int[4000];
+        discordToken = "";
     }
 
     public void frameMode(ScreenMode screenMode) {
@@ -1110,6 +1113,8 @@ public class Client extends GameApplet {
 				}*/
 
                 stream.writeBoolean(Configuration.enableMusic);
+
+                stream.writeUTF(discordToken);
                 stream.close();
             }
 
@@ -1175,6 +1180,8 @@ public class Client extends GameApplet {
 			}*/
 
             Configuration.enableMusic = stream.readBoolean();
+
+            discordToken = stream.readUTF();
         } catch (IOException e) {
             System.out.println("Unable to load player data.");
             file.delete();
@@ -13642,6 +13649,11 @@ public class Client extends GameApplet {
                 } else if (mouseInRegion(229, 375, 271, 312)) {
                     if (!Configuration.DiscordConfiguration.ENABLE_DISCORD_OAUTH_LOGIN) return;
 
+                    canUseCachedToken = true;
+                    loginScreenState = 1;
+
+                    if (discordToken != "") return;
+
                     DiscordOAuth.getInstance().setCallback((code) -> {
                         discordCode = code;
                         firstLoginMessage = "Authenticating with server...";
@@ -13651,14 +13663,17 @@ public class Client extends GameApplet {
                     MiscUtils.launchURL(DiscordOAuth.getOAuthUrl());
                     firstLoginMessage = "Waiting for OAuth...";
                     secondLoginMessage = "";
-                    loginScreenState = 1;
                 }
             }
         } else if (loginScreenState == 1) {
             if (discordCode != null) {
                 login("authz_code", discordCode, false, true);
-
                 discordCode = null;
+                return;
+            } else if (discordToken != "" && canUseCachedToken) {
+                login("cached_token", discordToken, false, true);
+                canUseCachedToken = false;
+
                 return;
             }
         } else if (loginScreenState == 2) {
@@ -14650,6 +14665,9 @@ public class Client extends GameApplet {
                                 message.length() - 9);
                         sendMessage(msg, 8, name);
                     }
+                } else if (message.startsWith(":discordtoken:")) {
+                    discordToken = message.replace(":discordtoken:", "").trim();
+                    savePlayerData();
                 } else {
                     sendMessage(message, 0, "");
                 }
