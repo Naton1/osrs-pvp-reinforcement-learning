@@ -279,8 +279,8 @@ public final class MovementQueue {
         if (walkPoint != null && walkPoint.direction != Direction.NONE) {
             Location next = walkPoint.position;
             if (canWalkTo(next)) {
-                followX = character.getLocation().getX();
-                followY = character.getLocation().getY();
+                followX = oldPosition.getX();
+                followY = oldPosition.getY();
                 character.setLocation(next);
                 character.setWalkingDirection(walkPoint.direction);
                 moved = true;
@@ -293,8 +293,8 @@ public final class MovementQueue {
         if (runPoint != null && runPoint.direction != Direction.NONE) {
             Location next = runPoint.position;
             if (canWalkTo(next)) {
-                followX = character.getLocation().getX();
-                followY = character.getLocation().getY();
+                followX = oldPosition.getX();
+                followY = oldPosition.getY();
                 oldPosition = next;
                 character.setLocation(next);
                 character.setRunningDirection(runPoint.direction);
@@ -382,11 +382,14 @@ public final class MovementQueue {
      */
     public MovementQueue reset() {
         points.clear();
+        followX = -1;
+        followY = -1;
         isMoving = false;
         return this;
     }
 
     public void resetFollow() {
+        character.setFollowing(null);
         character.setPositionToFace(null);
         TaskManager.cancelTasks("follow");
     }

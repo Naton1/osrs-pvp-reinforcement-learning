@@ -28,6 +28,9 @@ public class FollowPlayerPacketListener implements PacketExecutor {
             return;
         }
 
+        /** Required to cancel the follow task **/
+        TaskManager.cancelTasks(player.getIndex());
+
         int otherPlayersIndex = packet.readLEShort();
 
         if (otherPlayersIndex < 0 || otherPlayersIndex > World.getPlayers().capacity())
@@ -40,7 +43,9 @@ public class FollowPlayerPacketListener implements PacketExecutor {
 
         player.setFollowing(leader);
 
-        TaskManager.submit(new Task(1, player, false) {
+        //System.err.println("following="+leader.getUsername());
+        /** Required Index as players have different identifiers **/
+        TaskManager.submit(new Task(1, player.getIndex(), false) {
 
             @Override
             protected void execute() {
@@ -53,7 +58,7 @@ public class FollowPlayerPacketListener implements PacketExecutor {
                     }
                     int destX = leader.getMovementQueue().followX;
                     int destY = leader.getMovementQueue().followY;
-                    if (Objects.equals(new Location(destX, destY), player.getLocation())) {
+                    if (Objects.equals(new Location(destX, destY), player.getLocation()) || destX == -1 && destY == -1) {
                         return;
                     }
                     player.getMovementQueue().reset();
