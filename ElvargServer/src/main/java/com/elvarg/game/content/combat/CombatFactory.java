@@ -46,6 +46,7 @@ import com.elvarg.game.model.areas.AreaManager;
 import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
+import com.elvarg.game.model.movement.MovementQueue;
 import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.game.model.movement.path.RS317PathFinder;
 import com.elvarg.game.model.rights.PlayerRights;
@@ -361,6 +362,7 @@ public class CombatFactory {
 		final Location targetPosition = target.getLocation();
 		
 		if (attackerPosition.equals(targetPosition)) {
+			MovementQueue.clippedStep(attacker);
 		    return false;
 		}
 
