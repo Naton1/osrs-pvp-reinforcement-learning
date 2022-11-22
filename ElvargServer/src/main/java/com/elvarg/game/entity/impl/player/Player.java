@@ -135,6 +135,8 @@ public class Player extends Mobile {
 	private String username;
 	private String passwordHashWithSalt;
 	private String hostAddress;
+	private boolean isDiscordLogin;
+	private String cachedDiscordAccessToken;
 	private Long longUsername;
 	private PlayerSession session;
 	private PlayerInteractingOption playerInteractingOption = PlayerInteractingOption.NONE;
@@ -580,6 +582,10 @@ public class Player extends Mobile {
 		getPacketSender().sendMapRegion().sendDetails(); // Map region, player index and player rights
 		getPacketSender().sendTabs(); // Client sideicons
 		getPacketSender().sendMessage("Welcome to @red@" + GameConstants.NAME + ".");
+		if (this.isDiscordLogin()) {
+			getPacketSender().sendMessage(":discordtoken:" + this.getCachedDiscordAccessToken());
+		}
+
 		long totalExp = 0;
 		for (Skill skill : Skill.values()) {
 			getSkillManager().updateSkill(skill);
@@ -1640,4 +1646,21 @@ public class Player extends Mobile {
     public void setAutoRetaliate(boolean autoRetaliate) {
         this.autoRetaliate = autoRetaliate;
     }
+
+
+	public boolean isDiscordLogin() {
+		return isDiscordLogin;
+	}
+
+	public void setDiscordLogin(boolean discordLogin) {
+		isDiscordLogin = discordLogin;
+	}
+
+	public String getCachedDiscordAccessToken() {
+		return cachedDiscordAccessToken;
+	}
+
+	public void setCachedDiscordAccessToken(String cachedDiscordAccessToken) {
+		this.cachedDiscordAccessToken = cachedDiscordAccessToken;
+	}
 }

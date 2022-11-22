@@ -44,6 +44,8 @@ public final class LoginDetailsMessage {
      */
     private final IsaacRandom decryptor;
 
+    private boolean isDiscord = false;
+
     /**
      * Creates a new {@link LoginDetailsMessage}.
      *
@@ -63,8 +65,7 @@ public final class LoginDetailsMessage {
         this.encryptor = encryptor;
         this.decryptor = decryptor;
     }
-
-
+    
     public ChannelHandlerContext getContext() {
         return context;
     }
@@ -87,5 +88,13 @@ public final class LoginDetailsMessage {
 
     public IsaacRandom getDecryptor() {
         return decryptor;
+    }
+
+    public boolean isDiscord() {
+        return isDiscord;
+    }
+
+    public void setDiscord(boolean discord) {
+        isDiscord = discord;
     }
 }

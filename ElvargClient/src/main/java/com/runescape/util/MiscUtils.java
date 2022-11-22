@@ -8,10 +8,7 @@ public final class MiscUtils {
         String osName = System.getProperty("os.name");
         try {
             if (osName.startsWith("Mac OS")) {
-                Class<?> fileMgr = Class.forName("com.apple.eio.FileManager");
-                Method openURL = fileMgr.getDeclaredMethod("openURL",
-                        String.class);
-                openURL.invoke(null, url);
+                Runtime.getRuntime().exec("open " + url);
             } else if (osName.startsWith("Windows"))
                 Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
             else {
