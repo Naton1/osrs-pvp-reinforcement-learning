@@ -148,15 +148,23 @@ public final class LoginResponses {
     }
 
     private static int getPlayerResult(Player player, LoginDetailsMessage msg) {
-        if (msg.isDiscord()) return getDiscordResult(player, msg);
+        String plainPassword = msg.getPassword();
+        if (msg.isDiscord()) {
+            return getDiscordResult(player, msg);
+        }
 
         var playerSave = PLAYER_PERSISTENCE.load(player.getUsername());
         if (playerSave == null) {
-            player.setPasswordHashWithSalt(PLAYER_PERSISTENCE.encryptPassword(msg.getPassword()));
+            player.setPasswordHashWithSalt(PLAYER_PERSISTENCE.encryptPassword(plainPassword));
             return LoginResponses.NEW_ACCOUNT;
         }
 
-        if (!PLAYER_PERSISTENCE.checkPassword(msg, playerSave)) {
+        if (msg.isDiscord() != playerSave.isDiscordLogin()) {
+            // User attempting Discord login on a non-Discord account
+            return LoginResponses.LOGIN_BAD_SESSION_ID;
+        }
+
+        if (!PLAYER_PERSISTENCE.checkPassword(plainPassword, playerSave)) {
             return LoginResponses.LOGIN_INVALID_CREDENTIALS;
         }
 

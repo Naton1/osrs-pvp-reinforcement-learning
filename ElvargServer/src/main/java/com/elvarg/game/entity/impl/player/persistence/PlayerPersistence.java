@@ -18,10 +18,8 @@ public abstract class PlayerPersistence {
         return PasswordUtil.generatePasswordHashWithSalt(plainPassword);
     }
 
-    public boolean checkPassword(LoginDetailsMessage msg, PlayerSave playerSave) {
-        if (msg.isDiscord() != playerSave.isDiscordLogin()) return false;
-
+    public boolean checkPassword(String password, PlayerSave playerSave) {
         String passwordHashWithSalt = playerSave.getPasswordHashWithSalt();
-        return PasswordUtil.passwordsMatch(msg.getPassword(), passwordHashWithSalt);
+        return PasswordUtil.passwordsMatch(password, passwordHashWithSalt);
     }
 }
