@@ -13664,7 +13664,10 @@ public class Client extends GameApplet {
                     canUseCachedToken = true;
                     loginScreenState = 1;
 
-                    if (discordToken != "") return;
+                    if (discordToken.length() > 0) {
+                        // We already have a Discord token available
+                        return;
+                    }
 
                     DiscordOAuth.getInstance().setCallback((code) -> {
                         discordCode = code;
@@ -13682,7 +13685,7 @@ public class Client extends GameApplet {
                 login("authz_code", discordCode, false, true);
                 discordCode = null;
                 return;
-            } else if (discordToken != "" && canUseCachedToken) {
+            } else if (discordToken.length() > 0 && canUseCachedToken) {
                 login("cached_token", discordToken, false, true);
                 canUseCachedToken = false;
 
