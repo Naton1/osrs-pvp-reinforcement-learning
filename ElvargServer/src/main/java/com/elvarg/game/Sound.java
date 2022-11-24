@@ -65,6 +65,9 @@ public enum Sound {
     // Spell sounds
 
     ICA_BARRAGE_IMPACT(1125, 1, 0),
+
+    DROP_ITEM(376, 1, 0),
+    PICK_UP_ITEM(358, 1, 0),
     ;
 
     private final int id;
