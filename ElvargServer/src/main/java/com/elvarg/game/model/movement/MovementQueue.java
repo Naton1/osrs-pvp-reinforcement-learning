@@ -242,7 +242,7 @@ public final class MovementQueue {
      * @return true if the character is moving.
      */
     public boolean isMoving() {
-        return isMoving; // !points.isEmpty();
+        return isMoving;
     }
 
     /**
@@ -385,6 +385,7 @@ public final class MovementQueue {
         followX = -1;
         followY = -1;
         isMoving = false;
+        foundRoute = false;
         return this;
     }
 

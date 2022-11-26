@@ -83,7 +83,7 @@ public class Combat {
      * Attempts to perform a new attack.
      */
     public void performNewAttack(boolean instant) {
-        if (target == null) {
+        if (target == null || target == character) {
             return;
         }
 
@@ -99,7 +99,7 @@ public class Combat {
 
         boolean canReach = RegionManager.canProjectileAttack(character, target);
 
-        boolean needsPath = distanceFromTarget > attackDistance || distanceFromTarget == 0 || !canReach;
+        boolean needsPath = !character.getMovementQueue().hasRoute() && (distanceFromTarget > attackDistance || distanceFromTarget == 0 || !canReach);
 
         Server.logDebug("MaxAttackDistance=" + attackDistance + ", CurrentDistance=" + distanceFromTarget + ", path=" + needsPath + " canReach=" + canReach);
 
