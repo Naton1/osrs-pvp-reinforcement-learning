@@ -145,6 +145,7 @@ public class GameConstants {
 			new PlayerBotDefinition("Bot Josh", new Location(3091, 3533), new DDSPureMFighterPreset()),
 			new PlayerBotDefinition("Bot Odablock", new Location(3091, 3536), new TribridMaxFighterPreset()),
 			new PlayerBotDefinition("Bot SKillSpecs", new Location(3095, 3535), new MidTribridMaxFighterPreset()),
+			new PlayerBotDefinition("Bot F2P Pure", new Location(3096, 3530), new F2PMeleeFighterPreset()),
 	};
 
 	// The password for every player bot account
