@@ -33,20 +33,16 @@ public class PickupItemPacketListener implements PacketExecutor {
 					.sendMessage("Pick up item: " + itemId + ". " + position.toString());
 		}
 
-		if (player.busy()) {
+		if (player.busy() || !player.getLastItemPickup().elapsed(300)) {
+			// If player is busy or last item was picked up less than 0.3 seconds ago
 			return;
 		}
-
-		if (!player.getLastItemPickup().elapsed(300))
-			return;
 
 		player.getMovementQueue().walkToGroundItem(player, position, () -> takeItem(player, itemId, position));
 	}
 
 	private void takeItem(Player player, int itemId, Location position) {
-		int x = position.getX();
-
-		int y = position.getY();
+		int x = position.getX(), y = position.getY();
 
 		if (Math.abs(player.getLocation().getX() - x) > 25 || Math.abs(player.getLocation().getY() - y) > 25) {
 			player.getMovementQueue().reset();

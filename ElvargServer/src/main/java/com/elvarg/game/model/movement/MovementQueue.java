@@ -653,8 +653,14 @@ public final class MovementQueue {
         return foundRoute;
     }
 
-    public void walkToGroundItem(Player player, Location pos, Runnable run) {
+    public void walkToGroundItem(Player player, Location pos, Runnable action) {
         reset();
+
+        if (player.getLocation().getDistance(pos) == 0) {
+            // If player is already at the ground item, run the action now
+            action.run();
+            return;
+        }
 
         int destX = pos.getX();
         int destY = pos.getY();
@@ -665,10 +671,6 @@ public final class MovementQueue {
             reset();
         }
 
-        final int finalDestinationX = player.getMovementQueue().pathX;
-
-        final int finalDestinationY = player.getMovementQueue().pathY;
-
         TaskManager.submit(new Task(1, player, false) {
 
             int stage = 0;
@@ -677,13 +679,6 @@ public final class MovementQueue {
             protected void execute() {
 
                 if (stage != 0) {
-                    if (stage == 1) {
-                        player.getMovementQueue().reset();
-                        if (run != null)
-                            run.run();
-                        stop();
-                        return;
-                    }
                     player.getMovementQueue().reset();
                     stop();
                     player.getPacketSender().sendMessage("You can't reach that!");
@@ -694,12 +689,16 @@ public final class MovementQueue {
                     return;
                 }
 
-                if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != finalDestinationX || player.getLocation().getY() != finalDestinationY) {
+                if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != destX || player.getLocation().getY() != destY) {
                     stage = -1;
                     return;
                 }
-                stage = 1;
-                return;
+
+                if (action != null) {
+                    action.run();
+                }
+                player.getMovementQueue().reset();
+                stop();
             }
         });
     }
@@ -720,8 +719,6 @@ public final class MovementQueue {
 
         PathFinder.calculateEntityRoute(player, destX, destY);
 
-        System.err.println(finalDestinationX+""+finalDestinationY);
-
         TaskManager.submit(new Task(1, player, false) {
 
             int currentX = entity.getLocation().getX();
@@ -732,7 +729,6 @@ public final class MovementQueue {
 
             @Override
             protected void execute() {
-                System.err.println(destX+","+destY+", finalDestinationX"+finalDestinationX+","+finalDestinationY);
                 player.setMobileInteraction(entity);
                 if (currentX != entity.getLocation().getX() || currentY != entity.getLocation().getY()) {
                     reset();
