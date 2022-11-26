@@ -99,9 +99,12 @@ public class Combat {
 
         boolean canReach = RegionManager.canProjectileAttack(character, target);
 
-        boolean needsPath = !character.getMovementQueue().hasRoute() && (distanceFromTarget > attackDistance || distanceFromTarget == 0 || !canReach);
-
-        Server.logDebug("MaxAttackDistance=" + attackDistance + ", CurrentDistance=" + distanceFromTarget + ", path=" + needsPath + " canReach=" + canReach);
+        // Only path if distance from target is larger than required attack distance
+        boolean needsPath =  distanceFromTarget > attackDistance
+                // Or target is standing underneath us
+                || distanceFromTarget == 0
+                // Or we can't reach the target and haven't got a valid path yet
+                || (!canReach && (!character.getMovementQueue().hasRoute() || character.getMovementQueue().points().size() == 0));
 
         if (needsPath) {
             character.getMovementQueue().reset();

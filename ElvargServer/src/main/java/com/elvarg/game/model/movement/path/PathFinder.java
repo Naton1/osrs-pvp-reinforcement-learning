@@ -1,5 +1,6 @@
 package com.elvarg.game.model.movement.path;
 
+import com.elvarg.Server;
 import com.elvarg.game.collision.Region;
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.entity.impl.Mobile;
@@ -59,7 +60,7 @@ public class PathFinder {
         PrivateArea area = attacker.getPrivateArea();
 
         tiles.stream().filter(t -> !RegionManager.blocked(t, area)).filter(t -> RegionManager.canProjectileAttack(attacker, t, defender.getLocation())).min(Comparator.comparing(attacker.getLocation()::getDistance)).ifPresent(tile -> {
-            System.out.println("BestTile=" + tile.toString() + " pathClosestAttackableTile" + " distanceRequested=" + size + " distanceGave=" + attacker.getLocation().getDistance(defender.getLocation()));
+            Server.logDebug("BestTile=" + tile.toString() + " pathClosestAttackableTile" + " distanceRequested=" + size + " distanceGave=" + attacker.getLocation().getDistance(defender.getLocation()));
             calculateEntityRoute(attacker, tile.getX(), tile.getY());
         });
         attacker.setMobileInteraction(defender);

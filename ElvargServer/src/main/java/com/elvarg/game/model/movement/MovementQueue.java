@@ -653,6 +653,10 @@ public final class MovementQueue {
         return foundRoute;
     }
 
+    public Deque<Point> points() {
+        return points;
+    }
+
     public void walkToGroundItem(Player player, Location pos, Runnable action) {
         reset();
 
