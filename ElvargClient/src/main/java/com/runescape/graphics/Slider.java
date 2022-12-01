@@ -110,6 +110,7 @@ public class Slider {
                 Client.instance.changeMusicVolume((int) (minValue + maxValue - value));
                 break;
             case SOUND:
+                Client.instance.changeSoundVolume((int) (minValue + maxValue - value));
                 break;
         }
         Client.instance.savePlayerData();

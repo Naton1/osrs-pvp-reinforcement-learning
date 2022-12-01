@@ -2,6 +2,8 @@ package com.elvarg.net.packet.impl;
 
 import java.util.Optional;
 
+import com.elvarg.game.Sound;
+import com.elvarg.game.Sounds;
 import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGround;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
@@ -81,6 +83,7 @@ public class PickupItemPacketListener implements PacketExecutor {
 						ItemOnGroundManager.deregister(item.get());
 					}
 					player.getInventory().add(item.get().getItem());
+					Sounds.sendSound(player, Sound.PICK_UP_ITEM);
 					player.getLastItemPickup().reset();
 				}
 			}

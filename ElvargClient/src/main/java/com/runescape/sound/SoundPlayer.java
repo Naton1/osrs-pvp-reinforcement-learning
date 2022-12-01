@@ -19,7 +19,7 @@ public class SoundPlayer implements Runnable {
     private Thread player;
     private int delay;
     private int soundLevel;
-    public static int volume = 2;
+    public static int volume = -6;
 
     /**
      * Initializes the sound player.
