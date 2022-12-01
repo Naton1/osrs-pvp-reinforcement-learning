@@ -16,6 +16,7 @@ import com.elvarg.game.content.combat.magic.Autocasting;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
+import com.elvarg.game.entity.impl.playerbot.fightstyle.impl.F2PMeleeFighterPreset;
 import com.elvarg.game.model.Flag;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.MagicSpellbook;
@@ -53,12 +54,11 @@ public class Presetables {
 			PredefinedPresets.DDS_PURE_M_73,
 			PredefinedPresets.DDS_PURE_R_73,
 			PredefinedPresets.NH_PURE_83,
-			PredefinedPresets.ATT_60_ZERKER_94,
+			F2PMeleeFighterPreset.PRESETABLE,
 			PredefinedPresets.ATT_70_ZERKER_97,
 			PredefinedPresets.MAIN_RUNE_126,
 			PredefinedPresets.MAIN_HYBRID_126,
 			PredefinedPresets.MAIN_TRIBRID_126,
-
 	};
 
 	/**
