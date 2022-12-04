@@ -34,9 +34,6 @@ public class TradeRequestPacketListener implements PacketExecutor {
     }
 
     public static void sendRequest(Player player, Player target) {
-
-        //player.setFollowing(player2);
-
         if (player.busy()) {
             player.getPacketSender().sendMessage("You cannot do that right now.");
             return;

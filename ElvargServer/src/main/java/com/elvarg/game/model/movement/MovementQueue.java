@@ -258,10 +258,6 @@ public final class MovementQueue {
             return;
         }
 
-        //if (character.getFollowing() != null) {
-         //   processFollowing();
-       // }
-
         // Poll through the actual movement queue and
         // begin moving.
         Point walkPoint = null;
@@ -370,11 +366,7 @@ public final class MovementQueue {
      * @return
      */
     public static int runEnergyRestoreDelay(Player p) {
-        int delay = 1700 - (p.getSkillManager().getCurrentLevel(Skill.AGILITY) * 10);
-        // if (isResting()) {
-        // delay *= 0.45;
-        // }
-        return delay;
+        return 1700 - (p.getSkillManager().getCurrentLevel(Skill.AGILITY) * 10);
     }
 
     /**
@@ -605,8 +597,6 @@ public final class MovementQueue {
             }
         }
         PathFinder.calculateWalkRoute(character, destination.getX(), destination.getY());
-
-        //RS317PathFinder.findPath(character, destination.getX(), destination.getY(), character.isPlayer(), 1, 1);
     }
 
     /**

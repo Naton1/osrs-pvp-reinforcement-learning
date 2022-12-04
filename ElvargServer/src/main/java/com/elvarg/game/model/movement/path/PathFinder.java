@@ -154,35 +154,30 @@ public class PathFinder {
             if (baseX == destinationX && baseY == destinationY) {
                 entity.getMovementQueue().setRoute(true);
                 entity.getMovementQueue().setPathX(baseX).setPathY(baseY);
-                //System.err.println("already at destination.. breaking the loop.");
+                Server.logDebug("Already at destination, breaking loop");
                 break;
             }
-
-            //System.err.println("Size="+size+" Path1="+method219(entity, destinationX, baseX, baseY, direction, size - 1, destinationY)+" path2="+method220(entity, destinationX, destinationY, baseY, size - 1, direction, baseX));
 
             if (size != 0) {
                 /** Used for basic walking and other packet interactions also size 10 **/
                 if ((size < 5 || size == 10) && defaultRoutePath(entity, destinationX, baseX, baseY, direction, size - 1, destinationY)) {
-                    System.err.println("Using normal entity pathing.. :)))");
+                    Server.logDebug("Using normal entity pathing..");
                     entity.getMovementQueue().setRoute(true);
                     break;
                 }
                 /** Used for larger entities e.g corp/kbd ect **/
                 if (size < 10 && largeRoutePath(entity, destinationX, destinationY, baseY, size - 1, direction, baseX)) {
-                    System.err.println("Using larger Size Pathing.. :)))");
+                    Server.logDebug("Using larger Size Pathing..");
                     entity.getMovementQueue().setRoute(true);
                     break;
                 }
             }
             /** Used for Calculating best route to object based on sizeX/Y **/
             if (yLength != 0 && xLength != 0 && sizeRoutePath(entity, destinationY, destinationX, baseX, xLength, blockingMask, yLength, baseY)) {
-                System.err.println("Using size based pathing :)))");
+                Server.logDebug("Using size based pathing..");
                 entity.getMovementQueue().setRoute(true);
                 break;
             }
-
-
-            //System.err.println("baseX=" + baseX + " baseY=" + baseY + " destX=" + destX + " destY=" + destY + " X=" + absoluteX + " Y=" + absoluteY + " pathType=" + method219(entity, destinationX, baseX, baseY, direction, size - 1, destinationY) + "," + method220(entity, destinationX, destinationY, baseY, size - 1, direction, baseX) + "," + method221(entity, destinationY, destinationX, baseX, xLength, clipFlag, yLength, baseY, direction));
 
             /** Cost for the distance **/
             int priceValue = distanceValues[baseX][baseY] + 1;
@@ -276,7 +271,7 @@ public class PathFinder {
                 }
             }
             if (!entity.getMovementQueue().hasRoute()) {
-                System.err.println("error.. no path found... path probably not reachable.");
+                Server.logDebug("error.. no path found... path probably not reachable.");
                 return -1;
             }
         }
@@ -301,8 +296,6 @@ public class PathFinder {
             else if ((dirc & 4) != 0)
                 baseY--;
         }
-
-        //System.err.println("PATH :))) localX=" + localX + " localY=" + localY + " baseX=" + baseX + " baseY=" + baseY + " destinationX=" + destinationX + " destinationY=" + destinationY);
 
         if (queueIndex > 0) {
 

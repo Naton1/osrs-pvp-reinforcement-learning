@@ -1,5 +1,6 @@
 package com.elvarg.net.packet.impl;
 
+import com.elvarg.Server;
 import com.elvarg.game.World;
 import com.elvarg.game.content.PetHandler;
 import com.elvarg.game.content.combat.magic.CombatSpell;
@@ -29,23 +30,19 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
             return;
         }
 
-        int index = packet.readLEShortA();//writeLEShortA
+        int index = packet.readLEShortA();
 
         if (index < 0 || index > World.getNpcs().capacity()) {
-            System.err.println("index is too low/high.. "+index);
             return;
         }
 
         final NPC npc = World.getNpcs().get(index);
 
         if (npc == null) {
-            System.err.println("npc doesn't exist... "+index);
             return;
         }
 
         if (!player.getLocation().isWithinDistance(npc.getLocation(), 24)) {
-            /** Must be within a 24 tile radius **/
-            System.err.println("Distance to NPC is over 24.. current distance="+player.getLocation().getDistance(npc.getLocation()));
             return;
         }
 
@@ -66,7 +63,7 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 
             if (packet.getOpcode() == PacketConstants.MAGE_NPC_OPCODE) {
 
-                int spellId = packet.readShortA();//writeShortA
+                int spellId = packet.readShortA();
 
                 CombatSpell spell = CombatSpells.getCombatSpell(spellId);
 

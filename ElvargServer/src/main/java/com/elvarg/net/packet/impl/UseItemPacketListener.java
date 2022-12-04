@@ -36,11 +36,6 @@ import com.elvarg.util.ObjectIdentifiers;
 
 public class UseItemPacketListener extends ItemIdentifiers implements PacketExecutor {
 
-
-    private static void handle() {
-
-    }
-
     private static void itemOnItem(Player player, Packet packet) {
         int usedWithSlot = packet.readUnsignedShort();
         int itemUsedSlot = packet.readUnsignedShortA();

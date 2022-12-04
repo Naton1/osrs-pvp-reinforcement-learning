@@ -43,7 +43,6 @@ public class FollowPlayerPacketListener implements PacketExecutor {
 
         player.setFollowing(leader);
 
-        //System.err.println("following="+leader.getUsername());
         /** Required Index as players have different identifiers **/
         TaskManager.submit(new Task(1, player.getIndex(), false) {
 

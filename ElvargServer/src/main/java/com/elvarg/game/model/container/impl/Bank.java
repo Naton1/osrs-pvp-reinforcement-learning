@@ -206,7 +206,9 @@ public class Bank extends ItemContainer {
      */
 
     public static void deposit(Player player, int item, int slot, int amount, boolean ignore) {
-        if (ignore || player.getStatus() == PlayerStatus.BANKING && player.getInterfaceId() == 5292 || player.getInterfaceId() == 4465) {
+        if (ignore || player.getStatus() == PlayerStatus.BANKING
+                && player.getInterfaceId() == 5292 /* Regular bank */
+                || player.getInterfaceId() == 4465 /* Bank deposit booth */) {
             if (player.getInventory().getItems()[slot].getId() != item) {
                 return;
             }

@@ -648,7 +648,7 @@ public class RegionManager {
         Location b = to.getLocation();
 
         if (from.isPlayer() && to.isPlayer()) {
-            // If both participants are players, line of sight is calculated from the player on the western side. I
+            // If both participants are players, line of sight is calculated from the player on the western side.
             if (a.getX() > b.getX()) {
                 a = to.getLocation();
                 b = from.getLocation();
