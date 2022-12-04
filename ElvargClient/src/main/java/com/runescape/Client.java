@@ -172,7 +172,8 @@ public class Client extends GameApplet {
      */
     public static Dimension frameDimension() {
         if (frameMode == ScreenMode.RESIZABLE) {
-            return new Dimension(766, 529);
+            return new Dimension(800, 600);
+            //return new Dimension(766, 529);
         }
 
         return new Dimension(765, 503);
@@ -868,14 +869,12 @@ public class Client extends GameApplet {
 
     public void frameMode(ScreenMode screenMode) {
         frameMode = screenMode;
+        frameWidth = frameDimension().width;
+        frameHeight = frameDimension().height;
         if (screenMode == ScreenMode.FIXED) {
-            frameWidth = 765;
-            frameHeight = 503;
             cameraZoom = 600;
             SceneGraph.viewDistance = 9;
         } else if (screenMode == ScreenMode.RESIZABLE) {
-            frameWidth = 766;
-            frameHeight = 529;
             cameraZoom = 850;
             SceneGraph.viewDistance = 10;
         } else if (screenMode == ScreenMode.FULLSCREEN) {
@@ -1066,10 +1065,8 @@ public class Client extends GameApplet {
             if (SignLink.mainapp == null) {
                 SignLink.init(this);
             }
-            // Don't call frame mode if we're running as desktop client, this can cause an extra window to appear
-            //frameMode(ScreenMode.RESIZABLE);
             instance = this;
-            initClientFrame(frameMode == ScreenMode.FIXED ? 503 : 529, frameMode == ScreenMode.FIXED ? 765 : 766);
+            initClientFrame(frameDimension().width, frameDimension().height);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -10117,7 +10114,7 @@ public class Client extends GameApplet {
     private void showErrorScreen() {
         Graphics g = getGameComponent().getGraphics();
         g.setColor(Color.black);
-        g.fillRect(0, 0, 765, 503);
+        g.fillRect(0, 0, frameDimension().width, frameDimension().height);
         method4(1);
         if (loadingError) {
             aBoolean831 = false;
@@ -10301,8 +10298,8 @@ public class Client extends GameApplet {
                     Widget rsInterface_1 = Widget.interfaceCache[openInterfaceId];
                     if (rsInterface_1.width == 512 && rsInterface_1.height == 334
                             && rsInterface_1.type == 0) {
-                        rsInterface_1.width = 765;
-                        rsInterface_1.height = 503;
+                        rsInterface_1.width = frameDimension().width;
+                        rsInterface_1.height = frameDimension().height;
                     }
                     try {
                         drawInterface(0, 0, rsInterface_1, 8);
@@ -10313,8 +10310,8 @@ public class Client extends GameApplet {
                 Widget rsInterface = Widget.interfaceCache[fullscreenInterfaceID];
                 if (rsInterface.width == 512 && rsInterface.height == 334
                         && rsInterface.type == 0) {
-                    rsInterface.width = 765;
-                    rsInterface.height = 503;
+                    rsInterface.width = frameDimension().width;
+                    rsInterface.height = frameDimension().height;
                 }
                 try {
                     drawInterface(0, 0, rsInterface, 8);
@@ -15705,7 +15702,7 @@ public class Client extends GameApplet {
         loginMusicImageProducer = null;
         middleLeft1BackgroundTile = null;
         aRSImageProducer_1115 = null;
-        super.fullGameScreen = new ProducingGraphicsBuffer(765, 503);
+        super.fullGameScreen = new ProducingGraphicsBuffer(frameDimension().width, frameDimension().height);
         welcomeScreenRaised = true;
     }
 
