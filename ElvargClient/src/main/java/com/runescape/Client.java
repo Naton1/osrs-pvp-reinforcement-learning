@@ -163,7 +163,21 @@ public class Client extends GameApplet {
     private static final String validUserPassChars =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"\243$%^&*()-_=+[{]};:'@#~,<.>/?\\| ";
     public static final SpriteCache spriteCache = new SpriteCache();
-    public static ScreenMode frameMode = ScreenMode.FIXED;
+    public static ScreenMode frameMode = ScreenMode.RESIZABLE;
+
+    /**
+     * Utility function to get the current dimensions of the client frame.
+     *
+     * @return Dimension - The current dimensions of the client frame.
+     */
+    public static Dimension frameDimension() {
+        if (frameMode == ScreenMode.RESIZABLE) {
+            return new Dimension(766, 529);
+        }
+
+        return new Dimension(765, 503);
+    }
+
     public static int frameWidth = 765;
     public static int frameHeight = 503;
     public static int screenAreaWidth = 512;
@@ -853,27 +867,26 @@ public class Client extends GameApplet {
     }
 
     public void frameMode(ScreenMode screenMode) {
-        if (frameMode != screenMode) {
-            frameMode = screenMode;
-            if (screenMode == ScreenMode.FIXED) {
-                frameWidth = 765;
-                frameHeight = 503;
-                cameraZoom = 600;
-                SceneGraph.viewDistance = 9;
-            } else if (screenMode == ScreenMode.RESIZABLE) {
-                frameWidth = 766;
-                frameHeight = 529;
-                cameraZoom = 850;
-                SceneGraph.viewDistance = 10;
-            } else if (screenMode == ScreenMode.FULLSCREEN) {
-                cameraZoom = 600;
-                SceneGraph.viewDistance = 10;
-                frameWidth = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-                frameHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-            }
-            rebuildFrameSize(screenMode, frameWidth, frameHeight);
-            setBounds();
+        frameMode = screenMode;
+        if (screenMode == ScreenMode.FIXED) {
+            frameWidth = 765;
+            frameHeight = 503;
+            cameraZoom = 600;
+            SceneGraph.viewDistance = 9;
+        } else if (screenMode == ScreenMode.RESIZABLE) {
+            frameWidth = 766;
+            frameHeight = 529;
+            cameraZoom = 850;
+            SceneGraph.viewDistance = 10;
+        } else if (screenMode == ScreenMode.FULLSCREEN) {
+            cameraZoom = 600;
+            SceneGraph.viewDistance = 10;
+            frameWidth = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+            frameHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         }
+        rebuildFrameSize(screenMode, frameWidth, frameHeight);
+        setBounds();
+
         stackSideStones = screenMode != ScreenMode.FIXED && stackSideStones;
         showChatComponents = screenMode == ScreenMode.FIXED || showChatComponents;
         showTabComponents = screenMode == ScreenMode.FIXED || showTabComponents;
@@ -884,7 +897,7 @@ public class Client extends GameApplet {
         screenAreaHeight = (screenMode == ScreenMode.FIXED) ? 334 : height;
         frameWidth = width;
         frameHeight = height;
-        instance.rebuildFrame(width, height, screenMode == ScreenMode.RESIZABLE, screenMode == ScreenMode.FULLSCREEN);
+        this.rebuildFrame(width, height, screenMode == ScreenMode.RESIZABLE, screenMode == ScreenMode.FULLSCREEN);
     }
 
     private static void setBounds() {
@@ -1053,9 +1066,10 @@ public class Client extends GameApplet {
             if (SignLink.mainapp == null) {
                 SignLink.init(this);
             }
-            frameMode(ScreenMode.FIXED);
+            // Don't call frame mode if we're running as desktop client, this can cause an extra window to appear
+            //frameMode(ScreenMode.RESIZABLE);
             instance = this;
-            initClientFrame(503, 765);
+            initClientFrame(frameMode == ScreenMode.FIXED ? 503 : 529, frameMode == ScreenMode.FIXED ? 765 : 766);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -4227,7 +4241,7 @@ public class Client extends GameApplet {
         currentSong = -1;
         nextSong = -1;
         prevSong = 0;
-        frameMode(ScreenMode.FIXED);
+        frameMode(frameMode);
         savePlayerData();
     }
 
@@ -9248,7 +9262,7 @@ public class Client extends GameApplet {
                 SettingsWidget.updateSettings();
                 this.stopMidi();
                 setupGameplayScreen();
-                frameMode(ScreenMode.FIXED);
+                frameMode(frameMode);
                 return;
             }
             if (response == 28) {
