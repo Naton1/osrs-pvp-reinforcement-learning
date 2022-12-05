@@ -33,6 +33,7 @@ import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.ObjectIdentifiers;
+import com.elvarg.game.entity.impl.object.ObjectManager;
 
 /**
  * This packet listener is called when a player clicked on a game object.
@@ -51,6 +52,10 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *            The packet containing the object's information.
 	 */
     private static void firstClick(Player player, GameObject object) {
+        if(doorHandler(player, object)) {
+	    return;
+	}
+
         // Skills..
         if (player.getSkillManager().startSkillable(object)) {
             return;
@@ -318,6 +323,39 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
                 && (rotation & 4) == 0
                 || y == maxY + 1 && x >= finalX && x <= maxX && (RegionManager.getClipping(x, y, height, privateArea) & 0x20) == 0
                         && (rotation & 1) == 0;
+    }
+    
+    private static boolean doorHandler(Player player, GameObject object) { 
+        if (object.getDefinition().getName() != null && object.getDefinition().getName().contains("Door") ) {
+            final int[][] openOffset = new int[][] { new int[] { -1, 0 }, new int[] { 0, 1 }, new int[] { 1, 0 }, new int[] { 0, -1 },
+                    new int[] { 0, -1 } };
+            final int[][] closeOffset = new int[][] { new int[] { 1, 0 }, new int[] { 1, 0 }, new int[] { 0, 1 }, new int[] { -1, 0 },
+                    new int[] { 0, 1 } };
+            /* check if its an open or closed door */
+            boolean open = object.getDefinition().interactions[0].contains("Open");
+
+            /* gets offset coords based on door face */
+            int[] offset = open? openOffset[object.getFace()] :closeOffset[object.getFace()] ;
+            /* adjust door direction based on if it needs to be opened or closed */
+            int face = open? object.getFace() + 1 : object.getFace() - 1;
+
+            Location loc =  new Location( object.getLocation().getX() + offset[0],object.getLocation().getY() + offset[1]   , object.getLocation().getZ());
+            GameObject obj = new GameObject(open? object.getId() + 1 : object.getId() - 1, loc, object.getType(), face , null);
+
+            /* spawns/despawns doors accordingly */
+
+            if (open) {
+                ObjectManager.register(new GameObject(-1, object.getLocation(), 0, 0, object.getPrivateArea()), true);
+                ObjectManager.register(new GameObject(-1, loc, object.getType(), object.getFace(), object.getPrivateArea()), true);
+            }
+
+            ObjectManager.deregister(object, true);
+            ObjectManager.register(obj, true);
+
+            return true;
+        }
+	
+	return false;
     }
 
 	@Override
