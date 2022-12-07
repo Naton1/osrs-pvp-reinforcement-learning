@@ -5409,8 +5409,7 @@ public class Client extends GameApplet {
             int k1 = SceneGraph.clickedTileY;
             int destX = (regionBaseX + k);
             int destY = (regionBaseY + k1);
-            boolean flag = true;//doWalkTo(0, 0, 0, 0, localPlayer.pathY[0], 0, 0, k1,
-                    //localPlayer.pathX[0], true, k);
+            boolean flag = true;
             createPathRequest(destX, destY, plane);
             SceneGraph.clickedTileX = -1;
             if (flag) {
@@ -5621,14 +5620,9 @@ public class Client extends GameApplet {
                 xLength = class46.objectSizeX;
             }
             int blockingMask = class46.surroundings;
-            if (direction != 0)
+            if (direction != 0) {
                 blockingMask = (blockingMask << direction & 0xf) + (blockingMask >> 4 - direction);
-
-           /* doWalkTo(2, 0, xLength, 0, localPlayer.pathY[0], yLength, blockingMask, finalY, localPlayer.pathX[0],
-                    false, finalX);
-        } else {
-            doWalkTo(2, direction, 0, type + 1, localPlayer.pathY[0], 0, 0, finalY, localPlayer.pathX[0],
-                    false, finalX);*/
+            }
         }
         crossX = super.saveClickX;
         crossY = super.saveClickY;
@@ -5941,12 +5935,6 @@ public class Client extends GameApplet {
 
         // picking up ground item
         if (action == 234) {
-           // boolean flag1 = doWalkTo(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, button,
-               //     localPlayer.pathX[0], false, first);
-            //if (!flag1)
-             //   flag1 = doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, button,
-              //          localPlayer.pathX[0], false, first);
-
             crossX = super.saveClickX;
             crossY = super.saveClickY;
             crossType = 2;
@@ -5962,11 +5950,6 @@ public class Client extends GameApplet {
 
         // using item on ground item
         if (action == 511) {
-            //boolean flag2 = doWalkTo(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, button,
-                  //  localPlayer.pathX[0], false, first);
-           // if (!flag2)
-             //   flag2 = doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, button,
-              //         localPlayer.pathX[0], false, first);
             crossX = super.saveClickX;
             crossY = super.saveClickY;
             crossType = 2;
@@ -6101,9 +6084,6 @@ public class Client extends GameApplet {
         if (action == 20) {
             Npc npc = npcs[clicked];
             if (npc != null) {
-                //doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                       // npc.pathY[0], localPlayer.pathX[0],
-                        //false, npc.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6116,9 +6096,6 @@ public class Client extends GameApplet {
         if (action == 779) {
             Player player = players[clicked];
             if (player != null) {
-                //doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                  //      player.pathY[0], localPlayer.pathX[0],
-                  //     false, player.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6349,9 +6326,6 @@ public class Client extends GameApplet {
         if (action == 27) {
             Player player = players[clicked];
             if (player != null) {
-                //doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                      //  player.pathY[0], localPlayer.pathX[0],
-                       // false, player.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6569,7 +6543,6 @@ public class Client extends GameApplet {
 
         // clicking some sort of tile
         if (action == 652) {
-            System.err.println("3..");
             boolean flag4 = doWalkTo(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, button,
                     localPlayer.pathX[0], false, first);
             if (!flag4)
@@ -6647,9 +6620,6 @@ public class Client extends GameApplet {
         if (action == 225) {
             Npc npc = npcs[clicked];
             if (npc != null) {
-                //doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                  //      npc.pathY[0], localPlayer.pathX[0],
-                    //    false, npc.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6670,7 +6640,6 @@ public class Client extends GameApplet {
         if (action == 965) {
             Npc npc = npcs[clicked];
             if (npc != null) {
-                //doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, npc.pathY[0], localPlayer.pathX[0], false, npc.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6691,8 +6660,6 @@ public class Client extends GameApplet {
         if (action == 413) {
             Npc npc = npcs[clicked];
             if (npc != null) {
-                //doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, npc.pathY[0],
-                   //     localPlayer.pathX[0], false, npc.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6730,9 +6697,6 @@ public class Client extends GameApplet {
         if (action == 412) {
             Npc npc = npcs[clicked];
             if (npc != null) {
-                //doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                    //    npc.pathY[0], localPlayer.pathX[0],
-                     //   false, npc.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6759,9 +6723,6 @@ public class Client extends GameApplet {
         if (action == 729) {
             Player player = players[clicked];
             if (player != null) {
-                //doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                   //     player.pathY[0], localPlayer.pathX[0],
-                   //     false, player.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -9628,29 +9589,8 @@ public class Client extends GameApplet {
                     anInt1288 = 0;
                 }
 
-                if (movementType == 0) {
-                    //packetSender.getBuffer().writeOpcode(164);//click walk
-                    //packetSender.getBuffer().writeByte(k4 + k4 + 4);
-                } else if (movementType == 1) {
-                    //packetSender.getBuffer().writeOpcode(248);//minimap
-                    // packetSender.getBuffer().putByte(k4 + k4 + 4 + 14);
-                    //packetSender.getBuffer().writeByte(k4 + k4 + 4);
-                } else if (movementType == 2) {
-                    //packetSender.getBuffer().writeOpcode(98);//shift click tp
-                    //packetSender.getBuffer().writeByte(k4 + k4 + 4);
-                }
-                //packetSender.getBuffer().writeByte(plane);
-                //packetSender.getBuffer().writeLEShortA(k6 + regionBaseX);
                 destinationX = bigX[0];
                 destinationY = bigY[0];
-                int i_4 = queueIndex;
-                for (int j7 = 1; j7 < k4; j7++) {
-                    i_4--;
-                   // packetSender.getBuffer().writeByte(bigX[i_4] - k6);
-                   // packetSender.getBuffer().writeByte(bigY[i_4] - i7);
-                }
-               // packetSender.getBuffer().writeLEShort(i7 + regionBaseY);
-               // packetSender.getBuffer().writeNegatedByte((super.keyArray[5] != 1 ? 0 : 1));
                 return true;
             }
         } catch (Exception e) {
@@ -10047,13 +9987,9 @@ public class Client extends GameApplet {
                 boolean flag1 = true;
                 int destX = (regionBaseX + i2);
                 int destY = (regionBaseY + j2);
-                boolean flag = true;//doWalkTo(0, 0, 0, 0, localPlayer.pathY[0], 0, 0, k1,
-                //localPlayer.pathX[0], true, k);
+                boolean flag = true;
                 createPathRequest(destX, destY, plane);
-                        //doWalkTo(1, 0, 0, 0, localPlayer.pathY[0], 0, 0, j2,
-                        //localPlayer.pathX[0], true, i2);
                 if (flag1) {
-
 					/*outgoing.writeByte(i);
 					outgoing.writeByte(j);
 					outgoing.writeShort(cameraHorizontal);
