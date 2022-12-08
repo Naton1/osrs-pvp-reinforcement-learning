@@ -173,7 +173,6 @@ public class Client extends GameApplet {
     public static Dimension frameDimension() {
         if (frameMode == ScreenMode.RESIZABLE) {
             return new Dimension(800, 600);
-            //return new Dimension(766, 529);
         }
 
         return new Dimension(765, 503);
