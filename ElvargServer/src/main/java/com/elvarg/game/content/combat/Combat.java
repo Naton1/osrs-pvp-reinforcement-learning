@@ -79,8 +79,17 @@ public class Combat {
      * Attempts to perform a new attack.
      */
     public void performNewAttack(boolean instant) {
-        if (target != null) {
 
+        if (character != null && character.isNpc()) {
+            NPC n = (NPC) character;
+            if (n.isBarricade()) {
+                /**
+                 * Barricades should not be processed as an attacker (Character).
+                 */
+                return;
+            }
+        }
+        if (target != null) {
             // Fetch the combat method the character will be attacking with
             method = CombatFactory.getMethod(character);
 

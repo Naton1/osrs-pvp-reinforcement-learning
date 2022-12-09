@@ -293,6 +293,11 @@ public abstract class Mobile extends Entity {
 	}
 
 	public Mobile setPositionToFace(Location positionToFace) {
+		if (this.isNpc() && ((NPC)this).isBarricade()) {
+			// Barricades shouldn't face
+			return this;
+		}
+
 		this.positionToFace = positionToFace;
 		getUpdateFlag().flag(Flag.FACE_POSITION);
 		return this;
