@@ -1,11 +1,18 @@
 package com.elvarg.game.entity.impl.npc.impl;
 
+import com.elvarg.game.Sound;
+import com.elvarg.game.Sounds;
 import com.elvarg.game.World;
 import com.elvarg.game.collision.RegionManager;
+import com.elvarg.game.content.skill.skillable.impl.Firemaking;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
+import com.elvarg.game.model.Skill;
+import com.elvarg.game.task.Task;
+import com.elvarg.game.task.TaskManager;
 import io.netty.util.internal.ConcurrentSet;
 
 import java.util.Arrays;
@@ -31,6 +38,12 @@ public class Barricades {
      * The ITEM_ID for the barricade in inventory
      */
     public static final int BARRICADE_ITEM_ID = 4053;
+
+    /**
+     * Amount of firemaking experience to gain for each barricade light.
+     * (Normal log burn = 40)
+     */
+    public static final int FIREMAKING_EXPERIENCE = 10;
 
     /**
      * A list used to the Tiles of the barricade clipping.
@@ -84,8 +97,21 @@ public class Barricades {
             player.getPacketSender().sendMessage("You need a tinderbox to set the barricade on fire.");
             return;
         }
-        npc.setNpcTransformationId(NPC_ID_BURNING);
-        npc.barricadeOnFire = true;
+
+        player.performAnimation(Firemaking.LIGHT_FIRE);
+        Sounds.sendSound(player, Sound.FIRE_FIRST_ATTEMPT);
+
+        TaskManager.submit(new Task(3, player, false) {
+            @Override
+            protected void execute() {
+                npc.setNpcTransformationId(NPC_ID_BURNING);
+                npc.barricadeOnFire = true;
+                player.getSkillManager().addExperience(Skill.FIREMAKING, FIREMAKING_EXPERIENCE);
+                player.performAnimation(Animation.DEFAULT_RESET_ANIMATION);
+                this.stop();
+            }
+        });
+
     }
 
     private static void handleBucketOfWater(Player player, NPC npc) {
@@ -110,14 +136,11 @@ public class Barricades {
      */
     private static void deploy(Player player) {
         Location tile = player.getLocation();
-        /** Added clipping flag at the location **/
         RegionManager.addClipping(tile.getX(), tile.getY(), tile.getZ(), 0x200000, player.getPrivateArea());
-        /** Deletes 1 of the Barricade ITEM **/
         player.getInventory().delete(BARRICADE_ITEM_ID, 1);
-        /** Adds Tile to list. **/
         barricades.add(tile);
-        /** Spawns the NPC **/
         World.getAddNPCQueue().add(new NPC(NPC_ID, tile.clone()));
+        Sounds.sendSound(player, Sound.PICK_UP_ITEM);
     }
 
     public static boolean handleInteractiveOptions(Player player, NPC npc, int opcode) {

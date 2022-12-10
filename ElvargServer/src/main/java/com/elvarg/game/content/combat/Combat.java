@@ -52,6 +52,11 @@ public class Combat {
         // Update the target
         setTarget(target);
 
+        if (character != null && character.isNpc() && !character.getAsNpc().getDefinition().doesFightBack()) {
+            // Don't follow or face enemy if NPC doesn't fight back
+            return;
+        }
+
         // Start facing the target
         character.setMobileInteraction(target);
 
@@ -79,16 +84,11 @@ public class Combat {
      * Attempts to perform a new attack.
      */
     public void performNewAttack(boolean instant) {
-
-        if (character != null && character.isNpc()) {
-            NPC n = (NPC) character;
-            if (n.isBarricade()) {
-                /**
-                 * Barricades should not be processed as an attacker (Character).
-                 */
-                return;
-            }
+        if (character != null && character.isNpc() && !character.getAsNpc().getDefinition().doesFightBack()) {
+            // Don't process attacks for NPC's who don't fight back
+            return;
         }
+
         if (target != null) {
             // Fetch the combat method the character will be attacking with
             method = CombatFactory.getMethod(character);

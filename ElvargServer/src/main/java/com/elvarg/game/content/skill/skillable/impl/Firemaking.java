@@ -32,7 +32,7 @@ public class Firemaking extends DefaultSkillable {
     /**
      * The {@link Animation} for lighting a fire.
      */
-    private static final Animation LIGHT_FIRE = new Animation(733);
+    public static final Animation LIGHT_FIRE = new Animation(733);
     /**
      * The {@link LightableLog} which we will be attempting
      * to light.
