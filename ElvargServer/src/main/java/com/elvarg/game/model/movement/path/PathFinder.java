@@ -34,6 +34,17 @@ public class PathFinder {
                 || attacker.getX() + 1 == attacked.getX() && attacker.getY() + 1 == attacked.getY();
     }
 
+    public final static boolean isDiagonalLocation(Mobile att, Mobile def) {
+        Location attacker = att.getLocation().clone();
+        Location attacked = def.getLocation().clone();
+        boolean isDia = attacker.getX() - 1 == attacked.getX() && attacker.getY() + 1 == attacked.getY()//top left
+                || attacker.getX() + 1 == attacked.getX() && attacker.getY() - 1 == attacked.getY()//bottom right
+                || attacker.getX() + 1 == attacked.getX() && attacker.getY() + 1 == attacked.getY()//top right
+                || attacker.getX() - 1 == attacked.getX() && attacker.getY() - 1 == attacked.getY()//bottom right
+                ;
+        return isDia;
+    }
+
     public static void calculateCombatRoute(Mobile player, Mobile target) {
         calculateRoute(player, 0, target.getLocation().getX(), target.getLocation().getY(), 1, 1, 0, 0, false);
         player.setMobileInteraction(target);

@@ -39,7 +39,7 @@ public class World {
 	/**
 	 * The collection of active {@link PlayerBot}s.
 	 */
-	private static HashMap<String, PlayerBot> playerBots = new HashMap<>(GameConstants.PLAYER_BOTS.length);
+	private static TreeMap<String, PlayerBot> playerBots = new TreeMap<String, PlayerBot>(String.CASE_INSENSITIVE_ORDER);
 
 	/**
 	 * The collection of active {@link NPC}s.
@@ -253,7 +253,7 @@ public class World {
 		return npcs;
 	}
 
-	public static HashMap<String, PlayerBot> getPlayerBots() { return playerBots; }
+	public static TreeMap<String, PlayerBot> getPlayerBots() { return playerBots; }
 
 	public static List<ItemOnGround> getItems() {
 		return items;

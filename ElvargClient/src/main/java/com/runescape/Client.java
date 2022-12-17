@@ -3213,6 +3213,10 @@ public class Client extends GameApplet {
         }
     }
 
+    public void changeSoundVolume(int newVolume) {
+        SoundPlayer.setVolume(-9 + newVolume);
+    }
+
     public void updateVarp(int id) {
 
         int parameter = VariablePlayer.variables[id].getActionId();
@@ -5635,7 +5639,7 @@ public class Client extends GameApplet {
         if (id != currentSong && Configuration.enableMusic && !lowMemory && prevSong == 0) {
             nextSong = id;
             fadeMusic = true;
-            //resourceProvider.provide(2, nextSong);
+            ///resourceProvider.provide(2, nextSong);
             currentSong = id;
         }
     }
@@ -5697,7 +5701,7 @@ public class Client extends GameApplet {
             if (prevSong == 0 && Configuration.enableMusic && !lowMemory) {
                 nextSong = currentSong;
                 fadeMusic = true;
-                //resourceProvider.provide(2, nextSong);
+                ///resourceProvider.provide(2, nextSong);
             }
         }
     }

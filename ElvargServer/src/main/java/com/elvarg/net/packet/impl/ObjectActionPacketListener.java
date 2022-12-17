@@ -27,6 +27,7 @@ import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.ObjectIdentifiers;
+import com.elvarg.game.entity.impl.object.ObjectManager;
 
 import java.util.Objects;
 
@@ -47,13 +48,16 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *            The packet containing the object's information.
 	 */
     private static void firstClick(Player player, GameObject object) {
+        if(doorHandler(player, object)) {
+	        return;
+	    }
 
-        final ObjectDefinition defs = object.getDefinition();
         // Skills..
         if (player.getSkillManager().startSkillable(object)) {
             return;
         }
 
+        final ObjectDefinition defs = object.getDefinition();
         if (defs != null) {
             if (defs.name != null && Objects.equals(defs.name, "Bank Deposit Box")) {
                 DepositBox.open(player);
@@ -280,6 +284,56 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
                     break;
             }
         });
+    }
+
+    private static boolean atObject(int finalY, int finalX, int x, int height, int rotation, int width, int y, PrivateArea privateArea) {
+        int maxX = (finalX + width) - 1;
+        int maxY = (finalY + height) - 1;
+        if (x >= finalX && x <= maxX && y >= finalY && y <= maxY)
+            return true;
+        if (x == finalX - 1 && y >= finalY && y <= maxY && (RegionManager.getClipping(x, y, height, privateArea) & 8) == 0
+                && (rotation & 8) == 0)
+            return true;
+        if (x == maxX + 1 && y >= finalY && y <= maxY && (RegionManager.getClipping(x, y, height, privateArea) & 0x80) == 0
+                && (rotation & 2) == 0)
+            return true;
+        return y == finalY - 1 && x >= finalX && x <= maxX && (RegionManager.getClipping(x, y, height, privateArea) & 2) == 0
+                && (rotation & 4) == 0
+                || y == maxY + 1 && x >= finalX && x <= maxX && (RegionManager.getClipping(x, y, height, privateArea) & 0x20) == 0
+                        && (rotation & 1) == 0;
+    }
+
+    private static boolean doorHandler(Player player, GameObject object) {
+        if (object.getDefinition().getName() != null && object.getDefinition().getName().contains("Door") ) {
+            final int[][] openOffset = new int[][] { new int[] { -1, 0 }, new int[] { 0, 1 }, new int[] { 1, 0 }, new int[] { 0, -1 },
+                    new int[] { 0, -1 } };
+            final int[][] closeOffset = new int[][] { new int[] { 1, 0 }, new int[] { 1, 0 }, new int[] { 0, 1 }, new int[] { -1, 0 },
+                    new int[] { 0, 1 } };
+            /* check if its an open or closed door */
+            boolean open = object.getDefinition().interactions[0].contains("Open");
+
+            /* gets offset coords based on door face */
+            int[] offset = open? openOffset[object.getFace()] :closeOffset[object.getFace()] ;
+            /* adjust door direction based on if it needs to be opened or closed */
+            int face = open? object.getFace() + 1 : object.getFace() - 1;
+
+            Location loc =  new Location( object.getLocation().getX() + offset[0],object.getLocation().getY() + offset[1]   , object.getLocation().getZ());
+            GameObject obj = new GameObject(open? object.getId() + 1 : object.getId() - 1, loc, object.getType(), face , null);
+
+            /* spawns/despawns doors accordingly */
+
+            if (open) {
+                ObjectManager.register(new GameObject(-1, object.getLocation(), 0, 0, object.getPrivateArea()), true);
+                ObjectManager.register(new GameObject(-1, loc, object.getType(), object.getFace(), object.getPrivateArea()), true);
+            }
+
+            ObjectManager.deregister(object, true);
+            ObjectManager.register(obj, true);
+
+            return true;
+        }
+
+	return false;
     }
 
 	@Override
