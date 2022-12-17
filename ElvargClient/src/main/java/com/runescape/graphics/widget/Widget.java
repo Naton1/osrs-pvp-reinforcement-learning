@@ -3130,14 +3130,14 @@ public class Widget {
 		setBounds(30314, 105, 214, child++, Interface);
 		setBounds(30322, 147, 214, child++, Interface);
 
-		setBounds(30064, 39, 39, child++, Interface);
-		setBounds(30075, 71, 39, child++, Interface);
-		setBounds(30083, 103, 39, child++, Interface);
-		setBounds(30106, 12, 68, child++, Interface);
-		setBounds(30114, 42, 68, child++, Interface);
-		setBounds(30138, 135, 68, child++, Interface);
-		setBounds(30146, 165, 68, child++, Interface);
-		setBounds(30162, 42, 97, child++, Interface);
+		setBounds(30064, 49, 9, child++, Interface);
+		setBounds(30075, 79, 9, child++, Interface);
+		setBounds(30083, 109, 9, child++, Interface);
+		setBounds(30106, 139, 9, child++, Interface);
+		setBounds(30114, 19, 34, child++, Interface);
+		setBounds(30138, 49, 34, child++, Interface);
+		setBounds(30146, 79, 34, child++, Interface);
+		setBounds(30162, 109, 34, child++, Interface);
 		setBounds(30170, 71, 97, child++, Interface);
 
 		setBounds(30226, 103, 125, child++, Interface);
@@ -3188,9 +3188,9 @@ public class Widget {
 		setBounds(30307, 5, 40, child++, Interface);
 		setBounds(30323, 5, 40, child++, Interface);
 		setBounds(30315, 5, 40, child++, Interface);
-		
+
 		// Add home button
-		setBounds(19210, 20, 60, child++, Interface);
+		setBounds(19210, 19, 9, child++, Interface);//home
 		setBounds(19211, 2, 50, child++, Interface);
 	}
 
