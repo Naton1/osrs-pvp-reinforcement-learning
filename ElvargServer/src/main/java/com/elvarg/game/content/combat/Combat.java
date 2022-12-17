@@ -90,34 +90,20 @@ public class Combat {
         // Fetch the combat method the character will be attacking with
         method = CombatFactory.getMethod(character);
 
+        character.setCombatFollowing(target);
+
         // Face target
         character.setMobileInteraction(target);
 
-        int attackDistance = target.getMovementQueue().isMoving() && method.type() == CombatType.MELEE ? target.size() + 2 : method.attackDistance(character);
-
-        int distanceFromTarget = character.getLocation().getDistance(target.getLocation());
-
-        boolean canReach = RegionManager.canProjectileAttack(character, target);
-
-        // Only path if distance from target is larger than required attack distance
-        boolean needsPath =  distanceFromTarget > attackDistance
-                // Or target is standing underneath us
-                || distanceFromTarget == 0
-                // Or we can't reach the target and haven't got a valid path yet
-                || (!canReach && (!character.getMovementQueue().hasRoute() || character.getMovementQueue().points().size() == 0));
-
-        if (needsPath) {
-            character.getMovementQueue().reset();
-            if (method.type() == CombatType.MELEE) {
-                PathFinder.calculateCombatRoute(character, target);
-            } else {
-                PathFinder.pathClosestAttackableTile(character, target, attackDistance - 1);
-            }
+        if (!CombatFactory.canReach(character, method, target)) {
+            /**
+             * Finds path before executing actions.
+             */
+            return;
         }
 
         // Check if the character can reach the target before attempting attack
         if (!CombatFactory.canReach(character, method, target)) {
-            Server.logDebug("Combat : Can't reach target " + attackDistance + ", CurrentDistance=" + distanceFromTarget + ", path=" + needsPath + " canReach=" + canReach);
             return;
         }
 
@@ -127,7 +113,6 @@ public class Combat {
         if (graniteMaulSpecial) {
             instant = true;
         }
-
 
         if (!instant && character.getTimers().has(TimerKey.COMBAT_ATTACK)) {
             // If attack isn't instant, make sure timer is elapsed.
@@ -167,7 +152,7 @@ public class Combat {
                 }
                 character.getCombat().reset();
             }
-            case CANT_ATTACK_IN_AREA, INVALID_TARGET -> {
+            case CANT_ATTACK_IN_AREA -> {
                 character.getCombat().reset();
             }
             case COMBAT_METHOD_NOT_ALLOWED -> {
@@ -206,6 +191,9 @@ public class Combat {
                 }
                 character.getCombat().reset();
             }
+            case INVALID_TARGET -> {
+                character.getCombat().reset();
+            }
         }
 
     }
@@ -215,6 +203,7 @@ public class Combat {
      */
     public void reset() {
         target = null;
+        character.setCombatFollowing(null);
         character.setFollowing(null);
         character.setMobileInteraction(null);
     }

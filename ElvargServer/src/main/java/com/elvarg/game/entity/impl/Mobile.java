@@ -45,6 +45,7 @@ public abstract class Mobile extends Entity {
 	 * Fields
 	 */
 	private Mobile interactingMobile;
+	private Mobile combatFollowing;
 	private int npcTransformationId = -1;
 	private int poisonDamage;
 	private boolean[] prayerActive = new boolean[30], curseActive = new boolean[20];

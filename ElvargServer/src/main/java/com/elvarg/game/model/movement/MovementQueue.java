@@ -258,6 +258,10 @@ public final class MovementQueue {
             return;
         }
 
+        if (character.getCombatFollowing() != null) {
+            processCombatFollowing();
+        }
+
         // Poll through the actual movement queue and
         // begin moving.
         Point walkPoint = null;
@@ -382,6 +386,7 @@ public final class MovementQueue {
     }
 
     public void resetFollow() {
+        character.setCombatFollowing(null);
         character.setFollowing(null);
         character.setPositionToFace(null);
         TaskManager.cancelTasks("follow");
@@ -390,8 +395,8 @@ public final class MovementQueue {
     /**
      * Processes following.
      */
-    public void processFollowing() {
-        final Mobile following = character.getFollowing();
+    public void processCombatFollowing() {
+        final Mobile following = character.getCombatFollowing();
         final int size = character.size();
         final int followingSize = following.size();
 
@@ -404,7 +409,7 @@ public final class MovementQueue {
             return;
         }
 
-        boolean combatFollow = character.getCombat().getTarget() == following;
+        boolean combatFollow = character.getCombat().getTarget().equals(following);
         final CombatMethod method = CombatFactory.getMethod(character);
 
         if (combatFollow && CombatFactory.canReach(character, method, following)) {
@@ -453,13 +458,13 @@ public final class MovementQueue {
                     character.getCombat().reset();
                 }
                 character.getMovementQueue().reset();
-                character.setFollowing(null);
+                character.setCombatFollowing(null);
                 character.setMobileInteraction(null);
                 return;
             }
         }
 
-        final boolean dancing = (!combatFollow && character.isPlayer() && following.isPlayer() && following.getFollowing() == character);
+        final boolean dancing = (!combatFollow && character.isPlayer() && following.isPlayer() && following.getCombatFollowing() == character);
         final boolean basicPathing = (combatFollow && character.isNpc() && !((NPC) character).canUsePathFinding());
         final Location current = character.getLocation();
         Location destination = following.getLocation();
