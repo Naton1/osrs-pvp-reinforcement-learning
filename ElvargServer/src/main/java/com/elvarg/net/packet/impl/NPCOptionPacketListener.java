@@ -4,6 +4,7 @@ import com.elvarg.game.World;
 import com.elvarg.game.content.PetHandler;
 import com.elvarg.game.content.combat.magic.CombatSpell;
 import com.elvarg.game.content.combat.magic.CombatSpells;
+import com.elvarg.game.content.quests.QuestHandler;
 import com.elvarg.game.content.skill.skillable.impl.Fishing;
 import com.elvarg.game.content.skill.skillable.impl.Fishing.FishingTool;
 import com.elvarg.game.content.skill.skillable.impl.Thieving.Pickpocketing;
@@ -75,6 +76,11 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 
 				// Check if we're interacting with our pet..
 				if (PetHandler.interact(player, npc)) {
+					return;
+				}
+
+				if (QuestHandler.firstClickNpc(player, npc)) {
+					// NPC Click was handled by a quest
 					return;
 				}
 
