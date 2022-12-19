@@ -1,8 +1,7 @@
-package com.elvarg.game.system.npc;
+package com.elvarg.game.entity.impl.npc;
 
-import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.system.InteractIds;
+import com.elvarg.game.model.InteractIds;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.lang.reflect.InvocationTargetException;
@@ -30,40 +29,54 @@ public class NPCInteractionSystem {
                 }).collect(Collectors.toMap(ImmutablePair::getLeft, ImmutablePair::getRight));
     }
 
-    public static void handleFirstOption(Player player, NPC npc) {
+    public static boolean handleFirstOption(Player player, NPC npc) {
         NPCInteraction npcInteraction = NPC_INTERACT_MAP.get(npc.getId());
         if (npcInteraction == null) {
-            return;
+            return false;
         }
 
         npcInteraction.firstOptionClick(player, npc);
+        return true;
     }
 
-    public static void handleSecondOption(Player player, NPC npc) {
+    public static boolean handleSecondOption(Player player, NPC npc) {
         NPCInteraction npcInteraction = NPC_INTERACT_MAP.get(npc.getId());
         if (npcInteraction == null) {
-            return;
+            return false;
         }
 
         npcInteraction.secondOptionClick(player, npc);
+        return true;
     }
 
-    public static void handleThirdOption(Player player, NPC npc) {
+    public static boolean handleThirdOption(Player player, NPC npc) {
         NPCInteraction npcInteraction = NPC_INTERACT_MAP.get(npc.getId());
         if (npcInteraction == null) {
-            return;
+            return false;
         }
 
         npcInteraction.thirdOptionClick(player, npc);
+        return true;
     }
 
-    public static void handleForthOption(Player player, NPC npc) {
+    public static boolean handleForthOption(Player player, NPC npc) {
         NPCInteraction npcInteraction = NPC_INTERACT_MAP.get(npc.getId());
         if (npcInteraction == null) {
-            return;
+            return false;
         }
 
         npcInteraction.forthOptionClick(player, npc);
+        return true;
+    }
+
+    public static boolean handleUseItem(Player player, NPC npc, int itemId, int slot) {
+        NPCInteraction npcInteraction = NPC_INTERACT_MAP.get(npc.getId());
+        if (npcInteraction == null) {
+            return false;
+        }
+
+        npcInteraction.useItemOnNpc(player, npc, itemId, slot);
+        return true;
     }
 
 }

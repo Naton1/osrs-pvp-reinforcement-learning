@@ -18,6 +18,7 @@ import com.elvarg.game.content.skill.skillable.impl.Prayer.BuriableBone;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGround;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.entity.impl.npc.NPCInteractionSystem;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
 import com.elvarg.game.entity.impl.player.Player;
@@ -119,21 +120,33 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
         final int id = packet.readShortA();
         final int index = packet.readShortA();
         final int slot = packet.readLEShort();
+
         if (index < 0 || index > World.getNpcs().capacity()) {
             return;
         }
+
         if (slot < 0 || slot > player.getInventory().getItems().length) {
             return;
         }
+
         NPC npc = World.getNpcs().get(index);
         if (npc == null) {
             return;
         }
+
         if (player.getInventory().getItems()[slot].getId() != id) {
             return;
         }
-        switch (id) {
 
+        if (NPCInteractionSystem.handleUseItem(player, npc, id, slot)) {
+            // Player is using an item on a defined NPC
+            return;
+        }
+
+        switch (id) {
+            default:
+                player.getPacketSender().sendMessage("Nothing interesting happens.");
+                break;
         }
     }
 

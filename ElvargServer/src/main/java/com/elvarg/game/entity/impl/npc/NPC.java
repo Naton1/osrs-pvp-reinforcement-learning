@@ -368,6 +368,10 @@ public class NPC extends Mobile {
 		return id;
 	}
 
+	public int getRealId() {
+		return id;
+	}
+
 	public boolean isVisible() {
 		return visible;
 	}

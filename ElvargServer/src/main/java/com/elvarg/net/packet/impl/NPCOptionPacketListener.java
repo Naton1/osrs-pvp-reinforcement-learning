@@ -13,7 +13,7 @@ import com.elvarg.game.model.container.shop.ShopManager;
 import com.elvarg.game.model.dialogues.builders.impl.NieveDialogue;
 import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
-import com.elvarg.game.system.npc.NPCInteractionSystem;
+import com.elvarg.game.entity.impl.npc.NPCInteractionSystem;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
@@ -73,12 +73,15 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 				npc.setPositionToFace(player.getLocation());
 				player.setPositionToFace(npc.getLocation());
 
-				// Check if we're interacting with our pet..
 				if (PetHandler.interact(player, npc)) {
+					// Player is interacting with their pet
 					return;
 				}
 
-				NPCInteractionSystem.handleFirstOption(player, npc);
+				if (NPCInteractionSystem.handleFirstOption(player, npc)) {
+					// Player is interacting with a defined NPC
+					return;
+				}
 
 				switch (npc.getId()) {
 				case FISHING_SPOT_10: // cage and harpoon
@@ -159,17 +162,20 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 				npc.setPositionToFace(player.getLocation());
 				player.setPositionToFace(npc.getLocation());
 
-				// Check if we're picking up our pet..
 				if (PetHandler.pickup(player, npc)) {
+					// Player is picking up their pet
 					return;
 				}
 
-				// Check if we're thieving..
 				if (Pickpocketing.init(player, npc)) {
+					// Player is trying to thieve from an NPC
 					return;
 				}
 
-				NPCInteractionSystem.handleSecondOption(player, npc);
+				if (NPCInteractionSystem.handleSecondOption(player, npc)) {
+					// Player is interacting with a defined NPC
+					return;
+				}
 
 				switch (npc.getId()) {
 				case NIEVE:
@@ -223,10 +229,14 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
                 player.setPositionToFace(npc.getLocation());
 
                 if (PetHandler.morph(player, npc)) {
+					// Player is morphing their pet
                     return;
                 }
 
-				NPCInteractionSystem.handleThirdOption(player, npc);
+				if (NPCInteractionSystem.handleThirdOption(player, npc)) {
+					// Player is interacting with a defined NPC
+					return;
+				}
 
                 switch (npc.getId()) {
 
@@ -266,8 +276,10 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
                 npc.setPositionToFace(player.getLocation());
                 player.setPositionToFace(npc.getLocation());
 
-
-				NPCInteractionSystem.handleForthOption(player, npc);
+				if (NPCInteractionSystem.handleForthOption(player, npc)) {
+					// Player is interacting with a defined NPC
+					return;
+				}
             }
 
             @Override
