@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.util.zip.GZIPInputStream;
 
+import static com.runescape.Client.constructMusic;
+
 public final class ResourceProvider implements Runnable {
 
     private final Deque requested;
@@ -223,8 +225,6 @@ public final class ResourceProvider implements Runnable {
         for (int k2 = 0; k2 < j1; k2++)
             musicPriorities[k2] = stream.readUnsignedByte();
         System.out.println("Loaded: " + file_amounts[2] + " sounds");
-
-
         //For some reason, model_index = anim_index and vice versa
         data = archive.readFile("model_index");
         file_amounts[1] = data.length;

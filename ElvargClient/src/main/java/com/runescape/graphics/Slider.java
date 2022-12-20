@@ -107,7 +107,7 @@ public class Slider {
                 Rasterizer3D.setBrightness(minValue + maxValue - value);
                 break;
             case MUSIC:
-                Client.instance.changeMusicVolume((int) (minValue + maxValue - value));
+                Client.instance.changeMusicVolume((int) value);
                 break;
             case SOUND:
                 Client.instance.changeSoundVolume((int) (minValue + maxValue - value));

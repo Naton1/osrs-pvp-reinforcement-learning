@@ -51,6 +51,7 @@ public class CommandManager {
         put(new TeleToPlayer(), "teleto");
         put(new ExitClient(), "exit");
         put(new KickPlayer(), "kick");
+        put(new MusicCommand(), "music");
 
         /**
          * Administrator Commands
