@@ -22,14 +22,22 @@ public class Server {
      * The flooder used to stress-test the server.
      */
     private static final Flooder flooder = new Flooder();
+
     /**
      * Is the server running in production mode?
      */
     public static boolean PRODUCTION = false;
+
+    /**
+     * Enable various debugging logs?
+     */
+    public static boolean DEBUG_LOGGING = false;
+
     /**
      * The logger that will print important information.
      */
     private static Logger logger = Logger.getLogger(Server.class.getSimpleName());
+
     /**
      * The flag that determines if the server is currently being updated or not.
      */
@@ -59,6 +67,14 @@ public class Server {
             // incorrectly.
             System.exit(1);
         }
+    }
+
+    public static void logDebug(String logMessage) {
+        if (!DEBUG_LOGGING) {
+            return;
+        }
+
+        getLogger().info(logMessage);
     }
 
     public static Logger getLogger() {

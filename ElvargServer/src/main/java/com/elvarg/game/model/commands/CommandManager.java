@@ -30,6 +30,7 @@ public class CommandManager {
         put(new Players(), "players");
         put(new OpenThread(), "thread");
         put(new TimePlayed(), "timeplayed");
+        put(new GroundItemCommand(), "ground");
         put(new Store(), "store", "donate");
 
         /**
