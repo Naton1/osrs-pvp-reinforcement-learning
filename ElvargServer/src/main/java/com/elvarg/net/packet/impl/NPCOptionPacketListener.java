@@ -1,5 +1,6 @@
 package com.elvarg.net.packet.impl;
 
+import com.elvarg.Server;
 import com.elvarg.game.World;
 import com.elvarg.game.content.PetHandler;
 import com.elvarg.game.content.combat.magic.CombatSpell;
@@ -10,10 +11,11 @@ import com.elvarg.game.content.skill.skillable.impl.Thieving.Pickpocketing;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.container.shop.ShopManager;
+import com.elvarg.game.model.dialogues.builders.impl.EmblemTraderDialogue;
 import com.elvarg.game.model.dialogues.builders.impl.NieveDialogue;
+import com.elvarg.game.model.dialogues.builders.impl.ParduDialogue;
 import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
-import com.elvarg.game.system.npc.NPCInteractionSystem;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
@@ -22,326 +24,198 @@ import com.elvarg.util.ShopIdentifiers;
 
 public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExecutor {
 
-	@Override
-	public void execute(Player player, Packet packet) {
-		if (player.busy()) {
-			return;
-		}
+    @Override
+    public void execute(Player player, Packet packet) {
+        if (player.busy()) {
+            return;
+        }
 
-		switch (packet.getOpcode()) {
-		case PacketConstants.ATTACK_NPC_OPCODE:
-			attackNPC(player, packet);
-			break;
-		case PacketConstants.FIRST_CLICK_NPC_OPCODE:
-			firstClick(player, packet);
-			break;
-		case PacketConstants.SECOND_CLICK_NPC_OPCODE:
-			handleSecondClick(player, packet);
-			break;
-		case PacketConstants.THIRD_CLICK_NPC_OPCODE:
-			handleThirdClick(player, packet);
-			break;
-		case PacketConstants.FOURTH_CLICK_NPC_OPCODE:
-			handleFourthClick(player, packet);
-			break;
-		case PacketConstants.MAGE_NPC_OPCODE:
-			mageNpc(player, packet);
-			break;
-		}
-	}
+        int index = packet.readLEShortA();
 
-	private static void firstClick(Player player, Packet packet) {
-		int index = packet.readLEShort();
-		if (index < 0 || index > World.getNpcs().capacity()) {
-			return;
-		}
-		final NPC npc = World.getNpcs().get(index);
-		if (npc == null) {
-			return;
-		}
+        if (index < 0 || index > World.getNpcs().capacity()) {
+            return;
+        }
 
-		if (player.getRights() == PlayerRights.DEVELOPER) {
-			player.getPacketSender().sendMessage(
-					"First click NPC: " + Integer.toString(npc.getId()) + ". " + npc.getLocation().toString());
-		}
+        final NPC npc = World.getNpcs().get(index);
 
-        player.setMobileInteraction(npc);
-        player.setFollowing(npc);
-        player.setWalkToTask(new WalkToAction(player) {
-			@Override
-			public void execute() {
-				npc.setPositionToFace(player.getLocation());
-				player.setPositionToFace(npc.getLocation());
+        if (npc == null) {
+            return;
+        }
 
-				// Check if we're interacting with our pet..
-				if (PetHandler.interact(player, npc)) {
-					return;
-				}
+        if (!player.getLocation().isWithinDistance(npc.getLocation(), 24)) {
+            return;
+        }
 
-				NPCInteractionSystem.handleFirstOption(player, npc);
+        if (player.getRights() == PlayerRights.DEVELOPER) {
+            player.getPacketSender().sendMessage("InteractionInfo Id=" + npc.getId()+" "+npc.getLocation().toString());
+        }
 
-				switch (npc.getId()) {
-				case FISHING_SPOT_10: // cage and harpoon
-					player.getSkillManager().startSkillable(new Fishing(npc, FishingTool.LOBSTER_POT));
-					break;
-				case FISHING_SPOT_3: // Net and bait
-					player.getSkillManager().startSkillable(new Fishing(npc, FishingTool.NET));
-					break;
-				case FISHING_SPOT_7: // Lure
-					player.getSkillManager().startSkillable(new Fishing(npc, FishingTool.FLY_FISHING_ROD));
-					break;
-				case FISHING_SPOT_5: // Lure
-					player.getSkillManager().startSkillable(new Fishing(npc, FishingTool.SHARK_HARPOON));
-					break;
-				case SHOP_KEEPER_4:
-					ShopManager.open(player, ShopIdentifiers.GENERAL_STORE);
-					break;
-				case CHARLIE_THE_COOK:
-					ShopManager.open(player, ShopIdentifiers.FOOD_SHOP);
-					break;
-				case RICK:
-					ShopManager.open(player, ShopIdentifiers.PURE_SHOP);
-					break;
-				case AJJAT:
-					ShopManager.open(player, ShopIdentifiers.ARMOR_SHOP);
-					break;
-				case MAGIC_INSTRUCTOR:
-					ShopManager.open(player, ShopIdentifiers.MAGE_ARMOR_SHOP);
-					break;
-				case ARMOUR_SALESMAN:
-					ShopManager.open(player, ShopIdentifiers.RANGE_SHOP);
-					break;
-				case MAKE_OVER_MAGE:
-					player.getPacketSender().sendInterfaceRemoval().sendInterface(3559);
-					player.getAppearance().setCanChangeAppearance(true);
-					break;
-				case SECURITY_GUARD:
-					//DialogueManager.start(player, 2500);
-					break;
+        player.setPositionToFace(npc.getLocation());
 
-				case FINANCIAL_ADVISOR:
-					//DialogueManager.start(player, 15);
-					// Removed
-					break;
-				case NIEVE:
-				    player.getDialogueManager().start(new NieveDialogue());
-				    break;
-				}
+        if (packet.getOpcode() == PacketConstants.ATTACK_NPC_OPCODE || packet.getOpcode() == PacketConstants.MAGE_NPC_OPCODE) {
+            if (!npc.getDefinition().isAttackable()) {
+                return;
+            }
+            if (npc.getHitpoints() <= 0) {
+                player.getMovementQueue().reset();
+                return;
             }
 
-            @Override
-            public boolean inDistance() {
-                return player.calculateDistance(npc) <= 1;
-            }
-		});
-	}
+            if (packet.getOpcode() == PacketConstants.MAGE_NPC_OPCODE) {
 
-	public void handleSecondClick(Player player, Packet packet) {
-		int index = packet.readLEShortA();
-		if (index < 0 || index > World.getNpcs().capacity()) {
-			return;
-		}
-		final NPC npc = World.getNpcs().get(index);
-		if (npc == null) {
-			return;
-		}
+                int spellId = packet.readShortA();
 
-		if (player.getRights() == PlayerRights.DEVELOPER) {
-			player.getPacketSender().sendMessage(
-					"Second click NPC: " + Integer.toString(npc.getId()) + ". " + npc.getLocation().toString());
-		}
+                CombatSpell spell = CombatSpells.getCombatSpell(spellId);
 
-        player.setMobileInteraction(npc);
-        player.setFollowing(npc);
-        player.setWalkToTask(new WalkToAction(player) {
-			@Override
-			public void execute() {
-				npc.setPositionToFace(player.getLocation());
-				player.setPositionToFace(npc.getLocation());
-
-				// Check if we're picking up our pet..
-				if (PetHandler.pickup(player, npc)) {
-					return;
-				}
-
-				// Check if we're thieving..
-				if (Pickpocketing.init(player, npc)) {
-					return;
-				}
-
-				NPCInteractionSystem.handleSecondOption(player, npc);
-
-				switch (npc.getId()) {
-				case NIEVE:
-                    player.getDialogueManager().start(new NieveDialogue(), 2);
-                    break;
-				case FISHING_SPOT_10: // cage and harpoon
-					player.getSkillManager().startSkillable(new Fishing(npc, FishingTool.HARPOON));
-					break;
-				case 1497: // Net and bait
-				case 1498: // Net and bait
-				case FISHING_SPOT_7: // Lure and bait
-					player.getSkillManager().startSkillable(new Fishing(npc, FishingTool.FISHING_ROD));
-					break;
-				case RICHARD_2:
-					ShopManager.open(player, ShopIdentifiers.TEAMCAPE_SHOP);
-					break;
-				case MAGIC_INSTRUCTOR:
-					ShopManager.open(player, ShopIdentifiers.MAGE_ARMOR_SHOP);
-					break;
-				}
-			}
-			
-			@Override
-            public boolean inDistance() {
-                return player.calculateDistance(npc) <= 1;
-            }
-		});
-	}
-
-	public void handleThirdClick(Player player, Packet packet) {
-		int index = packet.readShort();
-		if (index < 0 || index > World.getNpcs().capacity()) {
-			return;
-		}
-		final NPC npc = World.getNpcs().get(index);
-		if (npc == null) {
-			return;
-		}
-
-		if (player.getRights() == PlayerRights.DEVELOPER) {
-			player.getPacketSender().sendMessage(
-					"Third click NPC: " + Integer.toString(npc.getId()) + ". " + npc.getLocation().toString());
-		}
-
-        player.setMobileInteraction(npc);
-        player.setFollowing(npc);
-        player.setWalkToTask(new WalkToAction(player) {
-            @Override
-            public void execute() {
-                npc.setPositionToFace(player.getLocation());
-                player.setPositionToFace(npc.getLocation());
-
-                if (PetHandler.morph(player, npc)) {
+                if (spell == null) {
+                    player.getMovementQueue().reset();
                     return;
                 }
 
-				NPCInteractionSystem.handleThirdOption(player, npc);
+                player.setPositionToFace(npc.getLocation());
 
-                switch (npc.getId()) {
+                player.getCombat().setCastSpell(spell);
+            }
 
+            player.getCombat().attack(npc);
+            return;
+        }
+
+        player.getMovementQueue().walkToEntity(player, npc, () -> handleInteraction(player, npc, packet));
+
+    }
+
+    private void handleInteraction(Player player, NPC npc, Packet packet) {
+
+        final int opcode = packet.getOpcode();
+
+        npc.setPositionToFace(player.getLocation());
+
+        if (opcode == PacketConstants.FIRST_CLICK_NPC_OPCODE) {
+            if (PetHandler.interact(player, npc)) {
+                return;
+            }
+
+            switch (npc.getId()) {
+                case SHOP_KEEPER_4:
+                    ShopManager.open(player, ShopIdentifiers.GENERAL_STORE);
+                    break;
+                case CHARLIE_THE_COOK:
+                    ShopManager.open(player, ShopIdentifiers.FOOD_SHOP);
+                    break;
+                case RICK:
+                    ShopManager.open(player, ShopIdentifiers.PURE_SHOP);
+                    break;
+                case AJJAT:
+                    ShopManager.open(player, ShopIdentifiers.ARMOR_SHOP);
+                    break;
+                case MAGIC_INSTRUCTOR:
+                    ShopManager.open(player, ShopIdentifiers.MAGE_ARMOR_SHOP);
+                    break;
+                case ARMOUR_SALESMAN:
+                    ShopManager.open(player, ShopIdentifiers.RANGE_SHOP);
+                    break;
+                case BANKER_2:
+                case TZHAAR_KET_ZUH:
+                    player.getBank(player.getCurrentBankTab()).open();
+                    break;
+                case MAKE_OVER_MAGE:
+                    player.getPacketSender().sendInterfaceRemoval().sendInterface(3559);
+                    player.getAppearance().setCanChangeAppearance(true);
+                    break;
+                case SECURITY_GUARD:
+                    //DialogueManager.start(player, 2500);
+                    break;
+                case EMBLEM_TRADER:
+                case EMBLEM_TRADER_2:
+                case EMBLEM_TRADER_3:
+                    player.getDialogueManager().start(new EmblemTraderDialogue());
+                    break;
+
+                case PERDU:
+                    player.getDialogueManager().start(new ParduDialogue());
+                    break;
+
+                case FINANCIAL_ADVISOR:
+                    //DialogueManager.start(player, 15);
+                    // Removed
+                    break;
+                case NIEVE:
+                    player.getDialogueManager().start(new NieveDialogue());
+                    break;
+            }
+            return;
+        }
+
+
+        if (opcode == PacketConstants.SECOND_CLICK_NPC_OPCODE) {
+            // Check if we're picking up our pet..
+            if (PetHandler.pickup(player, npc)) {
+                return;
+            }
+
+            // Check if we're thieving..
+            if (Pickpocketing.init(player, npc)) {
+                return;
+            }
+
+            switch (npc.getId()) {
+                case NIEVE:
+                    player.getDialogueManager().start(new NieveDialogue(), 2);
+                    break;
+                case BANKER:
+                case BANKER_2:
+                case BANKER_3:
+                case BANKER_4:
+                case BANKER_5:
+                case BANKER_6:
+                case BANKER_7:
+                case TZHAAR_KET_ZUH:
+                    player.getBank(player.getCurrentBankTab()).open();
+                    break;
+                case 1497: // Net and bait
+                case 1498: // Net and bait
+                    player.getSkillManager().startSkillable(new Fishing(npc, FishingTool.FISHING_ROD));
+                    break;
+                case RICHARD_2:
+                    ShopManager.open(player, ShopIdentifiers.TEAMCAPE_SHOP);
+                    break;
+                case EMBLEM_TRADER:
+                case EMBLEM_TRADER_2:
+                case EMBLEM_TRADER_3:
+                    ShopManager.open(player, ShopIdentifiers.PVP_SHOP);
+                    break;
+                case MAGIC_INSTRUCTOR:
+                    ShopManager.open(player, ShopIdentifiers.MAGE_ARMOR_SHOP);
+                    break;
+
+            }
+            return;
+        }
+
+        if (opcode == PacketConstants.THIRD_CLICK_NPC_OPCODE) {
+            if (PetHandler.morph(player, npc)) {
+                return;
+            }
+            switch (npc.getId()) {
+
+                case EMBLEM_TRADER:
+                    player.getDialogueManager().start(new EmblemTraderDialogue(), 2);
+                    break;
                 case MAGIC_INSTRUCTOR:
                     ShopManager.open(player, ShopIdentifiers.MAGE_RUNES_SHOP);
                     break;
-                }
             }
-
-            @Override
-            public boolean inDistance() {
-                return player.calculateDistance(npc) <= 1;
-            }
-        });
-	}
-
-	public void handleFourthClick(Player player, Packet packet) {
-		int index = packet.readLEShort();
-		if (index < 0 || index > World.getNpcs().capacity()) {
-			return;
-		}
-		final NPC npc = World.getNpcs().get(index);
-		if (npc == null) {
-			return;
-		}
-
-		if (player.getRights() == PlayerRights.DEVELOPER) {
-			player.getPacketSender().sendMessage(
-					"Fourth click NPC: " + Integer.toString(npc.getId()) + ". " + npc.getLocation().toString());
-		}
-
-        player.setMobileInteraction(npc);
-        player.setFollowing(npc);
-        player.setWalkToTask(new WalkToAction(player) {
-            @Override
-            public void execute() {
-                npc.setPositionToFace(player.getLocation());
-                player.setPositionToFace(npc.getLocation());
-
-
-				NPCInteractionSystem.handleForthOption(player, npc);
-            }
-
-            @Override
-            public boolean inDistance() {
-                return player.calculateDistance(npc) <= 1;
-            }
-		});
-	}
-
-	private static void attackNPC(Player player, Packet packet) {
-		int index = packet.readShortA();
-		if (index < 0 || index > World.getNpcs().capacity()) {
-			return;
-		}
-		final NPC interact = World.getNpcs().get(index);
-
-		if (interact == null || interact.getDefinition() == null) {
-			return;
-		}
-
-        if (player.getRights() == PlayerRights.DEVELOPER) {
-            player.getPacketSender().sendMessage("Attack NPC: " + Integer.toString(interact.getId()) + ". " + interact.getLocation().toString());
+            return;
         }
 
-		if (!interact.getDefinition().isAttackable()) {
-			return;
-		}
-
-		if (interact == null || interact.getHitpoints() <= 0) {
-			player.getMovementQueue().reset();
-			return;
-		}
-
-		player.getCombat().attack(interact);
-	}
-
-	private static void mageNpc(Player player, Packet packet) {
-		int npcIndex = packet.readLEShortA();
-		int spellId = packet.readShortA();
-
-		if (npcIndex < 0 || spellId < 0 || npcIndex > World.getNpcs().capacity()) {
-			return;
-		}
-
-		final NPC interact = World.getNpcs().get(npcIndex);
-
-		if (interact == null || interact.getDefinition() == null) {
-			return;
-		}
-
-		if (player.getRights() == PlayerRights.DEVELOPER) {
-			player.getPacketSender().sendMessage(
-					"Magic on NPC: " + Integer.toString(interact.getId()) + ". " + interact.getLocation().toString());
-		}
-
-		if (!interact.getDefinition().isAttackable()) {
-			return;
-		}
-
-		if (interact == null || interact.getHitpoints() <= 0) {
-			player.getMovementQueue().reset();
-			return;
-		}
-
-		CombatSpell spell = CombatSpells.getCombatSpell(spellId);
-
-		if (spell == null) {
-			player.getMovementQueue().reset();
-			return;
-		}
-
-		player.setPositionToFace(interact.getLocation());
-		player.getCombat().setCastSpell(spell);
-
-		player.getCombat().attack(interact);
-	}
+        if (opcode == PacketConstants.FOURTH_CLICK_NPC_OPCODE) {
+            switch (npc.getId()) {
+                case EMBLEM_TRADER:
+                    player.getDialogueManager().start(new EmblemTraderDialogue(), 5);
+                    break;
+            }
+            return;
+        }
+    }
 }

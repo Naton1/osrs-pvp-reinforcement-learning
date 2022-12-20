@@ -3,7 +3,9 @@ package com.elvarg.net.packet.impl;
 import com.elvarg.game.content.Dueling.DuelRule;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Location;
+import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.game.model.movement.path.RS317PathFinder;
+import com.elvarg.game.task.TaskManager;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
@@ -19,75 +21,63 @@ public class MovementPacketListener implements PacketExecutor {
 
     @Override
     public void execute(Player player, Packet packet) {
-
         if (player.getHitpoints() <= 0) {
             return;
         }
-
         player.getCombat().setCastSpell(null);
         player.getCombat().reset();
         player.getSkillManager().stopSkillable();
         player.setWalkToTask(null);
+        player.getMovementQueue().resetFollow();
+        player.setCombatFollowing(null);
+        player.setFollowing(null);
+        player.setMobileInteraction(null);
 
         if (packet.getOpcode() != PacketConstants.COMMAND_MOVEMENT_OPCODE) {
 
         }
-
         if (!checkReqs(player, packet.getOpcode())) {
             return;
         }
-
         // Close all interfaces except for the floating
         // world map.
         if (player.getInterfaceId() != 54000) {
             player.getPacketSender().sendInterfaceRemoval();
         }
-        
-        // exclude one byte for the plane
-        int size = packet.getSize() - 1;
-        /*if (packet.getOpcode() == 248) {
-            size -= 14;
-        }*/
-        final int steps = (size - 5) / 2;
-        
-        if (steps < 0) {
-            return;
-        }
-        
-        final int plane = packet.readUnsignedByte();
-        final int firstStepX = packet.readLEShortA();
-        final int[][] path = new int[steps][2];
-        for (int i = 0; i < steps; i++) {
-            path[i][0] = packet.readByte();
-            path[i][1] = packet.readByte();
-        }
-        final int firstStepY = packet.readLEShort();
-        final Location[] positions = new Location[steps + 1];
-        positions[0] = new Location(firstStepX, firstStepY, plane);
-        for (int i = 0; i < steps; i++) {
-            positions[i + 1] = new Location(path[i][0] + firstStepX, path[i][1] + firstStepY, plane);
-        }
-        final Location end = positions[positions.length - 1];
 
-        if (end.getZ() != player.getLocation().getZ()) {
+        int absoluteX = packet.readShort();
+        int absoluteY = packet.readShort();
+        int plane = packet.readUnsignedByte();
+
+        int distance = player.getLocation().getDistance(new Location(absoluteX, absoluteY));
+
+        if (distance > 25) {
+            /** Shouldn't be possible **/
             return;
         }
-        if (player.getLocation().getDistance(end) >= 64) {
-            return;
-        }        
-        if (player.getLocation().equals(end)) {
-            return;
-        }        
-        
-        RS317PathFinder.findPath(player, end.getX(), end.getY(), false, 1, 1);
-        /*
 
-        // Add walking points to movement queue..
-        if (player.getMovementQueue().addFirstStep(positions[0])) {
-            for (int i = 1; i < positions.length; i++) {
-                player.getMovementQueue().addStep(positions[i]);
-            }
-        }*/
+        if (plane < 0) {
+            /** should never happen unless spoofed packets lol **/
+            return;
+        }
+
+        if (player.getLocation().getZ() != plane) {
+            /** Height check **/
+            return;
+        }
+
+        if (absoluteX > Short.MAX_VALUE || absoluteX < 0 || absoluteY > Short.MAX_VALUE || absoluteY < 0) {
+            /**
+             * Will never be below 0.
+             * Cannot be bigger than unsigned byte.max_value
+             */
+            return;
+        }
+
+
+        player.getMovementQueue().reset();
+
+        PathFinder.calculateWalkRoute(player, absoluteX, absoluteY);
     }
 
     public boolean checkReqs(Player player, int opcode) {

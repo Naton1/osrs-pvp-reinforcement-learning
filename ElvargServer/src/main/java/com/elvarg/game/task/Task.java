@@ -4,6 +4,8 @@ import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 
 import java.util.Objects;
 
+import static com.elvarg.game.task.TaskType.DEFAULT;
+
 /**
  * Represents a periodic task that can be scheduled with a {@link TaskScheduler}.
  *
@@ -28,6 +30,8 @@ public abstract class Task {
      * executed.
      */
     private int countdown;
+
+    public TaskType type;
 
     /**
      * A flag which indicates if this task is still running.
@@ -65,6 +69,13 @@ public abstract class Task {
     public Task(int delay) {
         this(delay, false);
         this.bind(DEFAULT_KEY);
+        this.type = DEFAULT;
+    }
+
+    public Task(int delay, TaskType type) {
+        this(delay, false);
+        this.bind(DEFAULT_KEY);
+        this.type = type;
     }
 
     /**

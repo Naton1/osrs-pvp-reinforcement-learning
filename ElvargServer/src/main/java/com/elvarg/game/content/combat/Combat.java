@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import com.elvarg.Server;
+import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.hit.HitDamageCache;
 import com.elvarg.game.content.combat.hit.HitQueue;
 import com.elvarg.game.content.combat.hit.PendingHit;
@@ -14,9 +16,11 @@ import com.elvarg.game.content.combat.method.impl.specials.GraniteMaulCombatMeth
 import com.elvarg.game.content.combat.ranged.RangedData.Ammunition;
 import com.elvarg.game.content.combat.ranged.RangedData.RangedWeapon;
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.SecondsTimer;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
+import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.util.Stopwatch;
 import com.elvarg.util.timers.TimerKey;
 
@@ -52,11 +56,11 @@ public class Combat {
         // Update the target
         setTarget(target);
 
-        // Start facing the target
-        character.setMobileInteraction(target);
-
         // Start following the target
         character.setFollowing(target);
+
+        // Perform the first attack now (in same tick)
+        performNewAttack(false);
     }
 
     /**
@@ -79,109 +83,119 @@ public class Combat {
      * Attempts to perform a new attack.
      */
     public void performNewAttack(boolean instant) {
-        if (target != null) {
+        if (target == null || target == character) {
+            return;
+        }
 
-            // Fetch the combat method the character will be attacking with
-            method = CombatFactory.getMethod(character);
+        // Fetch the combat method the character will be attacking with
+        method = CombatFactory.getMethod(character);
 
-            // Follow target
-            character.setFollowing(target);
+        character.setCombatFollowing(target);
 
-            // Face target
-            character.setMobileInteraction(target);
+        // Face target
+        character.setMobileInteraction(target);
 
-            // Check if the character can reach the target before attempting attack
-            if (CombatFactory.canReach(character, method, target)) {
+        if (!CombatFactory.canReach(character, method, target)) {
+            /**
+             * Finds path before executing actions.
+             */
+            return;
+        }
 
-                // Granite maul special attack, make sure we disregard delay
-                // and that we do not reset the attack timer.
-                boolean graniteMaulSpecial = (method instanceof GraniteMaulCombatMethod);
-                if (graniteMaulSpecial) {
-                    instant = true;
+        // Check if the character can reach the target before attempting attack
+        if (!CombatFactory.canReach(character, method, target)) {
+            return;
+        }
+
+        // Granite maul special attack, make sure we disregard delay
+        // and that we do not reset the attack timer.
+        boolean graniteMaulSpecial = (method instanceof GraniteMaulCombatMethod);
+        if (graniteMaulSpecial) {
+            instant = true;
+        }
+
+        if (!instant && character.getTimers().has(TimerKey.COMBAT_ATTACK)) {
+            // If attack isn't instant, make sure timer is elapsed.
+            Server.logDebug("Combat : Waiting on COMBAT_ATTACK timer");
+            return;
+        }
+
+        // Check if the character can perform the attack
+        switch (CombatFactory.canAttack(character, method, target)) {
+            case CAN_ATTACK -> {
+                method.start(character, target);
+                PendingHit[] hits = method.hits(character, target);
+                if (hits == null)
+                    return;
+                for (PendingHit hit : hits) {
+                    CombatFactory.addPendingHit(hit);
                 }
+                method.finished(character, target);
 
-                // Make sure attack timer is <= 0
-                if (!character.getTimers().has(TimerKey.COMBAT_ATTACK) || instant) {
-
-
-                    // Check if the character can perform the attack
-                    switch (CombatFactory.canAttack(character, method, target)) {
-                        case CAN_ATTACK -> {
-                            method.start(character, target);
-                            PendingHit[] hits = method.hits(character, target);
-                            if (hits == null)
-                                return;
-                            for (PendingHit hit : hits) {
-                                CombatFactory.addPendingHit(hit);
-                            }
-                            method.finished(character, target);
-
-                            // Reset attack timer
-                            if (!graniteMaulSpecial) {
-                                int speed = method.attackSpeed(character);
-                                character.getTimers().register(TimerKey.COMBAT_ATTACK, speed);
-                            }
-                            instant = false;
-                            if (character.isSpecialActivated()) {
-                                character.setSpecialActivated(false);
-                                if (character.isPlayer()) {
-                                    Player p = character.getAsPlayer();
-                                    CombatSpecial.updateBar(p);
-                                }
-                            }
-                        }
-                        case ALREADY_UNDER_ATTACK -> {
-                            if (character.isPlayer()) {
-                                character.getAsPlayer().getPacketSender().sendMessage("You are already under attack!");
-                            }
-                            character.getCombat().reset();
-                        }
-                        case CANT_ATTACK_IN_AREA -> {
-                            character.getCombat().reset();
-                        }
-                        case COMBAT_METHOD_NOT_ALLOWED -> {
-                        }
-                        case NOT_ENOUGH_SPECIAL_ENERGY -> {
-                            Player p = character.getAsPlayer();
-                            p.getPacketSender().sendMessage("You do not have enough special attack energy left!");
-                            p.setSpecialActivated(false);
-                            CombatSpecial.updateBar(character.getAsPlayer());
-                            p.getCombat().reset();
-                        }
-                        case STUNNED -> {
-                            Player p = character.getAsPlayer();
-                            p.getPacketSender().sendMessage("You're currently stunned and cannot attack.");
-                            p.getCombat().reset();
-                            break;
-                        }
-                        case DUEL_MELEE_DISABLED -> {
-                            Player p = character.getAsPlayer();
-                            StatementDialogue.send(p, "Melee has been disabled in this duel!");
-                            p.getCombat().reset();
-                        }
-                        case DUEL_RANGED_DISABLED -> {
-                            Player p = character.getAsPlayer();
-                            StatementDialogue.send(p, "Ranged has been disabled in this duel!");
-                            p.getCombat().reset();
-                        }
-                        case DUEL_MAGIC_DISABLED -> {
-                            Player p = character.getAsPlayer();
-                            StatementDialogue.send(p, "Magic has been disabled in this duel!");
-                            p.getCombat().reset();
-                        }
-                        case TARGET_IS_IMMUNE -> {
-                            if (character.isPlayer()) {
-                                ((Player) character).getPacketSender().sendMessage("This npc is currently immune to attacks.");
-                            }
-                            character.getCombat().reset();
-                        }
-                        case INVALID_TARGET -> {
-                            character.getCombat().reset();
-                        }
+                // Reset attack timer
+                if (!graniteMaulSpecial) {
+                    int speed = method.attackSpeed(character);
+                    character.getTimers().register(TimerKey.COMBAT_ATTACK, speed);
+                }
+                instant = false;
+                if (character.isSpecialActivated()) {
+                    character.setSpecialActivated(false);
+                    if (character.isPlayer()) {
+                        Player p = character.getAsPlayer();
+                        CombatSpecial.updateBar(p);
                     }
                 }
             }
+            case ALREADY_UNDER_ATTACK -> {
+                if (character.isPlayer()) {
+                    character.getAsPlayer().getPacketSender().sendMessage("You are already under attack!");
+                }
+                character.getCombat().reset();
+            }
+            case CANT_ATTACK_IN_AREA -> {
+                character.getCombat().reset();
+            }
+            case COMBAT_METHOD_NOT_ALLOWED -> {
+            }
+            case NOT_ENOUGH_SPECIAL_ENERGY -> {
+                Player p = character.getAsPlayer();
+                p.getPacketSender().sendMessage("You do not have enough special attack energy left!");
+                p.setSpecialActivated(false);
+                CombatSpecial.updateBar(character.getAsPlayer());
+                p.getCombat().reset();
+            }
+            case STUNNED -> {
+                Player p = character.getAsPlayer();
+                p.getPacketSender().sendMessage("You're currently stunned and cannot attack.");
+                p.getCombat().reset();
+                break;
+            }
+            case DUEL_MELEE_DISABLED -> {
+                Player p = character.getAsPlayer();
+                StatementDialogue.send(p, "Melee has been disabled in this duel!");
+                p.getCombat().reset();
+            }
+            case DUEL_RANGED_DISABLED -> {
+                Player p = character.getAsPlayer();
+                StatementDialogue.send(p, "Ranged has been disabled in this duel!");
+                p.getCombat().reset();
+            }
+            case DUEL_MAGIC_DISABLED -> {
+                Player p = character.getAsPlayer();
+                StatementDialogue.send(p, "Magic has been disabled in this duel!");
+                p.getCombat().reset();
+            }
+            case TARGET_IS_IMMUNE -> {
+                if (character.isPlayer()) {
+                    ((Player) character).getPacketSender().sendMessage("This npc is currently immune to attacks.");
+                }
+                character.getCombat().reset();
+            }
+            case INVALID_TARGET -> {
+                character.getCombat().reset();
+            }
         }
+
     }
 
     /**
@@ -189,6 +203,7 @@ public class Combat {
      */
     public void reset() {
         target = null;
+        character.setCombatFollowing(null);
         character.setFollowing(null);
         character.setMobileInteraction(null);
     }

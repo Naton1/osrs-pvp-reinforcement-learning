@@ -1,5 +1,6 @@
 package com.elvarg.net.packet.impl;
 
+import com.elvarg.game.content.DepositBox;
 import com.elvarg.game.content.Dueling;
 import com.elvarg.game.content.Trading;
 import com.elvarg.game.content.combat.CombatSpecial;
@@ -20,27 +21,34 @@ import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
 
+import java.util.zip.DeflaterOutputStream;
+
 public class ItemContainerActionPacketListener implements PacketExecutor {
 
     private static void firstAction(Player player, Packet packet) {
-        int interfaceId = packet.readInt();
+        int containerId = packet.readInt();
         int slot = packet.readShortA();
         int id = packet.readShortA();
 
         // Bank withdrawal..
-        if (interfaceId >= Bank.CONTAINER_START && interfaceId < Bank.CONTAINER_START + Bank.TOTAL_BANK_TABS) {
-            Bank.withdraw(player, id, slot, 1, interfaceId - Bank.CONTAINER_START);
+        if (containerId >= Bank.CONTAINER_START && containerId < Bank.CONTAINER_START + Bank.TOTAL_BANK_TABS) {
+            Bank.withdraw(player, id, slot, 1, containerId - Bank.CONTAINER_START);
             return;
         }
 
-        switch (interfaceId) {
+        if (containerId == 7423) {
+            DepositBox.deposit(player, slot, id, 1);
+            return;
+        }
+
+        switch (containerId) {
             case EquipmentMaking.EQUIPMENT_CREATION_COLUMN_1:
             case EquipmentMaking.EQUIPMENT_CREATION_COLUMN_2:
             case EquipmentMaking.EQUIPMENT_CREATION_COLUMN_3:
             case EquipmentMaking.EQUIPMENT_CREATION_COLUMN_4:
             case EquipmentMaking.EQUIPMENT_CREATION_COLUMN_5:
                 if (player.getInterfaceId() == EquipmentMaking.EQUIPMENT_CREATION_INTERFACE_ID) {
-                    EquipmentMaking.initialize(player, id, interfaceId, slot, 1);
+                    EquipmentMaking.initialize(player, id, containerId, slot, 1);
                 }
                 break;
             // Withdrawing items from duel
@@ -75,7 +83,7 @@ public class ItemContainerActionPacketListener implements PacketExecutor {
             case Shop.ITEM_CHILD_ID:
             case Shop.INVENTORY_INTERFACE_ID:
                 if (player.getStatus() == PlayerStatus.SHOPPING) {
-                    ShopManager.priceCheck(player, id, slot, (interfaceId == Shop.ITEM_CHILD_ID));
+                    ShopManager.priceCheck(player, id, slot, (containerId == Shop.ITEM_CHILD_ID));
                 }
                 break;
 
@@ -130,6 +138,11 @@ public class ItemContainerActionPacketListener implements PacketExecutor {
         // Bank withdrawal..
         if (interfaceId >= Bank.CONTAINER_START && interfaceId < Bank.CONTAINER_START + Bank.TOTAL_BANK_TABS) {
             Bank.withdraw(player, id, slot, 5, interfaceId - Bank.CONTAINER_START);
+            return;
+        }
+
+        if (interfaceId == 7423) {
+            DepositBox.deposit(player, slot, id, 5);
             return;
         }
 
@@ -189,6 +202,11 @@ public class ItemContainerActionPacketListener implements PacketExecutor {
         // Bank withdrawal..
         if (interfaceId >= Bank.CONTAINER_START && interfaceId < Bank.CONTAINER_START + Bank.TOTAL_BANK_TABS) {
             Bank.withdraw(player, id, slot, 10, interfaceId - Bank.CONTAINER_START);
+            return;
+        }
+
+        if (interfaceId == 7423) {
+            DepositBox.deposit(player, slot, id, 10);
             return;
         }
 
@@ -252,6 +270,11 @@ public class ItemContainerActionPacketListener implements PacketExecutor {
             return;
         }
 
+        if (interfaceId == 7423) {
+            DepositBox.deposit(player, slot, id, Integer.MAX_VALUE);
+            return;
+        }
+
         switch (interfaceId) {
             case Shop.INVENTORY_INTERFACE_ID:
                 if (player.getStatus() == PlayerStatus.SHOPPING) {
@@ -307,6 +330,12 @@ public class ItemContainerActionPacketListener implements PacketExecutor {
                 Bank.withdraw(player, id, slot, amount, interfaceId - Bank.CONTAINER_START);
             });
             player.getPacketSender().sendEnterAmountPrompt("How many would you like to withdraw?");
+            return;
+        }
+
+        if (interfaceId == 7423) {
+            player.setEnteredAmountAction((amount) -> DepositBox.deposit(player, slot, id, amount));
+            player.getPacketSender().sendEnterAmountPrompt("How many would you like to deposit?");
             return;
         }
 
