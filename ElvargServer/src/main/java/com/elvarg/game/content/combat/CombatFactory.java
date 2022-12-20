@@ -1,5 +1,8 @@
 package com.elvarg.game.content.combat;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 import com.elvarg.game.Sound;
@@ -46,6 +49,8 @@ import com.elvarg.game.model.areas.AreaManager;
 import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
+import com.elvarg.game.model.movement.MovementQueue;
+import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.game.model.movement.path.RS317PathFinder;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.task.Task;
@@ -56,7 +61,6 @@ import com.elvarg.game.task.impl.CombatPoisonEffect.PoisonType;
 import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
 import com.elvarg.util.NpcIdentifiers;
-import com.elvarg.util.RandomGen;
 import com.elvarg.util.timers.TimerKey;
 
 /**
@@ -341,6 +345,8 @@ public class CombatFactory {
 			return true;
 		}
 
+		boolean isMoving = target.getMovementQueue().isMoving();
+
 		// Walk back if npc is too far away from spawn position.
 		if (attacker.isNpc()) {
 			NPC npc = attacker.getAsNpc();
@@ -361,6 +367,7 @@ public class CombatFactory {
 		final Location targetPosition = target.getLocation();
 		
 		if (attackerPosition.equals(targetPosition)) {
+			MovementQueue.clippedStep(attacker);
 		    return false;
 		}
 
@@ -377,14 +384,19 @@ public class CombatFactory {
             }
         }
 
+		if (method.type() == CombatType.MELEE && isMoving && attacker.getMovementQueue().isMoving()) {
+			requiredDistance++;
+		}
+
         // Too far away from the target
 		if (distance > requiredDistance) {
 		    return false;
 		}
 
 		// Don't allow diagonal attacks for smaller entities
-		if (method.type() == CombatType.MELEE && attacker.size() == 1 && target.size() == 1) {
-			if (RS317PathFinder.isInDiagonalBlock(attackerPosition, targetPosition)) {
+		if (method.type() == CombatType.MELEE && attacker.size() == 1 && target.size() == 1 && !isMoving && !target.getMovementQueue().isMoving()) {
+			if (PathFinder.isDiagonalLocation(attacker, target)) {
+				stepOut(attacker, target);
 				return false;
 			}
 		}
@@ -395,6 +407,17 @@ public class CombatFactory {
 		}
 
 		return true;
+	}
+
+	private static void stepOut(Mobile attacker, Mobile target) {
+		List<Location> tiles = Arrays.asList(
+				new Location(target.getLocation().getX() - 1, target.getLocation().getY()),
+				new Location(target.getLocation().getX() + 1, target.getLocation().getY()),
+				new Location(target.getLocation().getX(), target.getLocation().getY() + 1),
+				new Location(target.getLocation().getX(), target.getLocation().getY() - 1));
+		/** If a tile is present it will step out **/
+		tiles.stream().filter(t -> !RegionManager.blocked(t, attacker.getPrivateArea())).min(Comparator.comparing(attacker.getLocation()::getDistance)).ifPresent(tile ->
+				PathFinder.calculateWalkRoute(attacker, tile.getX(), tile.getY()));
 	}
 
 	/**
@@ -801,12 +824,7 @@ public class CombatFactory {
 		if (damage == 0) {
 			return;
 		}
-
-		int returnDmg = (int) (damage * 0.1) + 1;
-
-		if(returnDmg < 3 && new RandomGen().inclusive(1, 3) == 2) {
-			returnDmg = 0;
-		}
+		final int returnDmg = (int) (damage * 0.1) + 1;
 
 		// Increase recoil damage for a player.
 		player.setRecoilDamage(player.getRecoilDamage() + returnDmg);

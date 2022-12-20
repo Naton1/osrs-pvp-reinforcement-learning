@@ -40,7 +40,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
     public boolean occludes;
     public boolean removeClipping;
     public boolean solid;
-    public int surroundings;
+    public int blockingMask;
     public boolean delayShading;
     public int scaleY;
     public int[] modelIds;
@@ -229,7 +229,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
         scaleX = 128;
         scaleY = 128;
         scaleZ = 128;
-        surroundings = 0;
+        blockingMask = 0;
         translateX = 0;
         translateY = 0;
         translateZ = 0;
@@ -344,7 +344,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
             } else if (opcode == 68) {
                 mapscene = buffer.readUShort();
             } else if (opcode == 69) {
-                surroundings = buffer.readUnsignedByte();
+                blockingMask = buffer.readUnsignedByte();
             } else if (opcode == 70) {
                 translateX = buffer.readUShort();
             } else if (opcode == 71) {

@@ -23,13 +23,13 @@ public class RangedCombatMethod extends CombatMethod {
     @Override
     public PendingHit[] hits(Mobile character, Mobile target) {
         if (character.getCombat().getRangedWeapon() == RangedWeapon.DARK_BOW) {
-            return new PendingHit[] { new PendingHit(character, target, this, 2), new PendingHit(character, target, this, 3) };
+            return new PendingHit[] { new PendingHit(character, target, this, 1), new PendingHit(character, target, this, 2) };
         }
         if (character.getCombat().getRangedWeapon() == RangedWeapon.BALLISTA) {
-            return new PendingHit[] { new PendingHit(character, target, this, 3) };
+            return new PendingHit[] { new PendingHit(character, target, this, 2) };
         }
 
-        return new PendingHit[]{new PendingHit(character, target, this, 2)};
+        return new PendingHit[]{new PendingHit(character, target, this, 1)};
     }
 
     @Override

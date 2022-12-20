@@ -6,6 +6,7 @@ import com.runescape.Client.ScreenMode;
 import com.runescape.graphics.Dropdown;
 import com.runescape.graphics.GameFont;
 import com.runescape.graphics.Slider;
+import com.runescape.graphics.sprite.Sprite;
 import com.runescape.model.content.Keybinding;
 
 public class SettingsWidget extends Widget {
@@ -85,8 +86,13 @@ public class SettingsWidget extends Widget {
 		/* Mouse zoom */
         hoverButton(42521, "Restore Default Zoom", 189, 190);
 		/* Screen sizes */
-        configHoverButton(FIXED_MODE, "Fixed mode", 485, 186, 185, 185, true, RESIZABLE_MODE);
-        configHoverButton(RESIZABLE_MODE, "Resizable mode", 484, 484, 187, 188, false, FIXED_MODE);
+        if (Client.frameMode == ScreenMode.FIXED) {
+            configHoverButton(FIXED_MODE, "Fixed mode", Sprite.SETTINGS_FIXED_ACTIVE, Sprite.SETTINGS_FIXED_ACTIVE, Sprite.SETTINGS_FIXED_INACTIVE_HOVER, Sprite.SETTINGS_FIXED_INACTIVE, true, 42523);
+            configHoverButton(RESIZABLE_MODE, "Resizable mode", Sprite.SETTINGS_RESIZABLE_INACTIVE_HOVER, Sprite.SETTINGS_RESIZABLE_INACTIVE, Sprite.SETTINGS_RESIZABLE_ACTIVE, Sprite.SETTINGS_RESIZABLE_ACTIVE, false, 42522);
+        } else if (Client.frameMode == ScreenMode.RESIZABLE) {
+            configHoverButton(FIXED_MODE, "Fixed mode", Sprite.SETTINGS_FIXED_INACTIVE_HOVER, Sprite.SETTINGS_FIXED_INACTIVE, Sprite.SETTINGS_FIXED_ACTIVE, Sprite.SETTINGS_FIXED_ACTIVE, false, 42523);
+            configHoverButton(RESIZABLE_MODE, "Resizable mode", Sprite.SETTINGS_RESIZABLE_ACTIVE, Sprite.SETTINGS_RESIZABLE_ACTIVE, Sprite.SETTINGS_RESIZABLE_INACTIVE_HOVER, Sprite.SETTINGS_RESIZABLE_INACTIVE, true, 42522);
+        }
 		/* Advanced options */
         hoverButton(42524, "Configure @lre@Advanced options", 353, 353, "Advanced options", Widget.newFonts[1], 0xff981f, 0xffffff, true);
 		/* Sliders */
@@ -233,9 +239,19 @@ public class SettingsWidget extends Widget {
                 switchSettings(button);
                 break;
             case FIXED_MODE:
+                if (Client.frameMode == Client.ScreenMode.FIXED) {
+                    // Prevent flicker if already in fixed
+                    break;
+                }
+
                 Client.instance.frameMode(Client.ScreenMode.FIXED);
                 break;
             case RESIZABLE_MODE:
+                if (Client.frameMode == ScreenMode.RESIZABLE) {
+                    // Prevent flicker if already in resizable
+                    break;
+                }
+
                 Client.instance.frameMode(Client.ScreenMode.RESIZABLE);
                 break;
             case SHIFT_CLICK_DROP:

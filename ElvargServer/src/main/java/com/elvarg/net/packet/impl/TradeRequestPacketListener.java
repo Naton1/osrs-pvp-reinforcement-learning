@@ -3,7 +3,6 @@ package com.elvarg.net.packet.impl;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.PlayerStatus;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketExecutor;
 
@@ -13,61 +12,53 @@ public class TradeRequestPacketListener implements PacketExecutor {
     @Override
     public void execute(Player player, Packet packet) {
         int index = packet.readLEShort();
-        if (index > World.getPlayers().capacity() || index < 0) {
+
+        if (index > World.getPlayers().capacity() || index < 0)
+            return;
+
+        Player target = World.getPlayers().get(index);
+
+        if (target == null)
+            return;
+
+        if (!target.getLocation().isWithinDistance(player.getLocation(), 20)) {
             return;
         }
 
-        Player player2 = World.getPlayers().get(index);
-
-        send(player, player2);
-    }
-
-    public static void send(Player player, Player player2) {
-        if (player == null
-                || player.getHitpoints() <= 0
-                || !player.isRegistered()
-                || player2 == null || player2.getHitpoints() <= 0
-                || !player2.isRegistered()) {
+        if (player.getHitpoints() <= 0 || !player.isRegistered()  || target.getHitpoints() <= 0 || !target.isRegistered()) {
             player.getMovementQueue().reset();
             return;
         }
 
-        player.setFollowing(player2);
-        player.setWalkToTask(new WalkToAction(player) {
-            @Override
-            public void execute() {
-                if (player.busy()) {
-                    player.getPacketSender().sendMessage("You cannot do that right now.");
-                    return;
-                }
+        player.getMovementQueue().walkToEntity(player, target, () -> sendRequest(player, target));
+    }
 
-                if (player2.busy()) {
-                    String msg = "That player is currently busy.";
+    public static void sendRequest(Player player, Player target) {
+        if (player.busy()) {
+            player.getPacketSender().sendMessage("You cannot do that right now.");
+            return;
+        }
 
-                    if (player2.getStatus() == PlayerStatus.TRADING) {
-                        msg = "That player is currently trading with someone else.";
-                    }
+        if (target.busy()) {
+            String msg = "That player is currently busy.";
 
-                    player.getPacketSender().sendMessage(msg);
-                    return;
-                }
-
-                if (player.getArea() != null) {
-                    if (!player.getArea().canTrade(player, player2)) {
-                        player.getPacketSender().sendMessage("You cannot trade here.");
-                        return;
-                    }
-                }
-
-                if (player.getLocalPlayers().contains(player2)) {
-                    player.getTrading().requestTrade(player2);
-                }
+            if (target.getStatus() == PlayerStatus.TRADING) {
+                msg = "That player is currently trading with someone else.";
             }
 
-            @Override
-            public boolean inDistance() {
-                return player.calculateDistance(player2) == 1;
+            player.getPacketSender().sendMessage(msg);
+            return;
+        }
+
+        if (player.getArea() != null) {
+            if (!player.getArea().canTrade(player, target)) {
+                player.getPacketSender().sendMessage("You cannot trade here.");
+                return;
             }
-        });
+        }
+
+        if (player.getLocalPlayers().contains(target)) {
+            player.getTrading().requestTrade(target);
+        }
     }
 }
