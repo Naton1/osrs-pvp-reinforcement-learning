@@ -713,6 +713,10 @@ public class PacketSender {
 		return this;
 	}
 
+	public PacketSender sendString(String string, int id) {
+		return this.sendString(id, string);
+	}
+
 	public PacketSender clearInterfaceText(int start, int end) {
 		for (int i = start; i <= end; i++) {
 			player.getFrameUpdater().interfaceTextMap.remove(i);

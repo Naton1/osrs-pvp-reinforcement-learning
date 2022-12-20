@@ -165,6 +165,9 @@ public class Player extends Mobile {
 	private boolean newPlayer;
 	private boolean packetsBlocked = false;
 	private int regionHeight;
+
+	private int questPoints;
+	private Map<Integer, Integer> questProgress = new HashMap<Integer, Integer>();
 	// Skilling
 	private Optional<Skillable> skill = Optional.empty();
 	private CreationMenu creationMenu;
@@ -1662,5 +1665,24 @@ public class Player extends Mobile {
 
 	public void setCachedDiscordAccessToken(String cachedDiscordAccessToken) {
 		this.cachedDiscordAccessToken = cachedDiscordAccessToken;
+	}
+
+	public Map<Integer, Integer> getQuestProgress() {
+		return this.questProgress;
+	}
+
+	public int getQuestPoints() {
+		return this.questPoints;
+	}
+
+	public void setQuestPoints(int questPoints) {
+		this.questPoints = questPoints;
+	}
+
+	public void setQuestProgress(Map<Integer, Integer> questProgress) {
+		if (questProgress == null) {
+			return;
+		}
+		this.questProgress = questProgress;
 	}
 }
