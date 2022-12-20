@@ -19,7 +19,14 @@ import java.awt.image.PixelGrabber;
 import java.awt.image.RGBImageFilter;
 
 public final class Sprite extends Rasterizer2D {
-    
+
+    public static int SETTINGS_FIXED_ACTIVE = 185,
+            SETTINGS_FIXED_INACTIVE = 186,
+            SETTINGS_FIXED_INACTIVE_HOVER = 485,
+            SETTINGS_RESIZABLE_ACTIVE = 484,
+            SETTINGS_RESIZABLE_INACTIVE = 188,
+            SETTINGS_RESIZABLE_INACTIVE_HOVER = 187;
+
     public static Sprite EMPTY_SPRITE = new Sprite();
 
     public int[] myPixels;

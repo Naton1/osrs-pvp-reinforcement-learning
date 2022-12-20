@@ -3480,18 +3480,18 @@ public class Widget {
 		tab.active = false;
 	}
 
-	public static void configHoverButton(int id, String tooltip, int enabledSprite, int disabledSprite,
-			int enabledAltSprite, int disabledAltSprite, boolean active, int... buttonsToDisable) {
+	public static void configHoverButton(int id, String tooltip, int initialEnabledSprite, int initialDisabledSprite,
+			int switchedEnabledSprite, int switchedDisabledSprite, boolean active, int... buttonsToDisable) {
 		Widget tab = addInterface(id);
 		tab.tooltip = tooltip;
 		tab.atActionType = OPTION_OK;
 		tab.type = TYPE_CONFIG_HOVER;
-		tab.enabledSprite = Client.spriteCache.lookup(enabledSprite);
-		tab.disabledSprite = Client.spriteCache.lookup(disabledSprite);
+		tab.enabledSprite = Client.spriteCache.lookup(initialEnabledSprite);
+		tab.disabledSprite = Client.spriteCache.lookup(initialDisabledSprite);
 		tab.width = tab.enabledSprite.myWidth;
 		tab.height = tab.disabledSprite.myHeight;
-		tab.enabledAltSprite = Client.spriteCache.lookup(enabledAltSprite);
-		tab.disabledAltSprite = Client.spriteCache.lookup(disabledAltSprite);
+		tab.enabledAltSprite = Client.spriteCache.lookup(switchedEnabledSprite);
+		tab.disabledAltSprite = Client.spriteCache.lookup(switchedDisabledSprite);
 		tab.buttonsToDisable = buttonsToDisable;
 		tab.active = active;
 		tab.spriteOpacity = 255;
