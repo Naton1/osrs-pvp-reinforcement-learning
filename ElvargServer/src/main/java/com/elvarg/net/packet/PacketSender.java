@@ -184,7 +184,7 @@ public class PacketSender {
 	}
 
 	public PacketSender sendSpecialMessage(String name, int type, String message) {
-		PacketBuilder out = new PacketBuilder(252);
+		PacketBuilder out = new PacketBuilder(252, PacketType.VARIABLE);
 		out.put(type);
 		out.putString(name);
 		out.putString(message);
