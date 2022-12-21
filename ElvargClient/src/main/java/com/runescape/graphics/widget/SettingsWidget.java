@@ -326,7 +326,7 @@ public class SettingsWidget extends Widget {
         Widget.interfaceCache[ACCEPT_AID].active = true;
         Widget.interfaceCache[RUN].active = Client.instance.settings[152] == 1;
         Widget.interfaceCache[CHAT_EFFECTS].active = true;
-        Widget.interfaceCache[SPLIT_PRIVATE_CHAT].active = false;
+        Widget.interfaceCache[SPLIT_PRIVATE_CHAT].active = Client.instance.splitPrivateChat == 1;
         Widget.interfaceCache[MOUSE_BUTTONS].active = true;
         Widget.interfaceCache[SHIFT_CLICK_DROP].active = Configuration.enableShiftClickDrop;
         Widget.interfaceCache[FIXED_MODE].active = Client.frameMode == ScreenMode.FIXED;
