@@ -89,7 +89,7 @@ public class Combat {
      * Attempts to perform a new attack.
      */
     public void performNewAttack(boolean instant) {
-        if (character != null || target == character || (character.isNpc() && !character.getAsNpc().getDefinition().doesFightBack())) {
+        if (character != null && character.isNpc() && !character.getAsNpc().getDefinition().doesFightBack()) {
             // Don't process attacks for NPC's who don't fight back
             return;
         }
