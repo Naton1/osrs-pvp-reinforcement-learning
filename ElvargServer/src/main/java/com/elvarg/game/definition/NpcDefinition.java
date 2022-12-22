@@ -34,6 +34,7 @@ public class NpcDefinition {
     private boolean retreats;
     private boolean aggressive;
     private boolean poisonous;
+    private boolean fightsBack = true;
     private int respawn;
     private int maxHit;
     private int hitpoints = 10;
@@ -91,6 +92,10 @@ public class NpcDefinition {
 
     public boolean isPoisonous() {
         return poisonous;
+    }
+
+    public boolean doesFightBack() {
+        return fightsBack;
     }
 
     public int getRespawn() {

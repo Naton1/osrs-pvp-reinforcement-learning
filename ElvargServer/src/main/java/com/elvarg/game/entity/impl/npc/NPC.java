@@ -1,6 +1,7 @@
 package com.elvarg.game.entity.impl.npc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.elvarg.game.Sound;
@@ -12,6 +13,7 @@ import com.elvarg.game.content.combat.method.CombatMethod;
 import com.elvarg.game.definition.NpcDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPCMovementCoordinator.CoordinateState;
+import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.npc.impl.GodwarsFollower;
 import com.elvarg.game.entity.impl.npc.impl.Vetion;
 import com.elvarg.game.entity.impl.npc.impl.VetionHellhound;
@@ -78,6 +80,24 @@ public class NPC extends Mobile {
 	 * Is this {@link NPC} a pet?
 	 */
 	private boolean pet;
+
+	public int barricadeFireTicks = 8;
+
+	public boolean barricadeOnFire;
+
+	public void handleBarricadeTicks() {
+		/** Handles barricades once on fire **/
+		if (barricadeOnFire && barricadeFireTicks > 0) {
+			barricadeFireTicks--;
+			if (barricadeFireTicks == 0) {
+				if (this.isBarricade()) {
+					Barricades.checkTile(this.getLocation());
+				}
+				barricadeOnFire = false;
+				World.getRemoveNPCQueue().add(this);
+			}
+		}
+	}
 	
 	/**
 	 * Creates a new {@link NPC}.
@@ -218,6 +238,8 @@ public class NPC extends Mobile {
 
 			// Handle combat
 			getCombat().process();
+
+			handleBarricadeTicks();
 
 			// Process areas..
 			AreaManager.process(this);
@@ -399,6 +421,10 @@ public class NPC extends Mobile {
 
 	public NpcDefinition getDefinition() {
 		return NpcDefinition.forId(id);
+	}
+
+	public boolean isBarricade() {
+		return Arrays.asList(5722, 5723, 5724, 5725).stream().anyMatch(n -> this.getId() == n.intValue());
 	}
 
 	public Location getSpawnPosition() {
