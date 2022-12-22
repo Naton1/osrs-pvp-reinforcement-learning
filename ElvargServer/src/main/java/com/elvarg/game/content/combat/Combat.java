@@ -56,8 +56,14 @@ public class Combat {
         // Update the target
         setTarget(target);
 
-        // Start following the target
-        character.setFollowing(target);
+        if (character != null && character.isNpc() && !character.getAsNpc().getDefinition().doesFightBack()) {
+            // Don't follow or face enemy if NPC doesn't fight back
+            return;
+        }
+
+        // Start facing the target
+        character.setMobileInteraction(target);
+
 
         // Perform the first attack now (in same tick)
         performNewAttack(false);
@@ -83,7 +89,8 @@ public class Combat {
      * Attempts to perform a new attack.
      */
     public void performNewAttack(boolean instant) {
-        if (target == null || target == character) {
+        if (character != null || target == character || (character.isNpc() && !character.getAsNpc().getDefinition().doesFightBack())) {
+            // Don't process attacks for NPC's who don't fight back
             return;
         }
 

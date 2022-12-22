@@ -72,6 +72,11 @@ public enum Sound {
 
     DROP_ITEM(376, 1, 0),
     PICK_UP_ITEM(358, 1, 0),
+
+    FIRE_LIGHT(375, 1, 0),
+    FIRE_SUCCESSFUL(608, 1, 0),
+    FIRE_FIRST_ATTEMPT(2584, 1, 0),
+
     ;
 
     private final int id;

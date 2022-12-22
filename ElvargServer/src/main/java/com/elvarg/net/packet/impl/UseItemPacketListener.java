@@ -19,6 +19,7 @@ import com.elvarg.game.entity.impl.grounditem.ItemOnGround;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NPCInteractionSystem;
+import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
 import com.elvarg.game.entity.impl.player.Player;
@@ -132,8 +133,12 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
         if (npc == null) {
             return;
         }
+        Item item = player.getInventory().getItems()[slot];
+        if (item == null || item.getId() != id) {
+            return;
+        }
 
-        if (player.getInventory().getItems()[slot].getId() != id) {
+        if (Barricades.itemOnBarricade(player, npc, item)) {
             return;
         }
 

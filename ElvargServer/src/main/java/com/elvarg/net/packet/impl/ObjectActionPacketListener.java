@@ -117,7 +117,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
             break;
 
         case WILDERNESS_DITCH:
-            player.getMovementQueue().reset();
+            //player.getMovementQueue().reset();
             if (player.getForceMovement() == null && player.getClickDelay().elapsed(2000)) {
                 final Location crossDitch = new Location(0, player.getLocation().getY() < 3522 ? 3 : -3);
                 TaskManager.submit(new ForceMovementTask(player, 3, new ForceMovement(player.getLocation().clone(),

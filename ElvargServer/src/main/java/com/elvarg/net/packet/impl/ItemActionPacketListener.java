@@ -10,6 +10,7 @@ import com.elvarg.game.content.skill.skillable.impl.Herblore;
 import com.elvarg.game.content.skill.skillable.impl.Prayer;
 import com.elvarg.game.content.skill.skillable.impl.Runecrafting;
 import com.elvarg.game.definition.ItemDefinition;
+import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.BarrowsSet;
@@ -44,6 +45,10 @@ public class ItemActionPacketListener implements PacketExecutor {
 
 		// Herblore
 		if (Herblore.cleanHerb(player, itemId)) {
+			return;
+		}
+
+		if (itemId == Barricades.BARRICADE_ITEM_ID && Barricades.canSetup(player)) {
 			return;
 		}
 

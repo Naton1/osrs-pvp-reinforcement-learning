@@ -6,6 +6,7 @@ import com.elvarg.game.World;
 import com.elvarg.game.content.skill.slayer.Slayer;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NPCDropGenerator;
+import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Priority;
@@ -107,6 +108,10 @@ public class NPCDeathTask extends Task {
         // Handle respawn..
         if (npc.getDefinition().getRespawn() > 0) {
             TaskManager.submit(new NPCRespawnTask(npc, npc.getDefinition().getRespawn()));
+        }
+
+        if (npc.isBarricade()) {
+            Barricades.checkTile(npc.getLocation());
         }
 
         // Add us to the global remove list.

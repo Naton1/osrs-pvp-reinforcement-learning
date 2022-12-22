@@ -61,6 +61,7 @@ import com.elvarg.game.task.impl.CombatPoisonEffect.PoisonType;
 import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
 import com.elvarg.util.NpcIdentifiers;
+import com.elvarg.util.RandomGen;
 import com.elvarg.util.timers.TimerKey;
 
 /**
@@ -69,7 +70,7 @@ import com.elvarg.util.timers.TimerKey;
  * @author Professor Oak
  */
 public class CombatFactory {
-
+	private static final RandomGen RANDOM = new RandomGen();
 	public enum CanAttackResponse {
 		INVALID_TARGET,
 		ALREADY_UNDER_ATTACK,
@@ -333,7 +334,7 @@ public class CombatFactory {
 	 *
 	 * @param attacker
 	 *            The entity which wants to attack.
-	 * @param cb_type
+//	 * @param cb_type
 	 *            The combat type the attacker is using.
 	 * @param target
 	 *            The victim.
@@ -425,7 +426,7 @@ public class CombatFactory {
 	 *
 	 * @param attacker
 	 *            The entity which wants to attack.
-	 * @param cb_type
+//	 * @param cb_type
 	 *            The combat type the attacker is using.
 	 * @param target
 	 *            The victim.
@@ -824,7 +825,8 @@ public class CombatFactory {
 		if (damage == 0) {
 			return;
 		}
-		final int returnDmg = (int) (damage * 0.1) + 1;
+		final double RECOIL_DMG_MULTIPLIER = 0.1;
+		int returnDmg = RANDOM.inclusive(1, 3) == 2 ? 0 : (int) (damage * RECOIL_DMG_MULTIPLIER) + 1;
 
 		// Increase recoil damage for a player.
 		player.setRecoilDamage(player.getRecoilDamage() + returnDmg);
@@ -845,7 +847,7 @@ public class CombatFactory {
 	 * Handles the spell "Vengeance" for a player. The spell returns damage to the
 	 * attacker.
 	 *
-	 * @param player
+//	 * @param player
 	 * @param attacker
 	 * @param damage
 	 */
@@ -928,7 +930,7 @@ public class CombatFactory {
 	/**
 	 * Stuns a character for the specified seconds.
 	 *
-	 * @param player
+//	 * @param player
 	 * @param seconds
 	 */
 	public static void stun(Mobile character, int seconds, boolean force) {
