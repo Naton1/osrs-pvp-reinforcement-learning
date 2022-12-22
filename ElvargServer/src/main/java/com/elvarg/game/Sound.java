@@ -2,6 +2,10 @@ package com.elvarg.game;
 
 public enum Sound {
 
+    // crafting sounds
+
+    CUTTING(375, 1, 0),
+
     // cooking sounds
 
     COOKING_COOK(1039, 1, 10),

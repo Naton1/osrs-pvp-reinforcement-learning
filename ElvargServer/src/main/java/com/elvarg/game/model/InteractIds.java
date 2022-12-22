@@ -1,4 +1,4 @@
-package com.elvarg.game.system;
+package com.elvarg.game.model;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

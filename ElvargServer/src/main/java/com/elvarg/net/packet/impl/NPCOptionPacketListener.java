@@ -18,6 +18,7 @@ import com.elvarg.game.model.dialogues.builders.impl.NieveDialogue;
 import com.elvarg.game.model.dialogues.builders.impl.ParduDialogue;
 import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
+import com.elvarg.game.entity.impl.npc.NPCInteractionSystem;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
@@ -104,6 +105,11 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 				return;
 			}
 
+			if (NPCInteractionSystem.handleFirstOption(player, npc)) {
+				// Player is interacting with a defined NPC
+				return;
+			}
+
             switch (npc.getId()) {
                 case SHOP_KEEPER_4:
                     ShopManager.open(player, ShopIdentifiers.GENERAL_STORE);
@@ -157,17 +163,23 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 
 
         if (opcode == PacketConstants.SECOND_CLICK_NPC_OPCODE) {
-            // Check if we're picking up our pet..
-            if (PetHandler.pickup(player, npc)) {
-                return;
-            }
-
-			// Check if we're thieving..
-			if (Pickpocketing.init(player, npc)) {
+			if (PetHandler.pickup(player, npc)) {
+				// Player is picking up their pet
 				return;
 			}
 
-			if (Barricades.handleInteractiveOptions(player, npc, PacketConstants.SECOND_CLICK_NPC_OPCODE)) {
+			if (Pickpocketing.init(player, npc)) {
+				// Player is trying to thieve from an NPC
+				return;
+			}
+
+            if (Barricades.handleInteractiveOptions(player, npc, PacketConstants.SECOND_CLICK_NPC_OPCODE)) {
+                // Player is burning barricade
+                return;
+            }
+
+			if (NPCInteractionSystem.handleSecondOption(player, npc)) {
+				// Player is interacting with a defined NPC
 				return;
 			}
 
@@ -207,8 +219,15 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 
         if (opcode == PacketConstants.THIRD_CLICK_NPC_OPCODE) {
             if (PetHandler.morph(player, npc)) {
+				// Player is morphing their pet
                 return;
             }
+
+			if (NPCInteractionSystem.handleThirdOption(player, npc)) {
+				// Player is interacting with a defined NPC
+				return;
+			}
+
             switch (npc.getId()) {
 
                 case EMBLEM_TRADER:
@@ -222,6 +241,11 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
         }
 
         if (opcode == PacketConstants.FOURTH_CLICK_NPC_OPCODE) {
+			if (NPCInteractionSystem.handleForthOption(player, npc)) {
+				// Player is interacting with a defined NPC
+				return;
+			}
+
             switch (npc.getId()) {
                 case EMBLEM_TRADER:
                     player.getDialogueManager().start(new EmblemTraderDialogue(), 5);
