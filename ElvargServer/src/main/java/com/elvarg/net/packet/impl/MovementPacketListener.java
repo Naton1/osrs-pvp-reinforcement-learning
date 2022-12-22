@@ -32,10 +32,8 @@ public class MovementPacketListener implements PacketExecutor {
         player.setCombatFollowing(null);
         player.setFollowing(null);
         player.setMobileInteraction(null);
+        TaskManager.cancelTasks(player.getIndex());
 
-        if (packet.getOpcode() != PacketConstants.COMMAND_MOVEMENT_OPCODE) {
-
-        }
         if (!checkReqs(player, packet.getOpcode())) {
             return;
         }
@@ -73,7 +71,6 @@ public class MovementPacketListener implements PacketExecutor {
              */
             return;
         }
-
 
         player.getMovementQueue().reset();
 

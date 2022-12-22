@@ -389,7 +389,6 @@ public final class MovementQueue {
         character.setCombatFollowing(null);
         character.setFollowing(null);
         character.setPositionToFace(null);
-        TaskManager.cancelTasks("follow");
     }
 
     /**
@@ -402,7 +401,6 @@ public final class MovementQueue {
 
         // Update interaction
         character.setMobileInteraction(following);
-        character.getMovementQueue().reset();
 
         // Block if our movement is locked.
         if (!canMove()) {
@@ -413,7 +411,6 @@ public final class MovementQueue {
         final CombatMethod method = CombatFactory.getMethod(character);
 
         if (combatFollow && CombatFactory.canReach(character, method, following)) {
-            reset();
             return;
         }
 
@@ -769,8 +766,6 @@ public final class MovementQueue {
     public void walkToObject(Player player, final GameObject object, final Action action) {
         reset();
 
-        TaskManager.cancelTasks(player.getIndex());
-
         player.setMobileInteraction(null);
 
         int objectX = object.getLocation().getX();
@@ -816,7 +811,7 @@ public final class MovementQueue {
         int finalObjectY = objectY;
 
         player.setPositionToFace(new Location(objectX, objectY));
-        TaskManager.submit(new Task(1, player.getIndex(), false) {
+        TaskManager.submit(new Task(1, player.getIndex(), true) {
 
             int walkStage = 0;
 

@@ -1,6 +1,7 @@
 package com.elvarg.game.entity.impl.playerbot.commands;
 
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
+import com.elvarg.net.packet.impl.FollowPlayerPacketListener;
 
 public class FollowPlayer implements BotCommand {
 
@@ -11,7 +12,7 @@ public class FollowPlayer implements BotCommand {
 
     @Override
     public void start(PlayerBot playerBot, String[] args) {
-        playerBot.setFollowing(playerBot.getInteractingWith());
+        FollowPlayerPacketListener.follow(playerBot, playerBot.getInteractingWith());
     }
 
     @Override

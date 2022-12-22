@@ -76,13 +76,19 @@ public class Combat {
         // Process the hit queue
         hitQueue.process(character);
 
-        // Handle attacking
-        performNewAttack(false);
+        if (this.attacker == null) {
+            // Don't process combat if we're not under attack
+            return;
+        }
 
         // Reset attacker if we haven't been attacked in 6 seconds.
         if (lastAttack.elapsed(6000)) {
             setUnderAttack(null);
+            return;
         }
+
+        // Handle attacking
+        performNewAttack(false);
     }
 
     /**
