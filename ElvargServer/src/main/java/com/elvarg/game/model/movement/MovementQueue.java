@@ -705,6 +705,8 @@ public final class MovementQueue {
     public void walkToEntity(Player player, Mobile entity, Runnable run) {
         reset();
 
+        TaskManager.cancelTasks(player.getIndex());
+
         int destX = entity.getLocation().getX();
         int destY = entity.getLocation().getY();
 
@@ -718,7 +720,7 @@ public final class MovementQueue {
 
         PathFinder.calculateEntityRoute(player, destX, destY);
 
-        TaskManager.submit(new Task(1, player, false) {
+        TaskManager.submit(new Task(1, player.getIndex(), false) {
 
             int currentX = entity.getLocation().getX();
 
@@ -767,6 +769,8 @@ public final class MovementQueue {
     public void walkToObject(Player player, final GameObject object, final Action action) {
         reset();
 
+        TaskManager.cancelTasks(player.getIndex());
+
         player.setMobileInteraction(null);
 
         int objectX = object.getLocation().getX();
@@ -807,13 +811,12 @@ public final class MovementQueue {
 
         final int finalDestinationY = player.getMovementQueue().pathY;
 
-        System.err.println("RequestedX=" + objectX + " requestedY=" + objectY + " givenX=" + finalDestinationX + " givenY=" + finalDestinationY);
+        //System.err.println("RequestedX=" + objectX + " requestedY=" + objectY + " givenX=" + finalDestinationX + " givenY=" + finalDestinationY);
 
         int finalObjectY = objectY;
 
         player.setPositionToFace(new Location(objectX, objectY));
-
-        TaskManager.submit(new Task(1, player, false) {
+        TaskManager.submit(new Task(1, player.getIndex(), false) {
 
             int walkStage = 0;
 
@@ -854,7 +857,6 @@ public final class MovementQueue {
                     return;
                 }
                 walkStage = 1;
-                return;
             }
         });
     }
