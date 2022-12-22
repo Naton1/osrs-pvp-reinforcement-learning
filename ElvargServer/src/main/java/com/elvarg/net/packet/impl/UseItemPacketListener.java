@@ -22,6 +22,7 @@ import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.model.Action;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.container.impl.Bank;
@@ -39,9 +40,7 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
     private static void itemOnItem(Player player, Packet packet) {
         int usedWithSlot = packet.readUnsignedShort();
         int itemUsedSlot = packet.readUnsignedShortA();
-        if (usedWithSlot < 0 || itemUsedSlot < 0
-                || itemUsedSlot >= player.getInventory().capacity()
-                || usedWithSlot >= player.getInventory().capacity())
+        if (usedWithSlot < 0 || itemUsedSlot < 0 || itemUsedSlot >= player.getInventory().capacity() || usedWithSlot >= player.getInventory().capacity())
             return;
         Item used = player.getInventory().getItems()[itemUsedSlot];
         Item usedWith = player.getInventory().getItems()[usedWithSlot];
@@ -158,10 +157,14 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
 
         if (itemSlot < 0 || itemSlot >= player.getInventory().capacity())
             return;
+
         final Item item = player.getInventory().getItems()[itemSlot];
+
         if (item == null || item.getId() != itemId)
             return;
+
         final Location position = new Location(objectX, objectY, player.getLocation().getZ());
+
         final GameObject object = MapObjects.get(player, objectId, position);
 
         // Make sure the object actually exists in the region...
@@ -177,38 +180,41 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
         }
 
         //Handle object..
-        switch (object.getId()) {
-            case ObjectIdentifiers.STOVE_4: //Edgeville Stove
-            case ObjectIdentifiers.FIRE_5: //Player-made Fire
-            case ObjectIdentifiers.FIRE_23: //Barb village fire
-                //Handle cooking on objects..
-                Optional<Cookable> cookable = Cookable.getForItem(item.getId());
-                if (cookable.isPresent()) {                    
-                    player.getPacketSender().sendCreationMenu(new CreationMenu("How many would you like to cook?", Arrays.asList(cookable.get().getCookedItem()), (productId, amount) -> {
-                        player.getSkillManager().startSkillable(new Cooking(object, cookable.get(), amount));
-                    }));
-                    return;
-                }
-                //Handle bonfires..
-                if (object.getId() == ObjectIdentifiers.FIRE_5) {
-                    Optional<LightableLog> log = LightableLog.getForItem(item.getId());
-                    if (log.isPresent()) {                        
-                        player.getPacketSender().sendCreationMenu(new CreationMenu("How many would you like to burn?", Arrays.asList(log.get().getLogId()), (productId, amount) -> {
-                            player.getSkillManager().startSkillable(new Firemaking(log.get(), object, amount));
+
+        player.getMovementQueue().walkToObject(player, object, () -> {
+            switch (object.getId()) {
+                case ObjectIdentifiers.STOVE_4: //Edgeville Stove
+                case ObjectIdentifiers.FIRE_5: //Player-made Fire
+                case ObjectIdentifiers.FIRE_23: //Barb village fire
+                    //Handle cooking on objects..
+                    Optional<Cookable> cookable = Cookable.getForItem(item.getId());
+                    if (cookable.isPresent()) {
+                        player.getPacketSender().sendCreationMenu(new CreationMenu("How many would you like to cook?", Arrays.asList(cookable.get().getCookedItem()), (productId, amount) -> {
+                            player.getSkillManager().startSkillable(new Cooking(object, cookable.get(), amount));
                         }));
                         return;
                     }
-                }
-                break;
-            case 409: //Bone on Altar
-                Optional<BuriableBone> b = BuriableBone.forId(item.getId());
-                if (b.isPresent()) {                    
-                    player.getPacketSender().sendCreationMenu(new CreationMenu("How many would you like to offer?", Arrays.asList(itemId), (productId, amount) -> {
-                        player.getSkillManager().startSkillable(new AltarOffering(b.get(), object, amount));
-                    }));
-                }
-                break;
-        }
+                    //Handle bonfires..
+                    if (object.getId() == ObjectIdentifiers.FIRE_5) {
+                        Optional<LightableLog> log = LightableLog.getForItem(item.getId());
+                        if (log.isPresent()) {
+                            player.getPacketSender().sendCreationMenu(new CreationMenu("How many would you like to burn?", Arrays.asList(log.get().getLogId()), (productId, amount) -> {
+                                player.getSkillManager().startSkillable(new Firemaking(log.get(), object, amount));
+                            }));
+                            return;
+                        }
+                    }
+                    break;
+                case 409: //Bone on Altar
+                    Optional<BuriableBone> b = BuriableBone.forId(item.getId());
+                    if (b.isPresent()) {
+                        player.getPacketSender().sendCreationMenu(new CreationMenu("How many would you like to offer?", Arrays.asList(itemId), (productId, amount) -> {
+                            player.getSkillManager().startSkillable(new AltarOffering(b.get(), object, amount));
+                        }));
+                    }
+                    break;
+            }
+        });
     }
 
     @SuppressWarnings("unused")

@@ -1,5 +1,8 @@
 package com.elvarg.game.content.combat;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 import com.elvarg.game.Sound;
@@ -46,6 +49,8 @@ import com.elvarg.game.model.areas.AreaManager;
 import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
+import com.elvarg.game.model.movement.MovementQueue;
+import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.game.model.movement.path.RS317PathFinder;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.task.Task;
@@ -65,7 +70,7 @@ import com.elvarg.util.timers.TimerKey;
  * @author Professor Oak
  */
 public class CombatFactory {
-
+	private static final RandomGen RANDOM = new RandomGen();
 	public enum CanAttackResponse {
 		INVALID_TARGET,
 		ALREADY_UNDER_ATTACK,
@@ -329,7 +334,7 @@ public class CombatFactory {
 	 *
 	 * @param attacker
 	 *            The entity which wants to attack.
-	 * @param cb_type
+//	 * @param cb_type
 	 *            The combat type the attacker is using.
 	 * @param target
 	 *            The victim.
@@ -340,6 +345,8 @@ public class CombatFactory {
 		    attacker.getCombat().reset();
 			return true;
 		}
+
+		boolean isMoving = target.getMovementQueue().isMoving();
 
 		// Walk back if npc is too far away from spawn position.
 		if (attacker.isNpc()) {
@@ -361,6 +368,7 @@ public class CombatFactory {
 		final Location targetPosition = target.getLocation();
 		
 		if (attackerPosition.equals(targetPosition)) {
+			MovementQueue.clippedStep(attacker);
 		    return false;
 		}
 
@@ -377,14 +385,19 @@ public class CombatFactory {
             }
         }
 
+		if (method.type() == CombatType.MELEE && isMoving && attacker.getMovementQueue().isMoving()) {
+			requiredDistance++;
+		}
+
         // Too far away from the target
 		if (distance > requiredDistance) {
 		    return false;
 		}
 
 		// Don't allow diagonal attacks for smaller entities
-		if (method.type() == CombatType.MELEE && attacker.size() == 1 && target.size() == 1) {
-			if (RS317PathFinder.isInDiagonalBlock(attackerPosition, targetPosition)) {
+		if (method.type() == CombatType.MELEE && attacker.size() == 1 && target.size() == 1 && !isMoving && !target.getMovementQueue().isMoving()) {
+			if (PathFinder.isDiagonalLocation(attacker, target)) {
+				stepOut(attacker, target);
 				return false;
 			}
 		}
@@ -397,12 +410,23 @@ public class CombatFactory {
 		return true;
 	}
 
+	private static void stepOut(Mobile attacker, Mobile target) {
+		List<Location> tiles = Arrays.asList(
+				new Location(target.getLocation().getX() - 1, target.getLocation().getY()),
+				new Location(target.getLocation().getX() + 1, target.getLocation().getY()),
+				new Location(target.getLocation().getX(), target.getLocation().getY() + 1),
+				new Location(target.getLocation().getX(), target.getLocation().getY() - 1));
+		/** If a tile is present it will step out **/
+		tiles.stream().filter(t -> !RegionManager.blocked(t, attacker.getPrivateArea())).min(Comparator.comparing(attacker.getLocation()::getDistance)).ifPresent(tile ->
+				PathFinder.calculateWalkRoute(attacker, tile.getX(), tile.getY()));
+	}
+
 	/**
 	 * Checks if an entity can attack a target.
 	 *
 	 * @param attacker
 	 *            The entity which wants to attack.
-	 * @param cb_type
+//	 * @param cb_type
 	 *            The combat type the attacker is using.
 	 * @param target
 	 *            The victim.
@@ -801,12 +825,8 @@ public class CombatFactory {
 		if (damage == 0) {
 			return;
 		}
-
-		int returnDmg = (int) (damage * 0.1) + 1;
-
-		if(returnDmg < 3 && new RandomGen().inclusive(1, 3) == 2) {
-			returnDmg = 0;
-		}
+		final double RECOIL_DMG_MULTIPLIER = 0.1;
+		int returnDmg = RANDOM.inclusive(1, 3) == 2 ? 0 : (int) (damage * RECOIL_DMG_MULTIPLIER) + 1;
 
 		// Increase recoil damage for a player.
 		player.setRecoilDamage(player.getRecoilDamage() + returnDmg);
@@ -827,7 +847,7 @@ public class CombatFactory {
 	 * Handles the spell "Vengeance" for a player. The spell returns damage to the
 	 * attacker.
 	 *
-	 * @param player
+//	 * @param player
 	 * @param attacker
 	 * @param damage
 	 */
@@ -910,7 +930,7 @@ public class CombatFactory {
 	/**
 	 * Stuns a character for the specified seconds.
 	 *
-	 * @param player
+//	 * @param player
 	 * @param seconds
 	 */
 	public static void stun(Mobile character, int seconds, boolean force) {

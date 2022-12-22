@@ -45,6 +45,7 @@ public abstract class Mobile extends Entity {
 	 * Fields
 	 */
 	private Mobile interactingMobile;
+	private Mobile combatFollowing;
 	private int npcTransformationId = -1;
 	private int poisonDamage;
 	private boolean[] prayerActive = new boolean[30], curseActive = new boolean[20];
@@ -541,6 +542,14 @@ public abstract class Mobile extends Entity {
     public void setFollowing(Mobile following) {
         this.following = following;
     }
+
+	public Mobile getCombatFollowing() {
+		return this.combatFollowing;
+	}
+
+	public void setCombatFollowing(Mobile target) {
+		this.combatFollowing = target;
+	}
     
     public int getIndex() {
         return index;

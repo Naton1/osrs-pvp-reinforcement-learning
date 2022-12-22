@@ -184,7 +184,7 @@ public class PacketSender {
 	}
 
 	public PacketSender sendSpecialMessage(String name, int type, String message) {
-		PacketBuilder out = new PacketBuilder(252);
+		PacketBuilder out = new PacketBuilder(252, PacketType.VARIABLE);
 		out.put(type);
 		out.putString(name);
 		out.putString(message);
@@ -711,6 +711,10 @@ public class PacketSender {
 		out.putInt(id);
 		player.getSession().write(out);
 		return this;
+	}
+
+	public PacketSender sendString(String string, int id) {
+		return this.sendString(id, string);
 	}
 
 	public PacketSender clearInterfaceText(int start, int end) {
