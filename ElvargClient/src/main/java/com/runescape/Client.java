@@ -1090,7 +1090,6 @@ public class Client extends GameApplet {
                 stream.writeBoolean(settings[152] == 1); // Run
                 stream.writeBoolean(true); // Chat effects
                 stream.writeBoolean(splitPrivateChat == 1); // Split private chat
-                System.err.println("split saving="+splitPrivateChat);
                 stream.writeBoolean(true); // Mouse buttons
                 stream.writeBoolean(Configuration.enableShiftClickDrop);
                 stream.writeByte(Configuration.playerAttackOptionPriority);
