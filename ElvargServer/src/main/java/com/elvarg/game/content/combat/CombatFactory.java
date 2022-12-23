@@ -331,10 +331,11 @@ public class CombatFactory {
 
 	/**
 	 * Checks if an entity can reach a target.
+	 * If false, combat is reset for the attacker.
 	 *
 	 * @param attacker
 	 *            The entity which wants to attack.
-//	 * @param cb_type
+/	 * @param cb_type
 	 *            The combat type the attacker is using.
 	 * @param target
 	 *            The victim.

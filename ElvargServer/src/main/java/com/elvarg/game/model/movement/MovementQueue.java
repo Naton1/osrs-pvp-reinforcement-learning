@@ -766,7 +766,15 @@ public final class MovementQueue {
     public void walkToObject(Player player, final GameObject object, final Action action) {
         reset();
 
+        player.getCombat().setCastSpell(null);
+        player.getCombat().reset();
+        player.getSkillManager().stopSkillable();
+        player.setWalkToTask(null);
+        player.getMovementQueue().resetFollow();
+        player.setCombatFollowing(null);
+        player.setFollowing(null);
         player.setMobileInteraction(null);
+        TaskManager.cancelTasks(player.getIndex());
 
         int objectX = object.getLocation().getX();
 

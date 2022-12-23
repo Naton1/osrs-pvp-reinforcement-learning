@@ -76,11 +76,6 @@ public class Combat {
         // Process the hit queue
         hitQueue.process(character);
 
-        if (this.attacker == null) {
-            // Don't process combat if we're not under attack
-            return;
-        }
-
         // Reset attacker if we haven't been attacked in 6 seconds.
         if (lastAttack.elapsed(6000)) {
             setUnderAttack(null);
@@ -95,7 +90,7 @@ public class Combat {
      * Attempts to perform a new attack.
      */
     public void performNewAttack(boolean instant) {
-        if (character != null && character.isNpc() && !character.getAsNpc().getDefinition().doesFightBack()) {
+        if (target == null || (character != null && character.isNpc() && !character.getAsNpc().getDefinition().doesFightBack())) {
             // Don't process attacks for NPC's who don't fight back
             return;
         }
@@ -109,14 +104,7 @@ public class Combat {
         character.setMobileInteraction(target);
 
         if (!CombatFactory.canReach(character, method, target)) {
-            /**
-             * Finds path before executing actions.
-             */
-            return;
-        }
-
-        // Check if the character can reach the target before attempting attack
-        if (!CombatFactory.canReach(character, method, target)) {
+            // Make sure the character can reach their target before processing combat
             return;
         }
 
@@ -217,7 +205,6 @@ public class Combat {
     public void reset() {
         target = null;
         character.setCombatFollowing(null);
-        character.setFollowing(null);
         character.setMobileInteraction(null);
     }
 

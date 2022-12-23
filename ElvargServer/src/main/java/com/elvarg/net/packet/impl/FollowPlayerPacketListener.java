@@ -69,6 +69,7 @@ public class FollowPlayerPacketListener implements PacketExecutor {
                     return;
                 }
                 player.getMovementQueue().reset();
+                player.setPositionToFace(leader.getLocation());
                 PathFinder.calculateWalkRoute(player, destX, destY);
             }
         });

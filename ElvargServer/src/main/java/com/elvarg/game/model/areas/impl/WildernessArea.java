@@ -90,6 +90,8 @@ public class WildernessArea extends Area {
 			int combatDifference = CombatFactory.combatLevelDifference(a.getSkillManager().getCombatLevel(),
 					t.getSkillManager().getCombatLevel());
 			if (combatDifference > a.getWildernessLevel() + 5 || combatDifference > t.getWildernessLevel() + 5) {
+				a.getPacketSender().sendMessage("Your combat level difference is too great.");
+				a.getPacketSender().sendMessage("You need to move deeper into the Wilderness.");
 				return false;
 			}
 			if (!(t.getArea() instanceof WildernessArea)) {
