@@ -10,10 +10,7 @@ import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.impl.PrivateArea;
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Ynneh | 08/08/2022 - 16:36
@@ -109,13 +106,15 @@ public class PathFinder {
 
         var tiles = getClosestTileForDistance(defender, distance);
 
-        Location result = tiles.stream().filter(t -> !RegionManager.blocked(t, privateArea)).filter(t -> RegionManager.canProjectileAttack(attacker, t, defender.getLocation())).min(Comparator.comparing(attacker.getLocation()::getDistance)).get();
-        if (result == null && attacker.isPlayer()) {
-            attacker.getAsPlayer().getPacketSender().sendMessage("I can't reach that.");
+        Optional<Location> destination = tiles.stream().filter(t -> !RegionManager.blocked(t, privateArea)).filter(t -> RegionManager.canProjectileAttack(attacker, t, defender.getLocation())).min(Comparator.comparing(attacker.getLocation()::getDistance));
+        if (destination.isEmpty()) {
+            if (attacker.isPlayer()) {
+                attacker.getAsPlayer().getPacketSender().sendMessage("I can't reach that.");
+            }
             return null;
         }
 
-        return result;
+        return destination.get();
     }
 
     private static List<Location> getClosestTileForDistance(Mobile target, int distance) {
