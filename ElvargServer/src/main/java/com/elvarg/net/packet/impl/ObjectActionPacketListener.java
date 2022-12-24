@@ -17,7 +17,6 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.*;
 import com.elvarg.game.model.areas.impl.PrivateArea;
 import com.elvarg.game.model.dialogues.builders.impl.SpellBookDialogue;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportHandler;
 import com.elvarg.game.model.teleportation.TeleportType;
@@ -258,7 +257,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
             return;
         }
 
-        player.getMovementQueue().walkToObject(player, object, () -> {
+        player.getMovementQueue().walkToObject(object, () -> {
             // Face object..
             player.setPositionToFace(location);
 

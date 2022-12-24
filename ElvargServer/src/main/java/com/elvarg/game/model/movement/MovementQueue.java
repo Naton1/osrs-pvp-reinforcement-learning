@@ -48,13 +48,18 @@ public final class MovementQueue {
     private final Mobile character;
 
     /**
+     * The player who owns this MovementQueue (if if applicable)
+     */
+    private Player player;
+
+    /**
      * The queue of directions.
      */
     private final Deque<Point> points = new ArrayDeque<Point>();
 
 
     /**
-     * The current {@link MovementStatus}.
+     * Whether movement is currently blocked for this Mobile.
      */
     private boolean blockMovement = false;
 
@@ -71,14 +76,17 @@ public final class MovementQueue {
      */
     public MovementQueue(Mobile character) {
         this.character = character;
+
+        if (this.character.isPlayer()) {
+            this.player = this.character.getAsPlayer();
+        }
     }
 
     /**
      * Checks if we can walk from one position to another.
      *
-     * @param from
-     * @param to
-     * @param size
+     * @param deltaX
+     * @param deltaY
      * @return
      */
     public boolean canWalk(int deltaX, int deltaY) {
@@ -149,7 +157,6 @@ public final class MovementQueue {
      *
      * @param x       X to walk to
      * @param y       Y to walk to
-     * @param clipped Can the step walk through objects?
      */
     public void walkStep(int x, int y) {
         Location position = character.getLocation().clone();
@@ -159,12 +166,11 @@ public final class MovementQueue {
     }
 
     /**
-     * Adds a step.
+     * Adds a step to this MovementQueue.
      *
      * @param x           The x coordinate of this step.
      * @param y           The y coordinate of this step.
      * @param heightLevel
-     * @param flag
      */
     private void addStep(int x, int y, int heightLevel) {
         if (!canMove()) {
@@ -624,8 +630,10 @@ public final class MovementQueue {
         return points;
     }
 
-    public void walkToGroundItem(Player player, Location pos, Runnable action) {
+    public void walkToGroundItem(Location pos, Runnable action) {
         reset();
+
+        this.walkToReset();
 
         if (player.getLocation().getDistance(pos) == 0) {
             // If player is already at the ground item, run the action now
@@ -674,10 +682,29 @@ public final class MovementQueue {
         });
     }
 
-    public void walkToEntity(Player player, Mobile entity, Runnable run) {
+    /**
+     * This function is called to reset everything when a player walks to an entity/tile.
+     */
+    public void walkToReset() {
+        if (this.player == null) {
+            return;
+        }
+
+        player.getCombat().setCastSpell(null);
+        player.getCombat().reset();
+        player.getSkillManager().stopSkillable();
+        player.setWalkToTask(null);
+        player.getMovementQueue().resetFollow();
+        player.setCombatFollowing(null);
+        player.setFollowing(null);
+        player.setMobileInteraction(null);
+        TaskManager.cancelTasks(player.getIndex());
+    }
+
+    public void walkToEntity(Mobile entity, Runnable run) {
         reset();
 
-        TaskManager.cancelTasks(player.getIndex());
+        this.walkToReset();
 
         int destX = entity.getLocation().getX();
         int destY = entity.getLocation().getY();
@@ -738,18 +765,10 @@ public final class MovementQueue {
         });
     }
 
-    public void walkToObject(Player player, final GameObject object, final Action action) {
+    public void walkToObject(final GameObject object, final Action action) {
         reset();
 
-        player.getCombat().setCastSpell(null);
-        player.getCombat().reset();
-        player.getSkillManager().stopSkillable();
-        player.setWalkToTask(null);
-        player.getMovementQueue().resetFollow();
-        player.setCombatFollowing(null);
-        player.setFollowing(null);
-        player.setMobileInteraction(null);
-        TaskManager.cancelTasks(player.getIndex());
+        this.walkToReset();
 
         int objectX = object.getLocation().getX();
 

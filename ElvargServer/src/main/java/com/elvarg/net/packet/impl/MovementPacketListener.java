@@ -24,15 +24,8 @@ public class MovementPacketListener implements PacketExecutor {
         if (player.getHitpoints() <= 0) {
             return;
         }
-        player.getCombat().setCastSpell(null);
-        player.getCombat().reset();
-        player.getSkillManager().stopSkillable();
-        player.setWalkToTask(null);
-        player.getMovementQueue().resetFollow();
-        player.setCombatFollowing(null);
-        player.setFollowing(null);
-        player.setMobileInteraction(null);
-        TaskManager.cancelTasks(player.getIndex());
+
+        player.getMovementQueue().walkToReset();
 
         if (!checkReqs(player, packet.getOpcode())) {
             return;

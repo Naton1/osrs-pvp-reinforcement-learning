@@ -40,7 +40,7 @@ public class PickupItemPacketListener implements PacketExecutor {
 			return;
 		}
 
-		player.getMovementQueue().walkToGroundItem(player, position, () -> takeItem(player, itemId, position));
+		player.getMovementQueue().walkToGroundItem(position, () -> takeItem(player, itemId, position));
 	}
 
 	private void takeItem(Player player, int itemId, Location position) {

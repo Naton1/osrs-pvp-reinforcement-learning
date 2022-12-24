@@ -30,7 +30,7 @@ public class TradeRequestPacketListener implements PacketExecutor {
             return;
         }
 
-        player.getMovementQueue().walkToEntity(player, target, () -> sendRequest(player, target));
+        player.getMovementQueue().walkToEntity(target, () -> sendRequest(player, target));
     }
 
     public static void sendRequest(Player player, Player target) {
