@@ -20,7 +20,6 @@ import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.SecondsTimer;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
-import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.util.Stopwatch;
 import com.elvarg.util.timers.TimerKey;
 
@@ -63,7 +62,6 @@ public class Combat {
 
         // Start facing the target
         character.setMobileInteraction(target);
-
 
         // Perform the first attack now (in same tick)
         performNewAttack(false);
@@ -158,6 +156,11 @@ public class Combat {
             }
             case COMBAT_METHOD_NOT_ALLOWED -> {
             }
+            case LEVEL_DIFFERENCE_TOO_GREAT -> {
+                character.getAsPlayer().getPacketSender().sendMessage("Your level difference is too great.");
+                character.getAsPlayer().getPacketSender().sendMessage("You need to move deeper into the Wilderness.");
+                character.getCombat().reset();
+            }
             case NOT_ENOUGH_SPECIAL_ENERGY -> {
                 Player p = character.getAsPlayer();
                 p.getPacketSender().sendMessage("You do not have enough special attack energy left!");
@@ -169,7 +172,16 @@ public class Combat {
                 Player p = character.getAsPlayer();
                 p.getPacketSender().sendMessage("You're currently stunned and cannot attack.");
                 p.getCombat().reset();
-                break;
+            }
+            case DUEL_NOT_STARTED_YET -> {
+                Player p = character.getAsPlayer();
+                p.getPacketSender().sendMessage("The duel has not started yet!");
+                p.getCombat().reset();
+            }
+            case DUEL_WRONG_OPPONENT -> {
+                Player p = character.getAsPlayer();
+                p.getPacketSender().sendMessage("This is not your opponent!");
+                p.getCombat().reset();
             }
             case DUEL_MELEE_DISABLED -> {
                 Player p = character.getAsPlayer();

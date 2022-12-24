@@ -64,18 +64,58 @@ public class PathFinder {
         calculateRoute(entity, size, destX, destY, xLength, yLength, direction, blockingMask, false);
     }
 
-    public static void pathClosestAttackableTile(Mobile attacker, Mobile defender, int size) {
+    public static Location pathClosestAttackableTile(Mobile attacker, Mobile defender, int distance) {
+        PrivateArea privateArea = attacker.getPrivateArea();
 
-        var tiles = getClosestTileForDistance(defender, size);
+        if (distance == 1) {
+            final int size = attacker.size();
+            final int followingSize = defender.size();
+            final Location current = attacker.getLocation();
 
-        PrivateArea area = attacker.getPrivateArea();
+            List<Location> tiles = new ArrayList<>();
+            for (Location tile : defender.outterTiles()) {
+                if (!RegionManager.canMove(attacker.getLocation(), tile, size, size, privateArea)
+                        || RegionManager.blocked(tile, privateArea)) {
+                    continue;
+                }
+                // Projectile attack
+                if (attacker.useProjectileClipping() && !RegionManager.canProjectileAttack(tile, defender.getLocation(), size, privateArea)) {
+                    continue;
+                }
+                tiles.add(tile);
+            }
+            if (!tiles.isEmpty()) {
+                tiles.sort((l1, l2) -> {
+                    int distance1 = l1.getDistance(current);
+                    int distance2 = l2.getDistance(current);
+                    int delta = (distance1 - distance2);
 
-        tiles.stream().filter(t -> !RegionManager.blocked(t, area)).filter(t -> RegionManager.canProjectileAttack(attacker, t, defender.getLocation())).min(Comparator.comparing(attacker.getLocation()::getDistance)).ifPresent(tile -> {
-            Server.logDebug("BestTile=" + tile.toString() + " pathClosestAttackableTile" + " distanceRequested=" + size + " distanceGave=" + attacker.getLocation().getDistance(defender.getLocation()));
-            calculateEntityRoute(attacker, tile.getX(), tile.getY());
-        });
-        attacker.setMobileInteraction(defender);
-        return;
+                    // Make sure we don't pick a diagonal tile if we're a small entity and have to
+                    // attack closely (melee).
+                    if (distance1 == distance2 && size == 1 && followingSize == 1) {
+                        if (l1.isPerpendicularTo(current)) {
+                            return -1;
+                        } else if (l2.isPerpendicularTo(current)) {
+                            return 1;
+                        }
+                    }
+
+                    return delta;
+                });
+
+                return tiles.get(0);
+            }
+        }
+
+        var tiles = getClosestTileForDistance(defender, distance);
+
+        Location result = tiles.stream().filter(t -> !RegionManager.blocked(t, privateArea)).filter(t -> RegionManager.canProjectileAttack(attacker, t, defender.getLocation())).min(Comparator.comparing(attacker.getLocation()::getDistance)).get();
+        if (result == null && attacker.isPlayer()) {
+            attacker.getAsPlayer().getPacketSender().sendMessage("I can't reach that.");
+            return null;
+        }
+
+        return result;
     }
 
     private static List<Location> getClosestTileForDistance(Mobile target, int distance) {

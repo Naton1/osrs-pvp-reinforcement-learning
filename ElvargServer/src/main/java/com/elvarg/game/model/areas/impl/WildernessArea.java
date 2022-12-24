@@ -2,6 +2,7 @@ package com.elvarg.game.model.areas.impl;
 
 import com.elvarg.game.content.Obelisks;
 import com.elvarg.game.content.combat.CombatFactory;
+import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
@@ -81,7 +82,7 @@ public class WildernessArea extends Area {
 	}
 
 	@Override
-	public boolean canAttack(Mobile attacker, Mobile target) {
+	public CanAttackResponse canAttack(Mobile attacker, Mobile target) {
 		if (attacker.isPlayer() && target.isPlayer()) {
 
 			Player a = attacker.getAsPlayer();
@@ -90,15 +91,14 @@ public class WildernessArea extends Area {
 			int combatDifference = CombatFactory.combatLevelDifference(a.getSkillManager().getCombatLevel(),
 					t.getSkillManager().getCombatLevel());
 			if (combatDifference > a.getWildernessLevel() + 5 || combatDifference > t.getWildernessLevel() + 5) {
-				a.getPacketSender().sendMessage("Your combat level difference is too great.");
-				a.getPacketSender().sendMessage("You need to move deeper into the Wilderness.");
-				return false;
+				return CanAttackResponse.LEVEL_DIFFERENCE_TOO_GREAT;
 			}
 			if (!(t.getArea() instanceof WildernessArea)) {
-				return false;
+				return CanAttackResponse.CANT_ATTACK_IN_AREA;
 			}
 		}
-		return true;
+
+		return CanAttackResponse.CAN_ATTACK;
 	}
 
 	@Override

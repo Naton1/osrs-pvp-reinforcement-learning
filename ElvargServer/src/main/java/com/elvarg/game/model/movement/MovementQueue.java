@@ -565,39 +565,14 @@ public final class MovementQueue {
             }
 
             // Find the nearest tile surrounding the target..
-            List<Location> tiles = new ArrayList<>();
-            for (Location tile : following.outterTiles()) {
-                if (!RegionManager.canMove(character.getLocation(), tile, size, size, character.getPrivateArea())
-                        || RegionManager.blocked(tile, character.getPrivateArea())) {
-                    continue;
-                }
-                // Projectile attack
-                if (character.useProjectileClipping() && !RegionManager.canProjectileAttack(tile, following.getLocation(), size, character.getPrivateArea())) {
-                    continue;
-                }
-                tiles.add(tile);
-            }
-            if (!tiles.isEmpty()) {
-                tiles.sort((l1, l2) -> {
-                    int distance1 = l1.getDistance(current);
-                    int distance2 = l2.getDistance(current);
-                    int delta = (distance1 - distance2);
+            int attackDistance = CombatFactory.getMethod(character).attackDistance(following);
 
-                    // Make sure we don't pick a diagonal tile if we're a small entity and have to
-                    // attack closely (melee).
-                    if (distance1 == distance2 && size == 1 && followingSize == 1) {
-                        if (l1.isPerpendicularTo(current)) {
-                            return -1;
-                        } else if (l2.isPerpendicularTo(current)) {
-                            return 1;
-                        }
-                    }
-
-                    return delta;
-                });
-                destination = tiles.get(0);
+            destination = PathFinder.pathClosestAttackableTile(character, following, attackDistance);
+            if (destination == null) {
+                return;
             }
         }
+
         PathFinder.calculateWalkRoute(character, destination.getX(), destination.getY());
     }
 

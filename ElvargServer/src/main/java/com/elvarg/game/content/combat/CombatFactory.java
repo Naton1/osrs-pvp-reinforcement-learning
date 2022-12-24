@@ -76,11 +76,14 @@ public class CombatFactory {
 		ALREADY_UNDER_ATTACK,
 		CANT_ATTACK_IN_AREA,
 		COMBAT_METHOD_NOT_ALLOWED,
+		LEVEL_DIFFERENCE_TOO_GREAT,
 		NOT_ENOUGH_SPECIAL_ENERGY,
 		STUNNED,
+		DUEL_NOT_STARTED_YET,
 		DUEL_MELEE_DISABLED,
 		DUEL_RANGED_DISABLED,
 		DUEL_MAGIC_DISABLED,
+		DUEL_WRONG_OPPONENT,
 		TARGET_IS_IMMUNE,
 		CAN_ATTACK,
 	}
@@ -456,8 +459,9 @@ public class CombatFactory {
 		}
 
 		// Check if we can attack in this area
-		if (!AreaManager.canAttack(attacker, target)) {
-			return CanAttackResponse.CANT_ATTACK_IN_AREA;
+		CanAttackResponse areaResponse = AreaManager.canAttack(attacker, target);
+		if (areaResponse != CanAttackResponse.CAN_ATTACK) {
+			return areaResponse;
 		}
 
 		if (!method.canAttack(attacker, target)) {

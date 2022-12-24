@@ -1,6 +1,7 @@
 package com.elvarg.game.content.combat.method.impl;
 
 import com.elvarg.game.World;
+import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.combat.magic.CombatAncientSpell;
@@ -78,7 +79,7 @@ public class MagicCombatMethod extends CombatMethod {
 					}
 				} else {
 					Player p = (Player) next;
-					if (!(AreaManager.canAttack(character, p)) || !AreaManager.inMulti(p)) {
+					if (AreaManager.canAttack(character, p) != CombatFactory.CanAttackResponse.CAN_ATTACK || !AreaManager.inMulti(p)) {
 						return false;
 					}
 				}

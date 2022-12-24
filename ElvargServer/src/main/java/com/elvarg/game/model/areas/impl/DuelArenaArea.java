@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.elvarg.game.content.Dueling.DuelRule;
 import com.elvarg.game.content.Dueling.DuelState;
+import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
@@ -51,20 +52,21 @@ public class DuelArenaArea extends Area {
     }
 
     @Override
-    public boolean canAttack(Mobile character, Mobile target) {
+    public CanAttackResponse canAttack(Mobile character, Mobile target) {
         if (character.isPlayer() && target.isPlayer()) {
             Player a = character.getAsPlayer();
             Player t = target.getAsPlayer();
             if (a.getDueling().getState() == DuelState.IN_DUEL && t.getDueling().getState() == DuelState.IN_DUEL) {
-                return true;
+                return CanAttackResponse.CAN_ATTACK;
             } else if (a.getDueling().getState() == DuelState.STARTING_DUEL
                     || t.getDueling().getState() == DuelState.STARTING_DUEL) {
-                //DialogueManager.sendStatement(a, "The duel hasn't started yet!");
-                return false;
+                return CanAttackResponse.DUEL_NOT_STARTED_YET;
             }
-            return false;
+
+            return CanAttackResponse.DUEL_WRONG_OPPONENT;
         }
-        return true;
+
+        return CanAttackResponse.CAN_ATTACK;
     }
 
     @Override
