@@ -690,15 +690,12 @@ public final class MovementQueue {
             return;
         }
 
+        TaskManager.cancelTasks(player.getIndex());
+        player.setWalkToTask(null);
         player.getCombat().setCastSpell(null);
         player.getCombat().reset();
         player.getSkillManager().stopSkillable();
-        player.setWalkToTask(null);
         player.getMovementQueue().resetFollow();
-        player.setCombatFollowing(null);
-        player.setFollowing(null);
-        player.setMobileInteraction(null);
-        TaskManager.cancelTasks(player.getIndex());
     }
 
     public void walkToEntity(Mobile entity, Runnable run) {

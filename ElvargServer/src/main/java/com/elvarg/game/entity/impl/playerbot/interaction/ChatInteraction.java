@@ -22,7 +22,7 @@ public class ChatInteraction {
     public void heard(ChatMessage message, Player fromPlayer) {
         byte[] textByteArray = message.getText();
         String chatMessage = Misc.textUnpack(textByteArray, textByteArray.length).toLowerCase().trim();
-        if(!chatMessage.contains(playerBot.getUsername().toLowerCase())) {
+        if(!chatMessage.startsWith(playerBot.getUsername().toLowerCase())) {
             // The player hasn't said the Bot's name, return
             return;
         }

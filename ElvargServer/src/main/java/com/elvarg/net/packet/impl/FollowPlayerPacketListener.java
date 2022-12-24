@@ -46,6 +46,7 @@ public class FollowPlayerPacketListener implements PacketExecutor {
 
     public static void follow(Player player, Player leader) {
         player.setFollowing(leader);
+        player.setMobileInteraction(leader);
 
         /** Required Index as players have different identifiers **/
         TaskManager.submit(new Task(1, player.getIndex(), true) {
@@ -53,11 +54,11 @@ public class FollowPlayerPacketListener implements PacketExecutor {
             @Override
             protected void execute() {
                 if (player.getFollowing() == null) {
+                    player.setPositionToFace(null);
                     stop();
                     return;
                 }
 
-                player.setMobileInteraction(leader);
                 if (leader.isTeleporting() || !leader.getLocation().isWithinDistance(player.getLocation(), 15)) {
                     player.setPositionToFace(null);
                     stop();
