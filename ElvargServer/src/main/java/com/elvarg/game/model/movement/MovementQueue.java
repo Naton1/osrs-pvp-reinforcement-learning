@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.elvarg.game.World;
 import com.elvarg.game.collision.RegionManager;
+import com.elvarg.game.content.Dueling;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.method.CombatMethod;
 import com.elvarg.game.definition.ObjectDefinition;
@@ -20,6 +21,7 @@ import com.elvarg.game.model.Location;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.game.model.movement.path.RS317PathFinder;
+import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.util.Misc;
@@ -35,6 +37,53 @@ import com.elvarg.util.timers.TimerKey;
 public final class MovementQueue {
 
     private static final RandomGen RANDOM = new RandomGen();
+
+    /**
+     * An enum to represent a Player's Mobility
+     */
+    public enum Mobility {
+        INVALID,
+        BUSY,
+        FROZEN_SPELL,
+        STUNNED,
+        DUEL_MOVEMENT_DISABLED,
+        MOBILE;
+
+        /**
+         * Determines whether the player is able to move.
+         *
+         * @return {boolean} canMove
+         */
+        public boolean canMove() {
+            return this == MOBILE;
+        }
+
+        /**
+         * Sends the appropriate message to the player about their (lack of) mobility.
+         *
+         * @param player The player to send the message to.
+         */
+        public void sendMessage(Player player) {
+            if (player == null) {
+                return;
+            }
+
+            String message;
+
+            switch (this) {
+                case FROZEN_SPELL -> message = "A magical spell has made you unable to move.";
+                case STUNNED -> message = "You're stunned!";
+                case BUSY -> message = "You cannot do that right now.";
+                case DUEL_MOVEMENT_DISABLED -> message = "Movement has been disabled in this duel!";
+                default -> {
+                    // No message associated with this Mobility
+                    return;
+                }
+            }
+
+            player.getPacketSender().sendMessage(message);
+        }
+    }
 
     /**
      * The maximum size of the queue. If any additional steps are added, they are
@@ -57,7 +106,6 @@ public final class MovementQueue {
      */
     private final Deque<Point> points = new ArrayDeque<Point>();
 
-
     /**
      * Whether movement is currently blocked for this Mobile.
      */
@@ -67,7 +115,6 @@ public final class MovementQueue {
      * Are we currently moving?
      */
     private boolean isMoving = false;
-    public boolean foundLastRoute;
 
     /**
      * Creates a walking queue for the specified character.
@@ -90,7 +137,7 @@ public final class MovementQueue {
      * @return
      */
     public boolean canWalk(int deltaX, int deltaY) {
-        if (!canMove()) {
+        if (!this.getMobility().canMove()) {
             return false;
         }
         if (character.getLocation().getZ() == -1) {
@@ -173,7 +220,7 @@ public final class MovementQueue {
      * @param heightLevel
      */
     private void addStep(int x, int y, int heightLevel) {
-        if (!canMove()) {
+        if (!this.getMobility().canMove()) {
             return;
         }
 
@@ -195,7 +242,7 @@ public final class MovementQueue {
      * @oaram flag
      */
     public void addStep(Location step) {
-        if (!canMove()) {
+        if (!this.getMobility().canMove()) {
             return;
         }
 
@@ -218,13 +265,64 @@ public final class MovementQueue {
         }
     }
 
-    public boolean canMove() {
-        if (character.isNeedsPlacement()) {
+    /**
+     * Determines the Player's Mobility status
+     *
+     * @return {Mobility} mobility
+     */
+    public Mobility getMobility() {
+        if (character.getTimers().has(TimerKey.FREEZE)) {
+            return Mobility.FROZEN_SPELL;
+        }
+
+        if (character.getTimers().has(TimerKey.STUN)) {
+            return Mobility.STUNNED;
+        }
+
+        if (character.isNeedsPlacement() || this.isMovementBlocked()) {
+            return Mobility.INVALID;
+        }
+
+        if (this.player != null) {
+            // Player related checks
+
+            Dueling playerDueling = player.getDueling();
+            if (!this.player.getTrading().getButtonDelay().finished() || !playerDueling.getButtonDelay().finished()) {
+                return Mobility.BUSY;
+            }
+
+            if (playerDueling.inDuel() && playerDueling.getRules()[Dueling.DuelRule.NO_MOVEMENT.ordinal()]) {
+                return Mobility.DUEL_MOVEMENT_DISABLED;
+            }
+        }
+
+        return Mobility.MOBILE;
+    }
+
+    /**
+     * Validates a destination for a given player movement.
+     *
+     * @param destination The intended/potential destination.
+     * @return {boolean} destinationValid
+     */
+    public boolean checkDestination(Location destination) {
+        if (destination.getZ() < 0) {
             return false;
         }
-        if (character.getTimers().has(TimerKey.FREEZE) || character.getTimers().has(TimerKey.STUN) || blockMovement) {
+
+        if (character.getLocation().getZ() != destination.getZ()) {
             return false;
         }
+
+        if (destination.getX() > Short.MAX_VALUE || destination.getX() < 0 || destination.getY() > Short.MAX_VALUE || destination.getY() < 0) {
+            return false;
+        }
+
+        int distance = character.getLocation().getDistance(destination);
+        if (distance > 25) {
+            return false;
+        }
+
         return true;
     }
 
@@ -257,9 +355,7 @@ public final class MovementQueue {
      * Polls through the queue of steps and handles them.
      */
     public void process() {
-
-        // Make sure movement isnt restricted..
-        if (!canMove()) {
+        if (!getMobility().canMove()) {
             reset();
             return;
         }
@@ -408,8 +504,11 @@ public final class MovementQueue {
         // Update interaction
         character.setMobileInteraction(following);
 
+        // Make sure we reset the current movement queue to prevent erratic back and forth
+        this.reset();
+
         // Block if our movement is locked.
-        if (!canMove()) {
+        if (!getMobility().canMove()) {
             return;
         }
 
@@ -417,6 +516,8 @@ public final class MovementQueue {
         final CombatMethod method = CombatFactory.getMethod(character);
 
         if (combatFollow && CombatFactory.canReach(character, method, following)) {
+            // Don't continue finding a path if we can reach our opponent
+            this.reset();
             return;
         }
 
@@ -455,7 +556,11 @@ public final class MovementQueue {
 
             if (reset) {
                 if (character.isPlayer() && following.isPlayer()) {
-                    character.getAsPlayer().getPacketSender().sendMessage("Unable to find " + following.getAsPlayer().getUsername() + ".");
+                    character.sendMessage("Unable to find " + following.getAsPlayer().getUsername() + ".");
+                    if (character.getAsPlayer().getRights() == PlayerRights.DEVELOPER) {
+                        Location p = Misc.delta(character.getLocation(), following.getLocation());
+                        character.sendMessage("Delta: " + p.getX() + ", " + p.getZ());
+                    }
                 }
                 if (combatFollow) {
                     character.getCombat().reset();
@@ -631,24 +736,32 @@ public final class MovementQueue {
     }
 
     public void walkToGroundItem(Location pos, Runnable action) {
-        reset();
-
-        this.walkToReset();
-
         if (player.getLocation().getDistance(pos) == 0) {
             // If player is already at the ground item, run the action now
             action.run();
             return;
         }
 
+        Mobility mobility = this.getMobility();
+        if (!mobility.canMove()) {
+            mobility.sendMessage(this.player);
+            this.reset();
+            return;
+        }
+
+        if (!this.checkDestination(pos)) {
+            this.reset();
+            return;
+        }
+
         int destX = pos.getX();
         int destY = pos.getY();
 
-        PathFinder.calculateWalkRoute(player, destX, destY);
+        this.reset();
 
-        if (!canMove()) {
-            reset();
-        }
+        this.walkToReset();
+
+        PathFinder.calculateWalkRoute(player, destX, destY);
 
         TaskManager.submit(new Task(1, player, false) {
 
@@ -695,28 +808,36 @@ public final class MovementQueue {
         player.getCombat().setCastSpell(null);
         player.getCombat().reset();
         player.getSkillManager().stopSkillable();
-        player.getMovementQueue().resetFollow();
+        this.resetFollow();
     }
 
     public void walkToEntity(Mobile entity, Runnable run) {
-        reset();
-
-        this.walkToReset();
-
         int destX = entity.getLocation().getX();
         int destY = entity.getLocation().getY();
 
-        if (!canMove()) {
-            reset();
+        Mobility mobility = this.getMobility();
+        if (!mobility.canMove()) {
+            mobility.sendMessage(this.player);
+            this.reset();
+            return;
         }
+
+        if (!this.checkDestination(entity.getLocation())) {
+            this.reset();
+            return;
+        }
+
+        this.reset();
+
+        this.walkToReset();
+
+        PathFinder.calculateEntityRoute(player, destX, destY);
 
         final int finalDestinationX = player.getMovementQueue().pathX;
 
         final int finalDestinationY = player.getMovementQueue().pathY;
 
-        PathFinder.calculateEntityRoute(player, destX, destY);
-
-        TaskManager.submit(new Task(1, player.getIndex(), false) {
+        TaskManager.submit(new Task(1, player.getIndex(), true) {
 
             int currentX = entity.getLocation().getX();
 
@@ -763,7 +884,19 @@ public final class MovementQueue {
     }
 
     public void walkToObject(final GameObject object, final Action action) {
-        reset();
+        Mobility mobility = this.getMobility();
+        if (!mobility.canMove()) {
+            mobility.sendMessage(this.player);
+            this.reset();
+            return;
+        }
+
+        if (!this.checkDestination(object.getLocation())) {
+            this.reset();
+            return;
+        }
+
+        this.reset();
 
         this.walkToReset();
 
@@ -789,16 +922,13 @@ public final class MovementQueue {
             }
             int blockingMask = def.blockingMask;
 
-            if (direction != 0)
+            if (direction != 0) {
                 blockingMask = (blockingMask << direction & 0xf) + (blockingMask >> 4 - direction);
-            //
+            }
+
             PathFinder.calculateObjectRoute(player, 0, objectX, objectY, xLength, yLength, 0, blockingMask);
         } else {
             PathFinder.calculateObjectRoute(player, type + 1, objectX, objectY, 0, 0, direction, 0);
-        }
-
-        if (!canMove()) {
-            reset();
         }
 
         final int finalDestinationX = player.getMovementQueue().pathX;
@@ -838,8 +968,6 @@ public final class MovementQueue {
                         return;
                     }
                     stop();
-                    /** When no destination is set = no possible route to requested tiles **/
-                    player.getPacketSender().sendMessage("You can't reach that!");
                     return;
                 }
                 if (!points.isEmpty()) {
@@ -848,6 +976,8 @@ public final class MovementQueue {
 
                 if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != finalDestinationX || player.getLocation().getY() != finalDestinationY) {
                     walkStage = -1;
+                    /** When no destination is set = no possible route to requested tiles **/
+                    player.getPacketSender().sendMessage("You can't reach that!");
                     return;
                 }
                 walkStage = 1;

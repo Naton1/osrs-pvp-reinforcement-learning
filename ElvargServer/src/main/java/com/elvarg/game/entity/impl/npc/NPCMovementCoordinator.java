@@ -4,7 +4,6 @@ import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.movement.path.PathFinder;
-import com.elvarg.game.model.movement.path.RS317PathFinder;
 import com.elvarg.util.Misc;
 
 /**
@@ -46,7 +45,7 @@ public class NPCMovementCoordinator {
             }
         }
         
-        if (!npc.getMovementQueue().canMove()) {
+        if (!npc.getMovementQueue().getMobility().canMove()) {
         	return;
         }
 

@@ -71,6 +71,7 @@ import com.elvarg.util.timers.TimerKey;
  */
 public class CombatFactory {
 	private static final RandomGen RANDOM = new RandomGen();
+
 	public enum CanAttackResponse {
 		INVALID_TARGET,
 		ALREADY_UNDER_ATTACK,
@@ -390,6 +391,7 @@ public class CombatFactory {
         }
 
 		if (method.type() == CombatType.MELEE && isMoving && attacker.getMovementQueue().isMoving()) {
+			// If we're using Melee and either player is moving, increase required distance
 			requiredDistance++;
 		}
 

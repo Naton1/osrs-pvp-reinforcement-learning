@@ -13,20 +13,21 @@ public class TradeRequestPacketListener implements PacketExecutor {
     public void execute(Player player, Packet packet) {
         int index = packet.readLEShort();
 
-        if (index > World.getPlayers().capacity() || index < 0)
+        if (index > World.getPlayers().capacity() || index < 0) {
             return;
+        }
 
         Player target = World.getPlayers().get(index);
 
-        if (target == null)
+        if (target == null) {
             return;
+        }
 
         if (!target.getLocation().isWithinDistance(player.getLocation(), 20)) {
             return;
         }
 
         if (player.getHitpoints() <= 0 || !player.isRegistered()  || target.getHitpoints() <= 0 || !target.isRegistered()) {
-            player.getMovementQueue().reset();
             return;
         }
 

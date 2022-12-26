@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import com.elvarg.Server;
-import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.hit.HitDamageCache;
 import com.elvarg.game.content.combat.hit.HitQueue;
 import com.elvarg.game.content.combat.hit.PendingHit;
@@ -102,7 +101,7 @@ public class Combat {
         character.setMobileInteraction(target);
 
         if (!CombatFactory.canReach(character, method, target)) {
-            // Make sure the character can reach their target before processing combat
+            // Make sure the character is within reach before processing combat
             return;
         }
 

@@ -348,7 +348,7 @@ public class Location {
         if (this.getZ() != other.getZ())
             return false;
         Location p = Misc.delta(this, other);
-        return p.x <= 14 && p.x >= -15 && p.y <= 14 && p.y >= -15;
+        return p.x <= 15 && p.x >= -15 && p.y <= 15 && p.y >= -15;
     }
 
     public Location translate(int x, int y) {

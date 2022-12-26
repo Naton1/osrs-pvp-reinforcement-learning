@@ -52,9 +52,7 @@ public class PathFinder {
     }
 
     public static void calculateWalkRoute(Mobile player, int destX, int destY) {
-        player.getMovementQueue().reset();
         calculateRoute(player, 0, destX, destY, 0, 0, 0, 0, true);
-
     }
 
     public static void calculateObjectRoute(Mobile entity, int size, int destX, int destY, int xLength, int yLength, int direction, int blockingMask) {
