@@ -1,4 +1,4 @@
-package com.elvarg.game.content.minigames;
+package com.elvarg.game.content.minigames.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;

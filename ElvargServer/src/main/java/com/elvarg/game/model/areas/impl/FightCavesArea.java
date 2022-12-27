@@ -3,13 +3,12 @@ package com.elvarg.game.model.areas.impl;
 import java.util.Arrays;
 import java.util.Optional;
 
-import com.elvarg.game.content.minigames.FightCaves;
+import com.elvarg.game.content.minigames.impl.FightCaves;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Item;
-import com.elvarg.game.model.dialogues.DialogueManager;
 import com.elvarg.util.NpcIdentifiers;
 
 public class FightCavesArea extends PrivateArea {

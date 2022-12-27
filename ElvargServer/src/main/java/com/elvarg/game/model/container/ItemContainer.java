@@ -305,6 +305,28 @@ public abstract class ItemContainer {
     }
 
     /**
+     * Checks if this container contains any of the set of items.
+     * @return
+     */
+    public boolean containsAny(Integer[] itemIds) {
+        if (itemIds.length == 0 || this.isEmpty()) {
+            return false;
+        }
+
+        for (int itemId : itemIds) {
+            if (itemId == -1) {
+                continue;
+            }
+
+            if (contains(itemId)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Gets the next empty slot for an item to equip.
      *
      * @return The next empty slot index.

@@ -37,7 +37,7 @@ public class Barricades {
     /**
      * The ITEM_ID for the barricade in inventory
      */
-    public static final int BARRICADE_ITEM_ID = 4053;
+    public static final int ITEM_ID = 4053;
 
     /**
      * Amount of firemaking experience to gain for each barricade light.
@@ -137,7 +137,7 @@ public class Barricades {
     private static void deploy(Player player) {
         Location tile = player.getLocation();
         RegionManager.addClipping(tile.getX(), tile.getY(), tile.getZ(), 0x200000, player.getPrivateArea());
-        player.getInventory().delete(BARRICADE_ITEM_ID, 1);
+        player.getInventory().delete(ITEM_ID, 1);
         barricades.add(tile);
         World.getAddNPCQueue().add(new NPC(NPC_ID, tile.clone()));
         Sounds.sendSound(player, Sound.PICK_UP_ITEM);
