@@ -2,7 +2,6 @@ package com.elvarg.game.entity.impl;
 
 import com.elvarg.game.Sound;
 import com.elvarg.game.content.combat.Combat;
-import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.hit.HitDamage;
 import com.elvarg.game.content.combat.hit.PendingHit;
@@ -605,4 +604,17 @@ public abstract class Mobile extends Entity {
         }
         return ((NPC) this);
     }
+
+	/**
+	 * Sends a message (if this character is a human player).
+	 *
+	 * @param message
+	 */
+	public void sendMessage(String message) {
+		if (!this.isPlayer() || this.isPlayerBot()) {
+			return;
+		}
+
+		this.getAsPlayer().getPacketSender().sendMessage(message);
+	}
 }

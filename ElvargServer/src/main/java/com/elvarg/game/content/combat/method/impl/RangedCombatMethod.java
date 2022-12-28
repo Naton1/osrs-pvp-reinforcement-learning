@@ -1,6 +1,7 @@
 package com.elvarg.game.content.combat.method.impl;
 
-import com.elvarg.game.content.Dueling.DuelRule;
+import com.elvarg.game.Sound;
+import com.elvarg.game.Sounds;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.hit.PendingHit;
@@ -102,6 +103,11 @@ public class RangedCombatMethod extends CombatMethod {
 
         // Fire projectile
         new Projectile(character, target, projectileId, delay, speed, heightStart, heightEnd).sendProjectile();
+
+        // Send sound
+        if (character.isPlayer()) {
+            Sounds.sendSound(character.getAsPlayer(), Sound.SHOOT_ARROW);
+        }
 
         // Dark bow sends two arrows, so send another projectile and delete another
         // arrow.

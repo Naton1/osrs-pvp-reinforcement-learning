@@ -1,6 +1,5 @@
 package com.elvarg.game.entity.impl.playerbot.fightstyle.impl;
 
-import com.elvarg.game.content.PrayerHandler;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.combat.CombatType;
@@ -53,7 +52,7 @@ public class NHPureFighterPreset implements FighterPreset {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                    return playerBot.getSpecialPercentage() >= 50 && playerBot.getMovementQueue().canMove() &&
+                    return playerBot.getSpecialPercentage() >= 50 && playerBot.getMovementQueue().getMobility().canMove() &&
                             // Switch if the enemy has lowish health
                             enemy.getHitpointsAfterPendingDamage() <= 45;
                 }
@@ -89,7 +88,7 @@ public class NHPureFighterPreset implements FighterPreset {
                     boolean cantAttack = playerBot.getTimers().has(TimerKey.COMBAT_ATTACK) && playerBot.getTimers().left(TimerKey.COMBAT_ATTACK) > 1;
 
                     return cantAttack
-                            &&!enemy.getMovementQueue().canMove()
+                            &&!enemy.getMovementQueue().getMobility().canMove()
                             && distance == 1
                             && CombatFactory.canReach(enemy, combatMethod, playerBot);
                 }
@@ -109,7 +108,7 @@ public class NHPureFighterPreset implements FighterPreset {
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
                     // Freeze the player if they can move
-                    return enemy.getMovementQueue().canMove() && !enemy.getTimers().has(TimerKey.FREEZE_IMMUNITY)
+                    return enemy.getMovementQueue().getMobility().canMove() && !enemy.getTimers().has(TimerKey.FREEZE_IMMUNITY)
                             && CombatSpells.ICE_BARRAGE.getSpell().canCast(playerBot, false);
                 }
 

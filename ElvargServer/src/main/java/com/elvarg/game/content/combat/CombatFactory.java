@@ -71,16 +71,20 @@ import com.elvarg.util.timers.TimerKey;
  */
 public class CombatFactory {
 	private static final RandomGen RANDOM = new RandomGen();
+
 	public enum CanAttackResponse {
 		INVALID_TARGET,
 		ALREADY_UNDER_ATTACK,
 		CANT_ATTACK_IN_AREA,
 		COMBAT_METHOD_NOT_ALLOWED,
+		LEVEL_DIFFERENCE_TOO_GREAT,
 		NOT_ENOUGH_SPECIAL_ENERGY,
 		STUNNED,
+		DUEL_NOT_STARTED_YET,
 		DUEL_MELEE_DISABLED,
 		DUEL_RANGED_DISABLED,
 		DUEL_MAGIC_DISABLED,
+		DUEL_WRONG_OPPONENT,
 		TARGET_IS_IMMUNE,
 		CAN_ATTACK,
 	}
@@ -331,10 +335,11 @@ public class CombatFactory {
 
 	/**
 	 * Checks if an entity can reach a target.
+	 * If false, combat is reset for the attacker.
 	 *
 	 * @param attacker
 	 *            The entity which wants to attack.
-//	 * @param cb_type
+/	 * @param cb_type
 	 *            The combat type the attacker is using.
 	 * @param target
 	 *            The victim.
@@ -368,7 +373,10 @@ public class CombatFactory {
 		final Location targetPosition = target.getLocation();
 		
 		if (attackerPosition.equals(targetPosition)) {
-			MovementQueue.clippedStep(attacker);
+			if (!attacker.getTimers().has(TimerKey.STEPPING_OUT)) {
+				MovementQueue.clippedStep(attacker);
+				attacker.getTimers().register(TimerKey.STEPPING_OUT, 2);
+			}
 		    return false;
 		}
 
@@ -386,6 +394,7 @@ public class CombatFactory {
         }
 
 		if (method.type() == CombatType.MELEE && isMoving && attacker.getMovementQueue().isMoving()) {
+			// If we're using Melee and either player is moving, increase required distance
 			requiredDistance++;
 		}
 
@@ -455,8 +464,9 @@ public class CombatFactory {
 		}
 
 		// Check if we can attack in this area
-		if (!AreaManager.canAttack(attacker, target)) {
-			return CanAttackResponse.CANT_ATTACK_IN_AREA;
+		CanAttackResponse areaResponse = AreaManager.canAttack(attacker, target);
+		if (areaResponse != CanAttackResponse.CAN_ATTACK) {
+			return areaResponse;
 		}
 
 		if (!method.canAttack(attacker, target)) {

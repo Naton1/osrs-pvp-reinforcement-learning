@@ -10,4 +10,5 @@ public enum TimerKey {
 	STUN,
 	ATTACK_IMMUNITY,
 	CASTLEWARS_TAKE_ITEM,
+	STEPPING_OUT,
 }

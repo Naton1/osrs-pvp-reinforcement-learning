@@ -11,7 +11,9 @@ public class SoundEffectCommand implements Command {
     @Override
     public void execute(Player player, String command, String[] parts) {
         int soundId = Integer.parseInt(parts[1]);
-        Sounds.sendSound(player, soundId, 0,0,2);
+        int delay = parts.length == 3 ? Integer.parseInt(parts[2]) : 0;
+        int volume = parts.length == 4 ? Integer.parseInt(parts[3]) : 2;
+        Sounds.sendSound(player, soundId, 0, delay, volume);
     }
 
     @Override

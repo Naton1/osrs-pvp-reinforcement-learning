@@ -68,7 +68,7 @@ public class ObbyMaulerFighterPreset implements FighterPreset {
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
                     boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 1);
-                    return canAttackNextTick && playerBot.getMovementQueue().canMove() &&
+                    return canAttackNextTick && playerBot.getMovementQueue().getMobility().canMove() &&
                             enemy.getHitpointsAfterPendingDamage() < 38;
                 }
 

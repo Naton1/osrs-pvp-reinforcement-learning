@@ -3,6 +3,7 @@ package com.elvarg.net.packet.impl;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Location;
+import com.elvarg.game.model.movement.MovementQueue.Mobility;
 import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
@@ -23,7 +24,6 @@ public class FollowPlayerPacketListener implements PacketExecutor {
 
     @Override
     public void execute(Player player, Packet packet) {
-
         if (player.busy()) {
             return;
         }
@@ -38,36 +38,53 @@ public class FollowPlayerPacketListener implements PacketExecutor {
 
         Player leader = World.getPlayers().get(otherPlayersIndex);
 
-        if (leader == null)
+        if (leader == null) {
             return;
+        }
+
+        FollowPlayerPacketListener.follow(player, leader);
+    }
+
+    public static void follow(Player player, Player leader) {
+        Mobility mobility = player.getMovementQueue().getMobility();
+        if (!mobility.canMove()) {
+            mobility.sendMessage(player);
+            player.getMovementQueue().reset();
+            return;
+        }
+
+        player.getMovementQueue().reset();
+        player.getMovementQueue().walkToReset();
 
         player.setFollowing(leader);
+        player.setMobileInteraction(leader);
 
-        /** Required Index as players have different identifiers **/
-        TaskManager.submit(new Task(1, player.getIndex(), false) {
+        TaskManager.submit(new Task(1, player.getIndex(), true) {
 
             @Override
             protected void execute() {
-                if (player.getFollowing() != null) {
-                    player.setMobileInteraction(leader);
-                    if (leader.isTeleporting() || !leader.getLocation().isWithinDistance(player.getLocation(), 15)) {
-                        player.setPositionToFace(null);
-                        stop();
-                        return;
-                    }
-                    int destX = leader.getMovementQueue().followX;
-                    int destY = leader.getMovementQueue().followY;
-                    if (Objects.equals(new Location(destX, destY), player.getLocation()) || destX == -1 && destY == -1) {
-                        return;
-                    }
-                    player.getMovementQueue().reset();
-                    /** Path finder does all clipping check for me :))))) **/
-                    PathFinder.calculateWalkRoute(player, destX, destY);
-                } else
+                if (player.getFollowing() == null) {
+                    player.setPositionToFace(null);
                     stop();
+                    return;
+                }
+
+                if (leader.isTeleporting() || !leader.getLocation().isWithinDistance(player.getLocation(), 15)) {
+                    player.setPositionToFace(null);
+                    stop();
+                    return;
+                }
+                int destX = leader.getMovementQueue().followX;
+                int destY = leader.getMovementQueue().followY;
+                if (Objects.equals(new Location(destX, destY), player.getLocation()) || destX == -1 && destY == -1) {
+                    return;
+                }
+                player.getMovementQueue().reset();
+                player.setPositionToFace(leader.getLocation());
+                player.setMobileInteraction(leader);
+                PathFinder.calculateWalkRoute(player, destX, destY);
             }
         });
-
     }
 
 }

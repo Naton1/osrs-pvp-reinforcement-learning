@@ -2,11 +2,9 @@ package com.elvarg.game.entity.impl.playerbot.interaction;
 
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.CombatFactory;
-import com.elvarg.game.entity.impl.npc.NPCMovementCoordinator;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.movement.MovementQueue;
-import com.elvarg.game.model.movement.path.RS317PathFinder;
 import com.elvarg.game.model.teleportation.TeleportHandler;
 import com.elvarg.game.model.teleportation.TeleportType;
 import com.elvarg.util.Misc;
@@ -21,7 +19,7 @@ public class MovementInteraction {
     }
 
     public void process() {
-        if (!playerBot.getMovementQueue().canMove() || playerBot.busy()) {
+        if (!playerBot.getMovementQueue().getMobility().canMove() || playerBot.busy()) {
             return;
         }
 

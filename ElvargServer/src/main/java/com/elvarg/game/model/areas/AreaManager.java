@@ -1,5 +1,6 @@
 package com.elvarg.game.model.areas;
 
+import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
@@ -91,11 +92,11 @@ public class AreaManager {
      *
      * @param attacker
      * @param target
-     * @return
+     * @return {CanAttackResponse}
      */
-    public static boolean canAttack(Mobile attacker, Mobile target) {
+    public static CanAttackResponse canAttack(Mobile attacker, Mobile target) {
         if (attacker.getPrivateArea() != target.getPrivateArea()) {
-            return false;
+            return CanAttackResponse.CANT_ATTACK_IN_AREA;
         }
         
         if (attacker.getArea() != null) {
@@ -104,10 +105,10 @@ public class AreaManager {
 
         // Don't allow PvP by default
         if (attacker.isPlayer() && target.isPlayer()) {
-            return false;
+            return CanAttackResponse.CANT_ATTACK_IN_AREA;
         }
 
-        return true;
+        return CanAttackResponse.CAN_ATTACK;
     }
 
     /**

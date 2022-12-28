@@ -84,7 +84,7 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
             return;
         }
 
-        player.getMovementQueue().walkToEntity(player, npc, () -> handleInteraction(player, npc, packet));
+        player.getMovementQueue().walkToEntity(npc, () -> handleInteraction(player, npc, packet));
 
     }
 

@@ -1,6 +1,8 @@
 package com.elvarg.game.content.combat.method.impl;
 
+import com.elvarg.game.Sounds;
 import com.elvarg.game.World;
+import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.combat.magic.CombatAncientSpell;
@@ -78,7 +80,7 @@ public class MagicCombatMethod extends CombatMethod {
 					}
 				} else {
 					Player p = (Player) next;
-					if (!(AreaManager.canAttack(character, p)) || !AreaManager.inMulti(p)) {
+					if (AreaManager.canAttack(character, p) != CombatFactory.CanAttackResponse.CAN_ATTACK || !AreaManager.inMulti(p)) {
 						return false;
 					}
 				}
@@ -186,10 +188,15 @@ public class MagicCombatMethod extends CombatMethod {
 				// Send proper end graphics for the spell because it was accurate
 				previousSpell.endGraphic().ifPresent(target::performGraphic);
 
+				if (target.isPlayer() && !target.isPlayerBot() && previousSpell.impactSound() != null) {
+					Sounds.sendSound(target.getAsPlayer(), previousSpell.impactSound());
+				}
+
 			} else {
 
 				// Send splash graphics for the spell because it wasn't accurate
 				target.performGraphic(SPLASH_GRAPHIC);
+
 			}
 
 			previousSpell.finishCast(attacker, target, accurate, damage);

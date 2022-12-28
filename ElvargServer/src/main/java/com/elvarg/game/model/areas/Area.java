@@ -1,5 +1,6 @@
 package com.elvarg.game.model.areas;
 
+import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
@@ -54,7 +55,13 @@ public abstract class Area {
 
     public abstract boolean canTeleport(Player player);
 
-    public abstract boolean canAttack(Mobile attacker, Mobile target);
+    public CanAttackResponse canAttack(Mobile attacker, Mobile target) {
+        if (attacker.isPlayer() && target.isPlayer()) {
+            return CanAttackResponse.CANT_ATTACK_IN_AREA;
+        }
+
+        return CanAttackResponse.CAN_ATTACK;
+    }
 
     public abstract void defeated(Player player, Mobile character);
 

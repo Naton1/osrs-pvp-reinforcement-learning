@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import com.elvarg.Server;
-import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.hit.HitDamageCache;
 import com.elvarg.game.content.combat.hit.HitQueue;
 import com.elvarg.game.content.combat.hit.PendingHit;
@@ -20,7 +19,6 @@ import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.SecondsTimer;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
-import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.util.Stopwatch;
 import com.elvarg.util.timers.TimerKey;
 
@@ -64,7 +62,6 @@ public class Combat {
         // Start facing the target
         character.setMobileInteraction(target);
 
-
         // Perform the first attack now (in same tick)
         performNewAttack(false);
     }
@@ -76,20 +73,21 @@ public class Combat {
         // Process the hit queue
         hitQueue.process(character);
 
-        // Handle attacking
-        performNewAttack(false);
-
         // Reset attacker if we haven't been attacked in 6 seconds.
         if (lastAttack.elapsed(6000)) {
             setUnderAttack(null);
+            return;
         }
+
+        // Handle attacking
+        performNewAttack(false);
     }
 
     /**
      * Attempts to perform a new attack.
      */
     public void performNewAttack(boolean instant) {
-        if (character != null && character.isNpc() && !character.getAsNpc().getDefinition().doesFightBack()) {
+        if (target == null || (character != null && character.isNpc() && !character.getAsNpc().getDefinition().doesFightBack())) {
             // Don't process attacks for NPC's who don't fight back
             return;
         }
@@ -103,14 +101,7 @@ public class Combat {
         character.setMobileInteraction(target);
 
         if (!CombatFactory.canReach(character, method, target)) {
-            /**
-             * Finds path before executing actions.
-             */
-            return;
-        }
-
-        // Check if the character can reach the target before attempting attack
-        if (!CombatFactory.canReach(character, method, target)) {
+            // Make sure the character is within reach before processing combat
             return;
         }
 
@@ -164,6 +155,11 @@ public class Combat {
             }
             case COMBAT_METHOD_NOT_ALLOWED -> {
             }
+            case LEVEL_DIFFERENCE_TOO_GREAT -> {
+                character.getAsPlayer().getPacketSender().sendMessage("Your level difference is too great.");
+                character.getAsPlayer().getPacketSender().sendMessage("You need to move deeper into the Wilderness.");
+                character.getCombat().reset();
+            }
             case NOT_ENOUGH_SPECIAL_ENERGY -> {
                 Player p = character.getAsPlayer();
                 p.getPacketSender().sendMessage("You do not have enough special attack energy left!");
@@ -175,7 +171,16 @@ public class Combat {
                 Player p = character.getAsPlayer();
                 p.getPacketSender().sendMessage("You're currently stunned and cannot attack.");
                 p.getCombat().reset();
-                break;
+            }
+            case DUEL_NOT_STARTED_YET -> {
+                Player p = character.getAsPlayer();
+                p.getPacketSender().sendMessage("The duel has not started yet!");
+                p.getCombat().reset();
+            }
+            case DUEL_WRONG_OPPONENT -> {
+                Player p = character.getAsPlayer();
+                p.getPacketSender().sendMessage("This is not your opponent!");
+                p.getCombat().reset();
             }
             case DUEL_MELEE_DISABLED -> {
                 Player p = character.getAsPlayer();
@@ -211,7 +216,6 @@ public class Combat {
     public void reset() {
         target = null;
         character.setCombatFollowing(null);
-        character.setFollowing(null);
         character.setMobileInteraction(null);
     }
 

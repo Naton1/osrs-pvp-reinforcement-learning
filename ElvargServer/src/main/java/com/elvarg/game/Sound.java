@@ -47,6 +47,8 @@ public enum Sound {
 
     IMP_ATTACKING(10, 1, 25),
 
+    SHOOT_ARROW(370),
+
     WEAPON(398, 1, 25), // default/other
 
     WEAPON_GODSWORD(390, 1, 25),
@@ -68,6 +70,8 @@ public enum Sound {
 
     // Spell sounds
 
+    TELEPORT(202),
+
     ICA_BARRAGE_IMPACT(1125, 1, 0),
 
     DROP_ITEM(376, 1, 0),
@@ -77,6 +81,8 @@ public enum Sound {
     FIRE_SUCCESSFUL(608, 1, 0),
     FIRE_FIRST_ATTEMPT(2584, 1, 0),
 
+    FOOD_EAT(317),
+    DRINK(334),
     ;
 
     private final int id;
@@ -87,6 +93,12 @@ public enum Sound {
         this.id = id;
         this.volume = volume;
         this.delay = delay;
+    }
+
+    Sound(int id) {
+        this.id = id;
+        this.volume = 1;
+        this.delay = 0;
     }
 
     public int getId() {

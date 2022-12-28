@@ -36,14 +36,6 @@ public class FightCavesArea extends PrivateArea {
     }
 
     @Override
-    public boolean canAttack(Mobile attacker, Mobile target) {
-        if (attacker.isPlayer() && target.isPlayer()) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public boolean canTrade(Player player, Player target) {
         return false;
     }

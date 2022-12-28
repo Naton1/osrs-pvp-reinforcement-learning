@@ -189,7 +189,7 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
 
         //Handle object..
 
-        player.getMovementQueue().walkToObject(player, object, () -> {
+        player.getMovementQueue().walkToObject(object, () -> {
             switch (object.getId()) {
                 case ObjectIdentifiers.STOVE_4: //Edgeville Stove
                 case ObjectIdentifiers.FIRE_5: //Player-made Fire

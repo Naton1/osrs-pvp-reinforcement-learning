@@ -263,7 +263,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
             return;
         }
 
-        player.getMovementQueue().walkToObject(player, object, () -> {
+        player.getMovementQueue().walkToObject(object, () -> {
             // Face object..
             player.setPositionToFace(location);
 
