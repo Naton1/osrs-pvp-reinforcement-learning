@@ -9,6 +9,7 @@ import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.*;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.util.ItemIdentifiers;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import static com.elvarg.game.model.container.impl.Equipment.CAPE_SLOT;
+import static com.elvarg.game.model.container.impl.Equipment.NO_ITEM;
 import static com.elvarg.util.ItemIdentifiers.*;
 import static com.elvarg.util.ObjectIdentifiers.*;
 
@@ -81,8 +83,6 @@ public class CastleWars implements Minigame {
 
     public static final Animation TAKE_BANDAGES_ANIM = new Animation(881);
 
-    public static final Item EMPTY_SLOT = new Item(-1);
-
     private static final int[] ITEMS = { BANDAGES, ItemIdentifiers.BRONZE_PICKAXE, EXPLOSIVE_POTION, Barricades.ITEM_ID, ZAMMY_CAPE, SARA_CAPE, SARA_BANNER, ZAMMY_BANNER, ItemIdentifiers.ROCK_5 };
 
     public static boolean deleteCastleWarsItems(Player player, int itemId) {
@@ -112,9 +112,8 @@ public class CastleWars implements Minigame {
 
     public static final Location LOBBY_TELEPORT = new Location(2440, 3089, 0);
 
-    /*
-     *
-     */
+    public static final int TEAM_GUTHIX = 3;
+
     private static int properTimer = 0;
     private static int timeRemaining = -1;
     private static int gameStartTimer = GAME_START_TIMER;
@@ -290,7 +289,7 @@ public class CastleWars implements Minigame {
         }
         changeFlagObject(objectId, objectTeam);
         player.getPacketSender().sendEntityHintRemoval(true);
-        player.getEquipment().setItem(Equipment.WEAPON_SLOT, EMPTY_SLOT);
+        player.getEquipment().setItem(Equipment.WEAPON_SLOT, NO_ITEM);
         player.getEquipment().refreshItems();
         player.getInventory().resetItems();
         player.getUpdateFlag().flag(Flag.APPEARANCE);
@@ -362,7 +361,7 @@ public class CastleWars implements Minigame {
                 break;
         }
 
-        player.getEquipment().setItem(Equipment.WEAPON_SLOT, EMPTY_SLOT);
+        player.getEquipment().setItem(Equipment.WEAPON_SLOT, NO_ITEM);
         player.getEquipment().refreshItems();
         player.getUpdateFlag().flag(Flag.APPEARANCE);
         for (Player teamPlayer : gameRoom.keySet()) {
@@ -567,6 +566,7 @@ public class CastleWars implements Minigame {
      * Method we use to end an ongoing cw game.
      */
     public static void endGame() {
+        resetGame();
         Iterator<Player> iterator = gameRoom.keySet().iterator();
         while (iterator.hasNext()) {
             Player player = iterator.next();
@@ -590,6 +590,11 @@ public class CastleWars implements Minigame {
             deleteGameItems(player);
             player.resetAttributes();
 
+            if (player instanceof PlayerBot) {
+                player.getAsPlayerBot().stopCommand();
+                return; // Don't give Player Bot's tickets
+            }
+
             if (scores[0] == scores[1]) {
                 player.getInventory().add(CASTLE_WARS_TICKET, 1);
                 player.getPacketSender().sendMessage("Tie game! You earn 1 ticket!");
@@ -609,7 +614,6 @@ public class CastleWars implements Minigame {
                 }
             }
         }
-        resetGame();
     }
 
     /**
@@ -687,7 +691,7 @@ public class CastleWars implements Minigame {
         switch (player.getEquipment().getSlot(Equipment.WEAPON_SLOT)) {
             case SARA_BANNER:
             case ZAMMY_BANNER:
-                player.getEquipment().setItem(Equipment.WEAPON_SLOT, EMPTY_SLOT);
+                player.getEquipment().setItem(Equipment.WEAPON_SLOT, NO_ITEM);
                 player.getEquipment().refreshItems();
                 player.getUpdateFlag().flag(Flag.APPEARANCE);
                 break;
@@ -695,7 +699,7 @@ public class CastleWars implements Minigame {
         switch (player.getEquipment().getSlot(CAPE_SLOT)) {
             case ZAMMY_CAPE:
             case SARA_CAPE:
-                player.getEquipment().setItem(Equipment.CAPE_SLOT, EMPTY_SLOT);
+                player.getEquipment().setItem(Equipment.CAPE_SLOT, NO_ITEM);
                 player.getEquipment().refreshItems();
                 player.getUpdateFlag().flag(Flag.APPEARANCE);
                 break;

@@ -3,6 +3,8 @@ package com.elvarg.game.entity.impl.playerbot.commands;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 
+import static com.elvarg.game.entity.impl.playerbot.commands.CommandType.*;
+
 public class FightCommand implements BotCommand {
 
     @Override
@@ -42,6 +44,11 @@ public class FightCommand implements BotCommand {
     @Override
     public void stop(PlayerBot playerBot) {
         playerBot.getCombat().reset();
+    }
+
+    @Override
+    public CommandType[] supportedTypes() {
+        return new CommandType[] { PUBLIC_CHAT };
     }
 
 }
