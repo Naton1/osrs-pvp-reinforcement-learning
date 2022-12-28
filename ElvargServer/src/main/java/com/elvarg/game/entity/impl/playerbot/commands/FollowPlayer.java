@@ -2,6 +2,8 @@ package com.elvarg.game.entity.impl.playerbot.commands;
 
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 
+import static com.elvarg.game.entity.impl.playerbot.commands.CommandType.PUBLIC_CHAT;
+
 public class FollowPlayer implements BotCommand {
 
     @Override
@@ -17,5 +19,10 @@ public class FollowPlayer implements BotCommand {
     @Override
     public void stop(PlayerBot playerBot) {
         playerBot.setFollowing(null);
+    }
+
+    @Override
+    public CommandType[] supportedTypes() {
+        return new CommandType[] { PUBLIC_CHAT };
     }
 }

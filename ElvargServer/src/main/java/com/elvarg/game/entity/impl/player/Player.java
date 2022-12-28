@@ -26,8 +26,8 @@ import com.elvarg.game.content.combat.WeaponInterfaces.WeaponInterface;
 import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.combat.magic.Autocasting;
-import com.elvarg.game.content.minigames.Barrows;
-import com.elvarg.game.content.minigames.Barrows.Brother;
+import com.elvarg.game.content.minigames.impl.Barrows;
+import com.elvarg.game.content.minigames.impl.Barrows.Brother;
 import com.elvarg.game.content.presets.Presetable;
 import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.content.skill.SkillManager;
@@ -40,7 +40,6 @@ import com.elvarg.game.definition.PlayerBotDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NpcAggression;
-import com.elvarg.game.entity.impl.player.persistence.PlayerPersistence;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Appearance;
@@ -74,7 +73,6 @@ import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.DonatorRights;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportButton;
-import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.CombatPoisonEffect;
 import com.elvarg.game.task.impl.PlayerDeathTask;
@@ -89,7 +87,6 @@ import com.elvarg.util.Stopwatch;
 import com.elvarg.util.timers.TimerKey;
 
 import io.netty.buffer.ByteBuf;
-import org.checkerframework.checker.signature.qual.BinaryName;
 
 import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
 

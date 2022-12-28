@@ -10,4 +10,6 @@ public abstract interface BotCommand {
     public abstract void start(PlayerBot playerBot, String[] args);
 
     public abstract void stop(PlayerBot playerBot);
+
+    public abstract CommandType[] supportedTypes();
 }

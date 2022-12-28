@@ -24,7 +24,7 @@ public class PlayerBot extends Player {
     }
 
     private static final BotCommand[] CHAT_COMMANDS = new BotCommand[]{
-        new FollowPlayer(), new HoldItems(), new LoadPreset(), new FightCommand()
+        new FollowPlayer(), new HoldItems(), new LoadPreset(), new FightCommand(), new PlayCastleWars(),
     };
 
     private final Location spawnPosition = GameConstants.DEFAULT_LOCATION;

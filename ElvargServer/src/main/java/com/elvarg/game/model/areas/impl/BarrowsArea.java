@@ -1,6 +1,6 @@
 package com.elvarg.game.model.areas.impl;
 
-import com.elvarg.game.content.minigames.Barrows;
+import com.elvarg.game.content.minigames.impl.Barrows;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;

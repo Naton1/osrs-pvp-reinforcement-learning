@@ -824,4 +824,8 @@ public class Misc {
             throw new RuntimeException("Root dir not found in user directory.");
         }
     }
+
+    public static int random(int range) {
+        return (int) (java.lang.Math.random() * (range + 1));
+    }
 }

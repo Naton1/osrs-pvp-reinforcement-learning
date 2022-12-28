@@ -9,4 +9,5 @@ public enum TimerKey {
 	FREEZE_IMMUNITY,
 	STUN,
 	ATTACK_IMMUNITY,
+	CASTLEWARS_TAKE_ITEM,
 }

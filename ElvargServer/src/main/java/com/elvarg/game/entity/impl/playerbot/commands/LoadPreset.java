@@ -3,8 +3,9 @@ package com.elvarg.game.entity.impl.playerbot.commands;
 import com.elvarg.game.content.presets.Presetable;
 import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
-import com.elvarg.game.entity.updating.PlayerUpdating;
 import com.elvarg.util.Misc;
+
+import static com.elvarg.game.entity.impl.playerbot.commands.CommandType.PUBLIC_CHAT;
 
 public class LoadPreset implements BotCommand {
 
@@ -37,5 +38,10 @@ public class LoadPreset implements BotCommand {
     @Override
     public void stop(PlayerBot playerBot) {
         // Command auto-stops
+    }
+
+    @Override
+    public CommandType[] supportedTypes() {
+        return new CommandType[] { PUBLIC_CHAT };
     }
 }

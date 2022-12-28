@@ -191,6 +191,15 @@ public class Food {
 
 		public Item getItem() { return item; }
 
+		/**
+		 * Returns an array of all Edible item ids.
+		 *
+		 * @return {Integer[]} edibleTypes
+		 */
+		public static Integer[] getTypes() {
+			return types.keySet().toArray(new Integer[0]);
+		}
+
 		public int getHeal() {
 			return heal;
 		}

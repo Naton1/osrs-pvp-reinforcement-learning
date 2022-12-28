@@ -2,6 +2,8 @@ package com.elvarg.game.entity.impl.playerbot.commands;
 
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 
+import static com.elvarg.game.entity.impl.playerbot.commands.CommandType.PUBLIC_CHAT;
+
 public class HoldItems implements BotCommand {
     @Override
     public String[] triggers() {
@@ -24,6 +26,10 @@ public class HoldItems implements BotCommand {
 
     @Override
     public void stop(PlayerBot playerBot) {
+    }
 
+    @Override
+    public CommandType[] supportedTypes() {
+        return new CommandType[] { PUBLIC_CHAT };
     }
 }

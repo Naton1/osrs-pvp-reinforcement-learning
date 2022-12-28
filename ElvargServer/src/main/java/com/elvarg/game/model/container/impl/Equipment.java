@@ -67,6 +67,10 @@ public class Equipment extends ItemContainer {
      * The arrows slot.
      */
     public static final int AMMUNITION_SLOT = 13;
+    /**
+     * Item which can be reused to unequip items from any slot.
+     */
+    public static final Item NO_ITEM = new Item(-1);
 
     /**
      * The Equipment constructor.
