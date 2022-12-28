@@ -675,9 +675,10 @@ public final class MovementQueue {
                 return;
             }
 
-            // Find the nearest tile surrounding the target..
-            int attackDistance = CombatFactory.getMethod(character).attackDistance(following);
+            // Find attack distance required for character's attack method & weapon
+            int attackDistance = CombatFactory.getMethod(character).attackDistance(character);
 
+            // Find the nearest tile surrounding the target
             destination = PathFinder.pathClosestAttackableTile(character, following, attackDistance);
             if (destination == null) {
                 return;
