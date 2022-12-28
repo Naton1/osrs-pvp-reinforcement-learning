@@ -810,6 +810,11 @@ public class PacketSender {
 	}
 
 	public PacketSender sendPrivateMessage(Player target, byte[] message, int size) {
+		if (player instanceof PlayerBot) {
+			((PlayerBot) player).getChatInteraction().receivedPrivateMessage(message, target);
+			return this;
+		}
+
 		PacketBuilder out = new PacketBuilder(196, PacketType.VARIABLE);
 		out.putLong(target.getLongUsername());
 		out.putInt(target.getRelations().getPrivateMessageId());

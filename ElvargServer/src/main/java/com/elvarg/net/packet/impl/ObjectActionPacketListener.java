@@ -4,7 +4,8 @@ import com.elvarg.Server;
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.DepositBox;
 import com.elvarg.game.content.combat.CombatSpecial;
-import com.elvarg.game.content.minigames.FightCaves;
+import com.elvarg.game.content.minigames.MinigameHandler;
+import com.elvarg.game.content.minigames.impl.FightCaves;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.content.skill.skillable.impl.Smithing;
 import com.elvarg.game.content.skill.skillable.impl.Smithing.Bar;
@@ -53,6 +54,11 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 
         // Skills..
         if (player.getSkillManager().startSkillable(object)) {
+            return;
+        }
+
+        if (MinigameHandler.firstClickObject(player, object)) {
+            // Player has clicked an object inside a minigame
             return;
         }
 

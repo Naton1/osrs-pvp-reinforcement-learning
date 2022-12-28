@@ -1,4 +1,4 @@
-package com.elvarg.game.content.minigames;
+package com.elvarg.game.content.minigames.impl;
 
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.npc.impl.Jad;

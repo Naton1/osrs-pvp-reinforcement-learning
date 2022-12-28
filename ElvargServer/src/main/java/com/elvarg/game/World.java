@@ -1,6 +1,7 @@
 package com.elvarg.game;
 
 import com.elvarg.Server;
+import com.elvarg.game.content.minigames.MinigameHandler;
 import com.elvarg.game.entity.impl.MobileList;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGround;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
@@ -87,6 +88,9 @@ public class World {
 	public static void process() {
 		// Process all active {@link Task}s..
 		TaskManager.process();
+
+		// Process all minigames
+		MinigameHandler.process();
 
 		// Process all ground items..
 		ItemOnGroundManager.process();

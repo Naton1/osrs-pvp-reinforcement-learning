@@ -5,7 +5,7 @@ import com.elvarg.game.content.Food;
 import com.elvarg.game.content.Gambling;
 import com.elvarg.game.content.PotionConsumable;
 import com.elvarg.game.content.combat.CombatSpecial;
-import com.elvarg.game.content.minigames.Barrows;
+import com.elvarg.game.content.minigames.impl.Barrows;
 import com.elvarg.game.content.skill.skillable.impl.Herblore;
 import com.elvarg.game.content.skill.skillable.impl.Prayer;
 import com.elvarg.game.content.skill.skillable.impl.Runecrafting;
@@ -48,7 +48,7 @@ public class ItemActionPacketListener implements PacketExecutor {
 			return;
 		}
 
-		if (itemId == Barricades.BARRICADE_ITEM_ID && Barricades.canSetup(player)) {
+		if (itemId == Barricades.ITEM_ID && Barricades.canSetup(player)) {
 			return;
 		}
 

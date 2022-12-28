@@ -3,6 +3,8 @@ package com.elvarg.game.entity.impl.playerbot.commands;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.net.packet.impl.FollowPlayerPacketListener;
 
+import static com.elvarg.game.entity.impl.playerbot.commands.CommandType.PUBLIC_CHAT;
+
 public class FollowPlayer implements BotCommand {
 
     @Override
@@ -20,5 +22,10 @@ public class FollowPlayer implements BotCommand {
         playerBot.getMovementQueue().walkToReset();
         playerBot.setMobileInteraction(null);
         playerBot.updateLocalPlayers();
+    }
+
+    @Override
+    public CommandType[] supportedTypes() {
+        return new CommandType[] { PUBLIC_CHAT };
     }
 }

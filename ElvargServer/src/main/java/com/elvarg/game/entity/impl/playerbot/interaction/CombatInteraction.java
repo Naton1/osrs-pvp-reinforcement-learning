@@ -220,13 +220,11 @@ public class CombatInteraction {
         this.playerBot.getCombat().attack(target);
     }
 
-    private void reset() {
+    public void reset() {
         // Load this Bot's preset
-
         Presetables.load(playerBot, playerBot.getDefinition().getFighterPreset().getItemPreset());
 
         // Teleport this bot back to their home location after some time
         TeleportHandler.teleport(playerBot, playerBot.getDefinition().getSpawnLocation(), TeleportType.NORMAL, false);
-
     }
 }
