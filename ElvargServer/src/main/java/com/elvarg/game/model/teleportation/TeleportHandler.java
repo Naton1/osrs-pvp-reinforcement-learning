@@ -1,6 +1,8 @@
 package com.elvarg.game.model.teleportation;
 
 import com.elvarg.game.GameConstants;
+import com.elvarg.game.Sound;
+import com.elvarg.game.Sounds;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.EffectTimer;
 import com.elvarg.game.model.Location;
@@ -69,6 +71,7 @@ public class TeleportHandler {
 		player.performGraphic(teleportType.getStartGraphic());
 		player.setUntargetable(true);
 		player.setTeleporting(true);
+		Sounds.sendSound(player, Sound.TELEPORT);
 		TaskManager.submit(new Task(1, player, true) {
 			int tick = 0;
 

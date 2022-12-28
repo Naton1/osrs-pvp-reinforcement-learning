@@ -18,5 +18,7 @@ public class FollowPlayer implements BotCommand {
     @Override
     public void stop(PlayerBot playerBot) {
         playerBot.getMovementQueue().walkToReset();
+        playerBot.setMobileInteraction(null);
+        playerBot.updateLocalPlayers();
     }
 }

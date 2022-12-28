@@ -373,7 +373,10 @@ public class CombatFactory {
 		final Location targetPosition = target.getLocation();
 		
 		if (attackerPosition.equals(targetPosition)) {
-			MovementQueue.clippedStep(attacker);
+			if (!attacker.getTimers().has(TimerKey.STEPPING_OUT)) {
+				MovementQueue.clippedStep(attacker);
+				attacker.getTimers().register(TimerKey.STEPPING_OUT, 2);
+			}
 		    return false;
 		}
 

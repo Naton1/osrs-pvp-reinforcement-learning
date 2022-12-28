@@ -3,6 +3,7 @@ package com.elvarg.net.packet.impl;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Location;
+import com.elvarg.game.model.movement.MovementQueue.Mobility;
 import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
@@ -45,10 +46,19 @@ public class FollowPlayerPacketListener implements PacketExecutor {
     }
 
     public static void follow(Player player, Player leader) {
+        Mobility mobility = player.getMovementQueue().getMobility();
+        if (!mobility.canMove()) {
+            mobility.sendMessage(player);
+            player.getMovementQueue().reset();
+            return;
+        }
+
+        player.getMovementQueue().reset();
+        player.getMovementQueue().walkToReset();
+
         player.setFollowing(leader);
         player.setMobileInteraction(leader);
 
-        /** Required Index as players have different identifiers **/
         TaskManager.submit(new Task(1, player.getIndex(), true) {
 
             @Override
