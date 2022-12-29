@@ -413,11 +413,12 @@ public class PacketSender {
 		return this;
 	}
 
-	public PacketSender sendInterfaceComponentMoval(int x, int y, int id) {
+	public PacketSender sendInterfaceComponentMoval(int x, int y, int id, int child) {
 		PacketBuilder out = new PacketBuilder(70);
 		out.putShort(x);
 		out.putShort(y);
 		out.putShort(id, ByteOrder.LITTLE);
+		out.putShort(child);
 		player.getSession().write(out);
 		return this;
 	}
@@ -446,6 +447,14 @@ public class PacketSender {
 		PacketBuilder out = new PacketBuilder(246);
 		out.putShort(interfaceId, ByteOrder.LITTLE);
 		out.putShort(zoom).putShort(itemId);
+		player.getSession().write(out);
+		return this;
+	}
+
+	public PacketSender sendWidgetModel(int widget, int model) {
+		PacketBuilder out = new PacketBuilder(8);
+		out.putShort(widget);
+		out.putShort(model);
 		player.getSession().write(out);
 		return this;
 	}

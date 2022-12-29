@@ -5,6 +5,7 @@ import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.DepositBox;
 import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.minigames.MinigameHandler;
+import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.content.minigames.impl.FightCaves;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.content.skill.skillable.impl.Smithing;
@@ -51,6 +52,11 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
         if(doorHandler(player, object)) {
 	        return;
 	    }
+
+        if (object.getId() == 4382) {
+            CastleWars.handleCatapult(player, object, 1);
+            return;
+        }
 
         // Skills..
         if (player.getSkillManager().startSkillable(object)) {

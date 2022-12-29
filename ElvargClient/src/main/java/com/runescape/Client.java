@@ -14252,9 +14252,13 @@ public class Client extends GameApplet {
                 int horizontalOffset = incoming.readShort();
                 int verticalOffset = incoming.readLEShort();
                 int id = incoming.readLEUShort();
+                int child = incoming.readShort();
+                System.err.println(id+" "+child);
                 Widget widget = Widget.interfaceCache[id];
-                widget.horizontalOffset = horizontalOffset;
-                widget.verticalOffset = verticalOffset;
+                widget.childX[child] = horizontalOffset;
+                widget.childY[child] = verticalOffset;
+                //widget.horizontalOffset = horizontalOffset;
+                //widget.verticalOffset = verticalOffset;
                 opcode = -1;
                 return true;
             }
@@ -15012,8 +15016,8 @@ public class Client extends GameApplet {
             }
 
             if (opcode == PacketConstants.SEND_MODEL_TO_INTERFACE) {
-                int id = incoming.readLEUShortA();
-                int model = incoming.readUShort();
+                int id = incoming.readShort();
+                int model = incoming.readShort();
                 Widget.interfaceCache[id].defaultMediaType = 1;
                 Widget.interfaceCache[id].defaultMedia = model;
                 opcode = -1;
