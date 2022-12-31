@@ -948,17 +948,7 @@ public class CastleWars implements Minigame {
                     }
                 }
                 return true;
-            case 4437:
-                if (x == 2400 && y == 9512) {
-                    player.moveTo(new Location(2400, 9514, 0));
-                } else if (x == 2391 && y == 9501) {
-                    player.moveTo(new Location(2393, 9502, 0));
-                } else if (x == 2409 && y == 9503) {
-                    player.moveTo(new Location(2411, 9503, 0));
-                } else if (x == 2401 && y == 9494) {
-                    player.moveTo(new Location(2401, 9493, 0));
-                }
-                return true;
+
             case 1568:
                 if (x == 2399 && y == 3099) {
                     player.moveTo(new Location(2399, 9500, 0));

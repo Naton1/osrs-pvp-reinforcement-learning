@@ -3,8 +3,10 @@ package com.elvarg.game.content.skill.skillable.impl;
 import com.elvarg.game.content.PetHandler;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
+import com.elvarg.game.entity.impl.object.ObjectManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
+import com.elvarg.game.model.Location;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.task.Task;
@@ -75,15 +77,32 @@ public class Mining extends DefaultSkillable {
     @Override
     public void finishedCycle(Player player) {
         // Add ores..
-        player.getInventory().add(rock.getOreId(), 1);
-        player.getPacketSender().sendMessage("You get some ores.");
-
+        if (rock.getOreId() > 0) {
+            player.getInventory().add(rock.getOreId(), 1);
+            player.getPacketSender().sendMessage("You get some ores.");
+        }
         // Add exp..
-        player.getSkillManager().addExperience(Skill.MINING, rock.getXpReward());
-
+        if (rock.xpReward > 0) {
+            player.getSkillManager().addExperience(Skill.MINING, rock.getXpReward());
+        }
         // Stop skilling..
         cancel(player);
 
+        if (rock == Rock.CASTLE_WARS_ROCKS) {
+            System.err.println("here????");
+            int id = rockObject.getId() + 1;
+            Location loc = rockObject.getLocation();
+            int face = rockObject.getFace();
+            // Despawn original object..
+            ObjectManager.deregister(rockObject, false);
+            // Spawn temp object..
+            if (id == 4439) {
+                ObjectManager.deregister(new GameObject(-1, loc, 10, face, null), true);
+                return;
+            }
+            ObjectManager.register(new GameObject(id, loc, 10, face, null), true);
+            return;
+        }
         // Despawn object and respawn it after a short period of time..
         TaskManager.submit(new TimedObjectReplacementTask(rockObject,
                 new GameObject(2704, rockObject.getLocation(), 10, 0, player.getPrivateArea()),
@@ -167,7 +186,7 @@ public class Mining extends DefaultSkillable {
      * Holds data related to the pickaxes
      * that can be used for this skill.
      */
-    public static enum Pickaxe {
+    public enum Pickaxe {
         BRONZE(1265, 1, new Animation(625), 0.03),
         IRON(1267, 1, new Animation(626), 0.05),
         STEEL(1269, 6, new Animation(627), 0.09),
@@ -218,7 +237,9 @@ public class Mining extends DefaultSkillable {
         GOLD(new int[]{9720, 9721, 9722, 11951, 11183, 11184, 11185, 2099}, 40, 65, 444, 15, 10),
         MITHRIL(new int[]{7492, 7459}, 50, 80, 447, 17, 11),
         ADAMANTITE(new int[]{7460}, 70, 95, 449, 18, 14),
-        RUNITE(new int[]{14859, 4860, 2106, 2107, 7461}, 85, 125, 451, 23, 45),;
+        RUNITE(new int[]{14859, 4860, 2106, 2107, 7461}, 85, 125, 451, 23, 45),
+        CASTLE_WARS_ROCKS(new int[]{4437, 4438}, 1, 0, -1, 12, -1),
+        ;
 
         private static final Map<Integer, Rock> rocks = new HashMap<Integer, Rock>();
 
