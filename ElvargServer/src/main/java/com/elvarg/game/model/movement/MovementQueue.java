@@ -857,12 +857,9 @@ public final class MovementQueue {
                 }
 
                 boolean withinTwoSqs = player.getLocation().distanceToPoint(finalDestinationX, finalDestinationY) < 3;
-                if (withinTwoSqs) {
-                    player.getPacketSender().sendMessage("Within two sqs, starting interaction");
-                    if (run != null) {
-                        // Execute the Runnable now, but continue pathing to the final destination
-                        run.run();
-                    }
+                if (withinTwoSqs && run != null) {
+                    // Execute the Runnable now, but continue pathing to the final destination
+                    run.run();
                 }
 
                 if (reachStage != 0) {
