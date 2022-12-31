@@ -39,6 +39,11 @@ public final class MovementQueue {
     private static final RandomGen RANDOM = new RandomGen();
 
     /**
+     * NPC interactions can begin below this radius of distance.
+     */
+    public static final int NPC_INTERACT_RADIUS = 3;
+
+    /**
      * An enum to represent a Player's Mobility
      */
     public enum Mobility {
@@ -812,7 +817,7 @@ public final class MovementQueue {
         this.resetFollow();
     }
 
-    public void walkToEntity(Mobile entity, Runnable run) {
+    public void walkToEntity(Mobile entity, Runnable runnable) {
         int destX = entity.getLocation().getX();
         int destY = entity.getLocation().getY();
 
@@ -856,10 +861,9 @@ public final class MovementQueue {
                     PathFinder.calculateEntityRoute(player, currentX, currentY);
                 }
 
-                boolean withinTwoSqs = player.getLocation().distanceToPoint(finalDestinationX, finalDestinationY) < 3;
-                if (withinTwoSqs && run != null) {
+                if (runnable != null && player.getMovementQueue().withinEntityInteractionDistance()) {
                     // Execute the Runnable now, but continue pathing to the final destination
-                    run.run();
+                    runnable.run();
                 }
 
                 if (reachStage != 0) {
@@ -998,6 +1002,16 @@ public final class MovementQueue {
 
     public boolean isAtDestination() {
         return points.isEmpty();
+    }
+
+    /**
+     * Whether the player is close enough to interact with the given entity.
+     * This also takes into account the player's movement path, so if you're standing 2
+     * squares away from an NPC but separated by a wall or fence, this will still be accurate.
+     * @return
+     */
+    private boolean withinEntityInteractionDistance() {
+        return this.points.size() < NPC_INTERACT_RADIUS && player.getLocation().distanceToPoint(this.pathX, this.pathY) < NPC_INTERACT_RADIUS;
     }
 
 
