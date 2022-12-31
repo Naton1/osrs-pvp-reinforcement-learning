@@ -13466,16 +13466,16 @@ public class Client extends GameApplet {
             }
         }
         if (packetType == PacketConstants.SEND_OBJECT) {
-            int offset = stream.readUByteA();
-            int x = localX + (offset >> 4 & 7);
-            int y = localY + (offset & 7);
+            int z = stream.readUByteA();
+            int x = localX;
+            int y = localY;
             int id = stream.readLEUShort();
             int objectTypeFace = stream.readUByteS();
             int type = objectTypeFace >> 2;
             int orientation = objectTypeFace & 3;
             int group = objectGroups[type];
             if (x >= 0 && y >= 0 && x < 104 && y < 104) {
-                requestSpawnObject(-1, id, orientation, group, y, type, plane, x, 0);
+                requestSpawnObject(-1, id, orientation, group, y, type, z, x, 0);
             }
             return;
         }
