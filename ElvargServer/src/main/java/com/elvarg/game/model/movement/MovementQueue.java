@@ -861,7 +861,7 @@ public final class MovementQueue {
                     PathFinder.calculateEntityRoute(player, currentX, currentY);
                 }
 
-                if (runnable != null && player.getMovementQueue().withinEntityInteractionDistance()) {
+                if (runnable != null && player.getMovementQueue().isWithinEntityInteractionDistance()) {
                     // Execute the Runnable now, but continue pathing to the final destination
                     runnable.run();
                 }
@@ -1010,7 +1010,7 @@ public final class MovementQueue {
      * squares away from an NPC but separated by a wall or fence, this will still be accurate.
      * @return
      */
-    private boolean withinEntityInteractionDistance() {
+    private boolean isWithinEntityInteractionDistance() {
         return this.points.size() < NPC_INTERACT_RADIUS && player.getLocation().distanceToPoint(this.pathX, this.pathY) < NPC_INTERACT_RADIUS;
     }
 
