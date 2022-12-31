@@ -838,7 +838,7 @@ public final class MovementQueue {
 
         final int finalDestinationY = player.getMovementQueue().pathY;
 
-        TaskManager.submit(new Task(1, player.getIndex(), true) {
+        TaskManager.submit(new Task(0, player.getIndex(), true) {
 
             int currentX = entity.getLocation().getX();
 
@@ -856,11 +856,18 @@ public final class MovementQueue {
                     PathFinder.calculateEntityRoute(player, currentX, currentY);
                 }
 
+                boolean withinTwoSqs = player.getLocation().distanceToPoint(finalDestinationX, finalDestinationY) < 3;
+                if (withinTwoSqs) {
+                    player.getPacketSender().sendMessage("Within two sqs, starting interaction");
+                    if (run != null) {
+                        // Execute the Runnable now, but continue pathing to the final destination
+                        run.run();
+                    }
+                }
+
                 if (reachStage != 0) {
                     if (reachStage == 1) {
                         player.getMovementQueue().reset();
-                        if (run != null)
-                            run.run();
                         stop();
                         return;
                     }
@@ -875,9 +882,11 @@ public final class MovementQueue {
                 }
 
                 if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != finalDestinationX || player.getLocation().getY() != finalDestinationY) {
+                    // Player hasn't got a route or they're not already at destination
                     reachStage = -1;
                     return;
                 }
+
                 reachStage = 1;
                 return;
             }
