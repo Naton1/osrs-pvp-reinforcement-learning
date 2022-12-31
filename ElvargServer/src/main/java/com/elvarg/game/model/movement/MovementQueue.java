@@ -39,9 +39,9 @@ public final class MovementQueue {
     private static final RandomGen RANDOM = new RandomGen();
 
     /**
-     * NPC interactions can begin below this radius of distance.
+     * NPC interactions can begin when the player is within this radius of the NPC.
      */
-    public static final int NPC_INTERACT_RADIUS = 3;
+    public static final int NPC_INTERACT_RADIUS = 2;
 
     /**
      * An enum to represent a Player's Mobility
@@ -1011,7 +1011,7 @@ public final class MovementQueue {
      * @return
      */
     private boolean isWithinEntityInteractionDistance() {
-        return this.points.size() < NPC_INTERACT_RADIUS && player.getLocation().distanceToPoint(this.pathX, this.pathY) < NPC_INTERACT_RADIUS;
+        return this.points.size() <= NPC_INTERACT_RADIUS && player.getLocation().distanceToPoint(this.pathX, this.pathY) <= NPC_INTERACT_RADIUS;
     }
 
 
