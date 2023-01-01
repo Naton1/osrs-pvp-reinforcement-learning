@@ -1,14 +1,10 @@
 package com.elvarg.game.model.movement.path;
 
 import com.elvarg.Server;
-import com.elvarg.game.collision.Region;
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.entity.impl.Mobile;
-import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
-import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.impl.PrivateArea;
-import com.google.common.collect.Lists;
 
 import java.util.*;
 
@@ -61,6 +57,7 @@ public class PathFinder {
 
     public static Location pathClosestAttackableTile(Mobile attacker, Mobile defender, int distance) {
         PrivateArea privateArea = attacker.getPrivateArea();
+        Location targetLocation = defender.getLocation();
 
         if (distance == 1) {
             final int size = attacker.size();
@@ -74,7 +71,7 @@ public class PathFinder {
                     continue;
                 }
                 // Projectile attack
-                if (attacker.useProjectileClipping() && !RegionManager.canProjectileAttack(tile, defender.getLocation(), size, privateArea)) {
+                if (attacker.useProjectileClipping() && !RegionManager.canProjectileAttack(tile, targetLocation, size, privateArea)) {
                     continue;
                 }
                 tiles.add(tile);
@@ -102,34 +99,49 @@ public class PathFinder {
             }
         }
 
-        var tiles = getClosestTileForDistance(defender, distance);
+        // Fetch the circumference of closest attackable tiles to the target
+        Optional<Location> tile = getCircumferenceTiles(targetLocation, distance).stream()
+                // Filter out any tiles which are clipped
+                .filter(t -> !RegionManager.blocked(t, attacker.getPrivateArea()))
+                // Filter out any tiles which projectiles are blocked from (i.e. tree is in the way)
+                .filter(t -> RegionManager.canProjectileAttack(attacker, t, targetLocation))
+                // Find the tile closest to the attacker
+                .min(Comparator.comparing(attacker.getLocation()::getDistance));
 
-        Optional<Location> destination = tiles.stream().filter(t -> !RegionManager.blocked(t, privateArea)).filter(t -> RegionManager.canProjectileAttack(attacker, t, defender.getLocation())).min(Comparator.comparing(attacker.getLocation()::getDistance));
-        if (destination.isEmpty()) {
-            if (attacker.isPlayer()) {
-                attacker.getAsPlayer().getPacketSender().sendMessage("I can't reach that.");
-            }
+        if (tile.isEmpty()) {
+            attacker.sendMessage("I can't reach that.");
             return null;
         }
 
-        return destination.get();
+        return tile.get();
     }
 
-    private static List<Location> getClosestTileForDistance(Mobile target, int distance) {
-        List<Location> perimeter = Lists.newArrayList();
-        Location dest = target.getLocation();
-        distance -= 1;
-        for (int i = 0; i < distance; i++) {
-            perimeter.add(dest.translate(i, distance)); // north
-            perimeter.add(dest.translate(distance, i)); // east
-            perimeter.add(dest.translate(distance, -i)); // south
-            perimeter.add(dest.translate(-i, distance)); // west
-            perimeter.add(dest.translate(i, -distance)); // north
-            perimeter.add(dest.translate(-distance, -i)); //east-south
-            perimeter.add(dest.translate(-distance, i)); //east-noth
-            perimeter.add(dest.translate(-i, -distance)); //south
+    /**
+     * Gets tile Locations along the circumference of a given radius.
+     *
+     * @param center The centre of the circle, or the target.
+     * @param radius The radius, or the max distance.
+     * @return {List<Location>}
+     */
+    public static LinkedHashSet<Location> getCircumferenceTiles(Location center, int radius) {
+        // Use a LinkedHashSet to avoid duplicates and for greater performance.
+        LinkedHashSet<Location> result = new LinkedHashSet<>();
+
+        // Calculate the number of points needed, on RS there are 8 tiles surrounding a player at all times
+        // So as we go out each tile we add another 8 squares to the total circumference.
+        int points = 8 * radius;
+
+        // Calculate the angle for each point based on 360 degrees
+        int angle = 360 / points;
+
+        for (int i = 0; i < points; i++) {
+            // Calculate the raw vector (don't rotate absolute coordinates)
+            Location vector = new Location(radius, 0).rotate(angle * i);
+            // Apply the vector to the center point of the circle and add it to the results
+            result.add(center.translate(vector.getX(), vector.getY()));
         }
-        return perimeter;
+
+        return result;
     }
 
     public static int calculateRoute(Mobile entity, int size, int destX, int destY, int xLength, int yLength, int direction, int blockingMask, boolean basicPather) {

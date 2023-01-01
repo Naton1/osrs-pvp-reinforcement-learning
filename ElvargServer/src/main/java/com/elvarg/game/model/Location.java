@@ -295,9 +295,8 @@ public class Location {
     }
     
     public int calculateDistance(Location other) {
-        int xDiff = getX() - other.getX();
-        int yDiff = getY() - other.getY();
-        return (int)Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+        int xDiff = this.x - other.getX(), yDiff = this.y - other.getY();
+        return (int) Math.floor(Math.sqrt(xDiff * xDiff + yDiff * yDiff));
     }
     
     public static int calculateDistance(Location[] tiles, Location[] otherTiles) {
@@ -357,6 +356,18 @@ public class Location {
 
     public Location translate(int x, int y, int z) {
         return new Location(this.x + x, this.y + y, this.z + z);
+    }
+
+    /**
+     * Rotates a given Location about a given degrees.
+     *
+     * @param degrees
+     * @return {Location}
+     */
+    public Location rotate(double degrees) {
+        int rx = (int)Math.floor((this.x * Math.cos(degrees)) - (this.y * Math.sin(degrees)));
+        int ry = (int)Math.floor((this.x * Math.sin(degrees)) + (this.y * Math.cos(degrees)));
+        return new Location(rx, ry, this.getZ());
     }
 
 }
