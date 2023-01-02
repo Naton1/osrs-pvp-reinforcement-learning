@@ -6,6 +6,7 @@ import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.areas.Area;
 import com.elvarg.game.model.rights.PlayerRights;
@@ -155,5 +156,11 @@ public class WildernessArea extends Area {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean canPlayerBotIdle(PlayerBot playerBot) {
+		// Player Bots can always idle in the Wilderness
+		return true;
 	}
 }

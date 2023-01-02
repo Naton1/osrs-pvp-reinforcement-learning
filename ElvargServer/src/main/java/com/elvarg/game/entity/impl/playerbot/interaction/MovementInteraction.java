@@ -44,8 +44,12 @@ public class MovementInteraction {
                     }
                 }
 
-                // Teleport this bot back
-                if (!isIdlePositionValid()) {
+                if (playerBot.getArea() != null && playerBot.getArea().canPlayerBotIdle(playerBot)) {
+                    break;
+                }
+
+                if (playerBot.getLocation().getDistance(playerBot.getDefinition().getSpawnLocation()) > 20) {
+                    // Bot is far away, teleport back to original location
                     TeleportHandler.teleport(playerBot, playerBot.getDefinition().getSpawnLocation(), TeleportType.NORMAL, false);
                 }
                 break;
@@ -121,17 +125,5 @@ public class MovementInteraction {
                 return null;
         }
         return new Location(x, y);
-    }
-
-    /**
-     * Whether the player bot can currently idle in their current location/state.
-     *
-     * @return {boolean}
-     */
-    private boolean isIdlePositionValid() {
-        // Allow player bots to idle in the Duel arena as long as there is at least one real player there
-        return (playerBot.getArea() instanceof DuelArenaArea && playerBot.getArea().getPlayers().size() > 0)
-                // Otherwise, teleport the bot back to their home location if more than 20 tiles away
-                || playerBot.getLocation().getDistance(playerBot.getDefinition().getSpawnLocation()) <= 20;
     }
 }
