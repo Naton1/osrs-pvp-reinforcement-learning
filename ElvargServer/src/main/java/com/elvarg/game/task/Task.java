@@ -37,6 +37,7 @@ public abstract class Task {
      * A flag which indicates if this task is still running.
      */
     private boolean running = true;
+
     /**
      * The task's owner
      */
@@ -154,7 +155,8 @@ public abstract class Task {
      * @return A flag indicating if the task is running.
      */
     public boolean tick() {
-        if (running && --countdown == 0) {
+        if (running && (countdown == 0 || --countdown == 0)) {
+            // Execute task if there is no delay or the delay has elapsed on this tick
             execute();
             countdown = delay;
         }
