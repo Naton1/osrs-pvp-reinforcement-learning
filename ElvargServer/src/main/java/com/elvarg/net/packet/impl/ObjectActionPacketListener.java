@@ -53,11 +53,6 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	        return;
 	    }
 
-        if (object.getId() == 4382) {
-            CastleWars.handleCatapult(player, object, 1);
-            return;
-        }
-
         // Skills..
         if (player.getSkillManager().startSkillable(object)) {
             return;

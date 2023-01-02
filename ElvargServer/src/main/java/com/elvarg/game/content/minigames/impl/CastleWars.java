@@ -788,6 +788,11 @@ public class CastleWars implements Minigame {
 
         switch (object.getId()) {
 
+            case 4382: {
+                handleCatapult(player, object, 1);
+                return true;
+            }
+
             case 4469:
                 if (CastleWars.getTeamNumber(player) == 2) {
                     player.getPacketSender().sendMessage("You are not allowed in the other teams spawn point.");
