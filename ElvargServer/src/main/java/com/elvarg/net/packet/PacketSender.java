@@ -413,12 +413,11 @@ public class PacketSender {
 		return this;
 	}
 
-	public PacketSender sendInterfaceComponentMoval(int x, int y, int id, int child) {
+	public PacketSender sendInterfaceComponentMoval(int x, int y, int id) {
 		PacketBuilder out = new PacketBuilder(70);
 		out.putShort(x);
 		out.putShort(y);
 		out.putShort(id, ByteOrder.LITTLE);
-		out.putShort(child);
 		player.getSession().write(out);
 		return this;
 	}

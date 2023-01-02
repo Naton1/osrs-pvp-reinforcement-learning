@@ -14252,13 +14252,9 @@ public class Client extends GameApplet {
                 int horizontalOffset = incoming.readShort();
                 int verticalOffset = incoming.readLEShort();
                 int id = incoming.readLEUShort();
-                int child = incoming.readShort();
-                System.err.println(id+" "+child);
                 Widget widget = Widget.interfaceCache[id];
-                widget.childX[child] = horizontalOffset;
-                widget.childY[child] = verticalOffset;
-                //widget.horizontalOffset = horizontalOffset;
-                //widget.verticalOffset = verticalOffset;
+                widget.horizontalOffset = horizontalOffset;
+                widget.verticalOffset = verticalOffset;
                 opcode = -1;
                 return true;
             }

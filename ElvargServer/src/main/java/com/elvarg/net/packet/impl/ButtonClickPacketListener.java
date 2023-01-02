@@ -128,7 +128,6 @@ public class ButtonClickPacketListener implements PacketExecutor {
 	public void execute(Player player, Packet packet) {
 		int button = packet.readInt();
 
-		System.err.println(button);
 		if (player.getHitpoints() <= 0 || player.isTeleporting()) {
 			return;
 		}

@@ -89,7 +89,6 @@ public class Mining extends DefaultSkillable {
         cancel(player);
 
         if (rock == Rock.CASTLE_WARS_ROCKS) {
-            System.err.println("here????");
             int id = rockObject.getId() + 1;
             Location loc = rockObject.getLocation();
             int face = rockObject.getFace();

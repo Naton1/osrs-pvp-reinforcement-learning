@@ -197,9 +197,8 @@ public enum CombatSpecial {
         int specialAmount = player.getSpecialPercentage() / 10;
 
         for (int i = 0; i < 10; i++) {
-            //player.getPacketSender().sendInterfaceComponentMoval(specialAmount >= specialCheck ? 500 : 0, 0,
-           //         --specialBar);
-          //  specialCheck--;
+            player.getPacketSender().sendInterfaceComponentMoval(specialAmount >= specialCheck ? 500 : 0, 0, --specialBar);
+            specialCheck--;
         }
         player.getPacketSender().updateSpecialAttackOrb().sendString(player.getWeapon().getSpecialMeter(),
                 player.isSpecialActivated() ? ("@yel@ Special Attack (" + player.getSpecialPercentage() + "%)")
