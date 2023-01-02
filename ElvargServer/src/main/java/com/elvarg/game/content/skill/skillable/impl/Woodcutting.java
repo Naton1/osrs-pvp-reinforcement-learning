@@ -245,7 +245,6 @@ public class Woodcutting extends DefaultSkillable {
                 for (int obj : t.objects) {
                     trees.put(obj, t);
                 }
-                trees.put(t.getLogId(), t);
             }
         }
 
