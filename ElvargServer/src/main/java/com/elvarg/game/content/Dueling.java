@@ -423,7 +423,7 @@ public class Dueling {
                 player.getDueling().confirmScreen();
                 interact_.getDueling().confirmScreen();
             } else {
-                if (interact_ instanceof PlayerBot) {
+                if (interact_.isPlayerBot()) {
                     interact_.getDueling().acceptDuel();
                 }
             }
@@ -457,7 +457,7 @@ public class Dueling {
                 player.getDueling().startDuel(pos1);
                 interact_.getDueling().startDuel(pos2);
             } else {
-                if (interact_ instanceof PlayerBot) {
+                if (interact_.isPlayerBot()) {
                     interact_.getDueling().acceptDuel();
                 }
             }
