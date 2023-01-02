@@ -45,7 +45,6 @@ public class CombatInteraction {
 
         var combatMethod = CombatFactory.getMethod(this.playerBot);
         if (attackTarget != null) {
-//            playerBot.sendChat("" + playerBot.getTimers().getTicks(TimerKey.COMBAT_ATTACK));
             if (CombatFactory.canAttack(this.playerBot, combatMethod, attackTarget) != CombatFactory.CanAttackResponse.CAN_ATTACK) {
                 attackTarget = null;
                 this.playerBot.getCombat().setUnderAttack(null);
@@ -221,6 +220,9 @@ public class CombatInteraction {
     }
 
     public void reset() {
+        // Reset bot's auto retaliate
+        playerBot.setAutoRetaliate(true);
+
         // Load this Bot's preset
         Presetables.load(playerBot, playerBot.getDefinition().getFighterPreset().getItemPreset());
 

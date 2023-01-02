@@ -4,6 +4,7 @@ import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Location;
+import com.elvarg.game.model.areas.impl.DuelArenaArea;
 import com.elvarg.game.model.movement.MovementQueue;
 import com.elvarg.game.model.teleportation.TeleportHandler;
 import com.elvarg.game.model.teleportation.TeleportType;
@@ -29,7 +30,7 @@ public class MovementInteraction {
                 return;
 
             case IDLE:
-                if (CombatFactory.inCombat(playerBot)) {
+                if (CombatFactory.inCombat(playerBot) || playerBot.getDueling().inDuel()) {
                     return;
                 }
 
@@ -38,14 +39,13 @@ public class MovementInteraction {
                     if (Misc.getRandom(9) <= 1) {
                         Location pos = generateLocalPosition();
                         if (pos != null) {
-
                             MovementQueue.randomClippedStep(playerBot, 1);
-                        //.walkStep(pos.getX(), pos.getY());
                         }
                     }
                 }
+
                 // Teleport this bot back
-                if (playerBot.getLocation().getDistance(playerBot.getDefinition().getSpawnLocation()) > 20) {
+                if (!isIdlePositionValid()) {
                     TeleportHandler.teleport(playerBot, playerBot.getDefinition().getSpawnLocation(), TeleportType.NORMAL, false);
                 }
                 break;
@@ -121,5 +121,17 @@ public class MovementInteraction {
                 return null;
         }
         return new Location(x, y);
+    }
+
+    /**
+     * Whether the player bot can currently idle in their current location/state.
+     *
+     * @return {boolean}
+     */
+    private boolean isIdlePositionValid() {
+        // Allow player bots to idle in the Duel arena as long as there is at least one real player there
+        return (playerBot.getArea() instanceof DuelArenaArea && playerBot.getArea().getPlayers().size() > 0)
+                // Otherwise, teleport the bot back to their home location if more than 20 tiles away
+                || playerBot.getLocation().getDistance(playerBot.getDefinition().getSpawnLocation()) <= 20;
     }
 }

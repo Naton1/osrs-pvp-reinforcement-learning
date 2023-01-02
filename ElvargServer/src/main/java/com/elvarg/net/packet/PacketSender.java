@@ -346,6 +346,10 @@ public class PacketSender {
 	}
 
 	public PacketSender sendInterface(int id) {
+		if (player.isPlayerBot()) {
+			return this;
+		}
+
 		PacketBuilder out = new PacketBuilder(97);
 		out.putShort(id);
 		player.getSession().write(out);
@@ -629,6 +633,10 @@ public class PacketSender {
 	}
 
 	public PacketSender sendInterfaceItems(int interfaceId, List<Item> items) {
+		if (player.isPlayerBot()) {
+			return this;
+		}
+
 		PacketBuilder out = new PacketBuilder(53, PacketType.VARIABLE_SHORT);
 		out.putInt(interfaceId);
 		out.putShort(items.size());
