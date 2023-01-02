@@ -450,6 +450,14 @@ public class PacketSender {
 		return this;
 	}
 
+	public PacketSender sendWidgetModel(int widget, int model) {
+		PacketBuilder out = new PacketBuilder(8);
+		out.putShort(widget);
+		out.putShort(model);
+		player.getSession().write(out);
+		return this;
+	}
+
 	public PacketSender sendTabInterface(int tabId, int interfaceId) {
 		PacketBuilder out = new PacketBuilder(71);
 		out.putShort(interfaceId);

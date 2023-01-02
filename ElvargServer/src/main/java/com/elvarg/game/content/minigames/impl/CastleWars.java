@@ -8,6 +8,7 @@ import com.elvarg.game.content.minigames.Minigame;
 import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.object.GameObject;
+import com.elvarg.game.entity.impl.object.ObjectManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.*;
@@ -15,9 +16,9 @@ import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
 import com.elvarg.util.timers.TimerKey;
+import com.google.common.collect.Maps;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 import static com.elvarg.game.model.container.impl.Equipment.CAPE_SLOT;
 import static com.elvarg.game.model.container.impl.Equipment.NO_ITEM;
@@ -32,7 +33,7 @@ public class CastleWars implements Minigame {
      */
     private static final int GAME_TIMER = 200; // 1500 * 600 = 900000ms = 15
     // minutes
-    private static final int GAME_START_TIMER = 30;
+    private static final int GAME_START_TIMER = 10;
     /*
      * Hashmap for the waitingroom players
      */
@@ -44,24 +45,24 @@ public class CastleWars implements Minigame {
     /*
      * The coordinates for the waitingRoom both sara/zammy
      */
-    private static final int[][] WAIT_ROOM = { { 2377, 9485 }, // sara
-            { 2421, 9524 } // zammy
+    private static final int[][] WAIT_ROOM = {{2377, 9485}, // sara
+            {2421, 9524} // zammy
     };
     /*
      * The coordinates for the gameRoom both sara/zammy
      */
-    private static final int[][] GAME_ROOM = { { 2426, 3076 }, // sara
-            { 2372, 3131 } // zammy
+    private static final int[][] GAME_ROOM = {{2426, 3076}, // sara
+            {2372, 3131} // zammy
     };
-    private static final int[][] FLAG_STANDS = { { 2429, 3074 }, // sara
+    private static final int[][] FLAG_STANDS = {{2429, 3074}, // sara
             // {X-Coord,
             // Y-Coord)
-            { 2370, 3133 } // zammy
+            {2370, 3133} // zammy
     };
     /*
      * Scores for saradomin and zamorak!
      */
-    private static int[] scores = { 0, 0 };
+    private static int[] scores = {0, 0};
     /*
      * Booleans to check if a team's flag is safe
      */
@@ -83,31 +84,22 @@ public class CastleWars implements Minigame {
 
     public static final Animation TAKE_BANDAGES_ANIM = new Animation(881);
 
-    private static final int[] ITEMS = { BANDAGES, ItemIdentifiers.BRONZE_PICKAXE, EXPLOSIVE_POTION, Barricades.ITEM_ID, ZAMMY_CAPE, SARA_CAPE, SARA_BANNER, ZAMMY_BANNER, ItemIdentifiers.ROCK_5 };
+    private static final int[] ITEMS = {BANDAGES, ItemIdentifiers.BRONZE_PICKAXE, EXPLOSIVE_POTION, Barricades.ITEM_ID, ZAMMY_CAPE, SARA_CAPE, SARA_BANNER, ZAMMY_BANNER, ItemIdentifiers.ROCK_5};
 
-    public static boolean deleteCastleWarsItems(Player player, int itemId) {
-        for (int item : ITEMS) {
-            if (item == ItemIdentifiers.BRONZE_PICKAXE) {
-                // Don't need to remove bronze pickaxe as it's not a CW item
-                continue;
-            }
-
-            int amount = player.getInventory().getAmount(item);
-            if (itemId == item && !isInCw(player)) {
-                player.getInventory().delete(item, amount);
-                ItemDefinition itemDef = ItemDefinition.forId(item);
-                player.getPacketSender().sendMessage("You shouldn't have " + itemDef.getName() + " outside of Castlewars!");
-                return false;
-            }
-        }
-        return true;
+    public static void deleteItemsOnEnd(Player player) {
+        /** Clears cwars items **/
+        Arrays.stream(ITEMS).forEach(i -> player.getInventory().delete(i, Integer.MAX_VALUE));
+        /** List for Equipment **/
+        List<Integer> equip = Arrays.asList(SARA_CAPE, SARA_HOOD, ZAMMY_CAPE, ZAMMY_HOOD, SARA_BANNER, ZAMMY_BANNER);
+        /** Deletes Equipment **/
+        equip.stream().filter(i -> i != null).filter(p -> player.getEquipment().contains(p)).forEach(e -> player.getEquipment().delete(new Item(e)));
     }
 
     private static final int[][] COLLAPSE_ROCKS = { // collapsing rocks coords
-            { 2399, 2402, 9511, 9514 }, // north X Y coords sara 0
-            { 2390, 2393, 9500, 9503 }, // east X Y coords sara 1
-            { 2400, 2403, 9493, 9496 }, // south X Y coords zammy 2
-            { 2408, 2411, 9502, 9505 } // west X Y coords zammy 3
+            {2399, 2402, 9511, 9514}, // north X Y coords sara 0
+            {2390, 2393, 9500, 9503}, // east X Y coords sara 1
+            {2400, 2403, 9493, 9496}, // south X Y coords zammy 2
+            {2408, 2411, 9502, 9505} // west X Y coords zammy 3
     };
 
     public static final Location LOBBY_TELEPORT = new Location(2440, 3089, 0);
@@ -148,17 +140,15 @@ public class CastleWars implements Minigame {
      * Method we use to add someone to the waitinroom in a different method,
      * this will filter out some error messages
      *
-     * @param player
-     *            the player that wants to join
-     * @param team
-     *            the team!
+     * @param player the player that wants to join
+     * @param team   the team!
      */
     public static void addToWaitRoom(Player player, int team) {
         if (player == null) {
             return;
         } else if (gameStarted == true) {
             player.getPacketSender().sendMessage(
-                            "There's already a Castle Wars going. Please wait a few minutes before trying again.");
+                    "There's already a Castle Wars going. Please wait a few minutes before trying again.");
             return;
         } else if (player.getEquipment().getSlot(Equipment.HEAD_SLOT) > 0
                 || player.getEquipment().getSlot(Equipment.CAPE_SLOT) > 0) {
@@ -172,11 +162,9 @@ public class CastleWars implements Minigame {
      * Method we use to transfer to player from the outside to the waitingroom
      * (:
      *
-     * @param player
-     *            the player that wants to join
-     * @param team
-     *            team he wants to be in - team = 1 (saradomin), team = 2
-     *            (zamorak), team = 3 (random)
+     * @param player the player that wants to join
+     * @param team   team he wants to be in - team = 1 (saradomin), team = 2
+     *               (zamorak), team = 3 (random)
      */
     public static void toWaitingRoom(Player player, int team) {
         Integer[] foodIds = Food.Edible.getTypes();
@@ -184,13 +172,13 @@ public class CastleWars implements Minigame {
             player.getPacketSender().sendMessage("You may not bring your own consumables inside of Castle Wars.");
             return;
         }
-
         if (team == 1) {
             if (getSaraPlayers() > getZammyPlayers() && getSaraPlayers() > 0) {
                 player.getPacketSender().sendMessage(
                         "The saradomin team is full, try again later!");
                 return;
             }
+            player.getPacketSender().sendWalkableInterface(11479);
             if (getZammyPlayers() >= getSaraPlayers() || getSaraPlayers() == 0) {
                 player.getPacketSender().sendMessage(
                         "You have been added to the Saradomin team.");
@@ -211,6 +199,7 @@ public class CastleWars implements Minigame {
                         "The zamorak team is full, try again later!");
                 return;
             }
+            player.getPacketSender().sendWalkableInterface(11479);
             if (getZammyPlayers() <= getSaraPlayers() || getZammyPlayers() == 0) {
                 player.getPacketSender()
                         .sendMessage(
@@ -223,8 +212,7 @@ public class CastleWars implements Minigame {
                 waitingRoom.put(player, team);
                 player.moveTo(new Location(
                         WAIT_ROOM[team - 1][0] + Misc.random(5),
-                        WAIT_ROOM[team - 1][1] + Misc.random(5), 0)
-                );
+                        WAIT_ROOM[team - 1][1] + Misc.random(5), 0));
             }
         } else if (team == 3) {
             toWaitingRoom(player, getZammyPlayers() > getSaraPlayers() ? 1 : 2);
@@ -235,10 +223,8 @@ public class CastleWars implements Minigame {
     /**
      * Method to add score to scoring team
      *
-     * @param player
-     *            the player who scored
-     * @param wearItem
-     *            banner id!
+     * @param player   the player who scored
+     * @param wearItem banner id!
      */
     public static void returnFlag(Player player, int wearItem) {
         if (player == null) {
@@ -298,8 +284,7 @@ public class CastleWars implements Minigame {
     /**
      * Method that will capture a flag when being taken by the enemy team!
      *
-     * @param player
-     *            the player who returned the flag
+     * @param player the player who returned the flag
      */
     public static void captureFlag(Player player) {
         if (player.getEquipment().getSlot(Equipment.WEAPON_SLOT) > 0) {
@@ -327,10 +312,8 @@ public class CastleWars implements Minigame {
     /**
      * Method that will add the flag to a player's weapon slot
      *
-     * @param player
-     *            the player who's getting the flag
-     * @param banner
-     *            the banner Item.
+     * @param player the player who's getting the flag
+     * @param banner the banner Item.
      */
     public static void addFlag(Player player, Item banner) {
         player.getEquipment().set(Equipment.WEAPON_SLOT, banner);
@@ -341,10 +324,8 @@ public class CastleWars implements Minigame {
     /**
      * Method we use to handle the flag dropping
      *
-     * @param player
-     *            the player who dropped the flag/died
-     * @param flagId
-     *            the flag item ID
+     * @param player the player who dropped the flag/died
+     * @param flagId the flag item ID
      */
     public static void dropFlag(Player player, int flagId) {
         int object = -1;
@@ -372,8 +353,7 @@ public class CastleWars implements Minigame {
     /**
      * Method we use to pickup the flag when it was dropped/lost
      *
-     * @param player
-     *            the player who's picking it up
+     * @param player the player who's picking it up
      */
     public static void pickupFlag(Player player, GameObject object) {
         switch (object.getId()) {
@@ -405,7 +385,7 @@ public class CastleWars implements Minigame {
         while (iterator.hasNext()) {
             Player teamPlayer = iterator.next();
             teamPlayer.getPacketSender().sendPositionalHint(object.getLocation(), -1);
-            teamPlayer.getPacketSender().sendObjectRemoval(new GameObject(-1, object.getLocation(),  10, 0, teamPlayer.getPrivateArea()));
+            teamPlayer.getPacketSender().sendObjectRemoval(new GameObject(-1, object.getLocation(), 10, 0, teamPlayer.getPrivateArea()));
         }
         return;
     }
@@ -413,10 +393,8 @@ public class CastleWars implements Minigame {
     /**
      * Hint icons appear to your team when a enemy steals flag
      *
-     * @param player
-     *            the player who took the flag
-     * @param t
-     *            team of the opponent team. (:
+     * @param player the player who took the flag
+     * @param t      team of the opponent team. (:
      */
     public static void createHintIcon(Player player, int t) {
         Iterator<Player> iterator = gameRoom.keySet().iterator();
@@ -433,8 +411,7 @@ public class CastleWars implements Minigame {
     /**
      * Hint icons appear to your team when a enemy steals flag
      *
-     * @param location
-     *            the location of the flag hint
+     * @param location the location of the flag hint
      */
     public static void createFlagHintIcon(Location location) {
         Iterator<Player> iterator = gameRoom.keySet().iterator();
@@ -463,8 +440,7 @@ public class CastleWars implements Minigame {
     /**
      * The leaving method will be used on click object or log out
      *
-     * @param player
-     *            player who wants to leave
+     * @param player player who wants to leave
      */
     public static void leaveWaitingRoom(Player player) {
         if (player == null) {
@@ -493,15 +469,8 @@ public class CastleWars implements Minigame {
         while (iterator.hasNext()) {
             Player player = iterator.next();
             if (player != null) {
-                player.getPacketSender().sendString(
-                        "Next Game Begins In: "
-                                + (gameStartTimer * 3 + timeRemaining * 3)
-                                + " seconds.", 6570);
-                player.getPacketSender().sendString(
-                        "Zamorak Players: " + getZammyPlayers() + ".", 6572);
-                player.getPacketSender().sendString(
-                        "Saradomin Players: " + getSaraPlayers() + ".", 6664);
-                player.getPacketSender().sendWalkableInterface(6673);
+                player.getPacketSender().sendString(waitingRoom.size() > 1 ? "Time until next game starts: "+(gameStartTimer * 3 + timeRemaining * 3) : "Waiting for players to join the other team.", 11480);
+                //player.getPacketSender().sendWalkableInterface(6673);
             }
         }
     }
@@ -539,7 +508,6 @@ public class CastleWars implements Minigame {
     public static void startGame() {
         if (getSaraPlayers() < 1 || getZammyPlayers() < 1) {
             gameStartTimer = GAME_START_TIMER;
-
             return;
         }
         gameStartTimer = -1;
@@ -576,6 +544,7 @@ public class CastleWars implements Minigame {
             }
             player.moveTo(new Location(2440 + Misc.random(3),
                     3089 - Misc.random(3), 0));
+            deleteItemsOnEnd(player);
             player.getPacketSender().sendMessage(
                     "Castle Wars: The Castle Wars game has ended!");
             /*
@@ -633,8 +602,7 @@ public class CastleWars implements Minigame {
     /**
      * Method we use to remove a player from the game
      *
-     * @param player
-     *            the player we want to be removed
+     * @param player the player we want to be removed
      */
     public static void removePlayerFromCw(Player player) {
         if (player == null) {
@@ -654,6 +622,7 @@ public class CastleWars implements Minigame {
             }
             deleteGameItems(player);
             player.moveTo(new Location(2440, 3089, 0));
+            deleteItemsOnEnd(player);
             player.getPacketSender().sendMessage("The Casle Wars game has ended for you!");
             //player.getPacketSender().sendMessage("Kills: " + player.cwKills + " Deaths: " + player.cwDeaths + ".");
             player.getPacketSender().sendEntityHintRemoval(true);
@@ -668,10 +637,8 @@ public class CastleWars implements Minigame {
     /**
      * Will add a cape to a player's equip
      *
-     * @param player
-     *            the player
-     * @param capeId
-     *            the capeId
+     * @param player the player
+     * @param capeId the capeId
      */
     public static void addCapes(Player player, int capeId) {
         player.getEquipment().setItem(Equipment.CAPE_SLOT, new Item(capeId));
@@ -683,8 +650,7 @@ public class CastleWars implements Minigame {
      * This method will delete all items received in game. Easy to add items to
      * the array. (:
      *
-     * @param player
-     *            the player who want the game items deleted from.
+     * @param player the player who want the game items deleted from.
      */
 
     public static void deleteGameItems(Player player) {
@@ -748,8 +714,7 @@ public class CastleWars implements Minigame {
     /**
      * Method we use for checking if the player is in the gameRoom
      *
-     * @param player
-     *            player who will be checking
+     * @param player player who will be checking
      * @return
      */
     public static boolean isInCw(Player player) {
@@ -759,8 +724,7 @@ public class CastleWars implements Minigame {
     /**
      * Method we use for checking if the player is in the waitingRoom
      *
-     * @param player
-     *            player who will be checking
+     * @param player player who will be checking
      * @return
      */
     public static boolean isInCwWait(Player player) {
@@ -789,10 +753,8 @@ public class CastleWars implements Minigame {
      * Method we use for the changing the object of the flag stands when
      * capturing/returning flag
      *
-     * @param objectId
-     *            the object
-     * @param team
-     *            the team of the player
+     * @param objectId the object
+     * @param team     the team of the player
      */
     public static void changeFlagObject(int objectId, int team) {
         Iterator<Player> iterator = gameRoom.keySet().iterator();
@@ -802,16 +764,35 @@ public class CastleWars implements Minigame {
         }
     }
 
+    public static boolean isSaradomin(Player player) {
+        return CastleWars.getTeamNumber(player) == 2;
+    }
+
     @Override
     public boolean firstClickObject(Player player, GameObject object) {
         int x = object.getLocation().getX(),
                 y = object.getLocation().getY();
 
+        Location loc = object.getLocation();
+
+        int id = object.getId();
+
+        int type = object.getType();
+
+        int face = object.getFace();
+
         int playerX = player.getLocation().getX(),
                 playerY = player.getLocation().getY(),
                 playerZ = player.getLocation().getZ();
-        
+
+
         switch (object.getId()) {
+
+            case 4382: {
+                handleCatapult(player, object, 1);
+                return true;
+            }
+
             case 4469:
                 if (CastleWars.getTeamNumber(player) == 2) {
                     player.getPacketSender().sendMessage("You are not allowed in the other teams spawn point.");
@@ -885,9 +866,9 @@ public class CastleWars implements Minigame {
                 if (x == playerX && y == playerY) {
                     player.getPacketSender().sendMessage("You are standing on the rock you clicked.");
                 } else if (x > playerX && y == playerY) {
-                    player.getMovementQueue().walkStep(1,0);
+                    player.getMovementQueue().walkStep(1, 0);
                 } else if (x < playerX && y == playerY) {
-                    player.getMovementQueue().walkStep(-1,0);
+                    player.getMovementQueue().walkStep(-1, 0);
                 } else if (y > playerY && x == playerX) {
                     player.getMovementQueue().walkStep(0, 1);
                 } else if (y < playerY && x == playerX) {
@@ -930,6 +911,18 @@ public class CastleWars implements Minigame {
                     player.moveTo(new Location(playerX, playerY + 6400, 0));
                 }
                 return true;
+            case 17387://under ground ladders to top.
+                if (x == 2369 && y == 9525)
+                    player.moveTo(new Location(2369, 3126, 0));
+                else if (x == 2430 && y == 9482)
+                    player.moveTo(new Location(2430, 3081, 0));
+                else if (x == 2400 && y == 9508)//middle north
+                    player.moveTo(new Location(2400, 3107, 0));
+                else if (x == 2399 && y == 9499)//middle south
+                    player.moveTo(new Location(2399, 3100, 0));
+                return true;
+
+
             case 1757:
                 if (x == 2430 && y == 9482) {
                     player.moveTo(new Location(2430, 3081, 0));
@@ -960,17 +953,7 @@ public class CastleWars implements Minigame {
                     }
                 }
                 return true;
-            case 4437:
-                if (x == 2400 && y == 9512) {
-                    player.moveTo(new Location(2400, 9514, 0));
-                } else if (x == 2391 && y == 9501) {
-                    player.moveTo(new Location(2393, 9502, 0));
-                } else if (x == 2409 && y == 9503) {
-                    player.moveTo(new Location(2411, 9503, 0));
-                } else if (x == 2401 && y == 9494) {
-                    player.moveTo(new Location(2401, 9493, 0));
-                }
-                return true;
+
             case 1568:
                 if (x == 2399 && y == 3099) {
                     player.moveTo(new Location(2399, 9500, 0));
@@ -1094,7 +1077,7 @@ public class CastleWars implements Minigame {
             default:
                 break;
         }
-        
+
         return false;
     }
 
@@ -1120,5 +1103,49 @@ public class CastleWars implements Minigame {
         } else if (timeRemaining == 0) {
             endGame();
         }
+    }
+
+    private static Map<Integer, Integer> catapults = Maps.newConcurrentMap();
+
+    public static void handleCatapult(Player player, GameObject object, int option) {
+        if (!player.getInventory().contains(4043)) {
+            player.getPacketSender().sendMessage("You need a rock to launch from the catapult!");
+            return;
+        }
+        resetCatapult(player);
+        player.getPacketSender().sendInterface(11169);
+    }
+
+    public static void handleCatapultControls(Player player, int buttonId) {
+        int x = (Integer) player.getAttribute("catapultX");
+        int y = (Integer) player.getAttribute("catapultY");
+
+        //if (isSaradomin(player)) {
+        if (buttonId == 11321 && y < 30) {
+            player.setAttribute("catapultY", y + 1);
+        }
+        if (buttonId == 11322 && y > 0) {
+            player.setAttribute("catapultY", y - 1);
+        }
+        if (buttonId == 11323 && x > 0) {
+            player.setAttribute("catapultX", x - 1);
+        }
+        if (buttonId == 11324 && x < 30) {
+            player.setAttribute("catapultX", x + 1);
+        }
+        x = (Integer) player.getAttribute("catapultX");
+        y = (Integer) player.getAttribute("catapultY");
+        player.getPacketSender().sendWidgetModel(11317, 4863 + (y < 10 ? 0 : y > 9 ? (y / 10) : y));
+        player.getPacketSender().sendWidgetModel(11318, 4863 + (y > 29 ? y - 30 : y > 19 ? y - 20 : y > 9 ? y - 10 : y));
+        player.getPacketSender().sendWidgetModel(11319, 4863 + (x < 10 ? 0 : x > 9 ? (x / 10) : x));
+        player.getPacketSender().sendWidgetModel(11320, 4863 + (x > 29 ? x - 30 : x > 19 ? x - 20 : x > 9 ? x - 10 : x));
+
+    }
+
+    private static void resetCatapult(Player player) {
+        for (int i = 11317; i < 11321; i++)
+            player.getPacketSender().sendWidgetModel(i, 4863);
+        player.setAttribute("catapultX", 0);
+        player.setAttribute("catapultY", 0);
     }
 }
