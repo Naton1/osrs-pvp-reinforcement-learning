@@ -12,8 +12,9 @@ public class SoundEffectCommand implements Command {
     public void execute(Player player, String command, String[] parts) {
         int soundId = Integer.parseInt(parts[1]);
         int delay = parts.length == 3 ? Integer.parseInt(parts[2]) : 0;
-        int volume = parts.length == 4 ? Integer.parseInt(parts[3]) : 2;
-        Sounds.sendSound(player, soundId, 0, delay, volume);
+        int loopType = parts.length == 4 ? Integer.parseInt(parts[3]) : 0;
+        int volume = parts.length == 5 ? Integer.parseInt(parts[4]) : 2;
+        Sounds.sendSound(player, soundId, loopType, delay, volume);
     }
 
     @Override

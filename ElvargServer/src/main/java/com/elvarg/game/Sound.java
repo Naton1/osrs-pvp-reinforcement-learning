@@ -70,12 +70,16 @@ public enum Sound {
 
     // Spell sounds
 
+    SPELL_FAIL_SPLASH(193),
+
     TELEPORT(202),
 
     ICA_BARRAGE_IMPACT(1125, 1, 0),
 
     DROP_ITEM(376, 1, 0),
     PICK_UP_ITEM(358, 1, 0),
+
+    SET_UP_BARRICADE(358, 1, 0),
 
     FIRE_LIGHT(375, 1, 0),
     FIRE_SUCCESSFUL(608, 1, 0),
@@ -89,16 +93,21 @@ public enum Sound {
     private final int volume;
     private final int delay;
 
-    Sound(int id, int volume, int delay) {
+    private final int loopType;
+
+    Sound(int id, int volume, int delay, int loopType) {
         this.id = id;
         this.volume = volume;
         this.delay = delay;
+        this.loopType = loopType;
+    }
+
+    Sound(int id, int volume, int delay) {
+        this(id, volume, delay, 0);
     }
 
     Sound(int id) {
-        this.id = id;
-        this.volume = 1;
-        this.delay = 0;
+        this(id, 1, 0, 0);
     }
 
     public int getId() {
@@ -112,6 +121,8 @@ public enum Sound {
     public int getDelay() {
         return delay;
     }
+
+    public int getLoopType() { return loopType; }
 }
 
 /*
