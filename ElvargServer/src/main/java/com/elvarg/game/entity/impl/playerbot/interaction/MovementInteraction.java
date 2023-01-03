@@ -4,6 +4,7 @@ import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Location;
+import com.elvarg.game.model.areas.impl.DuelArenaArea;
 import com.elvarg.game.model.movement.MovementQueue;
 import com.elvarg.game.model.teleportation.TeleportHandler;
 import com.elvarg.game.model.teleportation.TeleportType;
@@ -29,7 +30,7 @@ public class MovementInteraction {
                 return;
 
             case IDLE:
-                if (CombatFactory.inCombat(playerBot)) {
+                if (CombatFactory.inCombat(playerBot) || playerBot.getDueling().inDuel()) {
                     return;
                 }
 
@@ -38,14 +39,17 @@ public class MovementInteraction {
                     if (Misc.getRandom(9) <= 1) {
                         Location pos = generateLocalPosition();
                         if (pos != null) {
-
                             MovementQueue.randomClippedStep(playerBot, 1);
-                        //.walkStep(pos.getX(), pos.getY());
                         }
                     }
                 }
-                // Teleport this bot back
+
+                if (playerBot.getArea() != null && playerBot.getArea().canPlayerBotIdle(playerBot)) {
+                    break;
+                }
+
                 if (playerBot.getLocation().getDistance(playerBot.getDefinition().getSpawnLocation()) > 20) {
+                    // Bot is far away, teleport back to original location
                     TeleportHandler.teleport(playerBot, playerBot.getDefinition().getSpawnLocation(), TeleportType.NORMAL, false);
                 }
                 break;

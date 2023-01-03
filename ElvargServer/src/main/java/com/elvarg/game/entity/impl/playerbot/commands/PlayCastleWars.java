@@ -36,6 +36,7 @@ public class PlayCastleWars implements BotCommand {
             @Override
             public void execute() {
                 CastleWars.addToWaitRoom(playerBot, CastleWars.TEAM_GUTHIX);
+                stop();
             }
         });
     }

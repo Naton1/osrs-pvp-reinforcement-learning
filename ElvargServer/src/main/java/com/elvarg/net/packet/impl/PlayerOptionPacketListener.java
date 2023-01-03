@@ -3,6 +3,7 @@ package com.elvarg.net.packet.impl;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.movement.WalkToAction;
+import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
@@ -27,6 +28,10 @@ public class PlayerOptionPacketListener implements PacketExecutor {
         if (attacked == null || attacked.getHitpoints() <= 0 || attacked.equals(player)) {
             player.getMovementQueue().reset();
             return;
+        }
+
+        if (player.getRights() == PlayerRights.DEVELOPER) {
+            player.getPacketSender().sendMessage("AttacKInfo "+attacked.getLocation().toString() + " " + player.getLocation().getDistance(attacked.getLocation()));
         }
 
         player.getCombat().attack(attacked);
@@ -128,6 +133,7 @@ public class PlayerOptionPacketListener implements PacketExecutor {
         if (player.busy()) {
             return;
         }
+
         switch (packet.getOpcode()) {
             case PacketConstants.ATTACK_PLAYER_OPCODE:
                 attack(player, packet);
