@@ -271,6 +271,7 @@ public class ButtonClickPacketListener implements PacketExecutor {
 
 		case CLOSE_BUTTON_1:
 		case CLOSE_BUTTON_2:
+		case 16999:
 			player.getPacketSender().sendInterfaceRemoval();
 			break;
 
