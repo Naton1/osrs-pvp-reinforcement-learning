@@ -699,8 +699,8 @@ public class PacketSender {
 	public PacketSender sendSmithingData(int id, int slot, int interfaceId, int amount) {
 		PacketBuilder out = new PacketBuilder(34, PacketType.VARIABLE_SHORT);
 		out.putShort(interfaceId);
-		out.put(4);
-		out.putInt(slot);
+		out.put(slot);
+		out.putInt(amount);
 		out.putShort(id + 1);
 		out.put(amount);
 		player.getSession().write(out);
