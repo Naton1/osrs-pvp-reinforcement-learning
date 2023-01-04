@@ -769,7 +769,7 @@ public final class MovementQueue {
 
         PathFinder.calculateWalkRoute(player, destX, destY);
 
-        TaskManager.submit(new Task(1, player.getIndex(), false) {
+        TaskManager.submit(new Task(0, player.getIndex(), true) {
 
             int stage = 0;
 
