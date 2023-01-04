@@ -22,6 +22,7 @@ import com.elvarg.game.model.dialogues.builders.impl.SpellBookDialogue;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportHandler;
 import com.elvarg.game.model.teleportation.TeleportType;
+import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.ForceMovementTask;
 import com.elvarg.net.packet.Packet;
@@ -29,8 +30,8 @@ import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.ObjectIdentifiers;
 import com.elvarg.game.entity.impl.object.ObjectManager;
-
 import java.util.Objects;
+import static com.elvarg.util.Misc.getTicks;
 
 /**
  * This packet listener is called when a player clicked on a game object.
@@ -246,11 +247,12 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
     private static void objectInteract(Player player, int id, int x, int y, int clickType) {
         final Location location = new Location(x, y, player.getLocation().getZ());
 
-        if (player.getRights() == PlayerRights.DEVELOPER) {
-            player.getPacketSender().sendMessage("" + clickType + "-click object: " + id + ". " + location.toString());
-        }
-
         final GameObject object = MapObjects.get(player, id, location);
+
+        if (player.getRights() == PlayerRights.DEVELOPER) {
+            String typeFace = object != null ? "[F: " + object.getFace() + " T:" +object.getType() + "]" : "";
+            player.getPacketSender().sendMessage(clickType + "-click object: " + id + ". " + location + " " + typeFace);
+        }
 
         if (object == null) {
             return;

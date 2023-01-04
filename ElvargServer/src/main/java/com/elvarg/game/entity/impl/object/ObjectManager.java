@@ -23,11 +23,8 @@ public class ObjectManager {
      * @param player The player whose changing region.
      */
     public static void onRegionChange(Player player) {
-        Iterator<GameObject> iterator = World.getObjects().iterator();
-        for (; iterator.hasNext(); ) {
-            GameObject object = iterator.next();
-            perform(object, OperationType.SPAWN);
-        }
+        World.getObjects().forEach((o) -> perform(o, OperationType.SPAWN));
+        World.getRemovedObjects().stream().forEach((o) -> player.getPacketSender().sendObjectRemoval(o));
     }
 
     /**
@@ -45,6 +42,7 @@ public class ObjectManager {
                 iterator.remove();
             }
         }
+        World.getRemovedObjects().removeIf(o -> o.getType() == object.getType() && o.getLocation().equals(object.getLocation()));// TODO remove the clip of that obj
         World.getObjects().add(object);
         if (playerUpdate) {
             perform(object, OperationType.SPAWN);
@@ -58,16 +56,10 @@ public class ObjectManager {
      * @param playerUpdate Should the object removal packet be sent to nearby players?
      */
     public static void deregister(GameObject object, boolean playerUpdate) {
-        Iterator<GameObject> iterator = World.getObjects().iterator();
-        for (; iterator.hasNext(); ) {
-            GameObject o = iterator.next();
-            if (o.equals(object)) {
-                iterator.remove();
-            }
-        }
-        if (playerUpdate) {
-            perform(object, OperationType.DESPAWN);
-        }
+        World.getObjects().removeIf(o -> o.equals(object));
+        perform(object, OperationType.DESPAWN);
+
+        World.getRemovedObjects().add(object);
     }
 
     /**

@@ -56,6 +56,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
     public String interactions[];
     private short[] originalModelTexture;
     private short[] modifiedModelTexture;
+    public int clipType = 2;
     
 
     public ObjectDefinition() {
@@ -72,6 +73,10 @@ public final class ObjectDefinition extends ObjectIdentifiers {
         }
         writer.close();
     }
+    public boolean isClippedDecoration() {
+        return isInteractive || clipType == 1 || obstructsGround;
+    }
+
 
     public static ObjectDefinition forId(int id) {
         if (id > streamIndices.length)
@@ -282,8 +287,10 @@ public final class ObjectDefinition extends ObjectIdentifiers {
             } else if (opcode == 15) {
                 objectSizeY = buffer.readUnsignedByte();
             } else if (opcode == 17) {
+                clipType = 0;
                 solid = false;
             } else if (opcode == 18) {
+                solid = false;
                 impenetrable = false;
             } else if (opcode == 19) {
                 isInteractive = (buffer.readUnsignedByte() == 1);
@@ -299,7 +306,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
                     animation = -1;
                 }
             } else if (opcode == 27) {
-                // clipType = 1;
+                clipType = 1;
             } else if (opcode == 28) {
                 decorDisplacement = buffer.readUnsignedByte();
             } else if (opcode == 29) {
