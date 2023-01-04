@@ -1,18 +1,10 @@
 package com.elvarg.net.packet.impl;
 
-import java.util.Arrays;
-import java.util.Optional;
-
-import com.elvarg.Server;
 import com.elvarg.game.World;
 import com.elvarg.game.content.combat.CombatFactory;
-import com.elvarg.game.content.skill.skillable.impl.Cooking;
+import com.elvarg.game.content.skill.skillable.impl.*;
 import com.elvarg.game.content.skill.skillable.impl.Cooking.Cookable;
-import com.elvarg.game.content.skill.skillable.impl.Crafting;
-import com.elvarg.game.content.skill.skillable.impl.Firemaking;
 import com.elvarg.game.content.skill.skillable.impl.Firemaking.LightableLog;
-import com.elvarg.game.content.skill.skillable.impl.Fletching;
-import com.elvarg.game.content.skill.skillable.impl.Herblore;
 import com.elvarg.game.content.skill.skillable.impl.Prayer.AltarOffering;
 import com.elvarg.game.content.skill.skillable.impl.Prayer.BuriableBone;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGround;
@@ -23,17 +15,18 @@ import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.model.Action;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.container.impl.Bank;
 import com.elvarg.game.model.menu.CreationMenu;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.ObjectIdentifiers;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 
 public class UseItemPacketListener extends ItemIdentifiers implements PacketExecutor {
@@ -138,20 +131,23 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
             return;
         }
 
-        if (Barricades.itemOnBarricade(player, npc, item)) {
-            return;
-        }
+        player.getMovementQueue().walkToEntity(npc, () -> {
 
-        if (NPCInteractionSystem.handleUseItem(player, npc, id, slot)) {
-            // Player is using an item on a defined NPC
-            return;
-        }
+            if (Barricades.itemOnBarricade(player, npc, item)) {
+                return;
+            }
 
-        switch (id) {
-            default:
-                player.getPacketSender().sendMessage("Nothing interesting happens.");
-                break;
-        }
+            if (NPCInteractionSystem.handleUseItem(player, npc, id, slot)) {
+                // Player is using an item on a defined NPC
+                return;
+            }
+
+            switch (id) {
+                default:
+                    player.getPacketSender().sendMessage("Nothing interesting happens.");
+                    break;
+            }
+        });
     }
 
     @SuppressWarnings("unused")
@@ -183,7 +179,7 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
         //Update facing..
         player.setPositionToFace(position);
 
-        if(Bank.useItemOnDepositBox(player, item, itemSlot, object)) {
+        if (Bank.useItemOnDepositBox(player, item, itemSlot, object)) {
             return;
         }
 
@@ -237,49 +233,60 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
         if (target == null) {
             return;
         }
+        Item item = player.getInventory().get(slot);
+
+        if (item == null || !player.getInventory().contains(itemId)) {
+            return;
+        }
+
+        player.getMovementQueue().walkToEntity(target, () -> {
+
+            switch (itemId) {
+                /** For future actions.. **/
+                case 995: {
+                    player.getPacketSender().sendMessage("Perhaps I should trade this item instead..");
+                    break;
+                }
+            }
+
+        });
+
     }
 
     @SuppressWarnings("unused")
     private static void itemOnGroundItem(Player player, Packet packet) {
-        int interfaceType = packet.readLEShort();
-        int usedItemId = packet.readShortA();
-        int groundItemId = packet.readShort();
+        int interfaceId = packet.readLEShort();
+        int inventory_item = packet.readShortA();
+        int ground_item_id = packet.readShort();
         int y = packet.readShortA();
         int unknown = packet.readLEShortA();
         int x = packet.readShort();
-
         //Verify item..
-        if (!player.getInventory().contains(usedItemId)) {
+        if (!player.getInventory().contains(inventory_item)) {
             return;
         }
 
         //Verify ground item..
-        Optional<ItemOnGround> groundItem = ItemOnGroundManager.getGroundItem(Optional.of(player.getUsername()), groundItemId, new Location(x, y));
+        Optional<ItemOnGround> groundItem = ItemOnGroundManager.getGroundItem(Optional.of(player.getUsername()), ground_item_id, new Location(x, y));
+
         if (!groundItem.isPresent()) {
             return;
         }
 
-        player.setWalkToTask(new WalkToAction(player) {
-            @Override
-            public void execute() {
-                //Face...
-                player.setPositionToFace(groundItem.get().getPosition());
+        Location item_position = groundItem.get().getPosition();
 
-                //Handle used item..
-                switch (usedItemId) {
-                    case TINDERBOX: //Lighting a fire..
-                        Optional<LightableLog> log = LightableLog.getForItem(groundItemId);
-                        if (log.isPresent()) {
-                            player.getSkillManager().startSkillable(new Firemaking(log.get(), groundItem.get()));
-                            return;
-                        }
-                        break;
-                }
-            }
-            
-            @Override
-            public boolean inDistance() {
-                return player.getLocation().getDistance(groundItem.get().getPosition()) <= 1;
+        player.getMovementQueue().walkToGroundItem(item_position, () -> {
+
+            player.setPositionToFace(groundItem.get().getPosition());
+            //Handle used item..
+            switch (inventory_item) {
+                case TINDERBOX: //Lighting a fire..
+                    Optional<LightableLog> log = LightableLog.getForItem(ground_item_id);
+                    if (log.isPresent()) {
+                        player.getSkillManager().startSkillable(new Firemaking(log.get(), groundItem.get()));
+                        return;
+                    }
+                    break;
             }
         });
     }
