@@ -112,7 +112,6 @@ public class TeleportHandler {
 		player.getSkillManager().stopSkillable();
 		player.getPacketSender().sendInterfaceRemoval();
 		player.getCombat().reset();
-		player.setWalkToTask(null);
 	}
 
 	public static boolean checkReqs(Player player, Location targetLocation) {

@@ -10,7 +10,6 @@ import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager.OperationType;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Location;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketExecutor;

@@ -769,7 +769,7 @@ public final class MovementQueue {
 
         PathFinder.calculateWalkRoute(player, destX, destY);
 
-        TaskManager.submit(new Task(1, player, false) {
+        TaskManager.submit(new Task(0, player.getIndex(), true) {
 
             int stage = 0;
 
@@ -810,7 +810,6 @@ public final class MovementQueue {
         }
 
         TaskManager.cancelTasks(player.getIndex());
-        player.setWalkToTask(null);
         player.getCombat().setCastSpell(null);
         player.getCombat().reset();
         player.getSkillManager().stopSkillable();
@@ -862,8 +861,10 @@ public final class MovementQueue {
                 }
 
                 if (runnable != null && player.getMovementQueue().isWithinEntityInteractionDistance()) {
-                    // Execute the Runnable now, but continue pathing to the final destination
+                    // Executes the runnable and stops the task. However, It will still path to the destination.
+                    stop();
                     runnable.run();
+                    return;
                 }
 
                 if (reachStage != 0) {

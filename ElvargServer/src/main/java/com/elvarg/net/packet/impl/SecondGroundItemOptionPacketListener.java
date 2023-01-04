@@ -6,7 +6,6 @@ import com.elvarg.game.entity.impl.grounditem.ItemOnGround;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Location;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketExecutor;
 
@@ -42,33 +41,21 @@ public class SecondGroundItemOptionPacketListener implements PacketExecutor {
         if (player.busy())
             return;
 
-        player.setWalkToTask(new WalkToAction(player) {
-            @Override
-            public void execute() {
-                //Make sure distance isn't way off..
-                if (Math.abs(player.getLocation().getX() - x) > 25 || Math.abs(player.getLocation().getY() - y) > 25) {
-                    player.getMovementQueue().reset();
-                    return;
-                }
-
+        if (Math.abs(player.getLocation().getX() - x) > 25 || Math.abs(player.getLocation().getY() - y) > 25) {
+            player.getMovementQueue().reset();
+            return;
+        }
+        player.getMovementQueue().walkToGroundItem(position, () -> {
                 //Get ground item..
                 Optional<ItemOnGround> item = ItemOnGroundManager.getGroundItem(Optional.of(player.getUsername()), itemId, position);
                 if (item.isPresent()) {
                     //Handle it..
-
                     /** FIREMAKING **/
                     Optional<LightableLog> log = LightableLog.getForItem(item.get().getItem().getId());
                     if (log.isPresent()) {
                         player.getSkillManager().startSkillable(new Firemaking(log.get(), item.get()));
-                        return;
                     }
                 }
-            }
-            
-            @Override
-            public boolean inDistance() {
-                return player.getLocation().equals(position);
-            }
         });
     }
 }
