@@ -2,7 +2,6 @@ package com.elvarg.net.packet.impl;
 
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;

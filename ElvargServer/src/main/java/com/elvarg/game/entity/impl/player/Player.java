@@ -69,7 +69,6 @@ import com.elvarg.game.model.dialogues.DialogueManager;
 import com.elvarg.game.model.equipment.BonusManager;
 import com.elvarg.game.model.menu.CreationMenu;
 import com.elvarg.game.model.movement.MovementQueue;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.DonatorRights;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportButton;
