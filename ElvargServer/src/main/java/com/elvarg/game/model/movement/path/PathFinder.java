@@ -118,7 +118,8 @@ public class PathFinder {
     private static List<Location> getClosestTileForDistance(Mobile target, int distance) {
         List<Location> perimeter = Lists.newArrayList();
         Location dest = target.getLocation();
-        distance -= 1;
+        if (distance > 1)
+            distance -= 1;
         for (int i = 0; i < distance; i++) {
             perimeter.add(dest.translate(i, distance)); // north
             perimeter.add(dest.translate(distance, i)); // east
