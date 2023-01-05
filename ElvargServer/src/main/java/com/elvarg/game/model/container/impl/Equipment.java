@@ -157,4 +157,8 @@ public class Equipment extends ItemContainer {
     public Item getWeapon() {
         return get(Equipment.WEAPON_SLOT);
     }
+
+    public boolean hasGodsword() {
+        return get(WEAPON_SLOT) != null && get(WEAPON_SLOT).getDefinition().getName().toLowerCase().contains("godsword");
+    }
 }
