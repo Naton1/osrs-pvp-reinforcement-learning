@@ -264,16 +264,16 @@ public final class WeaponInterfaces {
                 player.setFightType(FightType.SPEAR_BLOCK);
                 return true;
             case 4711: // 2h sword
-                player.setFightType(FightType.TWOHANDEDSWORD_CHOP);
+                player.setFightType(player.getEquipment().hasGodsword() ? FightType.GODSWORD_CHOP : FightType.TWOHANDEDSWORD_CHOP);
                 return true;
             case 4714:
-                player.setFightType(FightType.TWOHANDEDSWORD_SLASH);
+                player.setFightType(player.getEquipment().hasGodsword() ? FightType.GODSWORD_SLASH : FightType.TWOHANDEDSWORD_SLASH);
                 return true;
             case 4713:
-                player.setFightType(FightType.TWOHANDEDSWORD_SMASH);
+                player.setFightType(player.getEquipment().hasGodsword() ? FightType.GODSWORD_SMASH : FightType.TWOHANDEDSWORD_SMASH);
                 return true;
             case 4712:
-                player.setFightType(FightType.TWOHANDEDSWORD_BLOCK);
+                player.setFightType(player.getEquipment().hasGodsword() ? FightType.GODSWORD_BLOCK : FightType.TWOHANDEDSWORD_BLOCK);
                 return true;
             case 5576: // pickaxe
                 player.setFightType(FightType.PICKAXE_SPIKE);
@@ -535,8 +535,8 @@ public final class WeaponInterfaces {
         DARK_BOW(1764, 1767, 8, new FightType[]{FightType.LONGBOW_ACCURATE,
                 FightType.LONGBOW_RAPID, FightType.LONGBOW_LONGRANGE}, 7549, 7561),
         GODSWORD(4705, 4708, 6, new FightType[]{
-                FightType.TWOHANDEDSWORD_CHOP, FightType.TWOHANDEDSWORD_SLASH,
-                FightType.TWOHANDEDSWORD_SMASH, FightType.TWOHANDEDSWORD_BLOCK}, 7699, 7711),
+                FightType.GODSWORD_CHOP, FightType.GODSWORD_SLASH,
+                FightType.GODSWORD_SMASH, FightType.GODSWORD_BLOCK}, 7699, 7711),
         ABYSSAL_BLUDGEON(4705, 4708, 4, new FightType[]{
                 FightType.ABYSSAL_BLUDGEON_CHOP, FightType.ABYSSAL_BLUDGEON_SLASH,
                 FightType.ABYSSAL_BLUDGEON_SMASH, FightType.ABYSSAL_BLUDGEON_BLOCK}, 7699, 7711),
