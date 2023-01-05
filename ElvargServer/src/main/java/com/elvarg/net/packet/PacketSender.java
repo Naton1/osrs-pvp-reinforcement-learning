@@ -921,6 +921,10 @@ public class PacketSender {
 	}
 
 	public PacketSender sendObjectRemoval(GameObject object) {
+		if (object == null) {
+			return this;
+		}
+
 		sendPosition(object.getLocation());
 		PacketBuilder out = new PacketBuilder(101);
 		out.put((object.getType() << 2) + (object.getFace() & 3), ValueType.C);

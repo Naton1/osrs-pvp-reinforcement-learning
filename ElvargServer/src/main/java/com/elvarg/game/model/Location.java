@@ -327,7 +327,7 @@ public class Location {
 
     @Override
     public String toString() {
-        return "Position values: [x, y, z] - [" + x + ", " + y + ", " + z + "].";
+        return "[" + x + ", " + y + ", " + z + "]";
     }
 
     @Override

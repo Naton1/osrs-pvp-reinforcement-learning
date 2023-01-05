@@ -113,7 +113,7 @@ public class Region {
         if (clips[height] == null) {
             clips[height] = new int[64][64];
         }
-        clips[height][x - regionAbsX][y - regionAbsY] = /* 16777215 - shift */0;
+        clips[height][x - regionAbsX][y - regionAbsY] &= ~shift;
     }
 
     /**
