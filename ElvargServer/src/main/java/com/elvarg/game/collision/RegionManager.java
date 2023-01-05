@@ -351,9 +351,14 @@ public class RegionManager {
      * @param flag
      */
     private static void removeClippingForSolidObject(int x, int y, int height, int xLength, int yLength, boolean flag, PrivateArea privateArea) {
+        int clipping = 256;
+        if (flag) {
+            clipping += 0x20000;
+        }
+
         for (int x_ = x; x_ < x + xLength; x_++) {
             for (int y_ = y; y_ < y + yLength; y_++) {
-                addClipping(x_, y_, height, 0, privateArea);
+                removeClipping(x_, y_, height, clipping, privateArea);
             }
         }
     }
@@ -462,7 +467,7 @@ public class RegionManager {
 
         if (type == 22) {
             if (def.hasActions() && def.solid) {
-                addClipping(x, y, height, 0, object.getPrivateArea());
+                removeClipping(x, y, height, 0x200000, object.getPrivateArea());
             }
         } else if (type >= 9) {
             if (def.solid) {

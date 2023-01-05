@@ -1,10 +1,12 @@
 package com.elvarg.game.entity.impl.object;
 
 import com.elvarg.game.World;
+import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Location;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 /**
  * A simple object manager used to manage {@link GameObject}s which are spawned
@@ -42,7 +44,12 @@ public class ObjectManager {
                 iterator.remove();
             }
         }
-        World.getRemovedObjects().removeIf(o -> o.getType() == object.getType() && o.getLocation().equals(object.getLocation()));// TODO remove the clip of that obj
+        Stream<GameObject> matchingObjects = World.getRemovedObjects().stream().filter(o -> o.getType() == object.getType() && o.getLocation().equals(object.getLocation()));
+        matchingObjects.forEach(removedObject -> {
+            World.getRemovedObjects().remove(removedObject);
+            RegionManager.removeObjectClipping(removedObject);
+        });
+
         World.getObjects().add(object);
         if (playerUpdate) {
             perform(object, OperationType.SPAWN);
