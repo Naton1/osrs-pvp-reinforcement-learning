@@ -146,6 +146,7 @@ public class ButtonClickPacketListener implements PacketExecutor {
 			case 11322:
 			case 11323:
 			case 11324:
+			case 11329:
 				CastleWars.handleCatapultControls(player, button);
 				break;
 

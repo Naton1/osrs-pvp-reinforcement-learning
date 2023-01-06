@@ -2,6 +2,7 @@ package com.elvarg.net.packet.impl;
 
 import com.elvarg.game.World;
 import com.elvarg.game.content.combat.CombatFactory;
+import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.content.skill.skillable.impl.*;
 import com.elvarg.game.content.skill.skillable.impl.Cooking.Cookable;
 import com.elvarg.game.content.skill.skillable.impl.Firemaking.LightableLog;
@@ -181,6 +182,10 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
         player.setPositionToFace(position);
 
         if (Bank.useItemOnDepositBox(player, item, itemSlot, object)) {
+            return;
+        }
+
+        if (CastleWars.handleItemOnObject(player, item, object)) {
             return;
         }
 

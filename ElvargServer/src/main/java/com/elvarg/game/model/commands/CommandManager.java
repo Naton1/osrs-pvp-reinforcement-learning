@@ -106,6 +106,7 @@ public class CommandManager {
         put(new Up(), "up");
         put(new Down(), "down");
         put(new Save(), "save");
+        put(new CWarInterfaceCommand(), "cwar");
         put(new ListSizesCommand(), "listsizes");
         
         if (!Server.PRODUCTION) {

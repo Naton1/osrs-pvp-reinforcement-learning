@@ -1,11 +1,11 @@
 package com.elvarg.game.content.minigames.impl;
 
 
+import com.elvarg.game.World;
 import com.elvarg.game.content.Food;
 import com.elvarg.game.content.combat.hit.HitDamage;
 import com.elvarg.game.content.combat.hit.HitMask;
 import com.elvarg.game.content.minigames.Minigame;
-import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.ObjectManager;
@@ -13,6 +13,8 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.*;
 import com.elvarg.game.model.container.impl.Equipment;
+import com.elvarg.game.task.Task;
+import com.elvarg.game.task.TaskManager;
 import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
 import com.elvarg.util.timers.TimerKey;
@@ -457,8 +459,6 @@ public class CastleWars implements Minigame {
         }
         player.moveTo(new Location(2439 + Misc.random(4),
                 3085 + Misc.random(5), 0));
-        // System.out.println("Waiting room map does not contain " +
-        // player.playerName);
     }
 
     /**
@@ -469,7 +469,7 @@ public class CastleWars implements Minigame {
         while (iterator.hasNext()) {
             Player player = iterator.next();
             if (player != null) {
-                player.getPacketSender().sendString(waitingRoom.size() > 1 ? "Time until next game starts: "+(gameStartTimer * 3 + timeRemaining * 3) : "Waiting for players to join the other team.", 11480);
+                player.getPacketSender().sendString(waitingRoom.size() > 1 ? "Time until next game starts: " + (gameStartTimer * 3 + timeRemaining * 3) : "Waiting for players to join the other team.", 11480);
                 //player.getPacketSender().sendWalkableInterface(6673);
             }
         }
@@ -511,7 +511,6 @@ public class CastleWars implements Minigame {
             return;
         }
         gameStartTimer = -1;
-        System.out.println("Starting Castle Wars game.");
         gameStarted = true;
         timeRemaining = GAME_TIMER / 2;
         Iterator<Player> iterator = waitingRoom.keySet().iterator();
@@ -785,11 +784,16 @@ public class CastleWars implements Minigame {
                 playerY = player.getLocation().getY(),
                 playerZ = player.getLocation().getZ();
 
-
         switch (object.getId()) {
 
+            case 4386://zamorak burnt catapult
+            case 4385: {//saradomin burnt catapult
+                repairCatapult(player, object);
+                return true;
+            }
+            case 4381:
             case 4382: {
-                handleCatapult(player, object, 1);
+                handleCatapult(player);
                 return true;
             }
 
@@ -1107,7 +1111,7 @@ public class CastleWars implements Minigame {
 
     private static Map<Integer, Integer> catapults = Maps.newConcurrentMap();
 
-    public static void handleCatapult(Player player, GameObject object, int option) {
+    public static void handleCatapult(Player player) {
         if (!player.getInventory().contains(4043)) {
             player.getPacketSender().sendMessage("You need a rock to launch from the catapult!");
             return;
@@ -1119,19 +1123,35 @@ public class CastleWars implements Minigame {
     public static void handleCatapultControls(Player player, int buttonId) {
         int x = (Integer) player.getAttribute("catapultX");
         int y = (Integer) player.getAttribute("catapultY");
-
-        //if (isSaradomin(player)) {
-        if (buttonId == 11321 && y < 30) {
-            player.setAttribute("catapultY", y + 1);
+        boolean saradomin = isSaradomin(player);
+        player.getPacketSender().sendInterfaceComponentMoval(1, 0, 11332);
+        if (buttonId == 11321) {//Up Y
+            if (saradomin && y < 30) {
+                player.setAttribute("catapultY", y + 1);
+            } else if (y > 0) {
+                player.setAttribute("catapultY", y + 1);
+            }
         }
-        if (buttonId == 11322 && y > 0) {
-            player.setAttribute("catapultY", y - 1);
+        if (buttonId == 11322) {
+            if (saradomin && y > 0) {//down Y
+                player.setAttribute("catapultY", y - 1);
+            } else if (y < 30) {
+                player.setAttribute("catapultY", y + 1);
+            }
         }
-        if (buttonId == 11323 && x > 0) {
-            player.setAttribute("catapultX", x - 1);
+        if (buttonId == 11323) {
+            if (saradomin && x > 0) {//right X
+                player.setAttribute("catapultX", x - 1);
+            } else if (x < 30) {
+                player.setAttribute("catapultX", x + 1);
+            }
         }
-        if (buttonId == 11324 && x < 30) {
-            player.setAttribute("catapultX", x + 1);
+        if (buttonId == 11324) {//left X
+            if (saradomin && x < 30) {
+                player.setAttribute("catapultX", x + 1);
+            } else if (x > 0) {
+                player.setAttribute("catapultX", x - 1);
+            }
         }
         x = (Integer) player.getAttribute("catapultX");
         y = (Integer) player.getAttribute("catapultY");
@@ -1139,6 +1159,38 @@ public class CastleWars implements Minigame {
         player.getPacketSender().sendWidgetModel(11318, 4863 + (y > 29 ? y - 30 : y > 19 ? y - 20 : y > 9 ? y - 10 : y));
         player.getPacketSender().sendWidgetModel(11319, 4863 + (x < 10 ? 0 : x > 9 ? (x / 10) : x));
         player.getPacketSender().sendWidgetModel(11320, 4863 + (x > 29 ? x - 30 : x > 19 ? x - 20 : x > 9 ? x - 10 : x));
+        player.getPacketSender().sendInterfaceComponentMoval(x * 2, 0, 11332);
+        /** Fire button **/
+        if (buttonId == 11329) {
+            player.getPacketSender().sendInterfaceRemoval();
+            int startX = saradomin ? saradomin_catapult_start.getX() : zamorak_catapult_start.getX();
+            int startY = saradomin ? saradomin_catapult_start.getY() : zamorak_catapult_start.getY();
+            x *= 2;
+            Location destination = new Location((x >= 0 ? startX - x : startX + x), (y >= 0 ? startY + y : startY - y));
+            GameObject catapult = World.findCacheObject(player, saradomin ? 4382 : 4381, saradomin ? saradomin_catapult_location : zamorak_catapult_location);
+            if (catapult != null) {
+                catapult.performAnimation(new Animation(443));
+            }
+            new Projectile(saradomin ? saradomin_catapult_location : zamorak_catapult_location, destination, null, 304, 30, 100, 75, 75, player.getPrivateArea())
+                    .sendProjectile();
+            TaskManager.submit(new Task() {
+
+                int ticks = 0;
+
+                @Override
+                public void execute() {
+                    ticks++;
+                    if (ticks == 4) {
+                        World.sendLocalGraphics(303, destination);
+                    }
+                    if (ticks == 6) {
+                        World.getPlayers().stream().filter(Objects::nonNull).filter(p -> p.getLocation().isWithinDistance(destination, 3)).forEach(p -> p.getCombat().getHitQueue().addPendingDamage(new HitDamage(p.getHitpoints(), HitMask.RED)));
+                        World.sendLocalGraphics(305, destination);
+                        stop();
+                    }
+                }
+            });
+        }
 
     }
 
@@ -1147,5 +1199,168 @@ public class CastleWars implements Minigame {
             player.getPacketSender().sendWidgetModel(i, 4863);
         player.setAttribute("catapultX", 0);
         player.setAttribute("catapultY", 0);
+    }
+
+
+    private static CatapultState saradominCatapult = CatapultState.FIXED, zamorakCatapult = CatapultState.FIXED;
+
+    /**
+     * Used for firing off-set for the catapult
+     **/
+    private static Location saradomin_catapult_start = new Location(2412, 3091, 0), zamorak_catapult_start = new Location(2387, 3116, 0);
+
+    /**
+     * Used for starting location for the catapult projectile
+     **/
+    private static Location saradomin_catapult_location = new Location(2413, 3088, 0), zamorak_catapult_location = new Location(2384, 3117, 0);
+
+    /**
+     * large doors - 4023-4024 -- 4025-4026
+     *
+     * @param player
+     * @param item
+     * @param object
+     * @return
+     */
+    public static boolean handleItemOnObject(Player player, Item item, GameObject object) {
+        final int objectId = object.getId();
+        final int itemId = item.getId();
+        boolean saradomin = isSaradomin(player);
+        if (objectId == 4385) {
+            if (item.getId() == 4051) {
+                repairCatapult(player, object);
+                return true;
+            }
+            return false;
+        }
+        /**
+         * Saradomin's burning catapult
+         */
+        if (objectId == 4904 || objectId == 4905) {
+            if (itemId == 1929) {
+                if (saradomin) {
+                    if (saradominCatapult == CatapultState.FIXED) {
+                        player.getPacketSender().sendMessage("The fire has already been extinguished.");
+                        return true;
+                    }
+                } else {
+                    if (zamorakCatapult == CatapultState.FIXED) {
+                        player.getPacketSender().sendMessage("The fire has already been extinguished.");
+                        return true;
+                    }
+                }
+                player.getInventory().delete(1929, 1);//bucket of water
+                player.getInventory().add(new Item(1925, 1));//empty bucket
+                if (saradomin) {
+                    saradominCatapult = CatapultState.FIXED;
+                } else {
+                    zamorakCatapult = CatapultState.FIXED;
+                }
+                return true;
+            }
+            return false;
+        }
+        /**
+         * Saradomin's default catapult
+         */
+        if (objectId == 4382 || objectId == 4381) {
+            /**
+             * Saradomin Catapult
+             */
+            if (itemId == 590 || itemId == 4045) {
+                if (saradomin) {
+                    if (saradominCatapult == CatapultState.BURNING) {
+                        player.getPacketSender().sendMessage("The catapult is already burning!");
+                        return true;
+                    }
+                } else {
+                    if (zamorakCatapult == CatapultState.BURNING) {
+                        player.getPacketSender().sendMessage("The catapult is already burning!");
+                        return true;
+                    }
+                }
+                if (itemId == 4045)
+                    player.getInventory().delete(4045, 1);
+                //4904 zamorak, 4905 saradomin
+                GameObject onFire = new GameObject(saradomin ? 4904 : 4905, object.getLocation(), object.getType(), object.getFace(), object.getPrivateArea());
+                GameObject burnt = new GameObject(saradomin ? 4385 : 4386, object.getLocation(), object.getType(), object.getFace(), object.getPrivateArea());
+
+                GameObject fixed = new GameObject(object.getId(), object.getLocation(), object.getType(), object.getFace(), object.getPrivateArea());
+                if (saradomin)
+                    saradominCatapult = CatapultState.BURNING;
+                else
+                    zamorakCatapult = CatapultState.BURNING;
+                ObjectManager.register(onFire, true);
+                onFire.performAnimation(new Animation(1431));
+                //4385 zamorak, 4386 saradomin
+                Task task = new Task(0, player.getIndex(), true) {
+
+                    int ticks = 0;
+
+                    @Override
+                    protected void execute() {
+                        ticks++;
+
+                        if (saradomin) {
+                            if (saradominCatapult != CatapultState.BURNING) {
+                                changeCatapultState(this, fixed, CatapultState.FIXED, saradomin);
+                                return;
+                            }
+                            if (ticks == 16) {//4385, 4386
+                                changeCatapultState(this, burnt, CatapultState.REPAIR, saradomin);
+                            }
+                        } else {
+                            if (zamorakCatapult != CatapultState.BURNING) {
+                                changeCatapultState(this, fixed, CatapultState.FIXED, saradomin);
+                                return;
+                            }
+                            if (ticks == 16) {//4385, 4386
+                                changeCatapultState(this, burnt, CatapultState.REPAIR, saradomin);
+                            }
+                        }
+
+                    }
+                };
+                TaskManager.submit(task);
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private static void repairCatapult(Player player, GameObject object) {
+        if (!player.getInventory().contains(4051)) {
+            player.getPacketSender().sendMessage("You need a toolkit to repair the catapult.");
+            return;
+        }
+        boolean saradomin = isSaradomin(player);
+        if (saradomin) {
+            if (saradominCatapult != CatapultState.REPAIR) {
+                player.getPacketSender().sendMessage("The catapult has already been repaired");
+                return;
+            }
+            saradominCatapult = CatapultState.FIXED;
+        } else {
+            if (zamorakCatapult != CatapultState.REPAIR) {
+                player.getPacketSender().sendMessage("The catapult has already been repaired");
+                return;
+            }
+            zamorakCatapult = CatapultState.FIXED;
+        }
+        player.getInventory().delete(4051, 1);//toolkit
+        ObjectManager.register(new GameObject(saradomin ? 4382 : 4381, object.getLocation(), object.getType(), object.getFace(), object.getPrivateArea()), true);
+        player.getPacketSender().sendMessage("You repair the catapult.");
+    }
+
+    private static void changeCatapultState(Task task, GameObject object, CatapultState state, boolean saradomin) {
+        ObjectManager.register(object, true);
+        if (saradomin) {
+            saradominCatapult = state;
+        } else {
+            zamorakCatapult = state;
+        }
+        task.stop();
+
     }
 }
