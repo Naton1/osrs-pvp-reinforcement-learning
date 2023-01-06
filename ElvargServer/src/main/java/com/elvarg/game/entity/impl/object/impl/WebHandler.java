@@ -23,11 +23,15 @@ import java.util.regex.Pattern;
 
 public class WebHandler {
 
-    private static final int WEB_RESPAWN = 4000;
+    private static final int WEB_RESPAWN = 4;
     private static final Sound SLASH_SOUND = Sound.SLASH_WEB;
     private static final Animation ITEM_ON_WEB_ANIMATION = new Animation(911);
-    private static final Pattern SHARP_ITEM_PATTERN = Pattern.compile("(.*2h.*|.*sword.*|.*dagger.*|.*rapier.*|.*scimitar.*|.*halberd.*|.*spear.*|.*axe.*|.*excalibur.*|.*claws.*|.*whip.*)", Pattern.CASE_INSENSITIVE);
+//    private static final Pattern SHARP_ITEM_PATTERN = Pattern.compile("(.*2h.*|.*sword.*|.*dagger.*|.*rapier.*|.*scimitar.*|.*halberd.*|.*spear.*|.*axe.*|.*excalibur.*|.*claws.*|.*whip.*)", Pattern.CASE_INSENSITIVE);
     private static long lastSlash;
+    private static final Pattern SHARP_ITEM_PATTERN;
+    static {
+        SHARP_ITEM_PATTERN = Pattern.compile("(.*2h.*|.*sword.*|.*dagger.*|.*rapier.*|.*scimitar.*|.*halberd.*|.*spear.*|.*axe.*|.*excalibur.*|.*claws.*|.*whip.*)", Pattern.CASE_INSENSITIVE);
+    }
 
     /**
      * Handles if the inventory item used on web is sharp
