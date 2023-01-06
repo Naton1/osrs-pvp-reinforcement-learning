@@ -24,7 +24,13 @@ import com.elvarg.game.model.Location;
 import com.google.common.cache.CacheLoader;
 
 public class Misc {
-	
+
+    /**
+     * Gets the number of seconds represented in Game ticks
+     *
+     * @param seconds
+     * @return
+     */
 	public static int getTicks(int seconds) {
 		return (int) (seconds / 0.6);
 	}

@@ -20,6 +20,9 @@ import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.util.Stopwatch;
 import com.elvarg.util.timers.TimerRepository;
+import com.google.common.collect.Maps;
+
+import java.util.Map;
 
 /**
  * Represents a {@link Player} or {@link NPC}.
@@ -40,6 +43,15 @@ public abstract class Mobile extends Entity {
 	private Graphic graphic;
 	private Mobile following;
 
+	private Map<Object, Object> attributes = Maps.newConcurrentMap();
+
+	public Object getAttribute(Object name) {
+		return attributes.get(name);
+	}
+
+	public void setAttribute(Object name, Object object) {
+		this.attributes.put(name, object);
+	}
 	/*
 	 * Fields
 	 */

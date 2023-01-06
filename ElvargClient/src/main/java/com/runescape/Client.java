@@ -15012,8 +15012,8 @@ public class Client extends GameApplet {
             }
 
             if (opcode == PacketConstants.SEND_MODEL_TO_INTERFACE) {
-                int id = incoming.readLEUShortA();
-                int model = incoming.readUShort();
+                int id = incoming.readShort();
+                int model = incoming.readShort();
                 Widget.interfaceCache[id].defaultMediaType = 1;
                 Widget.interfaceCache[id].defaultMedia = model;
                 opcode = -1;

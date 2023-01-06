@@ -8,8 +8,10 @@ import com.elvarg.game.content.Dueling.DuelState;
 import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.areas.Area;
+import com.elvarg.util.timers.TimerKey;
 
 public class DuelArenaArea extends Area {
 
@@ -24,6 +26,11 @@ public class DuelArenaArea extends Area {
             player.getPacketSender().sendInteractionOption("Challenge", 1, false);
             player.getPacketSender().sendInteractionOption("null", 2, true);
         }
+
+        if (character.isPlayerBot() && this.getPlayers().size() == 0) {
+            // Allow this PlayerBot to wait for players for 5 minutes
+            character.getAsPlayerBot().getTimers().register(TimerKey.BOT_WAIT_FOR_PLAYERS);
+        }
     }
 
     @Override
@@ -35,6 +42,11 @@ public class DuelArenaArea extends Area {
             }
             player.getPacketSender().sendInteractionOption("null", 2, true);
             player.getPacketSender().sendInteractionOption("null", 1, false);
+
+            if (getPlayers().size() == 0 && getPlayerBots().size() > 0) {
+                // Last player has left duel arena and there are bots
+                getPlayerBots().stream().forEach((pb) -> pb.getTimers().register(TimerKey.BOT_WAIT_FOR_PLAYERS));
+            }
         }
     }
 
@@ -45,7 +57,6 @@ public class DuelArenaArea extends Area {
     @Override
     public boolean canTeleport(Player player) {
         if (player.getDueling().inDuel()) {
-            //DialogueManager.sendStatement(player, "You cannot teleport out of a duel!");
             return false;
         }
         return true;
@@ -72,7 +83,6 @@ public class DuelArenaArea extends Area {
     @Override
     public boolean canTrade(Player player, Player target) {
         if (player.getDueling().inDuel()) {
-            //DialogueManager.sendStatement(player, "You cannot trade during a duel!");
             return false;
         }
         return true;
@@ -86,8 +96,7 @@ public class DuelArenaArea extends Area {
     @Override
     public boolean canEat(Player player, int itemId) {
         if (player.getDueling().inDuel() && player.getDueling().getRules()[DuelRule.NO_FOOD.ordinal()]) {
-            //DialogueManager.sendStatement(player, "Food has been disabled in this duel!");
-            return true;
+            return false;
         }
         return true;
     }
@@ -95,8 +104,7 @@ public class DuelArenaArea extends Area {
     @Override
     public boolean canDrink(Player player, int itemId) {
         if (player.getDueling().inDuel() && player.getDueling().getRules()[DuelRule.NO_POTIONS.ordinal()]) {
-            //DialogueManager.sendStatement(player, "Potions have been disabled in this duel!");
-            return true;
+            return false;
         }
         return true;
     }
@@ -144,6 +152,21 @@ public class DuelArenaArea extends Area {
 
     @Override
     public boolean handleObjectClick(Player player, int objectId, int type) {
+        return false;
+    }
+
+    @Override
+    public boolean canPlayerBotIdle(PlayerBot playerBot) {
+        if (this.getPlayers().size() > 0) {
+            // Player bots can idle here if there are any real players here
+            return true;
+        }
+
+        if (playerBot.getTimers().has(TimerKey.BOT_WAIT_FOR_PLAYERS)) {
+            // Player bot can idle here while waiting for players
+            return true;
+        }
+
         return false;
     }
 }
