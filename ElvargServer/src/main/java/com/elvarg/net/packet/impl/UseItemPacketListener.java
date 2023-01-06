@@ -14,6 +14,7 @@ import com.elvarg.game.entity.impl.npc.NPCInteractionSystem;
 import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
+import com.elvarg.game.entity.impl.object.impl.WebHandler;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
@@ -209,6 +210,13 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
                         }
                     }
                     break;
+                case ObjectIdentifiers.WEB:
+                    if (!WebHandler.isSharpItem(item)) {
+                        player.sendMessage("Only a sharp blade can cut through this sticky web.");
+                        return;
+                    }
+                    WebHandler.handleSlashWeb(player, object, true);
+                    break;
                 case 409: //Bone on Altar
                     Optional<BuriableBone> b = BuriableBone.forId(item.getId());
                     if (b.isPresent()) {
@@ -216,6 +224,9 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
                             player.getSkillManager().startSkillable(new AltarOffering(b.get(), object, amount));
                         }));
                     }
+                    break;
+                default:
+                    player.getPacketSender().sendMessage("Nothing interesting happens.");
                     break;
             }
         });

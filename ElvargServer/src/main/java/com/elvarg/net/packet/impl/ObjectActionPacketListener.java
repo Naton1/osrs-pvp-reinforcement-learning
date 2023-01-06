@@ -15,6 +15,7 @@ import com.elvarg.game.content.skill.skillable.impl.Thieving.StallThieving;
 import com.elvarg.game.definition.ObjectDefinition;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
+import com.elvarg.game.entity.impl.object.impl.WebHandler;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.*;
 import com.elvarg.game.model.areas.impl.PrivateArea;
@@ -74,6 +75,13 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
         }
 
         switch (object.getId()) {
+            case WEB:
+                if (!WebHandler.wieldingSharpItem(player)) {
+                    player.getPacketSender().sendMessage("Only a sharp blade can cut through this sticky web.");
+                    return;
+                }
+                WebHandler.handleSlashWeb(player, object, false);
+                break;
         case KBD_LADDER_DOWN:
             TeleportHandler.teleport(player, new Location(3069, 10255), TeleportType.LADDER_DOWN, false);
             break;
