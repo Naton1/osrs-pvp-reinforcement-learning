@@ -2,7 +2,6 @@ package com.elvarg.game.entity.impl.npc.impl;
 
 import com.elvarg.game.content.combat.method.CombatMethod;
 import com.elvarg.game.content.combat.method.impl.npcs.BanditCombtMethod;
-import com.elvarg.game.content.combat.method.impl.npcs.KingBlackDragonMethod;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Ids;

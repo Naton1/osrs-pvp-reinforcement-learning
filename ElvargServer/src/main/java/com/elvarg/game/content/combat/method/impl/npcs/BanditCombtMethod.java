@@ -9,7 +9,11 @@ import com.elvarg.game.model.container.impl.Equipment;
 public class BanditCombtMethod extends MeleeCombatMethod {
 
     @Override
-    public void start(Mobile character, Mobile target) {
+    public void onCombatBegan(Mobile character, Mobile target) {
+        if (character == null || target == null) {
+            return;
+        }
+
         NPC npc = character.getAsNpc();
         Player player = target.getAsPlayer();
 
@@ -27,7 +31,6 @@ public class BanditCombtMethod extends MeleeCombatMethod {
         } else {
             npc.forceChat("You chose the wrong place to start trouble!");
         }
-
     }
 
 }

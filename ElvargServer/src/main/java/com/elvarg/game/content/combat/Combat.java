@@ -125,6 +125,11 @@ public class Combat {
                     // Call the onCombatBegan hook once when combat begins
                     method.onCombatBegan(this.character, attacker);
                 }
+                if (target.getCombat().getAttacker() == null) {
+                    // Call the onCombatBegan hook once when combat begins
+                    CombatMethod targetMethod = CombatFactory.getMethod(target);
+                    targetMethod.onCombatBegan(target, this.character);
+                }
 
                 method.start(character, target);
                 PendingHit[] hits = method.hits(character, target);
