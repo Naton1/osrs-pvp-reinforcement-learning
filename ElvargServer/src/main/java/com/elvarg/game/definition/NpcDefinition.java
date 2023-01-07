@@ -17,14 +17,16 @@ public class NpcDefinition {
      */
     public static final Map<Integer, NpcDefinition> definitions = new HashMap<Integer, NpcDefinition>();
 
-    
     /**
      * The default {@link ItemDefinition} that will be used.
      */
     private static final NpcDefinition DEFAULT = new NpcDefinition();
-    
-    
-    
+
+    /**
+     * A fallback set of stats for NPCs.
+     */
+    private static final int[] DEFAULT_STATS = new int[] { 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
     private int id;
     private String name;
     private String examine;
@@ -33,6 +35,7 @@ public class NpcDefinition {
     private boolean attackable;
     private boolean retreats;
     private boolean aggressive;
+    private boolean aggressiveTolerance = true;
     private boolean poisonous;
     private boolean fightsBack = true;
     private int respawn;
@@ -90,6 +93,15 @@ public class NpcDefinition {
         return aggressive;
     }
 
+    /**
+     * Whether this NPC gain tolerance towards players after being around them for a given length of time.
+     *
+     * @return {boolean}
+     */
+    public boolean buildsAggressionTolerance() {
+        return aggressiveTolerance;
+    }
+
     public boolean isPoisonous() {
         return poisonous;
     }
@@ -131,6 +143,10 @@ public class NpcDefinition {
     }
 
     public int[] getStats() {
+        if (stats == null) {
+            return DEFAULT_STATS;
+        }
+
         return stats;
     }
 

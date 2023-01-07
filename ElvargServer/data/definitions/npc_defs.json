@@ -3647,7 +3647,7 @@
     "retreats": true,
     "aggressive": true,
     "poisonous": false,
-    "respawn": 25,
+    "respawn": 50,
     "maxHit": 1,
     "hitpoints": 50,
     "attackSpeed": 4,
@@ -3684,7 +3684,11 @@
     "examine": "",
     "size": 1,
     "walkRadius": 0,
-    "attackable": false
+    "respawn": 50,
+    "hitpoints": 50,
+    "attackable": false,
+    "aggressive": true,
+    "combatFollowDistance": 7
   },
   {
     "id": 102,
@@ -3696,7 +3700,7 @@
     "retreats": true,
     "aggressive": true,
     "poisonous": false,
-    "respawn": 25,
+    "respawn": 50,
     "maxHit": 1,
     "hitpoints": 50,
     "attackSpeed": 4,
@@ -3733,7 +3737,11 @@
     "examine": "",
     "size": 1,
     "walkRadius": 0,
-    "attackable": false
+    "respawn": 50,
+    "hitpoints": 50,
+    "attackable": false,
+    "aggressive": true,
+    "combatFollowDistance": 7
   },
   {
     "id": 104,

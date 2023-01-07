@@ -140,66 +140,11 @@ public class CombatFactory {
 			}
 
 		} else if (attacker.isNpc()) {
-
-			NPC npc = attacker.getAsNpc();
-
-			// Attempt to return the npc's defined combat method..
-			if (npc.getCombatMethod() != null) {
-				return npc.getCombatMethod();
-			}
+			return attacker.getAsNpc().getCombatMethod();
 		}
 
 		// Return melee by default
 		return MELEE_COMBAT;
-	}
-
-	/**
-	 * Assigns the combat method for the specified {@link NPC}.
-	 *
-	 * @param npc
-	 */
-	public static void assignCombatMethod(NPC npc) {
-		// Assign combat methods for npcs.
-		switch (npc.getId()) {
-		case NpcIdentifiers.CHAOS_ELEMENTAL:
-			npc.setCombatMethod(new ChaosElementalCombatMethod());
-			break;
-		case NpcIdentifiers.VENENATIS:
-			npc.setCombatMethod(new VenenatisCombatMethod());
-			break;
-		case NpcIdentifiers.CALLISTO:
-			// npc.setCombatMethod(new CallistoCombatMethod());
-			break;
-		case NpcIdentifiers.KING_BLACK_DRAGON:
-			npc.setCombatMethod(new KingBlackDragonMethod());
-			break;
-		case NpcIdentifiers.TZTOK_JAD:
-			npc.setCombatMethod(new JadCombatMethod());
-			break;
-		case NpcIdentifiers.AHRIM_THE_BLIGHTED:
-			npc.getCombat().setAutocastSpell(CombatSpells.FIRE_WAVE.getSpell());
-			npc.setCombatMethod(MAGIC_COMBAT);
-			break;
-		case NpcIdentifiers.KARIL_THE_TAINTED:
-			npc.getCombat().setRangedWeapon(RangedWeapon.KARILS_CROSSBOW);
-			npc.getCombat().setAmmunition(Ammunition.BOLT_RACK);
-			npc.setCombatMethod(RANGED_COMBAT);
-			break;
-		case NpcIdentifiers.ELDER_CHAOS_DRUID:
-			npc.getCombat().setAutocastSpell(CombatSpells.WIND_WAVE.getSpell());
-			npc.setCombatMethod(MAGIC_COMBAT);
-			break;
-		case NpcIdentifiers.CRAZY_ARCHAEOLOGIST:
-			npc.setCombatMethod(new CrazyArchaeologistCombatMethod());
-			break;
-		case NpcIdentifiers.CHAOS_FANATIC:
-			npc.setCombatMethod(new ChaosFanaticCombatMethod());
-			break;
-		case NpcIdentifiers.VETION:
-		case NpcIdentifiers.VETION_REBORN:
-			npc.setCombatMethod(new VetionCombatMethod());
-			break;
-		}
 	}
 
 	/**
@@ -356,12 +301,12 @@ public class CombatFactory {
 		// Walk back if npc is too far away from spawn position.
 		if (attacker.isNpc()) {
 			NPC npc = attacker.getAsNpc();
-			if (npc.getDefinition().doesRetreat()) {
+			if (npc.getCurrentDefinition().doesRetreat()) {
 				if (npc.getMovementCoordinator().getCoordinateState() == CoordinateState.RETREATING) {
 					npc.getCombat().reset();
 					return false;
 				}
-				if (npc.getLocation().getDistance(npc.getSpawnPosition()) >= npc.getDefinition().getCombatFollowDistance()) {
+				if (npc.getLocation().getDistance(npc.getSpawnPosition()) >= npc.getCurrentDefinition().getCombatFollowDistance()) {
 					npc.getCombat().reset();
 					npc.getMovementCoordinator().setCoordinateState(CoordinateState.RETREATING);
 					return false;
@@ -655,7 +600,7 @@ public class CombatFactory {
 			}
 		} else if (attacker.isNpc()) {
 			NPC npc = attacker.getAsNpc();
-			if (npc.getDefinition().isPoisonous()) {
+			if (npc.getCurrentDefinition().isPoisonous()) {
 				if (Misc.getRandom(10) <= 5) {
 					CombatFactory.poisonEntity(target, PoisonType.SUPER);
 				}

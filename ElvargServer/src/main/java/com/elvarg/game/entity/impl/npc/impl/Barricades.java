@@ -23,6 +23,7 @@ import java.util.Set;
  * <https://github.com/drhenny>
  */
 public class Barricades {
+    // TODO: Refactor this class to extend NPC and have @Ids attribute
 
     /**
      * The NPC_ID of the barricade

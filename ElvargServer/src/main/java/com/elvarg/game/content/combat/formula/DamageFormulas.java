@@ -78,7 +78,7 @@ public class DamageFormulas {
             return maximumMeleeHitDpsCalc(player);
         }
         NPC npc = (NPC) entity;
-        float maxHit = npc.getDefinition().getMaxHit();
+        float maxHit = npc.getCurrentDefinition().getMaxHit();
 
         // Dharoks effect
         if (CombatFactory.fullDharoks(entity)) {
@@ -204,7 +204,7 @@ public class DamageFormulas {
     public static int calculateMaxRangedHit(Mobile entity) {
         if (entity.isNpc()) {
             NPC npc = (NPC) entity;
-            return npc.getDefinition().getMaxHit();
+            return npc.getCurrentDefinition().getMaxHit();
         }
 
         Player player = (Player) entity;

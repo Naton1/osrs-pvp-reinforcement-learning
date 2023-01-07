@@ -5,23 +5,42 @@ import java.util.List;
 
 import com.elvarg.game.World;
 import com.elvarg.game.content.combat.hit.PendingHit;
+import com.elvarg.game.content.combat.method.CombatMethod;
+import com.elvarg.game.content.combat.method.impl.npcs.ChaosFanaticCombatMethod;
+import com.elvarg.game.content.combat.method.impl.npcs.VetionCombatMethod;
 import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.model.Ids;
 import com.elvarg.game.model.Location;
-import com.elvarg.util.NpcIdentifiers;
 import com.elvarg.game.entity.impl.Mobile;
 
+import static com.elvarg.util.NpcIdentifiers.*;
+
+@Ids({VETION, VETION_REBORN})
 public class Vetion extends NPC {
-	
+
+	private static final CombatMethod COMBAT_METHOD = new VetionCombatMethod();
+
 	private boolean spawnedHellhounds;
 	private int rebornTimer = 0;
 	private List<VetionHellhound> hellhounds;
-	
+
+	/**
+	 * Constructs a new npc.
+	 *
+	 * @param id       The npc id.
+	 * @param position
+	 */
 	public Vetion(int id, Location position) {
 		super(id, position);
 		hellhounds = new ArrayList<>();
-		setNpcTransformationId(NpcIdentifiers.VETION);
+		setNpcTransformationId(VETION);
 	}
-	
+
+	@Override
+	public CombatMethod getCombatMethod() {
+		return COMBAT_METHOD;
+	}
+
 	@Override
 	public void process() {
 		super.process();
@@ -34,10 +53,10 @@ public class Vetion extends NPC {
 			}
 		}
 		
-		if (getNpcTransformationId() == NpcIdentifiers.VETION_REBORN) {
+		if (getNpcTransformationId() == VETION_REBORN) {
 			if (rebornTimer == 500) {
 				spawnedHellhounds = true;
-				setNpcTransformationId(NpcIdentifiers.VETION);
+				setNpcTransformationId(VETION);
 				rebornTimer = 0;
 			}
 			rebornTimer++;
@@ -46,9 +65,9 @@ public class Vetion extends NPC {
 	
 	private void spawnHellhounds(Mobile target) {
 		for (int i = 0; i < 2; i++) {
-			int hellhoundId = NpcIdentifiers.VETION_HELLHOUND;
-			if (getNpcTransformationId() == NpcIdentifiers.VETION_REBORN) {
-				hellhoundId = NpcIdentifiers.GREATER_VETION_HELLHOUND;
+			int hellhoundId = VETION_HELLHOUND;
+			if (getNpcTransformationId() == VETION_REBORN) {
+				hellhoundId = GREATER_VETION_HELLHOUND;
 			}
 			VetionHellhound hellhound = (VetionHellhound) NPC.create(hellhoundId, getLocation());
 			hellhound.setVetion(this);
@@ -69,9 +88,9 @@ public class Vetion extends NPC {
         hellhounds.clear();
         spawnedHellhounds = false;
         
-        if (getNpcTransformationId() != NpcIdentifiers.VETION_REBORN) {
+        if (getNpcTransformationId() != VETION_REBORN) {
         	setHitpoints(getDefinition().getHitpoints());
-        	setNpcTransformationId(NpcIdentifiers.VETION_REBORN);
+        	setNpcTransformationId(VETION_REBORN);
         	forceChat("Do it again!");
         	return;
         }

@@ -121,6 +121,11 @@ public class Combat {
         // Check if the character can perform the attack
         switch (CombatFactory.canAttack(character, method, target)) {
             case CAN_ATTACK -> {
+                if (character.getCombat().getAttacker() == null) {
+                    // Call the onCombatBegan hook once when combat begins
+                    method.onCombatBegan(this.character, attacker);
+                }
+
                 method.start(character, target);
                 PendingHit[] hits = method.hits(character, target);
                 if (hits == null)
@@ -214,7 +219,7 @@ public class Combat {
      * Resets combat for the {@link Mobile}.
      */
     public void reset() {
-        target = null;
+        setTarget(null);
         character.setCombatFollowing(null);
         character.setMobileInteraction(null);
     }
@@ -318,6 +323,10 @@ public class Combat {
     }
 
     public void setTarget(Mobile target) {
+        if (this.target != null && target == null) {
+            this.method.onCombatEnded(this.character, this.attacker);
+        }
+
         this.target = target;
     }
 

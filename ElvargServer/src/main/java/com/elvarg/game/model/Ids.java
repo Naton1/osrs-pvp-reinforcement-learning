@@ -7,6 +7,11 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface InteractIds {
+public @interface Ids {
+
+    /**
+     * This holds the array of IDs associated with a given entity
+     * @return
+     */
     int[] value();
 }

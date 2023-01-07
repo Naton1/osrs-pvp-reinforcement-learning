@@ -80,11 +80,6 @@ public class BarrowsArea extends Area {
             Barrows.brotherDeath(player, character.getAsNpc());
         }
     }
-    
-    @Override
-    public boolean overridesNpcAggressionTolerance(Player player, int npcId) {
-        return false;
-    }
 
     @Override
     public boolean handleObjectClick(Player player, int objectId, int type) {

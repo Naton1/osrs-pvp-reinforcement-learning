@@ -19,9 +19,7 @@ public class RegionChangePacketListener implements PacketExecutor {
             ItemOnGroundManager.onRegionChange(player);
             ObjectManager.onRegionChange(player);
             Barrows.brotherDespawn(player);
-            player.getAggressionTolerance().start(NpcAggression.NPC_TOLERANCE_SECONDS); // Every 4 minutes, reset
-                                                                                        // aggression for npcs in the
-                                                                                        // region.
+            player.getAggressionTolerance().start(NpcAggression.NPC_TOLERANCE_SECONDS);
             player.setAllowRegionChangePacket(false);
         }
     }
