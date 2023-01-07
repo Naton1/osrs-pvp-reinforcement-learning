@@ -402,8 +402,7 @@ public class NPC extends Mobile {
 	 *
 	 * @return
 	 */
-	public NpcDefinition
-	getCurrentDefinition() {
+	public NpcDefinition getCurrentDefinition() {
 		if (getNpcTransformationId() != -1) {
 			return NpcDefinition.forId(getNpcTransformationId());
 		}
@@ -469,16 +468,18 @@ public class NPC extends Mobile {
 		return hit;
 	}
 
+	/**
+	 * Initialises all the NPC implementation classes.
+	 *
+	 * @param implementationClasses
+	 */
 	public static void initImplementations(List<? extends Class<?>> implementationClasses) {
 		// Add all the implemented NPCs to NPC_IMPLEMENTATION_MAP
 		NPC_IMPLEMENTATION_MAP = implementationClasses.stream()
 				.flatMap(clazz -> {
-					//var instance = (NPC) clazz.getDeclaredConstructor().newInstance();
 					return Arrays.stream(clazz.getAnnotation(Ids.class).value())
 							.mapToObj(id -> new ImmutablePair<>(id, clazz));
 
 				}).collect(Collectors.toMap(ImmutablePair::getLeft, ImmutablePair::getRight));
-
-		System.out.println("Initialized " + NPC_IMPLEMENTATION_MAP.size() + " npc implementations from " + implementationClasses.size() + " classes");
 	}
 }
