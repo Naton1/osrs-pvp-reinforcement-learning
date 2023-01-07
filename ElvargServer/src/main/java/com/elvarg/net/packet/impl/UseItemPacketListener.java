@@ -181,14 +181,6 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
         //Update facing..
         player.setPositionToFace(position);
 
-        if (Bank.useItemOnDepositBox(player, item, itemSlot, object)) {
-            return;
-        }
-
-        if (CastleWars.handleItemOnObject(player, item, object)) {
-            return;
-        }
-
         //Handle object..
 
         player.getMovementQueue().walkToObject(object, () -> {
@@ -233,6 +225,13 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
                 default:
                     player.getPacketSender().sendMessage("Nothing interesting happens.");
                     break;
+            }
+            if (Bank.useItemOnDepositBox(player, item, itemSlot, object)) {
+                return;
+            }
+
+            if (CastleWars.handleItemOnObject(player, item, object)) {
+                return;
             }
         });
     }
