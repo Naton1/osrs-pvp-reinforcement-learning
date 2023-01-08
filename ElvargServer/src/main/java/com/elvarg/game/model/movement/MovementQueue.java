@@ -39,6 +39,11 @@ public final class MovementQueue {
     private static final RandomGen RANDOM = new RandomGen();
 
     /**
+     * NPC interactions can begin when the player is within this radius of the NPC.
+     */
+    public static final int NPC_INTERACT_RADIUS = 2;
+
+    /**
      * An enum to represent a Player's Mobility
      */
     public enum Mobility {
@@ -764,7 +769,7 @@ public final class MovementQueue {
 
         PathFinder.calculateWalkRoute(player, destX, destY);
 
-        TaskManager.submit(new Task(1, player, false) {
+        TaskManager.submit(new Task(0, player.getIndex(), true) {
 
             int stage = 0;
 
@@ -805,14 +810,13 @@ public final class MovementQueue {
         }
 
         TaskManager.cancelTasks(player.getIndex());
-        player.setWalkToTask(null);
         player.getCombat().setCastSpell(null);
         player.getCombat().reset();
         player.getSkillManager().stopSkillable();
         this.resetFollow();
     }
 
-    public void walkToEntity(Mobile entity, Runnable run) {
+    public void walkToEntity(Mobile entity, Runnable runnable) {
         int destX = entity.getLocation().getX();
         int destY = entity.getLocation().getY();
 
@@ -838,7 +842,7 @@ public final class MovementQueue {
 
         final int finalDestinationY = player.getMovementQueue().pathY;
 
-        TaskManager.submit(new Task(1, player.getIndex(), true) {
+        TaskManager.submit(new Task(0, player.getIndex(), true) {
 
             int currentX = entity.getLocation().getX();
 
@@ -856,11 +860,16 @@ public final class MovementQueue {
                     PathFinder.calculateEntityRoute(player, currentX, currentY);
                 }
 
+                if (runnable != null && player.getMovementQueue().isWithinEntityInteractionDistance()) {
+                    // Executes the runnable and stops the task. However, It will still path to the destination.
+                    stop();
+                    runnable.run();
+                    return;
+                }
+
                 if (reachStage != 0) {
                     if (reachStage == 1) {
                         player.getMovementQueue().reset();
-                        if (run != null)
-                            run.run();
                         stop();
                         return;
                     }
@@ -875,9 +884,11 @@ public final class MovementQueue {
                 }
 
                 if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != finalDestinationX || player.getLocation().getY() != finalDestinationY) {
+                    // Player hasn't got a route or they're not already at destination
                     reachStage = -1;
                     return;
                 }
+
                 reachStage = 1;
                 return;
             }
@@ -992,6 +1003,16 @@ public final class MovementQueue {
 
     public boolean isAtDestination() {
         return points.isEmpty();
+    }
+
+    /**
+     * Whether the player is close enough to interact with the given entity.
+     * This also takes into account the player's movement path, so if you're standing 2
+     * squares away from an NPC but separated by a wall or fence, this will still be accurate.
+     * @return
+     */
+    private boolean isWithinEntityInteractionDistance() {
+        return this.points.size() <= NPC_INTERACT_RADIUS && player.getLocation().distanceToPoint(this.pathX, this.pathY) <= NPC_INTERACT_RADIUS;
     }
 
 

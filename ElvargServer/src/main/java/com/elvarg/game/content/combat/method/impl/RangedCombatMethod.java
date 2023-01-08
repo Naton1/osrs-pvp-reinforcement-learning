@@ -105,9 +105,7 @@ public class RangedCombatMethod extends CombatMethod {
         new Projectile(character, target, projectileId, delay, speed, heightStart, heightEnd).sendProjectile();
 
         // Send sound
-        if (character.isPlayer()) {
-            Sounds.sendSound(character.getAsPlayer(), Sound.SHOOT_ARROW);
-        }
+        Sounds.sendSound(character.getAsPlayer(), Sound.SHOOT_ARROW);
 
         // Dark bow sends two arrows, so send another projectile and delete another
         // arrow.

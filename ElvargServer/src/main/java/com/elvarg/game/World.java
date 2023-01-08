@@ -58,6 +58,11 @@ public class World {
 	private static List<GameObject> objects = new LinkedList<>();
 
 	/**
+	 * The collection of removed {@link GameObject}s..
+	 */
+	private static LinkedHashSet<GameObject> removedObjects = new LinkedHashSet<>();
+
+	/**
 	 * The collection of {@link Players}s waiting to be added to the game.
 	 */
 	private static Queue<Player> addPlayerQueue = new ConcurrentLinkedQueue<>();
@@ -265,6 +270,10 @@ public class World {
 
 	public static List<GameObject> getObjects() {
 		return objects;
+	}
+
+	public static LinkedHashSet<GameObject> getRemovedObjects() {
+		return removedObjects;
 	}
 
 	public static Queue<Player> getAddPlayerQueue() {

@@ -63,6 +63,10 @@ public abstract class Area {
         return CanAttackResponse.CAN_ATTACK;
     }
 
+    public boolean canPlayerBotIdle(PlayerBot playerBot) {
+        return false;
+    }
+
     public abstract void defeated(Player player, Mobile character);
 
     public abstract boolean canTrade(Player player, Player target);

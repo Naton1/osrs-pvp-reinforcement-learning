@@ -1301,7 +1301,6 @@ public class Widget {
 
 	public static void itemsKeptOnDeath() {
 
-		removeSomething(16999); // close button in text
 		Widget rsinterface = interfaceCache[10494];
 		rsinterface.spritePaddingX = 6;
 		rsinterface.spritePaddingY = 5;
@@ -1315,6 +1314,7 @@ public class Widget {
 		 * Widget scroll = addTabInterface(17149); scroll.width = 300; scroll.height =
 		 * 183; scroll.scrollMax = 220;
 		 */
+		addButton(16999, 142, "Close");
 		addText(17103, "Items Kept on Death", fonts, 2, 0xff981f, false, false);
 		addText(17104, "Items you will keep on death:", fonts, 1, 0xff981f, false, false);
 		addText(17105, "Items you will lose on death:", fonts, 1, 0xff981f, false, false);

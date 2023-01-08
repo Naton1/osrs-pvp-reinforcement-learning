@@ -46,6 +46,15 @@ public class TimerRepository {
 	}
 
 	/**
+	 * Register a timer key which has its ticks defined on the Enum.
+	 *
+	 * @param key
+	 */
+	public void register(TimerKey key) {
+		timers.put(key, new Timer(key, key.getTicks()));
+	}
+
+	/**
 	 * Extend up to (if exists) the given ticks, or register new
 	 */
 	public void extendOrRegister(TimerKey key, int ticks) {

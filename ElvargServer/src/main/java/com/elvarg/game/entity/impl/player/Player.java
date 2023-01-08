@@ -69,7 +69,6 @@ import com.elvarg.game.model.dialogues.DialogueManager;
 import com.elvarg.game.model.equipment.BonusManager;
 import com.elvarg.game.model.menu.CreationMenu;
 import com.elvarg.game.model.movement.MovementQueue;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.DonatorRights;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportButton;
@@ -153,7 +152,6 @@ public class Player extends Mobile {
 	private int skillAnimation;
 	private boolean drainingPrayer;
 	private double prayerPointDrain;
-	private WalkToAction walkToTask;
 	private MagicSpellbook spellbook = MagicSpellbook.NORMAL;
 	private final Map<TeleportButton, Location> previousTeleports = new HashMap<>();
 	private boolean teleportInterfaceOpen;
@@ -391,11 +389,6 @@ public class Player extends Mobile {
 		PlayerSession session = getSession();
 		if (session != null) {
 			session.processPackets();
-		}
-
-		// Process walk to task..
-		if (walkToTask != null) {
-			walkToTask.process();
 		}
 
 		// Process walking queue..
@@ -979,14 +972,6 @@ public class Player extends Mobile {
 
 	public Stopwatch getLastItemPickup() {
 		return lastItemPickup;
-	}
-
-	public WalkToAction getWalkToTask() {
-		return walkToTask;
-	}
-
-	public void setWalkToTask(WalkToAction walkToTask) {
-		this.walkToTask = walkToTask;
 	}
 
 	public CombatSpecial getCombatSpecial() {

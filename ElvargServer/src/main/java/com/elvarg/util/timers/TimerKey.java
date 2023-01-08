@@ -1,5 +1,7 @@
 package com.elvarg.util.timers;
 
+import com.elvarg.util.Misc;
+
 public enum TimerKey {
 	FOOD,
 	KARAMBWAN,
@@ -11,4 +13,18 @@ public enum TimerKey {
 	ATTACK_IMMUNITY,
 	CASTLEWARS_TAKE_ITEM,
 	STEPPING_OUT,
+	BOT_WAIT_FOR_PLAYERS(Misc.getTicks(180 /* 3 minutes */));
+
+	private int ticks;
+
+	TimerKey() {
+	}
+
+	TimerKey(int ticks) {
+		this.ticks = ticks;
+	}
+
+	public int getTicks() {
+		return this.ticks;
+	}
 }
