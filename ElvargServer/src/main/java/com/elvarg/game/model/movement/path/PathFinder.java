@@ -2,11 +2,17 @@ package com.elvarg.game.model.movement.path;
 
 import com.elvarg.Server;
 import com.elvarg.game.collision.RegionManager;
+import com.elvarg.game.content.combat.CombatConstants;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.impl.PrivateArea;
+import com.elvarg.game.model.commands.impl.AttackRange;
+import com.elvarg.game.model.rights.PlayerRights;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.elvarg.game.GameConstants.DEBUG_ATTACK_DISTANCE;
 
 /**
  * @author Ynneh | 08/08/2022 - 16:36
@@ -17,6 +23,55 @@ public class PathFinder {
     public static final int WEST = 0x1280108, EAST = 0x1280180, SOUTH = 0x1280102,
             NORTH = 0x1280120, SOUTHEAST = 0x1280183, SOUTHWEST = 0x128010e,
             NORTHEAST = 0x12801e0, NORTHWEST = 0x1280138;
+
+    /**
+     * A list of all the deltas for distances 1-10 from any given tile.
+     */
+    private static final Map<Integer, int[][]> TILE_DISTANCE_DELTAS = new HashMap<Integer, int[][]>() {{
+        // Deltas which are exactly 1 squares away
+        put(1, new int[][]{{-1, 0}, {0, -1}, {0, 1}, {1, 0}});
+        // Deltas which are exactly 2 squares away
+        put(2, new int[][]{{-2, 0}, {-1, -1}, {-1, 1}, {0, -2}, {0, 2}, {1, -1}, {1, 1}, {2, 0}});
+        // Deltas which are exactly 3 squares away
+        put(3, new int[][]{{-3, 0}, {-2, -2}, {-2, -1}, {-2, 1}, {-2, 2}, {-1, -2}, {-1, 2}, {0, -3}, {0, 3}, {1, -2},
+                {1, 2}, {2, -2}, {2, -1}, {2, 1}, {2, 2}, {3, 0}});
+        // Deltas which are exactly 4 squares away
+        put(4, new int[][]{{-4, 0}, {-3, -2}, {-3, -1}, {-3, 1}, {-3, 2}, {-2, -3}, {-2, 3}, {-1, -3}, {-1, 3}, {0, -4},
+                {0, 4}, {1, -3}, {1, 3}, {2, -3}, {2, 3}, {3, -2}, {3, -1}, {3, 1}, {3, 2}, {4, 0}});
+        // Deltas which are exactly 5 squares away
+        put(5, new int[][]{{-5, 0}, {-4, -3}, {-4, -2}, {-4, -1}, {-4, 1}, {-4, 2}, {-4, 3}, {-3, -4}, {-3, -3},
+                {-3, 3}, {-3, 4}, {-2, -4}, {-2, 4}, {-1, -4}, {-1, 4}, {0, -5}, {0, 5}, {1, -4}, {1, 4}, {2, -4},
+                {2, 4}, {3, -4}, {3, -3}, {3, 3}, {3, 4}, {4, -3}, {4, -2}, {4, -1}, {4, 1}, {4, 2}, {4, 3}, {5, 0}});
+        // Deltas which are exactly 6 squares away
+        put(6, new int[][]{{-6, 0}, {-5, -3}, {-5, -2}, {-5, -1}, {-5, 1}, {-5, 2}, {-5, 3}, {-4, -4}, {-4, 4},
+                {-3, -5}, {-3, 5}, {-2, -5}, {-2, 5}, {-1, -5}, {-1, 5}, {0, -6}, {0, 6}, {1, -5}, {1, 5}, {2, -5},
+                {2, 5}, {3, -5}, {3, 5}, {4, -4}, {4, 4}, {5, -3}, {5, -2}, {5, -1}, {5, 1}, {5, 2}, {5, 3}, {6, 0}});
+        // Deltas which are exactly 7 squares away
+        put(7, new int[][]{{-7, 0}, {-6, -3}, {-6, -2}, {-6, -1}, {-6, 1}, {-6, 2}, {-6, 3}, {-5, -4}, {-5, 4},
+                {-4, -5}, {-4, 5}, {-3, -6}, {-3, 6}, {-2, -6}, {-2, 6}, {-1, -6}, {-1, 6}, {0, -7}, {0, 7}, {1, -6},
+                {1, 6}, {2, -6}, {2, 6}, {3, -6}, {3, 6}, {4, -5}, {4, 5}, {5, -4}, {5, 4}, {6, -3}, {6, -2}, {6, -1},
+                {6, 1}, {6, 2}, {6, 3}, {7, 0}});
+        // Deltas which are exactly 8 squares away
+        put(8, new int[][]{{-8, 0}, {-7, -3}, {-7, -2}, {-7, -1}, {-7, 1}, {-7, 2}, {-7, 3}, {-6, -5}, {-6, -4},
+                {-6, 4}, {-6, 5}, {-5, -6}, {-5, -5}, {-5, 5}, {-5, 6}, {-4, -6}, {-4, 6}, {-3, -7}, {-3, 7}, {-2, -7},
+                {-2, 7}, {-1, -7}, {-1, 7}, {0, -8}, {0, 8}, {1, -7}, {1, 7}, {2, -7}, {2, 7}, {3, -7}, {3, 7}, {4, -6},
+                {4, 6}, {5, -6}, {5, -5}, {5, 5}, {5, 6}, {6, -5}, {6, -4}, {6, 4}, {6, 5}, {7, -3}, {7, -2}, {7, -1},
+                {7, 1}, {7, 2}, {7, 3}, {8, 0}});
+        // Deltas which are exactly 9 squares away
+        put(9, new int[][]{{-9, 0}, {-8, -4}, {-8, -3}, {-8, -2}, {-8, -1}, {-8, 1}, {-8, 2}, {-8, 3}, {-8, 4},
+                {-7, -5}, {-7, -4}, {-7, 4}, {-7, 5}, {-6, -6}, {-6, 6}, {-5, -7}, {-5, 7}, {-4, -8}, {-4, -7}, {-4, 7},
+                {-4, 8}, {-3, -8}, {-3, 8}, {-2, -8}, {-2, 8}, {-1, -8}, {-1, 8}, {0, -9}, {0, 9}, {1, -8}, {1, 8},
+                {2, -8}, {2, 8}, {3, -8}, {3, 8}, {4, -8}, {4, -7}, {4, 7}, {4, 8}, {5, -7}, {5, 7}, {6, -6}, {6, 6},
+                {7, -5}, {7, -4}, {7, 4}, {7, 5}, {8, -4}, {8, -3}, {8, -2}, {8, -1}, {8, 1}, {8, 2}, {8, 3}, {8, 4}, {9, 0}});
+        // Deltas which are exactly 10 squares away
+        put(10, new int[][]{{-10, 0}, {-9, -4}, {-9, -3}, {-9, -2}, {-9, -1}, {-9, 1}, {-9, 2}, {-9, 3}, {-9, 4},
+                {-8, -6}, {-8, -5}, {-8, 5}, {-8, 6}, {-7, -7}, {-7, -6}, {-7, 6}, {-7, 7}, {-6, -8}, {-6, -7}, {-6, 7},
+                {-6, 8}, {-5, -8}, {-5, 8}, {-4, -9}, {-4, 9}, {-3, -9}, {-3, 9}, {-2, -9}, {-2, 9}, {-1, -9}, {-1, 9},
+                {0, -10}, {0, 10}, {1, -9}, {1, 9}, {2, -9}, {2, 9}, {3, -9}, {3, 9}, {4, -9}, {4, 9}, {5, -8}, {5, 8},
+                {6, -8}, {6, -7}, {6, 7}, {6, 8}, {7, -7}, {7, -6}, {7, 6}, {7, 7}, {8, -6}, {8, -5}, {8, 5}, {8, 6}, {9, -4},
+                {9, -3}, {9, -2}, {9, -1}, {9, 1}, {9, 2}, {9, 3}, {9, 4}, {10, 0}});
+    }};
+
 
     public final static boolean isInDiagonalBlock(Location attacker, Location attacked) {
         return attacked.getX() - 1 == attacker.getX() && attacked.getY() + 1 == attacker.getY()
@@ -55,7 +110,15 @@ public class PathFinder {
         calculateRoute(entity, size, destX, destY, xLength, yLength, direction, blockingMask, false);
     }
 
-    public static Location pathClosestAttackableTile(Mobile attacker, Mobile defender, int distance) {
+    /**
+     * Returns the best Location(x, y) to attack the defender from, from a preferred distance.
+     *
+     * @param attacker
+     * @param defender
+     * @param distance
+     * @return
+     */
+    public static Location getClosestAttackableTile(Mobile attacker, Mobile defender, int distance) {
         PrivateArea privateArea = attacker.getPrivateArea();
         Location targetLocation = defender.getLocation();
 
@@ -99,14 +162,34 @@ public class PathFinder {
             }
         }
 
-        // Fetch the circumference of closest attackable tiles to the target
-        Optional<Location> tile = getCircumferenceTiles(targetLocation, distance).stream()
-                // Filter out any tiles which are clipped
-                .filter(t -> !RegionManager.blocked(t, attacker.getPrivateArea()))
-                // Filter out any tiles which projectiles are blocked from (i.e. tree is in the way)
-                .filter(t -> RegionManager.canProjectileAttack(attacker, t, targetLocation))
-                // Find the tile closest to the attacker
-                .min(Comparator.comparing(attacker.getLocation()::getDistance));
+        Optional<Location> tile = Optional.empty();
+
+        // Starting from the max distance, try to find a suitable tile to attack from
+        while (tile.isEmpty()) {
+            // Fetch the circumference of the closest attackable tiles to the target
+            List<Location> possibleTiles = getTilesForDistance(targetLocation, distance);
+
+            if (DEBUG_ATTACK_DISTANCE && attacker.isPlayer() && attacker.getAsPlayer().getRights() == PlayerRights.DEVELOPER) {
+                // If we're debugging attack range
+                possibleTiles.forEach(t -> attacker.getAsPlayer().getPacketSender().sendGraphic(AttackRange.PURPLE_GLOW, t));
+            }
+
+            tile = possibleTiles.stream()
+            // Filter out any tiles which are clipped
+            .filter(t -> !RegionManager.blocked(t, attacker.getPrivateArea()))
+            // Filter out any tiles which projectiles are blocked from (i.e. tree is in the way)
+            .filter(t -> RegionManager.canProjectileAttack(attacker, t, targetLocation))
+            // Find the tile closest to the attacker
+            .min(Comparator.comparing(attacker.getLocation()::getDistance));
+
+            if (distance == 1) {
+                // We've reached the closest attackable tile, break out of the loop as we can't get any closer
+                break;
+            } else {
+                // Check 1 square closer if we don't have any valid tiles at this distance
+                distance = Math.max(distance-1, 1);
+            }
+        }
 
         if (tile.isEmpty()) {
             attacker.sendMessage("I can't reach that.");
@@ -117,31 +200,16 @@ public class PathFinder {
     }
 
     /**
-     * Gets tile Locations along the circumference of a given radius.
+     * Gets tile Locations exactly a given distance away from a center point.
      *
      * @param center The centre of the circle, or the target.
-     * @param radius The radius, or the max distance.
+     * @param distance The radius, or the max distance.
      * @return {List<Location>}
      */
-    public static LinkedHashSet<Location> getCircumferenceTiles(Location center, int radius) {
-        // Use a LinkedHashSet to avoid duplicates and for greater performance.
-        LinkedHashSet<Location> result = new LinkedHashSet<>();
+    public static List<Location> getTilesForDistance(Location center, int distance) {
+        int[][] deltas = TILE_DISTANCE_DELTAS.get(Math.min(distance, CombatConstants.MAX_ATTACK_DISTANCE));
 
-        // Calculate the number of points needed, on RS there are 8 tiles surrounding a player at all times
-        // So as we go out each tile we add another 8 squares to the total circumference.
-        int points = 8 * radius;
-
-        // Calculate the angle for each point based on 360 degrees
-        int angle = 360 / points;
-
-        for (int i = 0; i < points; i++) {
-            // Calculate the raw vector (don't rotate absolute coordinates)
-            Location vector = new Location(radius, 0).rotate(angle * i);
-            // Apply the vector to the center point of the circle and add it to the results
-            result.add(center.translate(vector.getX(), vector.getY()));
-        }
-
-        return result;
+        return Arrays.stream(deltas).map((d) -> center.clone().translate(d[0], d[1])).collect(Collectors.toList());
     }
 
     public static int calculateRoute(Mobile entity, int size, int destX, int destY, int xLength, int yLength, int direction, int blockingMask, boolean basicPather) {

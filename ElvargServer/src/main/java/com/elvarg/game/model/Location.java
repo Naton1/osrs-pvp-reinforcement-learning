@@ -284,7 +284,13 @@ public class Location {
 	public final Location move(Direction direction) {
 		return move(new Location(direction.getX(), direction.getY(), 0));
 	}
-    
+
+    /**
+     * Get the delta from location a to location b (for example [-1, 0, 0])
+     * @param a
+     * @param b
+     * @return {Location} delta
+     */
 	public static Location delta(Location a, Location b) {
 		return new Location(b.x - a.x, b.y - a.y);
 	}

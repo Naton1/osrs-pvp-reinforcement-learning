@@ -107,6 +107,7 @@ public class CommandManager {
         put(new Down(), "down");
         put(new Save(), "save");
         put(new ListSizesCommand(), "listsizes");
+        put(new AttackRange(), "atkrange", "attackrange");
         
         if (!Server.PRODUCTION) {
             put(new DebugCommand(), "t");
