@@ -295,8 +295,15 @@ public class Location {
     }
     
     public int calculateDistance(Location other) {
-        int xDiff = this.x - other.getX(), yDiff = this.y - other.getY();
-        return (int) Math.floor(Math.sqrt(xDiff * xDiff + yDiff * yDiff));
+        // Calculate the differences in the x and y coordinates
+        int xDiff = this.x - other.getX();
+        int yDiff = this.y - other.getY();
+
+        // Use the Euclidean distance formula to calculate the distance
+        double distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
+        // Round down to the nearest integer and return the result
+        return (int) Math.floor(distance);
     }
     
     public static int calculateDistance(Location[] tiles, Location[] otherTiles) {
