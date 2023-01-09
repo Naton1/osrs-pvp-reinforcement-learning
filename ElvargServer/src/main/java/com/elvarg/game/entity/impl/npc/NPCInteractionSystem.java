@@ -1,7 +1,7 @@
 package com.elvarg.game.entity.impl.npc;
 
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.model.InteractIds;
+import com.elvarg.game.model.Ids;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,11 +16,10 @@ public class NPCInteractionSystem {
 
     public static void init(List<? extends Class<?>> interactClasses) {
         NPC_INTERACT_MAP = interactClasses.stream()
-                .filter(clazz -> NPCInteraction.class.isAssignableFrom(clazz))
                 .flatMap(clazz -> {
                     try {
                         var instance = (NPCInteraction) clazz.getDeclaredConstructor().newInstance();
-                        return Arrays.stream(clazz.getAnnotation(InteractIds.class).value())
+                        return Arrays.stream(clazz.getAnnotation(Ids.class).value())
                                 .mapToObj(id -> new ImmutablePair<>(id, instance));
 
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

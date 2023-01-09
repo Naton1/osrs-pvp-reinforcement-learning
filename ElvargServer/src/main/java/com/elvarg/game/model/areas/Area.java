@@ -85,7 +85,7 @@ public abstract class Area {
 
     public abstract boolean handleObjectClick(Player player, int objectId, int type);
     
-    public abstract boolean overridesNpcAggressionTolerance(Player player, int npcId);
+    public boolean overridesNpcAggressionTolerance(Player player, int npcId) { return false; }
 
     public List<Boundary> getBoundaries() {
         return boundaries;

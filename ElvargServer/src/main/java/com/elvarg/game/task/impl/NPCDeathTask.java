@@ -59,7 +59,7 @@ public class NPCDeathTask extends Task {
                     killer = npc.getCombat().getKiller(true);
 
                     // Start death animation..
-                    npc.performAnimation(new Animation(npc.getDefinition().getDeathAnim(), Priority.HIGH));
+                    npc.performAnimation(new Animation(npc.getCurrentDefinition().getDeathAnim(), Priority.HIGH));
 
                     // Reset combat..
                     npc.getCombat().reset();
@@ -104,6 +104,9 @@ public class NPCDeathTask extends Task {
 
         // Flag that we are no longer dying.
         npc.setDying(false);
+
+        // Reset NPC transformation
+        npc.setNpcTransformationId(-1);
 
         // Handle respawn..
         if (npc.getDefinition().getRespawn() > 0) {

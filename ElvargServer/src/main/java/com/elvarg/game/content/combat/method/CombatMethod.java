@@ -8,11 +8,37 @@ import com.elvarg.game.entity.impl.Mobile;
  * Represents a combat method.
  */
 public abstract class CombatMethod {
-    
+
+    /**
+     * Method which is called at the start of every hit.
+     * @param character
+     * @param target
+     */
     public void start(Mobile character, Mobile target) {
     }
-    
+
+    /**
+     * Method which is called at the end of every hit.
+     * @param character
+     * @param target
+     */
     public void finished(Mobile character, Mobile target) {
+    }
+
+    /**
+     * Called once when combat begins.
+     * @param character
+     * @param target
+     */
+    public void onCombatBegan(Mobile character, Mobile target) {
+    }
+
+    /**
+     * Called once when combat ends.
+     * @param character
+     * @param target
+     */
+    public void onCombatEnded(Mobile character, Mobile target) {
     }
     
     public void handleAfterHitEffects(PendingHit hit) {

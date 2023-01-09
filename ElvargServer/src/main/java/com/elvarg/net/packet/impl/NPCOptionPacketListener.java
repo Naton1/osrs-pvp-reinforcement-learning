@@ -55,7 +55,7 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
         player.setPositionToFace(npc.getLocation());
 
         if (packet.getOpcode() == PacketConstants.ATTACK_NPC_OPCODE || packet.getOpcode() == PacketConstants.MAGE_NPC_OPCODE) {
-            if (!npc.getDefinition().isAttackable()) {
+            if (!npc.getCurrentDefinition().isAttackable()) {
                 return;
             }
             if (npc.getHitpoints() <= 0) {

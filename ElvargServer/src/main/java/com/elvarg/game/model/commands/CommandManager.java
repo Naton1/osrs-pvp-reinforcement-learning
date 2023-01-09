@@ -32,6 +32,7 @@ public class CommandManager {
         put(new TimePlayed(), "timeplayed");
         put(new GroundItemCommand(), "ground");
         put(new Store(), "store", "donate");
+        put(new MaxHit(), "maxhit", "mh");
 
         /**
          * Donators Command
@@ -108,6 +109,7 @@ public class CommandManager {
         put(new Save(), "save");
         put(new CWarInterfaceCommand(), "cwar");
         put(new ListSizesCommand(), "listsizes");
+        put(new AttackRange(), "atkrange", "attackrange");
         
         if (!Server.PRODUCTION) {
             put(new DebugCommand(), "t");

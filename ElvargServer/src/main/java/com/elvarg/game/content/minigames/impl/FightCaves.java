@@ -1,7 +1,7 @@
 package com.elvarg.game.content.minigames.impl;
 
 import com.elvarg.game.World;
-import com.elvarg.game.entity.impl.npc.impl.Jad;
+import com.elvarg.game.entity.impl.npc.impl.TztokJad;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.impl.FightCavesArea;
@@ -26,7 +26,7 @@ public class FightCaves {
                 if (area.isDestroyed()) {
                     return;
                 }
-                World.getAddNPCQueue().add(new Jad(player, area, JAD_NPC_ID, JAD_SPAWN_POS.clone()));
+                World.getAddNPCQueue().add(new TztokJad(player, area, JAD_NPC_ID, JAD_SPAWN_POS.clone()));
             }
         });
     }

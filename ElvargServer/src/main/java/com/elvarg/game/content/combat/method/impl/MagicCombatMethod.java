@@ -76,7 +76,7 @@ public class MagicCombatMethod extends CombatMethod {
 
 				if (next.isNpc()) {
 					NPC n = (NPC) next;
-					if (!n.getDefinition().isAttackable()) {
+					if (!n.getCurrentDefinition().isAttackable()) {
 						return false;
 					}
 				} else {

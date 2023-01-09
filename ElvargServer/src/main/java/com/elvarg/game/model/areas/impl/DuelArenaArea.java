@@ -144,11 +144,6 @@ public class DuelArenaArea extends Area {
     @Override
     public void defeated(Player player, Mobile character) {
     }
-    
-    @Override
-    public boolean overridesNpcAggressionTolerance(Player player, int npcId) {
-        return false;
-    }
 
     @Override
     public boolean handleObjectClick(Player player, int objectId, int type) {

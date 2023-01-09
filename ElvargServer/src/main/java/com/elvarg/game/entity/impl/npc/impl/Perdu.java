@@ -2,13 +2,13 @@ package com.elvarg.game.entity.impl.npc.impl;
 
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.model.Ids;
 import com.elvarg.game.model.dialogues.builders.impl.ParduDialogue;
-import com.elvarg.game.model.InteractIds;
 import com.elvarg.game.entity.impl.npc.NPCInteraction;
 
 import static com.elvarg.util.NpcIdentifiers.PERDU;
 
-@InteractIds(PERDU)
+@Ids(PERDU)
 public class Perdu implements NPCInteraction {
 
     @Override
