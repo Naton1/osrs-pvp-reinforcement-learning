@@ -1,7 +1,9 @@
 package com.elvarg.game;
 
+import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.entity.impl.npc.NPCInteraction;
 import com.elvarg.game.entity.impl.npc.NPCInteractionSystem;
-import com.elvarg.game.model.InteractIds;
+import com.elvarg.game.model.Ids;
 import com.google.common.reflect.ClassPath;
 
 import java.io.IOException;
@@ -11,16 +13,25 @@ public class Systems {
 
     public static void init() throws IOException {
 
-        var interactClasses = ClassPath.from(ClassLoader.getSystemClassLoader())
+        // Firstly, gather all the classes inside the npc.impl package
+        var npcOverrideClasses = ClassPath.from(ClassLoader.getSystemClassLoader())
                 .getAllClasses()
                 .stream()
-                .filter(clazz -> clazz.getPackageName()
-                        .startsWith("com.elvarg.game.entity.impl.npc.impl"))
-                .map(clazz -> clazz.load())
-                .filter(clazz -> clazz.getAnnotation(InteractIds.class) != null)
+                .filter(clazz -> clazz.getPackageName().startsWith("com.elvarg.game.entity.impl.npc.impl"))
+                .map(clazz -> clazz.load());
+
+        // Filter all classes which have @Ids annotation defined on them
+        var npcClasses = npcOverrideClasses
+                .filter(clazz -> clazz.getAnnotation(Ids.class) != null)
                 .collect(Collectors.toList());
 
-        NPCInteractionSystem.init(interactClasses);
+        // Filter all classes which extend NPC
+        var implementationClasses = npcClasses.stream().filter(NPC.class::isAssignableFrom).toList();
+        NPC.initImplementations(implementationClasses);
+
+        // Filter all classes which implement NpcInteraction
+        var interactionClasses = npcClasses.stream().filter(NPCInteraction.class::isAssignableFrom).toList();
+        NPCInteractionSystem.init(interactionClasses);
 
     }
 }
