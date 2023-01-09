@@ -32,6 +32,7 @@ public class CommandManager {
         put(new TimePlayed(), "timeplayed");
         put(new GroundItemCommand(), "ground");
         put(new Store(), "store", "donate");
+        put(new MaxHit(), "maxhit", "mh");
 
         /**
          * Donators Command
