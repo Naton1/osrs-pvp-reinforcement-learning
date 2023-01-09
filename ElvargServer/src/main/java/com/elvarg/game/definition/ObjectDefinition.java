@@ -287,10 +287,8 @@ public final class ObjectDefinition extends ObjectIdentifiers {
             } else if (opcode == 15) {
                 objectSizeY = buffer.readUnsignedByte();
             } else if (opcode == 17) {
-                clipType = 0;
                 solid = false;
             } else if (opcode == 18) {
-                solid = false;
                 impenetrable = false;
             } else if (opcode == 19) {
                 isInteractive = (buffer.readUnsignedByte() == 1);
@@ -306,7 +304,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
                     animation = -1;
                 }
             } else if (opcode == 27) {
-                clipType = 1;
+                //clipType = 1;
             } else if (opcode == 28) {
                 decorDisplacement = buffer.readUnsignedByte();
             } else if (opcode == 29) {

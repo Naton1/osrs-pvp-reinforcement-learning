@@ -6,6 +6,7 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Location;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -44,11 +45,9 @@ public class ObjectManager {
                 iterator.remove();
             }
         }
-        Stream<GameObject> matchingObjects = World.getRemovedObjects().stream().filter(o -> o.getType() == object.getType() && o.getLocation().equals(object.getLocation()));
-        matchingObjects.forEach(removedObject -> {
-            World.getRemovedObjects().remove(removedObject);
-            RegionManager.removeObjectClipping(removedObject);
-        });
+        List<GameObject> matchingObjects = World.getRemovedObjects().stream().filter(o -> o.getType() == object.getType() && o.getLocation().equals(object.getLocation())).toList();
+        matchingObjects.forEach(RegionManager::removeObjectClipping);
+        matchingObjects.forEach(World.getRemovedObjects()::remove);
 
         World.getObjects().add(object);
         if (playerUpdate) {
