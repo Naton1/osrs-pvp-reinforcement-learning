@@ -23,8 +23,9 @@ import java.util.regex.Pattern;
 
 public class WebHandler {
 
-    private static final int WEB_RESPAWN = 4000;
+    private static final int WEB_RESPAWN = 400;
     private static final Sound SLASH_SOUND = Sound.SLASH_WEB;
+    private static final Sound FAIL_SLASH_SOUND = Sound.FAIL_SLASH_WEB;
     private static final Animation ITEM_ON_WEB_ANIMATION = new Animation(911);
     private static long lastSlash;
     private static final Pattern SHARP_ITEM_PATTERN;
@@ -77,6 +78,7 @@ public class WebHandler {
             Sounds.sendSound(player, SLASH_SOUND);
             TaskManager.submit(new TimedObjectReplacementTask(web, new GameObject(ObjectIdentifiers.SLASHED_WEB, web.getLocation(), web.getType(), web.getFace(), player.getPrivateArea()), WEB_RESPAWN));
         } else {
+            Sounds.sendSound(player, FAIL_SLASH_SOUND);
             player.sendMessage("You fail to slash the web.");
         }
 
