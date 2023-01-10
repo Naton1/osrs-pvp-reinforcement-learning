@@ -32,7 +32,6 @@ import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.ObjectIdentifiers;
 import com.elvarg.game.entity.impl.object.ObjectManager;
 import java.util.Objects;
-import static com.elvarg.util.Misc.getTicks;
 
 /**
  * This packet listener is called when a player clicked on a game object.

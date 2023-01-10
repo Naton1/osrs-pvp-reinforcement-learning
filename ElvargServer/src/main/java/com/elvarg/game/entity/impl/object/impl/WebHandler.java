@@ -70,11 +70,11 @@ public class WebHandler {
         if (currentTime - lastSlash < 4000) return;
 
         player.performAnimation(itemOnWeb ? ITEM_ON_WEB_ANIMATION : new Animation(player.getAttackAnim()));
-        Sounds.sendSound(player, SLASH_SOUND);
 
         int successfulSlashChance = Misc.random(2);
         if (successfulSlashChance < 2) {
             player.sendMessage("You slash the web apart.");
+            Sounds.sendSound(player, SLASH_SOUND);
             TaskManager.submit(new TimedObjectReplacementTask(web, new GameObject(ObjectIdentifiers.SLASHED_WEB, web.getLocation(), web.getType(), web.getFace(), player.getPrivateArea()), WEB_RESPAWN));
         } else {
             player.sendMessage("You fail to slash the web.");

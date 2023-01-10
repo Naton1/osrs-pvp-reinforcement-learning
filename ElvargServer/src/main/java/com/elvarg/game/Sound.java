@@ -84,8 +84,8 @@ public enum Sound {
     FIRE_LIGHT(375, 1, 0),
     FIRE_SUCCESSFUL(608, 1, 0),
     FIRE_FIRST_ATTEMPT(2584, 1, 0),
-    // Webs
-    SLASH_WEB(2548, 1, 0),
+    // Webs - previously used: 2548
+    SLASH_WEB(237, 1, 0),
     FOOD_EAT(317),
     DRINK(334),
     ;
