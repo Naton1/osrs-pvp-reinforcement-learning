@@ -25,6 +25,9 @@ import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.ItemIdentifiers;
 
+import static com.elvarg.game.content.skill.skillable.impl.woodcutting.BirdNest.handleSearchNest;
+
+
 public class ItemActionPacketListener implements PacketExecutor {
 
 	private static void firstAction(final Player player, Packet packet) {
@@ -78,6 +81,13 @@ public class ItemActionPacketListener implements PacketExecutor {
 		}
 
 		switch (itemId) {
+			case ItemIdentifiers.BIRD_NEST:
+			case ItemIdentifiers.BIRD_NEST_2:
+			case ItemIdentifiers.BIRD_NEST_3:
+			case ItemIdentifiers.BIRD_NEST_4:
+			case ItemIdentifiers.BIRD_NEST_5:
+				handleSearchNest(player, itemId);
+				break;
 		case ItemIdentifiers.SPADE:
 			player.performAnimation(new Animation(830));
 			TaskManager.submit(new Task(1, player, false) {
