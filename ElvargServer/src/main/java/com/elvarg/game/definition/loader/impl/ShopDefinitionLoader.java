@@ -13,11 +13,16 @@ public class ShopDefinitionLoader extends DefinitionLoader {
 
     @Override
     public void load() throws Throwable {
-    	ShopManager.shops.clear();
         FileReader reader = new FileReader(file());
         ShopDefinition[] defs = new Gson().fromJson(reader, ShopDefinition[].class);
         for (ShopDefinition def : defs) {
-            ShopManager.shops.put(def.getId(), new Shop(def.getId(), def.getName(), def.getOriginalStock()));
+            if (def.getCurrency() != null) {
+                // Shop JSON has "currency" property defined
+                ShopManager.shops.put(def.getId(), new Shop(def.getId(), def.getName(), def.getOriginalStock(), def.getCurrency().get()));
+            } else {
+                ShopManager.shops.put(def.getId(), new Shop(def.getId(), def.getName(), def.getOriginalStock()));
+            }
+
         }
         reader.close();
     }

@@ -1,9 +1,8 @@
 package com.elvarg.game.model.commands.impl;
 
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.model.Location;
-import com.elvarg.game.model.Projectile;
 import com.elvarg.game.model.commands.Command;
+import com.elvarg.game.model.rights.PlayerRights;
 
 /**
  * @author Ynneh | 06/01/2023 - 21:08
@@ -25,6 +24,6 @@ public class CWarInterfaceCommand implements Command {
 
     @Override
     public boolean canUse(Player player) {
-        return false;
+        return player.getRights() == PlayerRights.DEVELOPER;
     }
 }

@@ -145,7 +145,7 @@ public class ShopManager extends ShopIdentifiers {
         int itemValue = getItemValue(player, def, shop.getId());
 
         // Get the currency's name..
-        String currency = getCurrencyName(player, def, shop.getId());
+        String currency = shop.getCurrency().getName();
 
         // If player isn't price checking a shop item..
         if (!shopItem) {
@@ -170,7 +170,7 @@ public class ShopManager extends ShopIdentifiers {
 
         // Send value..
         String message = "@dre@" + def.getName() + "@bla@" + (!shopItem ? ": shop will buy for " : " currently costs ")
-                + "@dre@" + Misc.insertCommasToNumber(Integer.toString(itemValue)) + " " + currency + ".";
+                + "@dre@" + Misc.insertCommasToNumber(Integer.toString(itemValue)) + " x " + currency + ".";
         player.getPacketSender().sendMessage(message);
     }
 
@@ -218,7 +218,7 @@ public class ShopManager extends ShopIdentifiers {
         for (int i = amount; i > 0; i--) {
 
             // Get the player's currency amount..
-            int currencyAmount = getCurrencyAmount(player, itemDef, shop.getId());
+            int currencyAmount = shop.getCurrency().getAmountForPlayer(player);
 
             // Make sure the item is still in the shop..
             if (player.getShop().getCurrentStock()[slot] == null) {
@@ -252,7 +252,7 @@ public class ShopManager extends ShopIdentifiers {
             if (!itemDef.isStackable()) {
 
                 // Deduct player's currency..
-                decrementCurrency(player, itemDef, itemValue, shop.getId());
+                shop.getCurrency().decrementForPlayer(player, itemValue);
 
                 // Remove item from shop..
                 shop.removeItem(itemId, 1);
@@ -279,7 +279,7 @@ public class ShopManager extends ShopIdentifiers {
                     break;
 
                 // Deduct player's currency..
-                decrementCurrency(player, itemDef, itemValue * canBeBought, shop.getId());
+                shop.getCurrency().decrementForPlayer(player, itemValue * canBeBought);
 
                 // Remove items from shop..
                 shop.removeItem(itemId, canBeBought);
@@ -392,7 +392,7 @@ public class ShopManager extends ShopIdentifiers {
                 }
 
                 // If their inventory has the coins..
-                if (getCurrencyName(player, itemDef, shop.getId()).equals("coins")) {
+                if (shop.getCurrency().getName().equalsIgnoreCase("coins")) {
                     if (player.getInventory().contains(ItemIdentifiers.COINS)) {
                         allow = true;
                     }
@@ -409,7 +409,7 @@ public class ShopManager extends ShopIdentifiers {
                 player.getInventory().delete(itemId, 1);
 
                 // Add player currency..
-                incrementCurrency(player, itemDef, itemValue, shop.getId());
+                shop.getCurrency().incrementForPlayer(player, itemValue);
 
                 // Add item to shop..
                 shop.addItem(itemId, 1);
@@ -421,7 +421,7 @@ public class ShopManager extends ShopIdentifiers {
                 player.getInventory().delete(itemId, amountRemaining);
 
                 // Add player currency..
-                incrementCurrency(player, itemDef, itemValue * amountRemaining, shop.getId());
+                shop.getCurrency().incrementForPlayer(player, itemValue * amountRemaining);
 
                 // Add item to shop..
                 shop.addItem(itemId, amountRemaining);
@@ -454,89 +454,6 @@ public class ShopManager extends ShopIdentifiers {
             return itemDef.getBloodMoneyValue();
         }
         return itemDef.getValue();
-    }
-
-    /**
-     * Get's the currency name for a given item in a shop.
-     *
-     * @param player
-     * @param itemDef
-     * @param shopId
-     * @return
-     */
-    private static String getCurrencyName(Player player, ItemDefinition itemDef, int shopId) {
-
-        switch (shopId) {
-            case PVP_SHOP:
-                return "blood money";
-            case POINTS_SHOP:
-                return "points";
-        }
-
-        return "coins";
-    }
-
-    /**
-     * Gets a player's currency amount for the given item in a shop.
-     *
-     * @param player
-     * @param shopId
-     * @param itemId
-     * @return
-     */
-    private static int getCurrencyAmount(Player player, ItemDefinition itemDef, int shopId) {
-        switch (shopId) {
-            case POINTS_SHOP:
-                return player.getPoints();
-            case PVP_SHOP:
-                return player.getInventory().getAmount(ItemIdentifiers.BLOOD_MONEY);
-            default:
-                return player.getInventory().getAmount(ItemIdentifiers.COINS);
-        }
-    }
-
-    /**
-     * Decrements a player's currency
-     *
-     * @param player
-     * @param shopId
-     * @param itemId
-     */
-    private static void decrementCurrency(Player player, ItemDefinition itemDef, int amount, int shopId) {
-        switch (shopId) {
-            case POINTS_SHOP:
-                player.setPoints(player.getPoints() - amount);
-                break;
-            case PVP_SHOP:
-                player.getInventory().delete(ItemIdentifiers.BLOOD_MONEY, amount);
-                break;
-            default:
-                player.getInventory().delete(ItemIdentifiers.COINS, amount);
-                break;
-        }
-    }
-
-    /**
-     * Increments a player's currency
-     * Used when selling things to a store.
-     *
-     * @param player
-     * @param itemDef
-     * @param amount
-     * @param shopId
-     */
-    private static void incrementCurrency(Player player, ItemDefinition itemDef, int amount, int shopId) {
-        switch (shopId) {
-            case POINTS_SHOP:
-                player.setPoints(player.getPoints() + amount);
-                break;
-            case PVP_SHOP:
-                player.getInventory().add(ItemIdentifiers.BLOOD_MONEY, amount);
-                break;
-            default:
-                player.getInventory().add(ItemIdentifiers.COINS, amount);
-                break;
-        }
     }
 
     /**
@@ -615,5 +532,20 @@ public class ShopManager extends ShopIdentifiers {
      */
     public static boolean viewingShop(Player player, int id) {
         return player.getShop() != null && player.getShop().getId() == id;
+    }
+
+    /**
+     * Generates a random unused shop id.
+     *
+     * @return {Integer} shopId
+     */
+    public static Integer generateUnusedId() {
+        int key = Misc.inclusive(0, Integer.MAX_VALUE);
+
+        while (ShopManager.shops.containsKey(key)) {
+            key = Misc.inclusive(0, Integer.MAX_VALUE);
+        }
+
+        return key;
     }
 }

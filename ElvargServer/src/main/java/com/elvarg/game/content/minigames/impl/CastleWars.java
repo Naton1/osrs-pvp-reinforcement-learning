@@ -88,6 +88,8 @@ public class CastleWars implements Minigame {
 
     private static final int[] ITEMS = {BANDAGES, ItemIdentifiers.BRONZE_PICKAXE, EXPLOSIVE_POTION, Barricades.ITEM_ID, ZAMMY_CAPE, SARA_CAPE, SARA_BANNER, ZAMMY_BANNER, ItemIdentifiers.ROCK_5};
 
+    private static final int CATAPULT_INTERFACE = 11169;
+
     public static void deleteItemsOnEnd(Player player) {
         /** Clears cwars items **/
         Arrays.stream(ITEMS).forEach(i -> player.getInventory().delete(i, Integer.MAX_VALUE));
@@ -1120,9 +1122,89 @@ public class CastleWars implements Minigame {
         player.getPacketSender().sendInterface(11169);
     }
 
+    @Override
+    public boolean handleButtonClick(Player player, int button) {
+        if (player.getInterfaceId() != CATAPULT_INTERFACE) {
+            // If player is not currently viewing the catapult interface, return early.
+            return false;
+        }
+
+        int x = (Integer) player.getAttribute("catapultX", 0);
+        int y = (Integer) player.getAttribute("catapultY", 0);
+        boolean saradomin = isSaradomin(player);
+        player.getPacketSender().sendInterfaceComponentMoval(1, 0, 11332);
+        if (button == 11321) {//Up Y
+            if (saradomin && y < 30) {
+                player.setAttribute("catapultY", y + 1);
+            } else if (y > 0) {
+                player.setAttribute("catapultY", y + 1);
+            }
+        }
+        if (button == 11322) {
+            if (saradomin && y > 0) {//down Y
+                player.setAttribute("catapultY", y - 1);
+            } else if (y < 30) {
+                player.setAttribute("catapultY", y + 1);
+            }
+        }
+        if (button == 11323) {
+            if (saradomin && x > 0) {//right X
+                player.setAttribute("catapultX", x - 1);
+            } else if (x < 30) {
+                player.setAttribute("catapultX", x + 1);
+            }
+        }
+        if (button == 11324) {//left X
+            if (saradomin && x < 30) {
+                player.setAttribute("catapultX", x + 1);
+            } else if (x > 0) {
+                player.setAttribute("catapultX", x - 1);
+            }
+        }
+        x = (Integer) player.getAttribute("catapultX", 0);
+        y = (Integer) player.getAttribute("catapultY", 0);
+        player.getPacketSender().sendWidgetModel(11317, 4863 + (y < 10 ? 0 : y > 9 ? (y / 10) : y));
+        player.getPacketSender().sendWidgetModel(11318, 4863 + (y > 29 ? y - 30 : y > 19 ? y - 20 : y > 9 ? y - 10 : y));
+        player.getPacketSender().sendWidgetModel(11319, 4863 + (x < 10 ? 0 : x > 9 ? (x / 10) : x));
+        player.getPacketSender().sendWidgetModel(11320, 4863 + (x > 29 ? x - 30 : x > 19 ? x - 20 : x > 9 ? x - 10 : x));
+        player.getPacketSender().sendInterfaceComponentMoval(x * 2, y * 2, 11332);
+        /** Fire button **/
+        if (button == 11329) {
+            player.getPacketSender().sendInterfaceRemoval();
+            int startX = saradomin ? saradomin_catapult_start.getX() : zamorak_catapult_start.getX();
+            int startY = saradomin ? saradomin_catapult_start.getY() : zamorak_catapult_start.getY();
+            x *= 2;
+            Location destination = new Location((x >= 0 ? startX - x : startX + x), (y >= 0 ? startY + y : startY - y));
+            GameObject catapult = World.findCacheObject(player, saradomin ? 4382 : 4381, saradomin ? saradomin_catapult_location : zamorak_catapult_location);
+            if (catapult != null) {
+                catapult.performAnimation(new Animation(443));
+            }
+            new Projectile(saradomin ? saradomin_catapult_location : zamorak_catapult_location, destination, null, 304, 30, 100, 75, 75, player.getPrivateArea())
+                    .sendProjectile();
+            TaskManager.submit(new Task() {
+
+                int ticks = 0;
+
+                @Override
+                public void execute() {
+                    ticks++;
+                    if (ticks == 4) {
+                        World.sendLocalGraphics(303, destination);
+                    }
+                    if (ticks == 6) {
+                        World.getPlayers().stream().filter(Objects::nonNull).filter(p -> p.getLocation().isWithinDistance(destination, 3)).forEach(p -> p.getCombat().getHitQueue().addPendingDamage(new HitDamage(p.getHitpoints(), HitMask.RED)));
+                        World.sendLocalGraphics(305, destination);
+                        stop();
+                    }
+                }
+            });
+        }
+            return true;
+    }
+
     public static void handleCatapultControls(Player player, int buttonId) {
-        int x = (Integer) player.getAttribute("catapultX");
-        int y = (Integer) player.getAttribute("catapultY");
+        int x = (Integer) player.getAttribute("catapultX", 0);
+        int y = (Integer) player.getAttribute("catapultY", 0);
         boolean saradomin = isSaradomin(player);
         player.getPacketSender().sendInterfaceComponentMoval(1, 0, 11332);
         if (buttonId == 11321) {//Up Y

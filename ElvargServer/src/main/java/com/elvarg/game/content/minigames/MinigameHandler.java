@@ -19,6 +19,13 @@ public class MinigameHandler {
 
     }
 
+    /**
+     * Handle clicking objects in all Minigames.
+     *
+     * @param player
+     * @param object
+     * @return
+     */
     public static boolean firstClickObject(Player player, GameObject object) {
         for (MinigameHandler.Minigames minigameRecord : MinigameHandler.Minigames.values()) {
             if (minigameRecord.minigame.firstClickObject(player, object)) {
@@ -27,6 +34,24 @@ public class MinigameHandler {
         }
 
         // Return false if no Minigame handled this Object click
+        return false;
+    }
+
+    /**
+     * Handle clicking buttons in all minigames.
+     *
+     * @param player
+     * @param button
+     * @return
+     */
+    public static boolean handleButtonClick(Player player, int button) {
+        for (MinigameHandler.Minigames minigameRecord : MinigameHandler.Minigames.values()) {
+            if (minigameRecord.minigame.handleButtonClick(player, button)) {
+                return true;
+            }
+        }
+
+        // Return false if no Minigame handled this Button click
         return false;
     }
 
