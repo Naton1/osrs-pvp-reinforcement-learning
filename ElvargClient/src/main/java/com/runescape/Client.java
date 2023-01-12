@@ -6986,13 +6986,9 @@ public class Client extends GameApplet {
             sendMessage(message, 0, "");
         }
 
+        System.err.println("ground item bs.. = "+action);
         // Click First Option Ground Item
         if (action == 244) {
-            boolean flag7 = doWalkTo(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, button,
-                    localPlayer.pathX[0], false, first);
-            if (!flag7)
-                flag7 = doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, button,
-                        localPlayer.pathX[0], false, first);
             crossX = super.saveClickX;
             crossY = super.saveClickY;
             crossType = 2;
