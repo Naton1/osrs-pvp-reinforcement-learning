@@ -407,11 +407,11 @@ public class PacketSender {
         buffer.writeLEShort(x);
     }
 
-    public void sendGroundItemOption1(int val1, int nodeId, int val2) {
+    public void sendGroundItemOption1(int y, int itemId, int x) {
         buffer.writeOpcode(235);
-        buffer.writeLEShort(val1);
-        buffer.writeShort(nodeId);
-        buffer.writeLEShort(val2);
+        buffer.writeLEShort(y);
+        buffer.writeShort(itemId);
+        buffer.writeLEShort(x);
     }
     
     public void sendSpawnTabSelection(int item, boolean spawnX, boolean toBank) {
