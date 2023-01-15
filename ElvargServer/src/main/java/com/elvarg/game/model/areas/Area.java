@@ -6,6 +6,7 @@ import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
+import com.elvarg.game.model.Item;
 
 import java.util.*;
 
@@ -120,6 +121,16 @@ public abstract class Area {
     public boolean overridesNpcAggressionTolerance(Player player, int npcId) {
         // By default, NPC tolerance works normally in Areas.
         return false;
+    }
+
+    public boolean canEquipItem(Player player, int slot, Item item) {
+        // By default, Players can equip items in all areas
+        return true;
+    }
+
+    public boolean canUnequipItem(Player player, int slot, Item item) {
+        // By default, Players can unequip items in all areas
+        return true;
     }
 
     public List<Boundary> getBoundaries() {

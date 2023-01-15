@@ -4,10 +4,7 @@ import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
-import com.elvarg.game.model.Boundary;
-import com.elvarg.game.model.Flag;
-import com.elvarg.game.model.Location;
-import com.elvarg.game.model.PolygonalBoundary;
+import com.elvarg.game.model.*;
 import com.elvarg.game.model.areas.Area;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.util.Misc;
@@ -100,6 +97,26 @@ public class CastleWarsGameArea extends Area {
     @Override
     public boolean canPlayerBotIdle(PlayerBot playerBot) {
         // Allow Player Bots to idle here
+        return true;
+    }
+
+    @Override
+    public boolean canEquipItem(Player player, int slot, Item item) {
+        if (slot == Equipment.CAPE_SLOT || slot == Equipment.HEAD_SLOT) {
+            player.getPacketSender().sendMessage("You can't remove your team's colours.");
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean canUnequipItem(Player player, int slot, Item item) {
+        if (slot == Equipment.CAPE_SLOT || slot == Equipment.HEAD_SLOT) {
+            player.getPacketSender().sendMessage("You can't remove your team's colours.");
+            return false;
+        }
+
         return true;
     }
 

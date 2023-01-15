@@ -6,6 +6,7 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Flag;
+import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
 import com.elvarg.game.model.container.impl.Equipment;
@@ -106,6 +107,26 @@ public class CastleWarsZamorakWaitingArea extends Area {
 
         // Send the interface
         player.getPacketSender().sendWalkableInterface(11479);
+    }
+
+    @Override
+    public boolean canEquipItem(Player player, int slot, Item item) {
+        if (slot == Equipment.CAPE_SLOT || slot == Equipment.HEAD_SLOT) {
+            player.getPacketSender().sendMessage("You can't remove your team's colours.");
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean canUnequipItem(Player player, int slot, Item item) {
+        if (slot == Equipment.CAPE_SLOT || slot == Equipment.HEAD_SLOT) {
+            player.getPacketSender().sendMessage("You can't remove your team's colours.");
+            return false;
+        }
+
+        return true;
     }
 
     @Override
