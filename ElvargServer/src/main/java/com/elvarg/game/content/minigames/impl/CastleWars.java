@@ -109,12 +109,34 @@ public class CastleWars implements Minigame {
             return this.score;
         }
 
+        public void incrementScore() {
+            this.score++;
+        }
+
         public static void resetTeams() {
             ZAMORAK.score = 0;
             SARADOMIN.score = 0;
 
             ZAMORAK.players.clear();
             SARADOMIN.players.clear();
+        }
+
+        /**
+         * This method is used to get the teamNumber of a certain player
+         *
+         * @param player
+         * @return
+         */
+        public static Team getTeamForPlayer(Player player) {
+            if (SARADOMIN.getPlayers().contains(player)) {
+                return SARADOMIN;
+            }
+
+            if (ZAMORAK.getPlayers().contains(player)) {
+                return ZAMORAK;
+            }
+
+            return null;
         }
     }
 
@@ -136,20 +158,7 @@ public class CastleWars implements Minigame {
     /**
      * The task that gets scheduled to end the game.
      */
-    public static final Task GAME_END_TASK = new CountdownTask("CW_END_GAME", Misc.getTicks(30), CastleWars::endGame);
-
-
-    /**
-     * hashmap for the gameRoom players
-     */
-    private static HashMap<Player, Integer> gameRoom = new HashMap<Player, Integer>();
-
-    /**
-     * The coordinates for the waitingRoom both sara/zammy
-     */
-    private static final int[][] WAIT_ROOM = {{2377, 9485}, // sara
-            {2421, 9524} // zammy
-    };
+    public static final Task GAME_END_TASK = new CountdownTask(END_GAME_TASK_KEY, Misc.getTicks(1800), CastleWars::endGame);
 
     /**
      * The coordinates for the gameRoom both sara/zammy
@@ -215,10 +224,9 @@ public class CastleWars implements Minigame {
 
     public static final int TEAM_GUTHIX = 3;
 
-    private static int properTimer = 0;
-    private static int timeRemaining = -1;
-
-    private static boolean gameStarted = false;
+    public static boolean isGameActive() {
+        return GAME_END_TASK.isRunning();
+    }
 
     /**
      * Kills any players standing under the cave collapse area.
@@ -226,17 +234,15 @@ public class CastleWars implements Minigame {
      * @param cave
      */
     public static void collapseCave(int cave) {
-        Iterator<Player> iterator = gameRoom.keySet().iterator();
-        while (iterator.hasNext()) {
-            Player teamPlayer = iterator.next();
-            if (teamPlayer.getLocation().getX() > COLLAPSE_ROCKS[cave][0]
-                    && teamPlayer.getLocation().getX() < COLLAPSE_ROCKS[cave][1]
-                    && teamPlayer.getLocation().getY() > COLLAPSE_ROCKS[cave][2]
-                    && teamPlayer.getLocation().getY() < COLLAPSE_ROCKS[cave][3]) {
-                int damage = teamPlayer.getSkillManager().getCurrentLevel(Skill.HITPOINTS);
-                teamPlayer.getCombat().getHitQueue().addPendingDamage(new HitDamage(damage, HitMask.RED));
+        GAME_AREA.getPlayers().forEach((player) -> {
+            if (player.getLocation().getX() > COLLAPSE_ROCKS[cave][0]
+                    && player.getLocation().getX() < COLLAPSE_ROCKS[cave][1]
+                    && player.getLocation().getY() > COLLAPSE_ROCKS[cave][2]
+                    && player.getLocation().getY() < COLLAPSE_ROCKS[cave][3]) {
+                int damage = player.getSkillManager().getCurrentLevel(Skill.HITPOINTS);
+                player.getCombat().getHitQueue().addPendingDamage(new HitDamage(damage, HitMask.RED));
             }
-        }
+        });
     }
 
     /**
@@ -250,7 +256,7 @@ public class CastleWars implements Minigame {
             return;
         }
 
-        if (gameStarted) {
+        if (isGameActive()) {
             player.getPacketSender().sendMessage("There's already a Castle Wars going. Please wait a few minutes before trying again.");
             return;
         }
@@ -309,48 +315,43 @@ public class CastleWars implements Minigame {
      * @param wearItem banner id!
      */
     public static void returnFlag(Player player, int wearItem) {
-        if (player == null) {
+        Team team = Team.getTeamForPlayer(player);
+        if (player == null || team == null) {
             return;
         }
         if (wearItem != SARA_BANNER && wearItem != ZAMMY_BANNER) {
             return;
         }
-        int team = gameRoom.get(player);
+
         int objectId = -1;
         int objectTeam = -1;
         switch (team) {
-            case 1:
+            case SARADOMIN:
                 if (wearItem == SARA_BANNER) {
                     setSaraFlag(0);
                     objectId = 4902;
                     objectTeam = 0;
-                    player.getPacketSender().sendMessage(
-                            "Returned the sara flag!");
+                    player.getPacketSender().sendMessage("Returned the sara flag!");
                 } else {
                     objectId = 4903;
                     objectTeam = 1;
                     setZammyFlag(0);
-                    scores[0]++; // upping the score of a team; team 0 = sara,
-                    // team 1 = zammy
-                    player.getPacketSender().sendMessage(
-                            "The team of Saradomin scores 1 point!");
+                    Team.SARADOMIN.incrementScore();
+                    player.getPacketSender().sendMessage("The team of Saradomin scores 1 point!");
                 }
                 break;
-            case 2:
+            case ZAMORAK:
                 if (wearItem == ZAMMY_BANNER) {
                     setZammyFlag(0);
                     objectId = 4903;
                     objectTeam = 1;
-                    player.getPacketSender().sendMessage(
-                            "Returned the zammy flag!");
+                    player.getPacketSender().sendMessage("Returned the Zamorak flag!");
                 } else {
                     objectId = 4902;
                     objectTeam = 0;
                     setSaraFlag(0);
-                    scores[1]++; // upping the score of a team; team 0 = sara,
-                    // team 1 = zammy
-                    player.getPacketSender().sendMessage(
-                            "The team of Zamorak scores 1 point!");
+                    Team.ZAMORAK.incrementScore();
+                    player.getPacketSender().sendMessage("The team of Zamorak scores 1 point!");
                     zammyFlag = 0;
                 }
                 break;
@@ -368,25 +369,23 @@ public class CastleWars implements Minigame {
      *
      * @param player the player who returned the flag
      */
-    public static void captureFlag(Player player) {
+    public static void captureFlag(Player player, Team team) {
         if (player.getEquipment().getSlot(Equipment.WEAPON_SLOT) > 0) {
-            player.getPacketSender()
-                    .sendMessage(
-                            "Please remove your weapon before attempting to capture the flag!");
+            player.getPacketSender().sendMessage("Please remove your weapon before attempting to capture the flag!");
             return;
         }
 
-        int team = gameRoom.get(player);
-        if (team == 2 && saraFlag == 0) { // sara flag
+        if (team == Team.ZAMORAK && saraFlag == 0) { // sara flag
             setSaraFlag(1);
             addFlag(player, SARA_BANNER_ITEM);
-            createHintIcon(player, 1);
+            createHintIcon(player, Team.SARADOMIN);
             changeFlagObject(STANDARD_STAND, 0);
         }
-        if (team == 1 && zammyFlag == 0) {
+
+        if (team == Team.SARADOMIN && zammyFlag == 0) {
             setZammyFlag(1);
             addFlag(player, ZAMMY_BANNER_ITEM);
-            createHintIcon(player, 2);
+            createHintIcon(player, Team.ZAMORAK);
             changeFlagObject(STANDARD_STAND_2, 1);
         }
     }
@@ -427,9 +426,10 @@ public class CastleWars implements Minigame {
         player.getEquipment().setItem(Equipment.WEAPON_SLOT, NO_ITEM);
         player.getEquipment().refreshItems();
         player.getUpdateFlag().flag(Flag.APPEARANCE);
-        for (Player teamPlayer : gameRoom.keySet()) {
-            teamPlayer.getPacketSender().sendObject(new GameObject(object, player.getLocation(), 10, 0, null));
-        }
+
+        int finalObject = object;
+        // Spawn the flag object for all players
+        GAME_AREA.getPlayers().forEach((teamPlayer) -> teamPlayer.getPacketSender().sendObject(new GameObject(finalObject, player.getLocation(), 10, 0, null)));
     }
 
     /**
@@ -462,32 +462,27 @@ public class CastleWars implements Minigame {
                 addFlag(player, ZAMMY_BANNER_ITEM);
                 break;
         }
-        createHintIcon(player, gameRoom.get(player) == 1 ? 2 : 1);
-        Iterator<Player> iterator = gameRoom.keySet().iterator();
-        while (iterator.hasNext()) {
-            Player teamPlayer = iterator.next();
+        createHintIcon(player, Team.getTeamForPlayer(player) == Team.SARADOMIN ? Team.SARADOMIN : Team.ZAMORAK);
+        GAME_AREA.getPlayers().forEach((teamPlayer) -> {
             teamPlayer.getPacketSender().sendPositionalHint(object.getLocation(), -1);
             teamPlayer.getPacketSender().sendObjectRemoval(new GameObject(-1, object.getLocation(), 10, 0, teamPlayer.getPrivateArea()));
-        }
-        return;
+        });
     }
 
     /**
      * Hint icons appear to your team when a enemy steals flag
      *
      * @param player the player who took the flag
-     * @param t      team of the opponent team. (:
+     * @param team   team of the opponent team. (:
      */
-    public static void createHintIcon(Player player, int t) {
-        Iterator<Player> iterator = gameRoom.keySet().iterator();
-        while (iterator.hasNext()) {
-            Player teamPlayer = iterator.next();
+    public static void createHintIcon(Player player, Team team) {
+        GAME_AREA.getPlayers().forEach((teamPlayer) -> {
             teamPlayer.getPacketSender().sendEntityHintRemoval(true);
-            if (gameRoom.get(teamPlayer) == t) {
+            if (Team.getTeamForPlayer(teamPlayer) == team) {
                 teamPlayer.getPacketSender().sendEntityHint(player);
                 player.getUpdateFlag().flag(Flag.APPEARANCE);
             }
-        }
+        });
     }
 
     /**
@@ -496,27 +491,7 @@ public class CastleWars implements Minigame {
      * @param location the location of the flag hint
      */
     public static void createFlagHintIcon(Location location) {
-        Iterator<Player> iterator = gameRoom.keySet().iterator();
-        while (iterator.hasNext()) {
-            Player teamPlayer = iterator.next();
-            teamPlayer.getPacketSender().sendPositionalHint(location, 2);
-        }
-    }
-
-    /**
-     * This method is used to get the teamNumber of a certain player
-     *
-     * @param player
-     * @return
-     */
-    public static int getTeamNumber(Player player) {
-        if (player == null) {
-            return -1;
-        }
-        if (gameRoom.containsKey(player)) {
-            return gameRoom.get(player);
-        }
-        return -1;
+        GAME_AREA.getPlayers().forEach((teamPlayer) -> teamPlayer.getPacketSender().sendPositionalHint(location, 2));
     }
 
     /**
@@ -594,7 +569,6 @@ public class CastleWars implements Minigame {
         changeFlagObject(4903, 1);
         setSaraFlag(0);
         setZammyFlag(0);
-        gameStarted = false;
         TaskManager.cancelTasks(new Object[] { START_GAME_TASK_KEY, END_GAME_TASK_KEY });
         Team.resetTeams();
     }
@@ -655,15 +629,8 @@ public class CastleWars implements Minigame {
      * @param team     the team of the player
      */
     public static void changeFlagObject(int objectId, int team) {
-        Iterator<Player> iterator = gameRoom.keySet().iterator();
-        while (iterator.hasNext()) {
-            Player teamPlayer = iterator.next();
-            teamPlayer.getPacketSender().sendObject(new GameObject(objectId, new Location(FLAG_STANDS[team][0], FLAG_STANDS[team][1], 2), 10, 0, teamPlayer.getPrivateArea()));
-        }
-    }
-
-    public static boolean isSaradomin(Player player) {
-        return CastleWars.getTeamNumber(player) == 2;
+        GameObject gameObject = new GameObject(objectId, new Location(FLAG_STANDS[team][0], FLAG_STANDS[team][1], 2), 10, 0, null);
+        ObjectManager.register(gameObject, true);
     }
 
     @Override
@@ -697,7 +664,7 @@ public class CastleWars implements Minigame {
             }
 
             case 4469:
-                if (CastleWars.getTeamNumber(player) == 2) {
+                if (Team.getTeamForPlayer(player) == Team.ZAMORAK) {
                     player.getPacketSender().sendMessage("You are not allowed in the other teams spawn point.");
                     return true;
                 }
@@ -716,7 +683,7 @@ public class CastleWars implements Minigame {
                 }
                 return true;
             case 4470:
-                if (CastleWars.getTeamNumber(player) == 1) {
+                if (Team.getTeamForPlayer(player) == Team.SARADOMIN) {
                     player.getPacketSender().sendMessage("You are not allowed in the other teams spawn point.");
                     return true;
                 }
@@ -866,14 +833,9 @@ public class CastleWars implements Minigame {
             case 6281:
                 player.moveTo(new Location(2370, 3132, 2));
                 return true;
-            case 4472:
-                player.moveTo(new Location(2370, 3132, 1));
-                return true;
+
             case 6280:
                 player.moveTo(new Location(2429, 3075, 2));
-                return true;
-            case 4471:
-                player.moveTo(new Location(2429, 3075, 1));
                 return true;
 
             case 4458:
@@ -882,28 +844,6 @@ public class CastleWars implements Minigame {
                     player.getInventory().add(BANDAGES, 1);
                     player.getPacketSender().sendMessage("You get some bandages.");
                     player.getTimers().extendOrRegister(TimerKey.CASTLEWARS_TAKE_ITEM, 2);
-                }
-                return true;
-            case 4902: // sara flag
-            case 4377:
-                switch (CastleWars.getTeamNumber(player)) {
-                    case 1:
-                        CastleWars.returnFlag(player, player.getEquipment().getSlot(Equipment.WEAPON_SLOT));
-                        return true;
-                    case 2:
-                        CastleWars.captureFlag(player);
-                        return true;
-                }
-                return true;
-            case 4903: // zammy flag
-            case 4378:
-                switch (CastleWars.getTeamNumber(player)) {
-                    case 1:
-                        CastleWars.captureFlag(player);
-                        return true;
-                    case 2:
-                        CastleWars.returnFlag(player, player.getEquipment().getSlot(Equipment.WEAPON_SLOT));
-                        return true;
                 }
                 return true;
             case 4461: // barricades
@@ -984,7 +924,7 @@ public class CastleWars implements Minigame {
             return;
         }
         resetCatapult(player);
-        player.getPacketSender().sendInterface(11169);
+        player.getPacketSender().sendInterface(CATAPULT_INTERFACE);
     }
 
     @Override
@@ -996,7 +936,7 @@ public class CastleWars implements Minigame {
 
         int x = (Integer) player.getAttribute("catapultX", 0);
         int y = (Integer) player.getAttribute("catapultY", 0);
-        boolean saradomin = isSaradomin(player);
+        boolean saradomin = Team.getTeamForPlayer(player) == Team.SARADOMIN;
         player.getPacketSender().sendInterfaceComponentMoval(1, 0, 11332);
         if (button == 11321) {//Up Y
             if (saradomin && y < 30) {
@@ -1070,7 +1010,7 @@ public class CastleWars implements Minigame {
     public static void handleCatapultControls(Player player, int buttonId) {
         int x = (Integer) player.getAttribute("catapultX", 0);
         int y = (Integer) player.getAttribute("catapultY", 0);
-        boolean saradomin = isSaradomin(player);
+        boolean saradomin = Team.getTeamForPlayer(player) == Team.SARADOMIN;
         player.getPacketSender().sendInterfaceComponentMoval(1, 0, 11332);
         if (buttonId == 11321) {//Up Y
             if (saradomin && y < 30) {
@@ -1172,7 +1112,7 @@ public class CastleWars implements Minigame {
     public static boolean handleItemOnObject(Player player, Item item, GameObject object) {
         final int objectId = object.getId();
         final int itemId = item.getId();
-        boolean saradomin = isSaradomin(player);
+        boolean saradomin = Team.getTeamForPlayer(player) == Team.SARADOMIN;
         if (objectId == 4385) {
             if (item.getId() == 4051) {
                 repairCatapult(player, object);
@@ -1281,7 +1221,7 @@ public class CastleWars implements Minigame {
             player.getPacketSender().sendMessage("You need a toolkit to repair the catapult.");
             return;
         }
-        boolean saradomin = isSaradomin(player);
+        boolean saradomin = Team.getTeamForPlayer(player) == Team.SARADOMIN;
         if (saradomin) {
             if (saradominCatapult != CatapultState.REPAIR) {
                 player.getPacketSender().sendMessage("The catapult has already been repaired");

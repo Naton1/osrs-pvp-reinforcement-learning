@@ -138,8 +138,6 @@ public abstract class Mobile extends Entity {
 		needsPlacement = false;
 		resetMovementQueue = false;
 		forcedChat = null;
-		interactingMobile = null;
-		positionToFace = null;
 		animation = null;
 		graphic = null;
 	}

@@ -91,6 +91,8 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 
         final int opcode = packet.getOpcode();
 
+        npc.setMobileInteraction(player);
+
         npc.setPositionToFace(player.getLocation());
 
         if (opcode == PacketConstants.FIRST_CLICK_NPC_OPCODE) {

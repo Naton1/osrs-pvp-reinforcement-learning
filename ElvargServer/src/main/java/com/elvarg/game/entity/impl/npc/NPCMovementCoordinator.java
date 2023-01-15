@@ -58,6 +58,10 @@ public class NPCMovementCoordinator {
                     return;
                 }
 
+                if (npc.getInteractingMobile() != null) {
+                    return;
+                }
+
                 if (!npc.getMovementQueue().isMoving()) {
                     if (Misc.getRandom(9) <= 1) {
                         Location pos = generateLocalPosition();

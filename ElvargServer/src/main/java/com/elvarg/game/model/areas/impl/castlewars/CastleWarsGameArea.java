@@ -128,6 +128,57 @@ public class CastleWarsGameArea extends Area {
                 player.moveTo(new Location(2440, 3089, 0));
                 player.getPacketSender().sendMessage("The Castle Wars game has ended for you!");
                 return true;
+
+            case SARADOMIN_STANDARD_2:
+            case 4377:
+                CastleWars.Team team = CastleWars.Team.getTeamForPlayer(player);
+                if (team == null) {
+                    return true;
+                }
+
+                switch (team) {
+                    case SARADOMIN:
+                        CastleWars.returnFlag(player, player.getEquipment().getSlot(Equipment.WEAPON_SLOT));
+                        return true;
+                    case ZAMORAK:
+                        CastleWars.captureFlag(player, team);
+                        return true;
+                }
+                return true;
+
+            case ZAMORAK_STANDARD_2: // zammy flag
+            case 4378:
+                team = CastleWars.Team.getTeamForPlayer(player);
+                if (team == null) {
+                    return true;
+                }
+
+                switch (team) {
+                    case SARADOMIN:
+                        CastleWars.captureFlag(player, team);
+                        return true;
+                    case ZAMORAK:
+                        CastleWars.returnFlag(player, player.getEquipment().getSlot(Equipment.WEAPON_SLOT));
+                        return true;
+                }
+                return true;
+
+            case TRAPDOOR_16: // Trap door into saradomin spawn point
+                if (CastleWars.Team.getTeamForPlayer(player) == CastleWars.Team.ZAMORAK) {
+                    player.getPacketSender().sendMessage("You are not allowed in the other teams spawn point.");
+                    return true;
+                }
+
+                player.moveTo(new Location(2429, 3075, 1));
+                return true;
+            case TRAPDOOR_17: // Trap door into saradomin spawn point
+                if (CastleWars.Team.getTeamForPlayer(player) == CastleWars.Team.SARADOMIN) {
+                    player.getPacketSender().sendMessage("You are not allowed in the other teams spawn point.");
+                    return true;
+                }
+
+                player.moveTo(new Location(2370, 3132, 1));
+                return true;
         }
 
         return false;
