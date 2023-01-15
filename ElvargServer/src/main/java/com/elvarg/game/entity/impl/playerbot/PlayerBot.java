@@ -168,7 +168,5 @@ public class PlayerBot extends Player {
     @Override
     public void resetAttributes() {
         super.resetAttributes();
-
-        stopCommand();
     }
 }

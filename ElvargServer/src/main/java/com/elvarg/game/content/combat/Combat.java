@@ -328,7 +328,7 @@ public class Combat {
     }
 
     public void setTarget(Mobile target) {
-        if (this.target != null && target == null) {
+        if (this.target != null && target == null && this.method != null) {
             this.method.onCombatEnded(this.character, this.attacker);
         }
 

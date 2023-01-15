@@ -9,6 +9,7 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Ids;
 import com.elvarg.game.model.Item;
+import com.elvarg.game.model.Location;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 
@@ -17,13 +18,23 @@ import static com.elvarg.util.ItemIdentifiers.WOOL;
 import static com.elvarg.util.NpcIdentifiers.*;
 
 @Ids({SHEEP_FULL_BLACK_HEAD, SHEEP_FULL_GREY_HEAD, SHEEP_FULL_WHITE_HEAD, SHEEP_FULL_YELLOW_GREY_HEAD, SHEEP_FULL_YELLOW_BLACK_HEAD})
-public class Sheep implements NPCInteraction {
+public class Sheep extends NPC implements NPCInteraction {
 
     private static final Animation SHEARING = new Animation(893);
 
     private static final Animation SHEEP_EATING = new Animation(5335);
 
     private static final Item ITEM_WOOL = new Item(WOOL);
+
+    /**
+     * Constructs a Sheep.
+     *
+     * @param id       The npc id.
+     * @param position
+     */
+    public Sheep(int id, Location position) {
+        super(id, position);
+    }
 
     @Override
     public void firstOptionClick(Player player, NPC npc) {

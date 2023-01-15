@@ -341,12 +341,26 @@ public abstract class ItemContainer {
     }
 
     /**
+     * Gets the item id currently equipped at a given slot.
+     *
+     * @param slotId The slot id.
+     * @return The item id currently equipped in the given slot.
+     */
+    public int getSlot(int slotId) {
+        if (items.length < slotId || !items[slotId].isValid()) {
+            return -1;
+        }
+
+        return items[slotId].getId();
+    }
+
+    /**
      * Gets the first slot found for an item with said id.
      *
      * @param id The id to loop through items to find.
      * @return The slot index the item is located in.
      */
-    public int getSlot(int id) {
+    public int getSlotForItemId(int id) {
         for (int i = 0; i < capacity(); i++) {
             if (items[i].getId() == id) {
                 if (items[i].getAmount() > 0 || (this instanceof Bank && items[i].getAmount() == 0)) {
@@ -578,7 +592,7 @@ public abstract class ItemContainer {
             return this;
         }
         if (ItemDefinition.forId(item.getId()).isStackable() || stackType() == StackType.STACKS) {
-            int slot = getSlot(item.getId());
+            int slot = getSlotForItemId(item.getId());
             if (slot == -1) {
                 slot = getEmptySlot();
             }
@@ -668,7 +682,7 @@ public abstract class ItemContainer {
      * @return The ItemContainer instance.
      */
     public ItemContainer delete(int id, int amount, boolean refresh) {
-        return delete(new Item(id, amount), getSlot(id), refresh);
+        return delete(new Item(id, amount), getSlotForItemId(id), refresh);
     }
 
     /**
@@ -725,7 +739,7 @@ public abstract class ItemContainer {
                     items[slot].setId(-1);
                 }
                 items[slot].setAmount(0);
-                slot = getSlot(item.getId());
+                slot = getSlotForItemId(item.getId());
                 amount--;
             }
         }

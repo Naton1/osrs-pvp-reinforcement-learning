@@ -15,6 +15,7 @@ public class SecondsTimer {
      * The actual timer.
      */
     private final Stopwatch stopwatch;
+
     /**
      * The amount of seconds to count down.
      */
@@ -29,14 +30,13 @@ public class SecondsTimer {
     }
 
     /**
-     * Constructs a new timer and
-     * starts it immediately.
+     * Constructs a new timer with a pre-defined number of seconds.
      *
      * @param seconds The amount of seconds to
      */
     public SecondsTimer(int seconds) {
         this();
-        start(seconds);
+        this.seconds = seconds;
     }
 
     /**
@@ -53,6 +53,21 @@ public class SecondsTimer {
     }
 
     /**
+     * Starts this timer.
+     */
+    public SecondsTimer start() {
+        if (this.seconds <= 0) {
+            return this;
+        }
+
+        //Reset and then start the stopwatch.
+        stopwatch.reset();
+        stopwatch.start();
+
+        return this;
+    }
+
+    /**
      * Stops this timer
      */
     public void stop() {
@@ -60,6 +75,14 @@ public class SecondsTimer {
         if (stopwatch.isRunning()) {
             stopwatch.reset();
         }
+    }
+
+    /**
+     * Determines whether the stopwatch is currently running or not.
+     * @return
+     */
+    public boolean isRunning() {
+        return stopwatch.isRunning();
     }
 
     /**

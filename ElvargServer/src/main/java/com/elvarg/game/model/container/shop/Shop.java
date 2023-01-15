@@ -20,6 +20,10 @@ public class Shop {
      */
     public static final int MAX_SHOP_ITEMS = 1000;
     /**
+     * The max amount of items a shop can have.
+     */
+    public static final int MAX_SHOPS = 5000;
+    /**
      * The shop interface id.
      */
     public static final int INTERFACE_ID = 3824;

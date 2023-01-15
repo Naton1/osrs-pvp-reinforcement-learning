@@ -28,7 +28,12 @@ public class NpcDialogue extends Dialogue {
 
     public NpcDialogue(int index, int npcId, String text, DialogueExpression expression, DialogueAction continueAction) {
         this(index, npcId, text, expression);
-        this.setContinueAction((DialogueAction) continueAction);
+        this.setContinueAction(continueAction);
+    }
+
+    public NpcDialogue(int index, int npcId, String text, DialogueAction continueAction) {
+        this(index, npcId, text, DialogueExpression.CALM);
+        this.setContinueAction(continueAction);
     }
 
     @Override

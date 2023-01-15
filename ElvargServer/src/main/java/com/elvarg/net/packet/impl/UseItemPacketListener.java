@@ -135,10 +135,6 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
 
         player.getMovementQueue().walkToEntity(npc, () -> {
 
-            if (Barricades.itemOnBarricade(player, npc, item)) {
-                return;
-            }
-
             if (NPCInteractionSystem.handleUseItem(player, npc, id, slot)) {
                 // Player is using an item on a defined NPC
                 return;

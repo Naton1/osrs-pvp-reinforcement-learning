@@ -1,13 +1,11 @@
 package com.elvarg.game.entity.impl.playerbot.commands;
 
-import com.elvarg.game.content.Dueling;
 import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
-import org.checkerframework.checker.units.qual.A;
 
 import static com.elvarg.game.entity.impl.playerbot.commands.CommandType.*;
 
@@ -35,15 +33,15 @@ public class PlayCastleWars implements BotCommand {
         TaskManager.submit(new Task(5, playerBot.getIndex(), false) {
             @Override
             public void execute() {
-                CastleWars.addToWaitRoom(playerBot, CastleWars.TEAM_GUTHIX);
+                CastleWars.addToWaitingRoom(playerBot, CastleWars.Team.GUTHIX);
                 stop();
+                playerBot.stopCommand();
             }
         });
     }
 
     @Override
     public void stop(PlayerBot playerBot) {
-        playerBot.getCombatInteraction().reset();
     }
 
     @Override

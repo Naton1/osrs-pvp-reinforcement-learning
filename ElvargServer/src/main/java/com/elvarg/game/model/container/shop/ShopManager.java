@@ -13,6 +13,8 @@ import com.elvarg.util.ShopIdentifiers;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.elvarg.game.model.container.shop.Shop.MAX_SHOPS;
+
 public class ShopManager extends ShopIdentifiers {
 
     /**
@@ -540,10 +542,10 @@ public class ShopManager extends ShopIdentifiers {
      * @return {Integer} shopId
      */
     public static Integer generateUnusedId() {
-        int key = Misc.inclusive(0, Integer.MAX_VALUE);
+        int key = Misc.inclusive(0, MAX_SHOPS);
 
         while (ShopManager.shops.containsKey(key)) {
-            key = Misc.inclusive(0, Integer.MAX_VALUE);
+            key = Misc.inclusive(0, MAX_SHOPS);
         }
 
         return key;

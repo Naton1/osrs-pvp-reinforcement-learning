@@ -1,6 +1,7 @@
 package com.elvarg.util;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -9,11 +10,7 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
@@ -832,5 +829,16 @@ public class Misc {
 
     public static int random(int range) {
         return (int) (java.lang.Math.random() * (range + 1));
+    }
+
+    public static <T> T[] concatWithCollection(T[] array1, T[] array2) {
+        List<T> resultList = new ArrayList<>(array1.length + array2.length);
+        Collections.addAll(resultList, array1);
+        Collections.addAll(resultList, array2);
+
+        @SuppressWarnings("unchecked")
+        //the type cast is safe as the array1 has the type T[]
+        T[] resultArray = (T[]) Array.newInstance(array1.getClass().getComponentType(), 0);
+        return resultList.toArray(resultArray);
     }
 }

@@ -85,28 +85,10 @@ public class NPC extends Mobile {
 	 */
 	private boolean pet;
 
-	public int barricadeFireTicks = 8;
-
-	public boolean barricadeOnFire;
-
 	/**
 	 * A map of npc IDs <-> NPC implementations
 	 */
 	private static Map<Integer, Class<?>> NPC_IMPLEMENTATION_MAP;
-
-	public void handleBarricadeTicks() {
-		/** Handles barricades once on fire **/
-		if (barricadeOnFire && barricadeFireTicks > 0) {
-			barricadeFireTicks--;
-			if (barricadeFireTicks == 0) {
-				if (this.isBarricade()) {
-					Barricades.checkTile(this.getLocation());
-				}
-				barricadeOnFire = false;
-				World.getRemoveNPCQueue().add(this);
-			}
-		}
-	}
 	
 	/**
 	 * Creates a new {@link NPC}.
@@ -212,8 +194,6 @@ public class NPC extends Mobile {
 
 			// Handle combat
 			getCombat().process();
-
-			handleBarricadeTicks();
 
 			// Process areas..
 			AreaManager.process(this);

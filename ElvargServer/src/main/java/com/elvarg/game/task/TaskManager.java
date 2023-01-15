@@ -38,12 +38,28 @@ public final class TaskManager {
     }
 
     public static void submit(Task task) {
-        if (!task.isRunning())
+        if (task.isRunning()) {
+            // Task is already running
             return;
+        }
+
+        task.setRunning(true);
+
         if (task.isImmediate()) {
             task.execute();
         }
+
         pendingTasks.add(task);
+    }
+
+    /**
+     * Used to cancel multiple tasks at once.
+     * @param keys
+     */
+    public static void cancelTasks(Object[] keys) {
+        for (Object key: keys) {
+            cancelTasks(key);
+        }
     }
 
     public static void cancelTasks(Object key) {

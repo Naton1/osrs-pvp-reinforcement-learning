@@ -5722,7 +5722,7 @@ public class NpcIdentifiers {
     public static final int UNDEAD_LUMBERJACK_72 = 5720;
     public static final int LANTHUS = 5721;
     public static final int BARRICADE = 5722;
-    public static final int BARRICADE_2 = 5723;
+    public static final int BARRICADE_BURNING = 5723;
     public static final int BARRICADE_3 = 5724;
     public static final int BARRICADE_4 = 5725;
     public static final int SHEEP_24 = 5726;

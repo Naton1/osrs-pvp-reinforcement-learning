@@ -99,6 +99,7 @@ public class NPCDeathTask extends Task {
         // Remove from area..
         if (npc.getArea() != null) {
             npc.getArea().leave(npc, false);
+            npc.getArea().postLeave(npc, false);
             npc.setArea(null);
         }
 
