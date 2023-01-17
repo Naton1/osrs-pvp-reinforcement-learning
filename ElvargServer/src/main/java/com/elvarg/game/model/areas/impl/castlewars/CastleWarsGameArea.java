@@ -1,5 +1,6 @@
 package com.elvarg.game.model.areas.impl.castlewars;
 
+import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
@@ -61,12 +62,44 @@ public class CastleWarsGameArea extends Area {
         config = 2097152 * CastleWars.zammyFlag; // flags 0 = safe 1 = taken 2 = dropped
         player.getPacketSender().sendToggle(377, config);
     }
+
+    @Override
+    public CombatFactory.CanAttackResponse canAttack(Mobile attacker, Mobile target) {
+        Player playerAttacker = attacker.getAsPlayer();
+        Player playerTarget = target.getAsPlayer();
+        if (playerAttacker == null || playerTarget == null) {
+            // If either attacker or target is not a player, run default behaviour.
+            return super.canAttack(attacker, target);
+        }
+
+        if (CastleWars.Team.getTeamForPlayer(playerTarget) == CastleWars.Team.getTeamForPlayer(playerAttacker)) {
+            // Stop players from attacking their own team members
+            return CombatFactory.CanAttackResponse.CASTLE_WARS_FRIENDLY_FIRE;
+        }
+
+        return CombatFactory.CanAttackResponse.CAN_ATTACK;
+    }
+
+    @Override
+    public void postEnter(Mobile character) {
+        Player player = character.getAsPlayer();
+        if (player == null) {
+            return;
+        }
+
+        // Add attack option
+        player.getPacketSender().sendInteractionOption("Attack", 2, true);
+    }
+
     @Override
     public void postLeave(Mobile character, boolean logout) {
         Player player = character.getAsPlayer();
         if (player == null) {
             return;
         }
+
+        // Remove attack option
+        player.getPacketSender().sendInteractionOption("null", 2, true);
 
         CastleWars.Team.removePlayer(player);
 
