@@ -4,6 +4,10 @@ import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 public class MinigameHandler {
 
     public enum Minigames {
@@ -11,10 +15,23 @@ public class MinigameHandler {
 
         private final String name;
         private final Minigame minigame;
+        private static Stream<Minigames> filteredMinigames;
 
         private Minigames(final String name, final Minigame minigame) {
             this.name = name;
             this.minigame = minigame;
+        }
+
+        /**
+         * Gets a singleton instance of all Minigames, pre-filtered and nullchecked.
+         * @return
+         */
+        public static Stream<Minigames> getAll() {
+            if (filteredMinigames == null) {
+                filteredMinigames = Arrays.stream(Minigames.values()).filter(m -> m.minigame != null);
+            }
+
+            return filteredMinigames;
         }
 
     }
@@ -27,14 +44,7 @@ public class MinigameHandler {
      * @return
      */
     public static boolean firstClickObject(Player player, GameObject object) {
-        for (MinigameHandler.Minigames minigameRecord : MinigameHandler.Minigames.values()) {
-            if (minigameRecord.minigame.firstClickObject(player, object)) {
-                return true;
-            }
-        }
-
-        // Return false if no Minigame handled this Object click
-        return false;
+        return Minigames.getAll().anyMatch(m -> m.minigame.firstClickObject(player, object));
     }
 
     /**
@@ -45,19 +55,13 @@ public class MinigameHandler {
      * @return
      */
     public static boolean handleButtonClick(Player player, int button) {
-        for (MinigameHandler.Minigames minigameRecord : MinigameHandler.Minigames.values()) {
-            if (minigameRecord.minigame.handleButtonClick(player, button)) {
-                return true;
-            }
-        }
-
-        // Return false if no Minigame handled this Button click
-        return false;
+        return Minigames.getAll().anyMatch(m -> m.minigame.handleButtonClick(player, button));
     }
 
+    /**
+     * Runs the process method for every active minigame.
+     */
     public static void process() {
-        for (MinigameHandler.Minigames minigameRecord : MinigameHandler.Minigames.values()) {
-            minigameRecord.minigame.process();
-        }
+        Minigames.getAll().forEach(m -> m.minigame.process());
     }
 }
