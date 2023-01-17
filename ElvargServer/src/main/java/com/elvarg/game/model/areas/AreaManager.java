@@ -26,7 +26,7 @@ public class AreaManager {
         areas.add(new WildernessArea());
         areas.add(new KingBlackDragonArea());
         areas.add(new GodwarsDungeonArea());
-        areas.add(new CastleWarsLobbyArea());
+        areas.add(CastleWars.LOBBY_AREA);
         areas.add(CastleWars.ZAMORAK_WAITING_AREA);
         areas.add(CastleWars.SARADOMIN_WAITING_AREA);
         areas.add(CastleWars.GAME_AREA);

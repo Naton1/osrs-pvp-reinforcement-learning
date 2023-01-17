@@ -183,4 +183,9 @@ public class CastleWarsGameArea extends Area {
 
         return false;
     }
+
+    public boolean canTeleport(Player player) {
+        // Players shouldn't be able to teleport out of CastleWars
+        return false;
+    }
 }

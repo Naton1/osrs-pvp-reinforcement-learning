@@ -41,7 +41,11 @@ public class CastleWarsSaradominWaitingArea extends Area {
             TaskManager.submit(START_GAME_TASK);
         }
 
-        player.getPacketSender().sendMessage("Next Game Begins In: " + START_GAME_TASK.getRemainingTicks() + " ticks.");
+        String announcement = "Next Game Begins In: " + Misc.getSeconds(START_GAME_TASK.getRemainingTicks()) + " seconds.";
+        player.getPacketSender().sendMessage(announcement);
+
+        // Announce the next game in the lobby via Lanthus
+        CastleWars.LOBBY_AREA.getLanthus().forceChat(announcement);
 
         // Equip the cape
         player.getEquipment().setItem(Equipment.CAPE_SLOT, CastleWars.SARADOMIN_CAPE);

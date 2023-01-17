@@ -13,6 +13,7 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.*;
 import com.elvarg.game.model.areas.Area;
 import com.elvarg.game.model.areas.impl.castlewars.CastleWarsGameArea;
+import com.elvarg.game.model.areas.impl.castlewars.CastleWarsLobbyArea;
 import com.elvarg.game.model.areas.impl.castlewars.CastleWarsSaradominWaitingArea;
 import com.elvarg.game.model.areas.impl.castlewars.CastleWarsZamorakWaitingArea;
 import com.elvarg.game.model.container.impl.Equipment;
@@ -40,11 +41,13 @@ public class CastleWars implements Minigame {
      *
      * We instantiate these here as we need to reference them directly.
      */
-    public static final Area SARADOMIN_WAITING_AREA = new CastleWarsSaradominWaitingArea();
+    public static final CastleWarsSaradominWaitingArea SARADOMIN_WAITING_AREA = new CastleWarsSaradominWaitingArea();
 
-    public static final Area ZAMORAK_WAITING_AREA = new CastleWarsZamorakWaitingArea();
+    public static final CastleWarsZamorakWaitingArea ZAMORAK_WAITING_AREA = new CastleWarsZamorakWaitingArea();
 
-    public static final Area GAME_AREA = new CastleWarsGameArea();
+    public static final CastleWarsGameArea GAME_AREA = new CastleWarsGameArea();
+
+    public static final CastleWarsLobbyArea LOBBY_AREA = new CastleWarsLobbyArea();
 
     /**
      * The team enum
@@ -167,7 +170,7 @@ public class CastleWars implements Minigame {
     /**
      * The task that gets scheduled to end the game.
      */
-    public static final Task GAME_END_TASK = new CountdownTask(END_GAME_TASK_KEY, Misc.getTicks(1800), CastleWars::endGame);
+    public static final Task GAME_END_TASK = new CountdownTask(END_GAME_TASK_KEY, Misc.getTicks(1200), CastleWars::endGame);
 
     /**
      * The coordinates for the gameRoom both sara/zammy
@@ -638,7 +641,7 @@ public class CastleWars implements Minigame {
      * @param team     the team of the player
      */
     public static void changeFlagObject(int objectId, int team) {
-        GameObject gameObject = new GameObject(objectId, new Location(FLAG_STANDS[team][0], FLAG_STANDS[team][1], 2), 10, 0, null);
+        GameObject gameObject = new GameObject(objectId, new Location(FLAG_STANDS[team][0], FLAG_STANDS[team][1], 3), 10, 0, null);
         ObjectManager.register(gameObject, true);
     }
 

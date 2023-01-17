@@ -15,7 +15,6 @@ public class MinigameHandler {
 
         private final String name;
         private final Minigame minigame;
-        private static Stream<Minigames> filteredMinigames;
 
         private Minigames(final String name, final Minigame minigame) {
             this.name = name;
@@ -23,15 +22,11 @@ public class MinigameHandler {
         }
 
         /**
-         * Gets a singleton instance of all Minigames, pre-filtered and nullchecked.
+         * Gets a Stream of all Minigames, pre-filtered and nullchecked.
          * @return
          */
         public static Stream<Minigames> getAll() {
-            if (filteredMinigames == null) {
-                filteredMinigames = Arrays.stream(Minigames.values()).filter(m -> m.minigame != null);
-            }
-
-            return filteredMinigames;
+            return Arrays.stream(Minigames.values()).filter(m -> m.minigame != null);
         }
 
     }

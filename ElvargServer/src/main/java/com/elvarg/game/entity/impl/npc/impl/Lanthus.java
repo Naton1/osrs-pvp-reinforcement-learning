@@ -46,6 +46,8 @@ public class Lanthus extends NPC implements NPCInteraction {
     public Lanthus(int id, Location position) {
         super(id, position);
         this.buildDialogues();
+
+        CastleWars.LOBBY_AREA.setLanthus(this);
     }
 
     @Override

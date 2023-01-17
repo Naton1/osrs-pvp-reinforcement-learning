@@ -1,6 +1,7 @@
 package com.elvarg.game.model.areas.impl.castlewars;
 
 import com.elvarg.game.content.minigames.impl.CastleWars;
+import com.elvarg.game.entity.impl.npc.impl.Lanthus;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
@@ -11,6 +12,8 @@ import java.util.Arrays;
 import static com.elvarg.util.ObjectIdentifiers.*;
 
 public class CastleWarsLobbyArea extends Area {
+
+    private Lanthus lanthus;
 
     public CastleWarsLobbyArea() {
         super(Arrays.asList(new Boundary(2435, 2446, 3081, 3098)));
@@ -53,5 +56,13 @@ public class CastleWarsLobbyArea extends Area {
     public boolean canPlayerBotIdle(PlayerBot playerBot) {
         // Allow Player Bots to idle here
         return true;
+    }
+
+    public Lanthus getLanthus() {
+        return this.lanthus;
+    }
+
+    public void setLanthus(Lanthus lanthus) {
+        this.lanthus = lanthus;
     }
 }
