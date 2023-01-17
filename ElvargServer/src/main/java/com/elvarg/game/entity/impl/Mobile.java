@@ -49,6 +49,18 @@ public abstract class Mobile extends Entity {
 		return attributes.get(name);
 	}
 
+	/**
+	 * Returns an attribute value, or a default.
+	 *
+	 * @param name
+	 * @param defaultValue
+	 * @return
+	 */
+	public Object getAttribute(Object name, Object defaultValue) {
+		Object result = attributes.get(name);
+		return result != null ? result : defaultValue;
+	}
+
 	public void setAttribute(Object name, Object object) {
 		this.attributes.put(name, object);
 	}
@@ -126,8 +138,6 @@ public abstract class Mobile extends Entity {
 		needsPlacement = false;
 		resetMovementQueue = false;
 		forcedChat = null;
-		interactingMobile = null;
-		positionToFace = null;
 		animation = null;
 		graphic = null;
 	}

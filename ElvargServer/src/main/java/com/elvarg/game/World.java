@@ -7,12 +7,15 @@ import com.elvarg.game.entity.impl.grounditem.ItemOnGround;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.object.GameObject;
+import com.elvarg.game.entity.impl.object.MapObjects;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.entity.updating.NPCUpdating;
 import com.elvarg.game.entity.updating.PlayerUpdating;
 import com.elvarg.game.entity.updating.sync.GameSyncExecutor;
 import com.elvarg.game.entity.updating.sync.GameSyncTask;
+import com.elvarg.game.model.Graphic;
+import com.elvarg.game.model.Location;
 import com.elvarg.game.model.commands.impl.Players;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.util.Misc;
@@ -290,5 +293,28 @@ public class World {
 
 	public static Queue<NPC> getRemoveNPCQueue() {
 		return removeNPCQueue;
+	}
+
+	/**
+	 * Simple way of finding objects in the world
+	 * @param id
+	 * @param loc
+	 * @return
+	 */
+	public static Optional<GameObject> findSpawnedObject(int id, Location loc) {
+		return getObjects().stream().filter(i -> i.getId() == id).filter(l -> l.getLocation().equals(loc)).findAny();
+	}
+
+	public static GameObject findCacheObject(Player player, int id, Location loc) {
+		return MapObjects.get(player, id, loc);
+	}
+
+	/**
+	 * Sends GFX at the location to all players within a 32 tile radius
+	 * @param id
+	 * @param position
+	 */
+	public static void sendLocalGraphics(int id, Location position) {
+		players.stream().filter(Objects::nonNull).filter(p -> p.getLocation().isWithinDistance(position, 32)).forEach(p -> p.getPacketSender().sendGraphic(new Graphic(id), position));
 	}
 }

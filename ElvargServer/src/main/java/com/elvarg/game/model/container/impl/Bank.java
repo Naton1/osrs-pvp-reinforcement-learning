@@ -91,10 +91,10 @@ public class Bank extends ItemContainer {
                     return;
                 }
 
-                slot = player.getBank(itemTab).getSlot(item);
+                slot = player.getBank(itemTab).getSlotForItemId(item);
 
                 player.getBank(itemTab).switchItem(player.getInventory(), new Item(item, amount),
-                        player.getBank(itemTab).getSlot(item), false, false);
+                        player.getBank(itemTab).getSlotForItemId(item), false, false);
 
                 if (slot == 0) {
                     Bank.reconfigureTabs(player);
@@ -106,7 +106,7 @@ public class Bank extends ItemContainer {
 
                 // Withdrawing an item which belongs in another tab from the main tab
                 if (player.getCurrentBankTab() == 0 && fromBankTab != 0) {
-                    slot = player.getBank(itemTab).getSlot(item);
+                    slot = player.getBank(itemTab).getSlotForItemId(item);
                 }
 
                 // Make sure the item is in the slot we've found
@@ -436,7 +436,7 @@ public class Bank extends ItemContainer {
                             // Move items from tab to main tab
                             for (Item item : items) {
                                 player.getBank(bankId).switchItem(player.getBank(0), item.clone(),
-                                        player.getBank(bankId).getSlot(item.getId()), false, false);
+                                        player.getBank(bankId).getSlotForItemId(item.getId()), false, false);
                             }
 
                             // Reactivate note withdrawal if it was active
@@ -531,7 +531,7 @@ public class Bank extends ItemContainer {
 
         for (Item item : from.getValidItems()) {
             from.switchItem(player.getBank(Bank.getTabForItem(player, item.getId())), item.clone(),
-                    from.getSlot(item.getId()), false, false);
+                    from.getSlotForItemId(item.getId()), false, false);
         }
 
         from.refreshItems();

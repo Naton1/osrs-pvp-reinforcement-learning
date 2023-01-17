@@ -1,6 +1,7 @@
 package com.elvarg.game.model.areas;
 
 import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
+import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
@@ -9,8 +10,8 @@ import com.elvarg.game.model.areas.impl.BarrowsArea;
 import com.elvarg.game.model.areas.impl.DuelArenaArea;
 import com.elvarg.game.model.areas.impl.GodwarsDungeonArea;
 import com.elvarg.game.model.areas.impl.KingBlackDragonArea;
-import com.elvarg.game.model.areas.impl.PrivateArea;
 import com.elvarg.game.model.areas.impl.WildernessArea;
+import com.elvarg.game.model.areas.impl.castlewars.CastleWarsLobbyArea;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,10 @@ public class AreaManager {
         areas.add(new WildernessArea());
         areas.add(new KingBlackDragonArea());
         areas.add(new GodwarsDungeonArea());
+        areas.add(CastleWars.LOBBY_AREA);
+        areas.add(CastleWars.ZAMORAK_WAITING_AREA);
+        areas.add(CastleWars.SARADOMIN_WAITING_AREA);
+        areas.add(CastleWars.GAME_AREA);
     }
 
     /**
@@ -36,9 +41,12 @@ public class AreaManager {
         Location position = c.getLocation();
         Area area = c.getArea();
 
+        Area previousArea = null;
+
         if (area != null) {
             if (!inside(position, area)) {
                 area.leave(c, false);
+                previousArea = area;
                 area = null;
             }
         }
@@ -72,12 +80,17 @@ public class AreaManager {
 
         // Update area..
         c.setArea(area);
+
+        // Handle postLeave...
+        if (previousArea != null) {
+            previousArea.postLeave(c, false);
+        }
     }
 
     /**
      * Checks if a {@link Mobile} is in multi.
      *
-     * @param player
+     * @param c
      * @return
      */
     public static boolean inMulti(Mobile c) {
@@ -112,9 +125,9 @@ public class AreaManager {
     }
 
     /**
-     * Gets a {@link PublicArea} based on a given {@link Location}.
+     * Gets a {@link Area} based on a given {@link Location}.
      *
-     * @param player
+     * @param position
      * @return
      */
     public static Area get(Location position) {

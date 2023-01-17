@@ -328,7 +328,8 @@ public class Combat {
     }
 
     public void setTarget(Mobile target) {
-        if (this.target != null && target == null) {
+        if (this.target != null && target == null && this.method != null) {
+            // Target has changed to null, this means combat has ended. Call the relevant hook inside the combat method.
             this.method.onCombatEnded(this.character, this.attacker);
         }
 

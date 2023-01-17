@@ -7,7 +7,7 @@ import com.elvarg.game.content.clan.ClanChatManager;
 import com.elvarg.game.content.combat.WeaponInterfaces;
 import com.elvarg.game.content.combat.magic.Autocasting;
 import com.elvarg.game.content.combat.magic.EffectSpells;
-import com.elvarg.game.content.minigames.impl.CastleWars;
+import com.elvarg.game.content.minigames.MinigameHandler;
 import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.content.quests.QuestHandler;
 import com.elvarg.game.content.skill.skillable.impl.Smithing;
@@ -121,6 +121,9 @@ public class ButtonClickPacketListener implements PacketExecutor {
 		if (QuestHandler.handleQuestButtonClick(player, button)) {
 			return true;
 		}
+		if (MinigameHandler.handleButtonClick(player, button)) {
+			return true;
+		}
 		return false;
 	}
 
@@ -142,12 +145,7 @@ public class ButtonClickPacketListener implements PacketExecutor {
 
 		switch (button) {
 
-			case 11321:
-			case 11322:
-			case 11323:
-			case 11324:
-				CastleWars.handleCatapultControls(player, button);
-				break;
+
 
 		case OPEN_PRESETS:
 			if (player.busy()) {

@@ -35,7 +35,7 @@ public class BankTabCreationPacketListener implements PacketExecutor {
                 }
 
                 //Let's move the item to the new tab
-                int slot = player.getBank(fromBankTab).getSlot(item.getId());
+                int slot = player.getBank(fromBankTab).getSlotForItemId(item.getId());
                 if (slot != fromSlot) {
                     return;
                 }

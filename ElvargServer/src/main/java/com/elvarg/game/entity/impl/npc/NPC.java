@@ -16,23 +16,18 @@ import com.elvarg.game.content.combat.method.CombatMethod;
 import com.elvarg.game.definition.NpcDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPCMovementCoordinator.CoordinateState;
-import com.elvarg.game.entity.impl.npc.impl.Barricades;
-import com.elvarg.game.entity.impl.npc.impl.GodwarsFollower;
-import com.elvarg.game.entity.impl.npc.impl.Vetion;
-import com.elvarg.game.entity.impl.npc.impl.VetionHellhound;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.FacingDirection;
-import com.elvarg.game.model.God;
 import com.elvarg.game.model.Ids;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.AreaManager;
 import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.NPCDeathTask;
-import com.elvarg.util.NpcIdentifiers;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import static com.elvarg.game.content.combat.CombatFactory.MELEE_COMBAT;
+import static com.elvarg.game.model.movement.MovementQueue.NPC_INTERACT_RADIUS;
 
 /**
  * Represents a non-playable character, which players can interact with.
@@ -85,28 +80,10 @@ public class NPC extends Mobile {
 	 */
 	private boolean pet;
 
-	public int barricadeFireTicks = 8;
-
-	public boolean barricadeOnFire;
-
 	/**
 	 * A map of npc IDs <-> NPC implementations
 	 */
 	private static Map<Integer, Class<?>> NPC_IMPLEMENTATION_MAP;
-
-	public void handleBarricadeTicks() {
-		/** Handles barricades once on fire **/
-		if (barricadeOnFire && barricadeFireTicks > 0) {
-			barricadeFireTicks--;
-			if (barricadeFireTicks == 0) {
-				if (this.isBarricade()) {
-					Barricades.checkTile(this.getLocation());
-				}
-				barricadeOnFire = false;
-				World.getRemoveNPCQueue().add(this);
-			}
-		}
-	}
 	
 	/**
 	 * Creates a new {@link NPC}.
@@ -200,38 +177,43 @@ public class NPC extends Mobile {
 	 * Processes this npc.
 	 */
 	public void process() {
-		// Only process the npc if they have properly been added
-		// to the game with a definition.
-		if (getDefinition() != null) {
-			// Timers
-			getTimers().process();
+		if (getDefinition() == null) {
+			// Only process the npc if they have properly been added with a definition.
+			return;
+		}
 
-			// Handles random walk and retreating from fights
-			getMovementQueue().process();
-			movementCoordinator.process();
+		// Timers
+		getTimers().process();
 
-			// Handle combat
-			getCombat().process();
+		// Handles random walk and retreating from fights
+		getMovementQueue().process();
+		movementCoordinator.process();
 
-			handleBarricadeTicks();
+		if (getInteractingMobile() != null && this.getLocation().getDistance(getInteractingMobile().getLocation()) > NPC_INTERACT_RADIUS) {
+			// Reset interacting entity if more than radius away
+			setMobileInteraction(null);
+			setPositionToFace(null);
+		}
 
-			// Process areas..
-			AreaManager.process(this);
+		// Handle combat
+		getCombat().process();
 
-			// Regenerating health if needed, but only after 20 seconds of last attack.
-			if (getCombat().getLastAttack().elapsed(20000)
-					|| movementCoordinator.getCoordinateState() == CoordinateState.RETREATING) {
+		// Process areas..
+		AreaManager.process(this);
 
-				// We've been damaged.
-				// Regenerate health.
-				if (getDefinition().getHitpoints() > hitpoints) {
-					setHitpoints(hitpoints + (int) (getDefinition().getHitpoints() * 0.1));
-					if (hitpoints > getDefinition().getHitpoints()) {
-						setHitpoints(getDefinition().getHitpoints());
-					}
+		// Regenerating health if needed, but only after 20 seconds of last attack.
+		if (getCombat().getLastAttack().elapsed(20000)
+				|| movementCoordinator.getCoordinateState() == CoordinateState.RETREATING) {
+
+			// We've been damaged.
+			// Regenerate health.
+			if (getDefinition().getHitpoints() > hitpoints) {
+				setHitpoints(hitpoints + (int) (getDefinition().getHitpoints() * 0.1));
+				if (hitpoints > getDefinition().getHitpoints()) {
+					setHitpoints(getDefinition().getHitpoints());
 				}
 			}
-		}		
+		}
 	}
 	
 	public List<Player> getPlayersWithinDistance(int distance) {

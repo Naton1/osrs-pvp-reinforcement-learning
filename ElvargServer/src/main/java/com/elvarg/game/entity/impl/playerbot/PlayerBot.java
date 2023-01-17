@@ -25,14 +25,13 @@ public class PlayerBot extends Player {
 
     private static final BotCommand[] CHAT_COMMANDS = new BotCommand[]{
         new FollowPlayer(), new HoldItems(), new LoadPreset(), new FightCommand(), new PlayCastleWars(),
-            new GoToDuelArena(),
+            new GoToDuelArena(), new LocateBot()
     };
 
     private final Location spawnPosition = GameConstants.DEFAULT_LOCATION;
 
     // The current interaction of this PlayerBot
     private InteractionState currentState = InteractionState.IDLE;
-
 
     private BotCommand activeCommand;
 
@@ -169,7 +168,5 @@ public class PlayerBot extends Player {
     @Override
     public void resetAttributes() {
         super.resetAttributes();
-
-        stopCommand();
     }
 }

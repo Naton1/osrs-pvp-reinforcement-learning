@@ -6,11 +6,9 @@ import com.elvarg.game.World;
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.skill.skillable.impl.Firemaking;
 import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.entity.impl.npc.NPCInteraction;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.model.Animation;
-import com.elvarg.game.model.Item;
-import com.elvarg.game.model.Location;
-import com.elvarg.game.model.Skill;
+import com.elvarg.game.model.*;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import io.netty.util.internal.ConcurrentSet;
@@ -18,22 +16,16 @@ import io.netty.util.internal.ConcurrentSet;
 import java.util.Arrays;
 import java.util.Set;
 
+import static com.elvarg.util.ItemIdentifiers.BUCKET_OF_WATER;
+import static com.elvarg.util.ItemIdentifiers.TINDERBOX;
+import static com.elvarg.util.NpcIdentifiers.*;
+
 /**
  * @author Ynneh | 06/12/2022 - 14:47
  * <https://github.com/drhenny>
  */
-public class Barricades {
-    // TODO: Refactor this class to extend NPC and have @Ids attribute
-
-    /**
-     * The NPC_ID of the barricade
-     */
-    public static final int NPC_ID = 5722;
-
-    /**
-     * The NPC_ID upon burning state
-     */
-    public static final int NPC_ID_BURNING = 5723;
+@Ids({BARRICADE, BARRICADE_BURNING, BARRICADE_3, BARRICADE_4})
+public class Barricades extends NPC implements NPCInteraction {
 
     /**
      * The ITEM_ID for the barricade in inventory
@@ -50,6 +42,20 @@ public class Barricades {
      * A list used to the Tiles of the barricade clipping.
      */
     private static Set<Location> barricades = new ConcurrentSet<>();
+
+    public int barricadeFireTicks = 8;
+
+    public boolean barricadeOnFire;
+
+    /**
+     * Constructs a Barricade.
+     *
+     * @param id       The npc id.
+     * @param position
+     */
+    public Barricades(int id, Location position) {
+        super(id, position);
+    }
 
     private static boolean getBlackListedTiles(Player player, Location requestedTile) {
         return Arrays.asList(new Location(1, 1, 0)).stream().anyMatch(t -> t.equals(requestedTile));
@@ -89,7 +95,7 @@ public class Barricades {
         return true;
     }
 
-    private static void handleTinderbox(Player player, NPC npc) {
+    private static void handleTinderbox(Player player, Barricades npc) {
         if (npc.barricadeOnFire) {
             player.getPacketSender().sendMessage("This barricade is already on fire!");
             return;
@@ -105,7 +111,7 @@ public class Barricades {
         TaskManager.submit(new Task(3, player, false) {
             @Override
             protected void execute() {
-                npc.setNpcTransformationId(NPC_ID_BURNING);
+                npc.setNpcTransformationId(BARRICADE_BURNING);
                 npc.barricadeOnFire = true;
                 player.getSkillManager().addExperience(Skill.FIREMAKING, FIREMAKING_EXPERIENCE);
                 player.performAnimation(Animation.DEFAULT_RESET_ANIMATION);
@@ -115,7 +121,7 @@ public class Barricades {
 
     }
 
-    private static void handleBucketOfWater(Player player, NPC npc) {
+    private static void handleBucketOfWater(Player player, Barricades npc) {
         if (!npc.barricadeOnFire) {
             player.getPacketSender().sendMessage("This barricade is not on fire.");
             return;
@@ -126,7 +132,7 @@ public class Barricades {
         }
         player.getInventory().delete(new Item(1929, 1));
         player.getInventory().add(new Item(1925, 1));
-        npc.setNpcTransformationId(NPC_ID);
+        npc.setNpcTransformationId(BARRICADE);
         npc.barricadeOnFire = false;
         player.getPacketSender().sendMessage("You put out the fire!");
     }
@@ -140,39 +146,70 @@ public class Barricades {
         RegionManager.addClipping(tile.getX(), tile.getY(), tile.getZ(), 0x200000, player.getPrivateArea());
         player.getInventory().delete(ITEM_ID, 1);
         barricades.add(tile);
-        World.getAddNPCQueue().add(new NPC(NPC_ID, tile.clone()));
+        World.getAddNPCQueue().add(new NPC(BARRICADE, tile.clone()));
         Sounds.sendSound(player, Sound.PICK_UP_ITEM);
     }
 
-    public static boolean handleInteractiveOptions(Player player, NPC npc, int opcode) {
-        boolean isBarricade = Arrays.asList(NPC_ID, NPC_ID_BURNING).stream().anyMatch(n -> n.intValue() == npc.getId());
-        if (!isBarricade) {
-            return false;
-        }
-        if (opcode == 17) {
-            /**
-             * Option 2 (BURN/EXTINGUISH)
-             */
-            if (npc.barricadeOnFire) {
-                handleBucketOfWater(player, npc);
-                return true;
-            }
-            handleTinderbox(player, npc);
-            return true;
-        }
-        return false;
+    @Override
+    public void firstOptionClick(Player player, NPC npc) {
+
     }
 
-    public static boolean itemOnBarricade(Player player, NPC npc, Item item) {
-        switch (item.getId()) {
-            case 590:
-                handleTinderbox(player, npc);
-                return true;
-            case 1929:
-                handleBucketOfWater(player, npc);
-                return true;
-            default:
-                return false;
+    @Override
+    public void secondOptionClick(Player player, NPC npc) {
+        if (!(npc instanceof Barricades)) {
+            return;
+        }
+        Barricades barricade = (Barricades) npc;
+
+        if (barricade.barricadeOnFire) {
+            handleBucketOfWater(player, barricade);
+            return;
+        }
+
+        handleTinderbox(player, barricade);
+    }
+
+    @Override
+    public void thirdOptionClick(Player player, NPC npc) {
+
+    }
+
+    @Override
+    public void forthOptionClick(Player player, NPC npc) {
+
+    }
+
+    @Override
+    public void useItemOnNpc(Player player, NPC npc, int itemId, int slot) {
+        if (!(npc instanceof Barricades)) {
+            return;
+        }
+        Barricades barricade = (Barricades) npc;
+
+        switch (itemId) {
+            case TINDERBOX:
+                handleTinderbox(player, barricade);
+                return;
+            case BUCKET_OF_WATER:
+                handleBucketOfWater(player, barricade);
+                return;
+        }
+    }
+
+    @Override
+    public void process() {
+        super.process();
+
+        if (barricadeOnFire && barricadeFireTicks > 0) {
+            barricadeFireTicks--;
+            if (barricadeFireTicks == 0) {
+                if (this.isBarricade()) {
+                    Barricades.checkTile(this.getLocation());
+                }
+                barricadeOnFire = false;
+                World.getRemoveNPCQueue().add(this);
+            }
         }
     }
 }

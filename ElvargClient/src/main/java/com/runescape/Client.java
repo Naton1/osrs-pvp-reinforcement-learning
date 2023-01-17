@@ -14246,7 +14246,7 @@ public class Client extends GameApplet {
 
             if (opcode == PacketConstants.MOVE_COMPONENT) {
                 int horizontalOffset = incoming.readShort();
-                int verticalOffset = incoming.readLEShort();
+                int verticalOffset = incoming.readShort();
                 int id = incoming.readLEUShort();
                 Widget widget = Widget.interfaceCache[id];
                 widget.horizontalOffset = horizontalOffset;

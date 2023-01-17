@@ -16,6 +16,11 @@ import java.util.Optional;
 
 public class WildernessArea extends Area {
 
+	@Override
+	public String getName() {
+		return "the Wilderness";
+	}
+
 	public static int getLevel(int y) {
 		return ((((y > 6400 ? y - 6400 : y) - 3520) / 8) + 1);
 	}

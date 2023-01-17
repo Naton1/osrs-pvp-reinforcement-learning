@@ -3119,5 +3119,16 @@
       "y": 3721,
       "z": 0
     }
+  },
+  {
+    "facing": "SOUTH",
+    "radius": 2,
+    "description": "Castlewars Lanthus",
+    "id": 5721,
+    "position": {
+      "x": 2441,
+      "y": 3089,
+      "z": 0
+    }
   }
 ]

@@ -2,6 +2,7 @@ package com.elvarg.net.packet.impl;
 
 import com.elvarg.game.World;
 import com.elvarg.game.content.combat.CombatFactory;
+import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.content.skill.skillable.impl.*;
 import com.elvarg.game.content.skill.skillable.impl.Cooking.Cookable;
 import com.elvarg.game.content.skill.skillable.impl.Firemaking.LightableLog;
@@ -134,10 +135,6 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
 
         player.getMovementQueue().walkToEntity(npc, () -> {
 
-            if (Barricades.itemOnBarricade(player, npc, item)) {
-                return;
-            }
-
             if (NPCInteractionSystem.handleUseItem(player, npc, id, slot)) {
                 // Player is using an item on a defined NPC
                 return;
@@ -179,10 +176,6 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
 
         //Update facing..
         player.setPositionToFace(position);
-
-        if (Bank.useItemOnDepositBox(player, item, itemSlot, object)) {
-            return;
-        }
 
         //Handle object..
 
@@ -228,6 +221,13 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
                 default:
                     player.getPacketSender().sendMessage("Nothing interesting happens.");
                     break;
+            }
+            if (Bank.useItemOnDepositBox(player, item, itemSlot, object)) {
+                return;
+            }
+
+            if (CastleWars.handleItemOnObject(player, item, object)) {
+                return;
             }
         });
     }

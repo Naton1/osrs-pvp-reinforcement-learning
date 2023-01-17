@@ -7,7 +7,7 @@ import java.util.Objects;
 import static com.elvarg.game.task.TaskType.DEFAULT;
 
 /**
- * Represents a periodic task that can be scheduled with a {@link TaskScheduler}.
+ * Represents a periodic task that can be scheduled with the {@link TaskManager}.
  *
  * @author Graham
  */
@@ -36,7 +36,7 @@ public abstract class Task {
     /**
      * A flag which indicates if this task is still running.
      */
-    private boolean running = true;
+    private boolean running = false;
 
     /**
      * The task's owner
@@ -93,6 +93,20 @@ public abstract class Task {
         this.countdown = delay;
         this.immediate = immediate;
         this.bind(DEFAULT_KEY);
+    }
+
+    /**
+     * Creates a new task with the specified delay and immediate flag.
+     *
+     * @param delay     The number of cycles between consecutive executions of this
+     *                  task.
+     * @throws IllegalArgumentException if the {@code delay} is not positive.
+     */
+    public Task(int delay, Object key) {
+        this.delay = delay;
+        this.countdown = delay;
+        this.immediate = false;
+        this.bind(key);
     }
 
     /**
@@ -160,7 +174,11 @@ public abstract class Task {
             execute();
             countdown = delay;
         }
+        onTick();
         return running;
+    }
+
+    public void onTick() {
     }
 
     /**
@@ -173,6 +191,15 @@ public abstract class Task {
     }
 
     /**
+     * Returns how many ticks are left before this Task is next executed.
+     *
+     * @return
+     */
+    public int getRemainingTicks() {
+        return this.countdown;
+    }
+
+    /**
      * Changes the delay of this task.
      *
      * @param delay The number of cycles between consecutive executions of this
@@ -181,6 +208,13 @@ public abstract class Task {
     public void setDelay(int delay) {
         if (delay > 0)
             this.delay = delay;
+    }
+
+    /**
+     * Sets the status of this task.
+     */
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     /**

@@ -9,7 +9,7 @@ public class BannedMember {
 
     public BannedMember(String name, int seconds) {
         this.setName(name);
-        this.setTimer(new SecondsTimer(seconds));
+        this.setTimer(new SecondsTimer(seconds).start());
     }
 
     public SecondsTimer getTimer() {

@@ -28,11 +28,6 @@ public class Systems {
         // Filter all classes which extend NPC
         var implementationClasses = npcClasses.stream().filter(NPC.class::isAssignableFrom).toList();
         NPC.initImplementations(implementationClasses);
-
-        // Filter all classes which implement NpcInteraction
-        var interactionClasses = npcClasses.stream().filter(NPCInteraction.class::isAssignableFrom).toList();
-        NPCInteractionSystem.init(interactionClasses);
-
     }
 }
 

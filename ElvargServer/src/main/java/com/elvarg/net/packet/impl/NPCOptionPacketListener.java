@@ -91,6 +91,8 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 
         final int opcode = packet.getOpcode();
 
+        npc.setMobileInteraction(player);
+
         npc.setPositionToFace(player.getLocation());
 
         if (opcode == PacketConstants.FIRST_CLICK_NPC_OPCODE) {
@@ -171,11 +173,6 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 				// Player is trying to thieve from an NPC
 				return;
 			}
-
-            if (Barricades.handleInteractiveOptions(player, npc, PacketConstants.SECOND_CLICK_NPC_OPCODE)) {
-                // Player is burning barricade
-                return;
-            }
 
 			if (NPCInteractionSystem.handleSecondOption(player, npc)) {
 				// Player is interacting with a defined NPC
