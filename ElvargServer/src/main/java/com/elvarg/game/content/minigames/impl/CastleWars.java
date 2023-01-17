@@ -141,6 +141,15 @@ public class CastleWars implements Minigame {
     }
 
     /**
+     * Possible catapult states
+     */
+    public enum CatapultState {
+        FIXED,
+        BURNING,
+        REPAIR;
+    }
+
+    /**
      * The key used to schedule the start game CountdownTask.
      */
     public static final String START_GAME_TASK_KEY = "CW_START_GAME";

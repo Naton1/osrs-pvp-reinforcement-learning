@@ -10,8 +10,10 @@ import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
 import com.elvarg.util.ShopIdentifiers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.elvarg.game.model.container.shop.Shop.MAX_SHOPS;
 
@@ -529,7 +531,7 @@ public class ShopManager extends ShopIdentifiers {
      * Checks if the player is viewing the given shop.
      *
      * @param player
-     * @param shop
+     * @param id
      * @return
      */
     public static boolean viewingShop(Player player, int id) {
@@ -542,12 +544,6 @@ public class ShopManager extends ShopIdentifiers {
      * @return {Integer} shopId
      */
     public static Integer generateUnusedId() {
-        int key = Misc.inclusive(0, MAX_SHOPS);
-
-        while (ShopManager.shops.containsKey(key)) {
-            key = Misc.inclusive(0, MAX_SHOPS);
-        }
-
-        return key;
+        return Misc.getRandomExlcuding(1, MAX_SHOPS, new ArrayList<>(ShopManager.shops.keySet()));
     }
 }

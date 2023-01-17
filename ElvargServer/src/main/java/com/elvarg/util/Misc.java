@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.ZonedDateTime;
@@ -58,6 +59,7 @@ public class Misc {
      * Random instance, used to generate pseudo-random primitive types.
      */
     private static final RandomGen RANDOM = new RandomGen();
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     private static final String[] BLOCKED_WORDS = new String[]{
             ".com", ".net", ".org", "<img", "@cr", "<img=", ":tradereq:", ":duelreq:",
             "<col=", "<shad="};
@@ -829,6 +831,29 @@ public class Misc {
 
     public static int random(int range) {
         return (int) (java.lang.Math.random() * (range + 1));
+    }
+
+    /**
+     * Get a random number between a range and exclude some numbers.
+     * The excludes list MUST BE MODIFIABLE.
+     *
+     * @param start start number
+     * @param end end number
+     * @param excludes list of numbers to be excluded
+     * @return value between {@code start} (inclusive) and {@code end} (inclusive)
+     */
+    public static int getRandomExlcuding(int start, int end, ArrayList<Integer> excludes) {
+        // Using ArrayList as the list needs to be modifiable for Collections.sort:
+        Collections.sort(excludes);
+
+        int random = start + SECURE_RANDOM.nextInt(end - start + 1 - excludes.size());
+        for (int exclude : excludes) {
+            if (random < exclude) {
+                break;
+            }
+            random++;
+        }
+        return random;
     }
 
     public static <T> T[] concatWithCollection(T[] array1, T[] array2) {
