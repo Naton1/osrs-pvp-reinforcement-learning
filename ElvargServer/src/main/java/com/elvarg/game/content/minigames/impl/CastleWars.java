@@ -17,6 +17,11 @@ import com.elvarg.game.model.areas.impl.castlewars.CastleWarsLobbyArea;
 import com.elvarg.game.model.areas.impl.castlewars.CastleWarsSaradominWaitingArea;
 import com.elvarg.game.model.areas.impl.castlewars.CastleWarsZamorakWaitingArea;
 import com.elvarg.game.model.container.impl.Equipment;
+import com.elvarg.game.model.dialogues.DialogueExpression;
+import com.elvarg.game.model.dialogues.builders.DialogueChainBuilder;
+import com.elvarg.game.model.dialogues.entries.impl.ItemStatementDialogue;
+import com.elvarg.game.model.dialogues.entries.impl.NpcDialogue;
+import com.elvarg.game.model.dialogues.entries.impl.OptionsDialogue;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
@@ -26,7 +31,9 @@ import com.elvarg.util.Misc;
 import com.elvarg.util.timers.TimerKey;
 import com.google.common.collect.Maps;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 import static com.elvarg.game.model.container.impl.Equipment.CAPE_SLOT;
 import static com.elvarg.game.model.container.impl.Equipment.NO_ITEM;
@@ -38,7 +45,7 @@ public class CastleWars implements Minigame {
 
     /**
      * Area instances
-     *
+     * <p>
      * We instantiate these here as we need to reference them directly.
      */
     public static final CastleWarsSaradominWaitingArea SARADOMIN_WAITING_AREA = new CastleWarsSaradominWaitingArea();
@@ -49,12 +56,36 @@ public class CastleWars implements Minigame {
 
     public static final CastleWarsLobbyArea LOBBY_AREA = new CastleWarsLobbyArea();
 
+    public static boolean handleItemOnPlayer(Player player, Player target, Item item) {
+        if (item.getId() != BANDAGES)
+            return false;
+        if (Team.getTeamForPlayer(player) == Team.ZAMORAK && Team.getTeamForPlayer(target) == Team.SARADOMIN || Team.getTeamForPlayer(player) == Team.SARADOMIN && Team.getTeamForPlayer(target) == Team.ZAMORAK) {
+            player.getPacketSender().sendMessage("You don't want to be healing your enemies!");
+            return true;
+        }
+        healWithBandage(target, false);
+        return true;
+    }
+
+    private static void healWithBandage(Player player, boolean use) {
+        /**
+         * TODO...
+         */
+        boolean bracelet = player.getEquipment().hasCastleWarsBracelet();
+        /** Boost increases BY 50% if wearing the bracelet **/
+        int maxHP = player.getSkillManager().getMaxLevel(Skill.HITPOINTS);
+        /** Wiki only says heal. Nothing about run energy for other players **/
+        int hp = (int) Math.floor(maxHP * (bracelet ? 1.60 : 1.1));
+        /** Heals the target **/
+        player.heal(hp);
+    }
+
     /**
      * The team enum
      */
     public enum Team {
-        ZAMORAK(ZAMORAK_WAITING_AREA, new Location(2421, 9524)),
-        SARADOMIN(SARADOMIN_WAITING_AREA, new Location(2377, 9485)),
+        ZAMORAK(ZAMORAK_WAITING_AREA, new Location(2421, 9524), new Boundary(2368, 2376, 3127, 3135, 1)),
+        SARADOMIN(SARADOMIN_WAITING_AREA, new Location(2381, 9489), new Boundary(2423, 2431, 3072, 3080, 1)),
         GUTHIX;
 
         private Area area;
@@ -62,15 +93,18 @@ public class CastleWars implements Minigame {
         private int score;
         private List<Player> players;
 
+        public Boundary respawn_area_bounds;
+
         Team() {
-            this.players = new ArrayList<Player>();
+            this.players = new ArrayList<>();
         }
 
-        Team(Area area, Location waitingRoom) {
+        Team(Area area, Location waitingRoom, Boundary respawn_area_bounds) {
             this();
             this.area = area;
             this.waitingRoom = waitingRoom;
             this.score = 0;
+            this.respawn_area_bounds = respawn_area_bounds;
         }
 
         public void addPlayer(Player player) {
@@ -79,6 +113,7 @@ public class CastleWars implements Minigame {
 
         /**
          * Method to remove a player from whichever team they're on
+         *
          * @param player
          */
         public static void removePlayer(Player player) {
@@ -316,8 +351,8 @@ public class CastleWars implements Minigame {
                 return;
         }
 
-        // Teleport the player to a random spot in the waiting area
-        player.moveTo(team.getWaitingRoom().transform(Misc.random(5), Misc.random(5)));
+        /** Uses smart teleport with a radius of 8. **/
+        player.smartMove(team.getWaitingRoom(), 8);
     }
 
     /**
@@ -369,7 +404,7 @@ public class CastleWars implements Minigame {
                 break;
         }
         changeFlagObject(objectId, objectTeam);
-        player.getPacketSender().sendEntityHintRemoval(true);
+        removeHintIcon();
         player.getEquipment().setItem(Equipment.WEAPON_SLOT, NO_ITEM);
         player.getEquipment().refreshItems();
         player.getInventory().resetItems();
@@ -420,15 +455,15 @@ public class CastleWars implements Minigame {
      * @param player the player who dropped the flag/died
      * @param flagId the flag item ID
      */
-    public static void dropFlag(Player player, int flagId) {
+    public static void dropFlag(Player player, Team team) {
         int object = -1;
-        switch (flagId) {
-            case SARA_BANNER: // sara
+        switch (team) {
+            case SARADOMIN:
                 setSaraFlag(2);
                 object = 4900;
                 createFlagHintIcon(player.getLocation());
                 break;
-            case ZAMMY_BANNER: // zammy
+            case ZAMORAK:
                 setZammyFlag(2);
                 object = 4901;
                 createFlagHintIcon(player.getLocation());
@@ -506,6 +541,10 @@ public class CastleWars implements Minigame {
         GAME_AREA.getPlayers().forEach((teamPlayer) -> teamPlayer.getPacketSender().sendPositionalHint(location, 2));
     }
 
+    public static void removeHintIcon() {
+        GAME_AREA.getPlayers().forEach(p -> p.getPacketSender().sendEntityHintRemoval(true));
+    }
+
     /**
      * The leaving method will be used on click object or log out
      *
@@ -516,8 +555,8 @@ public class CastleWars implements Minigame {
             return;
         }
 
-            player.getPacketSender().sendEntityHintRemoval(true);
-            deleteGameItems(player);
+        player.getPacketSender().sendEntityHintRemoval(true);
+        deleteGameItems(player);
 
     }
 
@@ -531,6 +570,7 @@ public class CastleWars implements Minigame {
             player.moveTo(new Location(
                     GAME_ROOM[0][0] + Misc.random(3),
                     GAME_ROOM[0][1] - Misc.random(3), 1));
+            player.getPacketSender().sendInteractionOption("Attack", 2, true);
         });
 
         ZAMORAK_WAITING_AREA.getPlayers().forEach((player) -> {
@@ -539,6 +579,7 @@ public class CastleWars implements Minigame {
             player.moveTo(new Location(
                     GAME_ROOM[1][0] + Misc.random(3),
                     GAME_ROOM[1][1] - Misc.random(3), 1));
+            player.getPacketSender().sendInteractionOption("Attack", 2, true);
         });
 
         // Schedule the game ending
@@ -554,23 +595,31 @@ public class CastleWars implements Minigame {
 
             boolean saradominWon = scores[0] > scores[1];
 
+            DialogueChainBuilder dialogueBuilder  = new DialogueChainBuilder();
+
             if (scores[0] == scores[1]) {
                 player.getInventory().add(CASTLE_WARS_TICKET, 1);
                 player.getPacketSender().sendMessage("Tie game! You earn 1 ticket!");
             } else if ((saradominWon && Team.SARADOMIN.getPlayers().contains(player))
-            || (!saradominWon && Team.ZAMORAK.getPlayers().contains(player))) {
+                    || (!saradominWon && Team.ZAMORAK.getPlayers().contains(player))) {
                 player.getInventory().add(CASTLE_WARS_TICKET, 2);
                 player.getPacketSender().sendMessage("You won the game. You received 2 Castle Wars Tickets!");
+                dialogueBuilder.add(new ItemStatementDialogue(0, "", new String[] {"You won!", "You captured the enemy's standard "+getScore(Team.getTeamForPlayer(player))+" times.", "Enemies killed: TODO."}, CASTLE_WARS_TICKET, 200));
             } else {
+                dialogueBuilder.add(new ItemStatementDialogue(0, "", new String[] {"You lost!", "You captured the enemy's standard "+getScore(Team.getTeamForPlayer(player))+" times.", "Enemies killed: TODO."}, CASTLE_WARS_TICKET, 200));
                 player.getPacketSender().sendMessage("You lost the game. You received no tickets!");
             }
-
+            player.getDialogueManager().start(dialogueBuilder, 0);
             // Teleport player after checking scores and adding tickets.
             player.moveTo(new Location(2440 + Misc.random(3), 3089 - Misc.random(3), 0));
         });
 
         // Reset game after processing players.
         resetGame();
+    }
+
+    public static int getScore(Team team) {
+        return team == Team.SARADOMIN ? scores[0] : scores[1];
     }
 
     /**
@@ -581,7 +630,7 @@ public class CastleWars implements Minigame {
         changeFlagObject(4903, 1);
         setSaraFlag(0);
         setZammyFlag(0);
-        TaskManager.cancelTasks(new Object[] { START_GAME_TASK_KEY, END_GAME_TASK_KEY });
+        TaskManager.cancelTasks(new Object[]{START_GAME_TASK_KEY, END_GAME_TASK_KEY});
         Team.resetTeams();
     }
 
@@ -613,6 +662,7 @@ public class CastleWars implements Minigame {
                 player.getInventory().delete(new Item(item, player.getInventory().getAmount(item)));
             }
         }
+        player.getPacketSender().sendInteractionOption("null", 2, true);
     }
 
     /**
@@ -641,7 +691,7 @@ public class CastleWars implements Minigame {
      * @param team     the team of the player
      */
     public static void changeFlagObject(int objectId, int team) {
-        GameObject gameObject = new GameObject(objectId, new Location(FLAG_STANDS[team][0], FLAG_STANDS[team][1], 3), 10, 0, null);
+        GameObject gameObject = new GameObject(objectId, new Location(FLAG_STANDS[team][0], FLAG_STANDS[team][1], 3), 10, 2, null);
         ObjectManager.register(gameObject, true);
     }
 
@@ -1016,7 +1066,7 @@ public class CastleWars implements Minigame {
                 }
             });
         }
-            return true;
+        return true;
     }
 
     public static void handleCatapultControls(Player player, int buttonId) {

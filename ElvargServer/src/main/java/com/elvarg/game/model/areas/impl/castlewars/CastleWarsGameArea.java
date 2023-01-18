@@ -1,15 +1,19 @@
 package com.elvarg.game.model.areas.impl.castlewars;
 
+import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.*;
 import com.elvarg.game.model.areas.Area;
+import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Equipment;
+import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
 import com.elvarg.util.Misc;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static com.elvarg.util.ObjectIdentifiers.*;
 
@@ -129,6 +133,21 @@ public class CastleWarsGameArea extends Area {
                 player.getPacketSender().sendMessage("The Castle Wars game has ended for you!");
                 return true;
 
+            case 4900:
+            case 4901: {
+                CastleWars.Team team = CastleWars.Team.getTeamForPlayer(player);
+                if (team == null)
+                    return true;
+
+                switch (team) {
+                    case ZAMORAK:
+                    case SARADOMIN:
+                        CastleWars.returnFlag(player, player.getEquipment().getSlot(Equipment.WEAPON_SLOT));
+
+                        return true;
+                }
+                return true;
+            }
             case SARADOMIN_STANDARD_2:
             case 4377:
                 CastleWars.Team team = CastleWars.Team.getTeamForPlayer(player);
@@ -184,8 +203,37 @@ public class CastleWarsGameArea extends Area {
         return false;
     }
 
+    @Override
     public boolean canTeleport(Player player) {
         // Players shouldn't be able to teleport out of CastleWars
+        StatementDialogue.send(player, "You can't leave just like that!");
         return false;
+    }
+
+    @Override
+    public boolean handleDeath(Player player, Optional<Player> kill) {
+        CastleWars.Team team = CastleWars.Team.getTeamForPlayer(player);
+
+        if (team == null) {
+            System.err.println("no team for "+player.getUsername());
+            return false;
+        }
+        /** Respawns them in any free tile within the starting room **/
+        CastleWars.dropFlag(player, team);
+        player.smartMove(team.respawn_area_bounds);
+        player.castlewarDeaths++;
+
+        if (!kill.isPresent())
+            return true;
+
+        Player killer = kill.get();
+
+        killer.castlewarKills++;
+        return true;
+    }
+
+    @Override
+    public CombatFactory.CanAttackResponse canAttack(Mobile attacker, Mobile target) {
+        return CombatFactory.CanAttackResponse.CAN_ATTACK;
     }
 }
