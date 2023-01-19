@@ -26,21 +26,21 @@ public class CastleWarsGameArea extends Area {
     };
 
     private static final Boundary GAME_SURFACE_BOUNDARY = new PolygonalBoundary(
-            new int[][] {
-                    { 2377, 3079 },
-                    { 2368, 3079 },
-                    { 2368, 3136 },
-                    { 2416, 3136 },
-                    { 2432, 3120 },
-                    { 2432, 3080 },
-                    { 2432, 3072 },
-                    { 2384, 3072 }
+            new int[][]{
+                    {2377, 3079},
+                    {2368, 3079},
+                    {2368, 3136},
+                    {2416, 3136},
+                    {2432, 3120},
+                    {2432, 3080},
+                    {2432, 3072},
+                    {2384, 3072}
             }
     );
 
     public CastleWarsGameArea() {
         // Merge the Dungeon boundaries and the game surface area polygonal boundary
-        super(Arrays.asList(Misc.concatWithCollection(DUNGEON_BOUNDARIES, new Boundary[] { GAME_SURFACE_BOUNDARY })));
+        super(Arrays.asList(Misc.concatWithCollection(DUNGEON_BOUNDARIES, new Boundary[]{GAME_SURFACE_BOUNDARY})));
     }
 
     @Override
@@ -65,6 +65,7 @@ public class CastleWarsGameArea extends Area {
         config = 2097152 * CastleWars.zammyFlag; // flags 0 = safe 1 = taken 2 = dropped
         player.getPacketSender().sendToggle(377, config);
     }
+
     @Override
     public void postLeave(Mobile character, boolean logout) {
         Player player = character.getAsPlayer();
@@ -189,7 +190,30 @@ public class CastleWarsGameArea extends Area {
     }
 
     @Override
-    public CombatFactory.CanAttackResponse canAttack(Mobile attacker, Mobile target) {
-        return CombatFactory.CanAttackResponse.CAN_ATTACK;
+    public boolean canTeleport(Player player) {
+        StatementDialogue.send(player, "You can't leave just like that!");
+        return false;
+    }
+
+    @Override
+    public boolean handleDeath(Player player, Optional<Player> kill) {
+        CastleWars.Team team = CastleWars.Team.getTeamForPlayer(player);
+
+        if (team == null) {
+            System.err.println("no team for " + player.getUsername());
+            return false;
+        }
+        /** Respawns them in any free tile within the starting room **/
+        CastleWars.dropFlag(player, team);
+        player.smartMove(team.respawn_area_bounds);
+        player.castlewarsDeaths++;
+
+        if (!kill.isPresent())
+            return true;
+
+        Player killer = kill.get();
+
+        killer.castlewarsKills++;
+        return true;
     }
 }
