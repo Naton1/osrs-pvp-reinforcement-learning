@@ -147,7 +147,8 @@ public class ItemOnGroundManager {
 	public static void register(ItemOnGround item) {
 		// No point spamming with spawned items...
 		boolean spawnable = GameConstants.ALLOWED_SPAWNS.contains(item.getItem().getId());
-		if (spawnable && !Objects.equals("ground_items_spawns", item.getOwner())) {
+		if (spawnable && !Objects.equals("ground_items_spawns", item.getOwner().get())) {
+			System.err.println("blocked spawn for.. "+item.getItem().getId());
 			return;
 		}
 
