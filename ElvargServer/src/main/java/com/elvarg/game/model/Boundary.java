@@ -12,11 +12,21 @@ public class Boundary {
     private final int y;
     private final int y2;
 
+    public int height;
+
     public Boundary(int x, int x2, int y, int y2) {
         this.x = x;
         this.x2 = x2;
         this.y = y;
         this.y2 = y2;
+    }
+
+    public Boundary(int x, int x2, int y, int y2, int height) {
+        this.x = x;
+        this.x2 = x2;
+        this.y = y;
+        this.y2 = y2;
+        this.height = height;
     }
 
     public int getX() {
@@ -36,6 +46,6 @@ public class Boundary {
     }
 
     public boolean inside(Location p) {
-        return p.getX() >= x && p.getX() <= x2 && p.getY() >= y && p.getY() <= y2;
+        return p.getX() >= x && p.getX() <= x2 && p.getY() >= y && p.getY() <= y2 && height == p.getZ();
     }
 }

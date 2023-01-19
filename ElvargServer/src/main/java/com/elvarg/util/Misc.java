@@ -833,6 +833,10 @@ public class Misc {
         return (int) (java.lang.Math.random() * (range + 1));
     }
 
+    public static int random(int minRange, int maxRange) {
+        return minRange + random(maxRange - minRange);
+    }
+
     /**
      * Get a random number between a range and exclude some numbers.
      * The excludes list MUST BE MODIFIABLE.

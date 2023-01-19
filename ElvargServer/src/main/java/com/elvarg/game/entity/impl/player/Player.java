@@ -1668,4 +1668,6 @@ public class Player extends Mobile {
 		}
 		this.questProgress = questProgress;
 	}
+
+	public int castlewarsKills, castlewarsDeaths;
 }

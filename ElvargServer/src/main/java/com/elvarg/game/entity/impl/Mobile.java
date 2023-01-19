@@ -1,6 +1,7 @@
 package com.elvarg.game.entity.impl;
 
 import com.elvarg.game.Sound;
+import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.Combat;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.hit.HitDamage;
@@ -9,15 +10,11 @@ import com.elvarg.game.entity.Entity;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
-import com.elvarg.game.model.Animation;
-import com.elvarg.game.model.Direction;
-import com.elvarg.game.model.Flag;
-import com.elvarg.game.model.Graphic;
-import com.elvarg.game.model.Location;
-import com.elvarg.game.model.UpdateFlag;
+import com.elvarg.game.model.*;
 import com.elvarg.game.model.movement.MovementQueue;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
+import com.elvarg.util.Misc;
 import com.elvarg.util.Stopwatch;
 import com.elvarg.util.timers.TimerRepository;
 import com.google.common.collect.Maps;
@@ -119,6 +116,54 @@ public abstract class Mobile extends Entity {
 	public Mobile moveTo(Location teleportTarget) {
 		getMovementQueue().reset();
 		setLocation(teleportTarget.clone());
+		setNeedsPlacement(true);
+		setResetMovementQueue(true);
+		setMobileInteraction(null);
+		if (this instanceof Player) {
+			getMovementQueue().handleRegionChange();
+		}
+		return this;
+	}
+
+	public Mobile smartMove(Location location, int radius) {
+		Location chosen = null;
+		int requestedX = location.getX();
+		int requestedY = location.getY();
+		int height = location.getZ();
+		while(true) {
+			int randomX = Misc.random(requestedX - radius, requestedX + radius);
+			int randomY = Misc.random(requestedY - radius, requestedY + radius);
+			Location randomLocation = new Location(randomX, randomY, height);
+			if (!RegionManager.blocked(randomLocation, null)) {
+				chosen = randomLocation;
+				break;
+			}
+		}
+		getMovementQueue().reset();
+		setLocation(chosen.clone());
+		setNeedsPlacement(true);
+		setResetMovementQueue(true);
+		setMobileInteraction(null);
+		if (this instanceof Player) {
+			getMovementQueue().handleRegionChange();
+		}
+		return this;
+	}
+
+	public Mobile smartMove(Boundary bounds) {
+		Location chosen = null;
+		int height = bounds.height;
+		while(true) {
+			int randomX = Misc.random(bounds.getX(), bounds.getX2());
+			int randomY = Misc.random(bounds.getY(), bounds.getY2());
+			Location randomLocation = new Location(randomX, randomY, height);
+			if (!RegionManager.blocked(randomLocation, null)) {
+				chosen = randomLocation;
+				break;
+			}
+		}
+		getMovementQueue().reset();
+		setLocation(chosen.clone());
 		setNeedsPlacement(true);
 		setResetMovementQueue(true);
 		setMobileInteraction(null);
