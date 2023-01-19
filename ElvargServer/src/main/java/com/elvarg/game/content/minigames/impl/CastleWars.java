@@ -59,7 +59,7 @@ public class CastleWars implements Minigame {
     public static boolean handleItemOnPlayer(Player player, Player target, Item item) {
         if (item.getId() != BANDAGES)
             return false;
-        if (Team.getTeamForPlayer(player) == Team.ZAMORAK && Team.getTeamForPlayer(target) == Team.SARADOMIN || Team.getTeamForPlayer(player) == Team.SARADOMIN && Team.getTeamForPlayer(target) == Team.ZAMORAK) {
+        if (Team.getTeamForPlayer(player) != Team.getTeamForPlayer(target)) {
             player.getPacketSender().sendMessage("You don't want to be healing your enemies!");
             return true;
         }
@@ -570,7 +570,6 @@ public class CastleWars implements Minigame {
             player.moveTo(new Location(
                     GAME_ROOM[0][0] + Misc.random(3),
                     GAME_ROOM[0][1] - Misc.random(3), 1));
-            player.getPacketSender().sendInteractionOption("Attack", 2, true);
         });
 
         ZAMORAK_WAITING_AREA.getPlayers().forEach((player) -> {
@@ -579,7 +578,6 @@ public class CastleWars implements Minigame {
             player.moveTo(new Location(
                     GAME_ROOM[1][0] + Misc.random(3),
                     GAME_ROOM[1][1] - Misc.random(3), 1));
-            player.getPacketSender().sendInteractionOption("Attack", 2, true);
         });
 
         // Schedule the game ending
@@ -595,8 +593,6 @@ public class CastleWars implements Minigame {
 
             boolean saradominWon = scores[0] > scores[1];
 
-            DialogueChainBuilder dialogueBuilder  = new DialogueChainBuilder();
-
             if (scores[0] == scores[1]) {
                 player.getInventory().add(CASTLE_WARS_TICKET, 1);
                 player.getPacketSender().sendMessage("Tie game! You earn 1 ticket!");
@@ -604,12 +600,11 @@ public class CastleWars implements Minigame {
                     || (!saradominWon && Team.ZAMORAK.getPlayers().contains(player))) {
                 player.getInventory().add(CASTLE_WARS_TICKET, 2);
                 player.getPacketSender().sendMessage("You won the game. You received 2 Castle Wars Tickets!");
-                dialogueBuilder.add(new ItemStatementDialogue(0, "", new String[] {"You won!", "You captured the enemy's standard "+getScore(Team.getTeamForPlayer(player))+" times.", "Enemies killed: TODO."}, CASTLE_WARS_TICKET, 200));
+                ItemStatementDialogue.send(player, "", new String[] {"You won!", "You captured the enemy's standard "+getScore(Team.getTeamForPlayer(player))+" times.", "Enemies killed: TODO."}, CASTLE_WARS_TICKET, 200);
             } else {
-                dialogueBuilder.add(new ItemStatementDialogue(0, "", new String[] {"You lost!", "You captured the enemy's standard "+getScore(Team.getTeamForPlayer(player))+" times.", "Enemies killed: TODO."}, CASTLE_WARS_TICKET, 200));
+                ItemStatementDialogue.send(player, "", new String[] {"You lost!", "You captured the enemy's standard "+getScore(Team.getTeamForPlayer(player))+" times.", "Enemies killed: TODO."}, CASTLE_WARS_TICKET, 200);
                 player.getPacketSender().sendMessage("You lost the game. You received no tickets!");
             }
-            player.getDialogueManager().start(dialogueBuilder, 0);
             // Teleport player after checking scores and adding tickets.
             player.moveTo(new Location(2440 + Misc.random(3), 3089 - Misc.random(3), 0));
         });
@@ -619,7 +614,7 @@ public class CastleWars implements Minigame {
     }
 
     public static int getScore(Team team) {
-        return team == Team.SARADOMIN ? scores[0] : scores[1];
+        return team.getScore();
     }
 
     /**
@@ -662,7 +657,6 @@ public class CastleWars implements Minigame {
                 player.getInventory().delete(new Item(item, player.getInventory().getAmount(item)));
             }
         }
-        player.getPacketSender().sendInteractionOption("null", 2, true);
     }
 
     /**
