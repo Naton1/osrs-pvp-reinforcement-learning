@@ -9,16 +9,16 @@ import com.elvarg.game.model.commands.impl.*;
 public class CommandManager {
 
     public static final Map<String, Command> commands = new HashMap<String, Command>();
-    
+
     private static void put(Command command, String... keys) {
         for (String key : keys) {
             commands.put(key, command);
         }
     }
-    
+
     public static void loadCommands() {
         commands.clear();
-        
+
         /**
          * Players Command
          */
@@ -79,6 +79,8 @@ public class CommandManager {
         put(new Title(), "title");
         put(new Runes(), "runes");
         put(new BarrageCommand(), "barrage");
+        put(new Donator(), "donator");
+        put(new GiveDonator(), "givedonator");
 
         /**
          * Developer Commands
@@ -110,7 +112,9 @@ public class CommandManager {
         put(new CWarInterfaceCommand(), "cwar");
         put(new ListSizesCommand(), "listsizes");
         put(new AttackRange(), "atkrange", "attackrange");
-        
+        put(new Donator(), "donator");
+        put(new GiveDonator(), "givedonator");
+
         if (!Server.PRODUCTION) {
             put(new DebugCommand(), "t");
         }
