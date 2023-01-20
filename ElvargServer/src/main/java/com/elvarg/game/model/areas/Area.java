@@ -1,6 +1,7 @@
 package com.elvarg.game.model.areas;
 
 import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
+import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
@@ -111,6 +112,10 @@ public abstract class Area {
 
     public void onPlayerRightClick(Player player, Player rightClicked, int option) {
         // By default, players will have the default right click in Areas.
+    }
+
+    public void onPlayerDealtDamage(Player player, Mobile target, PendingHit hit) {
+        // By default, do not do any extra processing for when players deal damage in an area.
     }
 
     public boolean handleObjectClick(Player player, int objectId, int type) {

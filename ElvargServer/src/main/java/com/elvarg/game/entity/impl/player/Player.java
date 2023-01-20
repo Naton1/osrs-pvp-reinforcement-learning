@@ -200,6 +200,9 @@ public class Player extends Mobile {
 	private int highestKillstreak;
 	private int deaths;
 	private int safeTimer = 180;
+	//Pest Control
+	public int pcDamage = 0;
+	public int pcPoints = 0;
 	// Barrows
 	private int barrowsCrypt;
 	private int barrowsChestsLooted;
@@ -683,7 +686,7 @@ public class Player extends Mobile {
 	 * Resets the player's attributes to default.
 	 */
 	public void resetAttributes() {
-		performAnimation(new Animation(65535));
+		performAnimation(Animation.DEFAULT_RESET_ANIMATION);
 		setSpecialActivated(false);
 		CombatSpecial.updateBar(this);
 		setHasVengeance(false);

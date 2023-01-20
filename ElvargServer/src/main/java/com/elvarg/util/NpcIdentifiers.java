@@ -2949,7 +2949,7 @@ public class NpcIdentifiers {
     public static final int NAIL_BEAST_2 = 2947;
     public static final int NAIL_BEAST_3 = 2948;
     public static final int SQUIRE_12 = 2949;
-    public static final int VOID_KNIGHT_5 = 2950;
+    public static final int VOID_KNIGHT_GAME = 2950;
     public static final int VOID_KNIGHT_6 = 2951;
     public static final int VOID_KNIGHT_7 = 2952;
     public static final int VOID_KNIGHT_8 = 2953;

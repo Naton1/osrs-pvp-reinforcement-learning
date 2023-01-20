@@ -534,6 +534,7 @@ public class TeleportChatBox {
 			BARROWS(KeyEvent.VK_B, "Barrows", ""),
 			FIGHT_CAVES(KeyEvent.VK_F, "Fight caves", ""),
 			CASTLE_WARS(KeyEvent.VK_C, "Castle wars", ""),
+			PEST_CONTROL(KeyEvent.VK_P, "Pest control", ""),
 ;
 
 			Option(int shortcutKey, String name,
