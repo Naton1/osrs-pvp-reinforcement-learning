@@ -6986,7 +6986,6 @@ public class Client extends GameApplet {
             sendMessage(message, 0, "");
         }
 
-        System.err.println("ground item bs.. = "+action);
         // Click First Option Ground Item
         if (action == 244) {
             crossX = super.saveClickX;
