@@ -87,6 +87,7 @@ public class CombatFactory {
 		DUEL_WRONG_OPPONENT,
 		TARGET_IS_IMMUNE,
 		CAN_ATTACK,
+		CASTLE_WARS_FRIENDLY_FIRE,
 	}
 
 	/**

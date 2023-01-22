@@ -1,9 +1,7 @@
 package com.elvarg.game.content.combat;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 import com.elvarg.Server;
 import com.elvarg.game.content.combat.hit.HitDamageCache;
@@ -14,8 +12,8 @@ import com.elvarg.game.content.combat.method.CombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.GraniteMaulCombatMethod;
 import com.elvarg.game.content.combat.ranged.RangedData.Ammunition;
 import com.elvarg.game.content.combat.ranged.RangedData.RangedWeapon;
+import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.entity.impl.Mobile;
-import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.SecondsTimer;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
@@ -210,6 +208,14 @@ public class Combat {
             case TARGET_IS_IMMUNE -> {
                 if (character.isPlayer()) {
                     ((Player) character).getPacketSender().sendMessage("This npc is currently immune to attacks.");
+                }
+                character.getCombat().reset();
+            }
+            case CASTLE_WARS_FRIENDLY_FIRE -> {
+                Player player = character.getAsPlayer();
+                if (player != null) {
+                    String teamName = Objects.requireNonNull(CastleWars.Team.getTeamForPlayer(player)).name().toLowerCase(Locale.ROOT);
+                    player.getPacketSender().sendMessage(teamName + " wants you to kill your enemies!");
                 }
                 character.getCombat().reset();
             }
