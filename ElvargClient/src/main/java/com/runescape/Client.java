@@ -6986,7 +6986,6 @@ public class Client extends GameApplet {
             sendMessage(message, 0, "");
         }
 
-        System.err.println("ground item bs.. = "+action);
         // Click First Option Ground Item
         if (action == 244) {
             crossX = super.saveClickX;
@@ -14935,9 +14934,9 @@ public class Client extends GameApplet {
                     ItemDefinition definition = ItemDefinition.lookup(item);
                     Widget.interfaceCache[widget].defaultMediaType = 4;
                     Widget.interfaceCache[widget].defaultMedia = item;
-                    //Widget.interfaceCache[widget].modelRotation1 = definition.rotation_y;
-                    //Widget.interfaceCache[widget].modelRotation2 = definition.rotation_x;
-                    Widget.interfaceCache[widget].modelZoom = (definition.modelZoom * 100) / scale;
+                    Widget.interfaceCache[widget].modelRotation1 = definition.rotation_y;
+                    Widget.interfaceCache[widget].modelRotation2 = definition.rotation_x;
+                    Widget.interfaceCache[widget].modelZoom = (definition.modelZoom * 100 / scale);
                     opcode = -1;
                     return true;
                 }

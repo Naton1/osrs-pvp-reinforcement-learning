@@ -68,36 +68,6 @@ public class PlayerDeathTask extends Task {
 		}
 		try {
 			switch (ticks) {
-			case 2:
-				if (player instanceof PlayerBot) {
-					((PlayerBot) player).getCombatInteraction().handleDying(this.killer);
-				}
-
-				// Reset combat..
-				player.getCombat().reset();
-
-				// Reset movement queue and disable it..
-				player.getMovementQueue().setBlockMovement(true).reset();
-
-				// Mark us as untargetable..
-				player.setUntargetable(true);
-
-				// Close all open interfaces..
-				player.getPacketSender().sendInterfaceRemoval();
-
-				// Send death message..
-				player.getPacketSender().sendMessage("Oh dear, you are dead!");
-
-				// Perform death animation..
-				player.performAnimation(new Animation(836, Priority.HIGH));
-
-				// Handle retribution prayer effect on our killer, if present..
-				if (PrayerHandler.isActivated(player, PrayerHandler.RETRIBUTION)) {
-					if (killer.isPresent()) {
-						CombatFactory.handleRetribution(player, killer.get());
-					}
-				}
-				break;
 			case 0:
 				if (player instanceof PlayerBot) {
 					((PlayerBot) player).getCombatInteraction().handleDeath(killer);
@@ -238,6 +208,37 @@ public class PlayerDeathTask extends Task {
 				// Stop the event..
 				stop();
 				break;
+
+				case 2:
+					if (player instanceof PlayerBot) {
+						((PlayerBot) player).getCombatInteraction().handleDying(this.killer);
+					}
+
+					// Reset combat..
+					player.getCombat().reset();
+
+					// Reset movement queue and disable it..
+					player.getMovementQueue().setBlockMovement(true).reset();
+
+					// Mark us as untargetable..
+					player.setUntargetable(true);
+
+					// Close all open interfaces..
+					player.getPacketSender().sendInterfaceRemoval();
+
+					// Send death message..
+					player.getPacketSender().sendMessage("Oh dear, you are dead!");
+
+					// Perform death animation..
+					player.performAnimation(new Animation(836, Priority.HIGH));
+
+					// Handle retribution prayer effect on our killer, if present..
+					if (PrayerHandler.isActivated(player, PrayerHandler.RETRIBUTION)) {
+						if (killer.isPresent()) {
+							CombatFactory.handleRetribution(player, killer.get());
+						}
+					}
+					break;
 			}
 			ticks--;
 		} catch (Exception e) {

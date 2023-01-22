@@ -252,6 +252,9 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
 
         player.getMovementQueue().walkToEntity(target, () -> {
 
+            if (CastleWars.handleItemOnPlayer(player, target, item)) {
+                return;
+            }
             switch (itemId) {
                 /** For future actions.. **/
                 case 995: {

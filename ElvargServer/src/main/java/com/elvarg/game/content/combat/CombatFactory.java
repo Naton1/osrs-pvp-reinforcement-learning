@@ -472,20 +472,23 @@ public class CombatFactory {
 			return;
 		}
 
+		if (target.isUntargetable() || target.isNeedsPlacement()) {
+			// If target is teleporting or needs placement, don't register the hit
+			return;
+		}
+
 		if (attacker.isPlayer()) {
 			// Reward the player experience for this attack..
 			rewardExp(attacker.getAsPlayer(), qHit);
+
+			if (attacker.getAsPlayer().getArea() != null) {
+				attacker.getAsPlayer().getArea().onPlayerDealtDamage(attacker.getAsPlayer(), target, qHit);
+			}
 
 			// Check if the player should be skulled for making this attack..
 			if (target.isPlayer()) {
 				handleSkull(attacker.getAsPlayer(), target.getAsPlayer());
 			}
-		}
-
-		// If target is teleporting or needs placement
-		// Dont continue to add the hit.
-		if (target.isUntargetable() || target.isNeedsPlacement()) {
-			return;
 		}
 
 		// Add this hit to the target's hitQueue

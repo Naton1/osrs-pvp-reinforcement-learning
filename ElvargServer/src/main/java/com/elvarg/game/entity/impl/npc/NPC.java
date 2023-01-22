@@ -62,6 +62,13 @@ public class NPC extends Mobile {
 	 */
 	private boolean isDying;
 	/**
+	 * For PestControl
+	 */
+	public boolean needRespawn;
+	public static int maxNPCs = 5000;
+	public static int maxListedNPCs = 5000;
+	public static NPC npcs[] = new NPC[maxNPCs];
+	/**
 	 * The npc's owner.
 	 * <p>
 	 * The only player who can see right-click actions on the npc.

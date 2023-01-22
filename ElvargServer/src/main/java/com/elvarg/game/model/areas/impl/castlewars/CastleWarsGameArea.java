@@ -7,10 +7,13 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.*;
 import com.elvarg.game.model.areas.Area;
+import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Equipment;
+import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
 import com.elvarg.util.Misc;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static com.elvarg.util.ObjectIdentifiers.*;
 
@@ -23,21 +26,21 @@ public class CastleWarsGameArea extends Area {
     };
 
     private static final Boundary GAME_SURFACE_BOUNDARY = new PolygonalBoundary(
-            new int[][] {
-                    { 2377, 3079 },
-                    { 2368, 3079 },
-                    { 2368, 3136 },
-                    { 2416, 3136 },
-                    { 2432, 3120 },
-                    { 2432, 3080 },
-                    { 2432, 3072 },
-                    { 2384, 3072 }
+            new int[][]{
+                    {2377, 3079},
+                    {2368, 3079},
+                    {2368, 3136},
+                    {2416, 3136},
+                    {2432, 3120},
+                    {2432, 3080},
+                    {2432, 3072},
+                    {2384, 3072}
             }
     );
 
     public CastleWarsGameArea() {
         // Merge the Dungeon boundaries and the game surface area polygonal boundary
-        super(Arrays.asList(Misc.concatWithCollection(DUNGEON_BOUNDARIES, new Boundary[] { GAME_SURFACE_BOUNDARY })));
+        super(Arrays.asList(Misc.concatWithCollection(DUNGEON_BOUNDARIES, new Boundary[]{GAME_SURFACE_BOUNDARY})));
     }
 
     @Override
@@ -217,8 +220,31 @@ public class CastleWarsGameArea extends Area {
         return false;
     }
 
+    @Override
     public boolean canTeleport(Player player) {
-        // Players shouldn't be able to teleport out of CastleWars
+        StatementDialogue.send(player, "You can't leave just like that!");
         return false;
+    }
+
+    @Override
+    public boolean handleDeath(Player player, Optional<Player> kill) {
+        CastleWars.Team team = CastleWars.Team.getTeamForPlayer(player);
+
+        if (team == null) {
+            System.err.println("no team for " + player.getUsername());
+            return false;
+        }
+        /** Respawns them in any free tile within the starting room **/
+        CastleWars.dropFlag(player, team);
+        player.smartMove(team.respawn_area_bounds);
+        player.castlewarsDeaths++;
+
+        if (!kill.isPresent())
+            return true;
+
+        Player killer = kill.get();
+
+        killer.castlewarsKills++;
+        return true;
     }
 }

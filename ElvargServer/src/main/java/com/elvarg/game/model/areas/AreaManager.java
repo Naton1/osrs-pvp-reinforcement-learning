@@ -2,6 +2,7 @@ package com.elvarg.game.model.areas;
 
 import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.content.minigames.impl.CastleWars;
+import com.elvarg.game.content.minigames.impl.PestControl;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
@@ -11,7 +12,6 @@ import com.elvarg.game.model.areas.impl.DuelArenaArea;
 import com.elvarg.game.model.areas.impl.GodwarsDungeonArea;
 import com.elvarg.game.model.areas.impl.KingBlackDragonArea;
 import com.elvarg.game.model.areas.impl.WildernessArea;
-import com.elvarg.game.model.areas.impl.castlewars.CastleWarsLobbyArea;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,9 @@ public class AreaManager {
         areas.add(CastleWars.ZAMORAK_WAITING_AREA);
         areas.add(CastleWars.SARADOMIN_WAITING_AREA);
         areas.add(CastleWars.GAME_AREA);
+        areas.add(PestControl.GAME_AREA);
+        areas.add(PestControl.NOVICE_BOAT_AREA);
+        areas.add(PestControl.OUTPOST_AREA);
     }
 
     /**
@@ -51,8 +54,9 @@ public class AreaManager {
             }
         }
 
-        if (area == null) {
-            area = get(position);
+        Area newArea = get(position);
+        if (area == null || area != newArea) {
+            area = newArea;
             if (area != null) {
                 area.enter(c);
             }

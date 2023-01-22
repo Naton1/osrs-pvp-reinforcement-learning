@@ -5,7 +5,6 @@ import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.DepositBox;
 import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.minigames.MinigameHandler;
-import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.content.minigames.impl.FightCaves;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.content.skill.skillable.impl.Smithing;
@@ -46,7 +45,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *
 	 * @param player
 	 *            The player that clicked on the object.
-	 * @param packet
+	 * @param object
 	 *            The packet containing the object's information.
 	 */
     private static void firstClick(Player player, GameObject object) {
@@ -177,7 +176,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
      *
      * @param player
      *            The player that clicked on the object.
-     * @param packet
+     * @param object
      *            The packet containing the object's information.
      */
     private static void secondClick(Player player, GameObject object) {
@@ -216,7 +215,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *
 	 * @param player
 	 *            The player that clicked on the object.
-	 * @param packet
+	 * @param object
 	 *            The packet containing the object's information.
 	 */
 	private static void thirdClick(Player player, GameObject object) {
@@ -236,7 +235,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *
 	 * @param player
 	 *            The player that clicked on the object.
-	 * @param packet
+	 * @param object
 	 *            The packet containing the object's information.
 	 */
 	private static void fourthClick(Player player, GameObject object) {

@@ -162,6 +162,11 @@ public class Equipment extends ItemContainer {
         return get(Equipment.WEAPON_SLOT);
     }
 
+    public boolean hasCastleWarsBracelet() {
+        Item hands = get(HANDS_SLOT);
+        return hands != null && hands.getId() >= 11079 && hands.getId() <= 11083;
+    }
+
     public boolean hasGodsword() {
         return get(WEAPON_SLOT) != null && get(WEAPON_SLOT).getDefinition().getName().toLowerCase().contains("godsword");
     }

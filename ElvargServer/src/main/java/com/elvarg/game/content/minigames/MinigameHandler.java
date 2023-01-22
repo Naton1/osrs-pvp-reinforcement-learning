@@ -1,6 +1,7 @@
 package com.elvarg.game.content.minigames;
 
 import com.elvarg.game.content.minigames.impl.CastleWars;
+import com.elvarg.game.content.minigames.impl.PestControl;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 
@@ -11,7 +12,8 @@ import java.util.stream.Stream;
 public class MinigameHandler {
 
     public enum Minigames {
-        CASTLEWARS("Castlewars", new CastleWars());
+        CASTLEWARS("Castlewars", new CastleWars()),
+        PEST_CONTROL("Pest Control", new PestControl());
 
         private final String name;
         private final Minigame minigame;
@@ -27,6 +29,15 @@ public class MinigameHandler {
          */
         public static Stream<Minigames> getAll() {
             return Arrays.stream(Minigames.values()).filter(m -> m.minigame != null);
+        }
+
+        /**
+         * Return the actual Minigame instance.
+         *
+         * @return
+         */
+        public Minigame get() {
+            return this.minigame;
         }
 
     }
