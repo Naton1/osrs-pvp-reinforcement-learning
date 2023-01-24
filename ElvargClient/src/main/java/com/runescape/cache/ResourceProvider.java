@@ -11,8 +11,6 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.util.zip.GZIPInputStream;
 
-import static com.runescape.Client.constructMusic;
-
 public final class ResourceProvider implements Runnable {
 
     private final Deque requested;

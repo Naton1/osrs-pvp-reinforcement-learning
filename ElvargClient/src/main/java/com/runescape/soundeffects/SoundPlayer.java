@@ -1,4 +1,4 @@
-package com.runescape.sound;
+package com.runescape.soundeffects;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;

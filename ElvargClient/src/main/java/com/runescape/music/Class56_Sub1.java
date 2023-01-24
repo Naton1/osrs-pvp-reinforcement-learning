@@ -1,6 +1,8 @@
-package com.runescape;/* Class56_Sub1 - Decompiled by JODE
+package com.runescape.music;/* Class56_Sub1 - Decompiled by JODE
  * Visit http://jode.sourceforge.net/
  */
+
+import com.runescape.Client;
 
 abstract class Class56_Sub1 extends Class56
 {
@@ -70,7 +72,7 @@ abstract class Class56_Sub1 extends Class56
     	}
     }
     
-    private static final int method844(int i) {
+    private static int method844(int i) {
     	int i_32_ = Client.anIntArray385[i];
     	i_32_ = (i_32_ * Client.anInt1401 >> 8) * i_32_;
     	return (int) (Math.sqrt((double) i_32_) + 0.5);

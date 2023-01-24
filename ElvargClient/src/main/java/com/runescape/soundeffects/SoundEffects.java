@@ -1,4 +1,4 @@
-package com.runescape.sound;
+package com.runescape.soundeffects;
 
 import com.runescape.io.Buffer;
 
@@ -6,9 +6,18 @@ import com.runescape.io.Buffer;
  * Refactored reference:
  * http://www.rune-server.org/runescape-development/rs2-client/downloads/575183-almost-fully-refactored-317-client.html
  */
-public final class Track {
+public final class SoundEffects {
 
-    private Track() {
+    private static final SoundEffects[] effects = new SoundEffects[5000];
+
+    public static final int[] delays = new int[5000];
+    private static byte[] output;
+    private static Buffer riff;
+    private final Synthesizer[] synthesizers;
+    private int loopStart;
+    private int loopEnd;
+
+    private SoundEffects() {
         synthesizers = new Synthesizer[10];
     }
 
@@ -20,15 +29,15 @@ public final class Track {
             int id = stream.readUShort();
             if (id == 65535)
                 return;
-            tracks[id] = new Track();
-            tracks[id].decode(stream);
-            delays[id] = tracks[id].calculateDelay();
+            effects[id] = new SoundEffects();
+            effects[id].decode(stream);
+            delays[id] = effects[id].calculateDelay();
         } while (true);
     }
 
     public static Buffer data(int loops, int id) {
-        if (tracks[id] != null) {
-            Track soundTrack = tracks[id];
+        if (effects[id] != null) {
+            SoundEffects soundTrack = effects[id];
             return soundTrack.pack(loops);
         } else {
             return null;
@@ -137,13 +146,5 @@ public final class Track {
         }
         return size;
     }
-
-    private static final Track[] tracks = new Track[5000];
-    public static final int[] delays = new int[5000];
-    private static byte[] output;
-    private static Buffer riff;
-    private final Synthesizer[] synthesizers;
-    private int loopStart;
-    private int loopEnd;
 
 }

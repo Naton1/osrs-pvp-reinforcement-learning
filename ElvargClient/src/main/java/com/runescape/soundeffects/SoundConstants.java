@@ -1,4 +1,4 @@
-package com.runescape.sound;
+package com.runescape.soundeffects;
 
 /**
  * Class containing sound-related constants.

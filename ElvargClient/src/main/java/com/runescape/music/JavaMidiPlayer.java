@@ -1,5 +1,7 @@
-package com.runescape;
+package com.runescape.music;
 
+
+import com.runescape.Client;
 
 import java.io.ByteArrayInputStream;
 
@@ -11,19 +13,18 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 
-final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
-{
-    private static Receiver aReceiver1850 = null;
-    private static Sequencer aSequencer1851 = null;
+public class JavaMidiPlayer extends Class56_Sub1 implements Receiver {
+    private static Receiver receiver = null;
+    private static Sequencer sequencer = null;
 
-	public void method827(int i, byte[] is, int i_0_, boolean bool) {
-    	if (aSequencer1851 != null) {
+	public void method827(int i, byte[] payload, int i_0_, boolean bool) {
+    	if (sequencer != null) {
     		try {
-    			Sequence sequence = MidiSystem.getSequence(new ByteArrayInputStream(is));
-    			aSequencer1851.setSequence(sequence);
-    			aSequencer1851.setLoopCount(!bool ? 0 : -1);
+    			Sequence sequence = MidiSystem.getSequence(new ByteArrayInputStream(payload));
+    			sequencer.setSequence(sequence);
+    			sequencer.setLoopCount(!bool ? 0 : -1);
     			method835(0, i, -1L);
-    			aSequencer1851.start();
+    			sequencer.start();
     		} catch (Exception exception) {
     			/* empty */
     		}
@@ -31,8 +32,8 @@ final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
     }
     
     public void method833() {
-		if (aSequencer1851 != null) {
-		    aSequencer1851.stop();
+		if (sequencer != null) {
+		    sequencer.stop();
 		    method838(-1L);
 		}
     }
@@ -40,15 +41,15 @@ final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
     public synchronized void send(MidiMessage midimessage, long l) {
     	byte[] is = midimessage.getMessage();
     	if (is.length < 3 || !method837(is[0], is[1], is[2], l))
-    		aReceiver1850.send(midimessage, l);
+    		receiver.send(midimessage, l);
     }
 
-	public Class56_Sub1_Sub1() {
+	public JavaMidiPlayer() {
 		try {
-		    aReceiver1850 = MidiSystem.getReceiver();
-		    aSequencer1851 = MidiSystem.getSequencer(false);
-		    aSequencer1851.getTransmitter().setReceiver(this);
-		    aSequencer1851.open();
+		    receiver = MidiSystem.getReceiver();
+		    sequencer = MidiSystem.getSequencer(false);
+		    sequencer.getTransmitter().setReceiver(this);
+		    sequencer.open();
 		    method838(-1L);
 		} catch (Exception exception) {
 		    Client.method790();
@@ -56,13 +57,13 @@ final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
     }
 
 	public void method828() {
-    	if (aSequencer1851 != null) {
-    		aSequencer1851.close();
-    		aSequencer1851 = null;
+    	if (sequencer != null) {
+    		sequencer.close();
+    		sequencer = null;
     	}
-    	if (aReceiver1850 != null) {
-    		aReceiver1850.close();
-    		aReceiver1850 = null;
+    	if (receiver != null) {
+    		receiver.close();
+    		receiver = null;
     	}
     }
     
@@ -71,22 +72,22 @@ final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
     }
     
     public void method831(int i) {
-		if (aSequencer1851 != null) {
+		if (sequencer != null) {
 		    method840(i, -1L);
 		}
     }
     
     public synchronized void method830(int i, int i_2_) {
-    	if (aSequencer1851 != null) {
+    	if (sequencer != null) {
     		method835(i_2_, i, -1L);
     	}
     }
     
     public void method836(int i, int i_5_, int i_6_, long l) {
     	try {
-    		ShortMessage shortmessage = new ShortMessage();
-    		shortmessage.setMessage(i, i_5_, i_6_);
-    		aReceiver1850.send(shortmessage, l);
+    		ShortMessage message = new ShortMessage();
+    		message.setMessage(i, i_5_, i_6_);
+    		receiver.send(message, l);
     	} catch (InvalidMidiDataException invalidmididataexception) {
     		/* empty */
 		}
