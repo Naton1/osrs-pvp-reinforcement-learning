@@ -4,8 +4,12 @@ package com.runescape.music;/* Class56_Sub1 - Decompiled by JODE
 
 import com.runescape.Client;
 
-abstract class Class56_Sub1 extends Class56
-{
+abstract class Class56_Sub1 extends Class56 {
+
+	public static int[] anIntArray385 = new int[]{12800, 12800, 12800, 12800, 12800, 12800,
+			12800, 12800, 12800, 12800, 12800, 12800,
+			12800, 12800, 12800, 12800};
+
     final void method835(int i, int i_1_, long l) {
     	i_1_ = (int) ((double) i_1_ * Math.pow(0.1, (double) i * 5.0E-4) + 0.5);
     	if (i_1_ != Client.anInt1401) {
@@ -25,7 +29,7 @@ abstract class Class56_Sub1 extends Class56
     		if (i_6_ == 121) {
     			method836(i, i_6_, i_7_, l);
     			int i_8_ = i & 0xf;
-				Client.anIntArray385[i_8_] = 12800;
+				anIntArray385[i_8_] = 12800;
     			int i_9_ = method844(i_8_);
     			method836(i, 7, i_9_ >> 7, l);
     			method836(i, 39, i_9_ & 0x7f, l);
@@ -34,9 +38,9 @@ abstract class Class56_Sub1 extends Class56
     		if (i_6_ == 7 || i_6_ == 39) {
     			int i_10_ = i & 0xf;
     			if (i_6_ == 7)
-					Client.anIntArray385[i_10_] = (Client.anIntArray385[i_10_] & 0x7f) + (i_7_ << 7);
+					anIntArray385[i_10_] = (anIntArray385[i_10_] & 0x7f) + (i_7_ << 7);
     			else
-					Client.anIntArray385[i_10_] = (Client.anIntArray385[i_10_] & 0x3f80) + i_7_;
+					anIntArray385[i_10_] = (anIntArray385[i_10_] & 0x3f80) + i_7_;
     			int i_11_ = method844(i_10_);
     			method836(i, 7, i_11_ >> 7, l);
     			method836(i, 39, i_11_ & 0x7f, l);
@@ -63,17 +67,17 @@ abstract class Class56_Sub1 extends Class56
     
     final void method840(int i, long l) {
 		Client.anInt1401 = i;
-    	for (int i_21_ = 0; i_21_ < 16; i_21_++)
-			Client.anIntArray385[i_21_] = 12800;
-    	for (int i_22_ = 0; i_22_ < 16; i_22_++) {
-    		int i_23_ = method844(i_22_);
-    		method836(i_22_ + 176, 7, i_23_ >> 7, l);
-    		method836(i_22_ + 176, 39, i_23_ & 0x7f, l);
+    	for (int index1 = 0; index1 < 16; index1++)
+			anIntArray385[index1] = 12800;
+    	for (int index2 = 0; index2 < 16; index2++) {
+    		int i_23_ = method844(index2);
+    		method836(index2 + 176, 7, i_23_ >> 7, l);
+    		method836(index2 + 176, 39, i_23_ & 0x7f, l);
     	}
     }
     
     private static int method844(int i) {
-    	int i_32_ = Client.anIntArray385[i];
+    	int i_32_ = anIntArray385[i];
     	i_32_ = (i_32_ * Client.anInt1401 >> 8) * i_32_;
     	return (int) (Math.sqrt((double) i_32_) + 0.5);
     }

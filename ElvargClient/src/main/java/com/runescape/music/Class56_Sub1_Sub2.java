@@ -111,7 +111,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable {
         }
     }
 
-    public synchronized void method833() {
+    public synchronized void stop() {
         aRunnable_Impl1_1852.method12(false);
         method838((long) anInt1855);
         aRunnable_Impl1_1852.method10(anIntArray1858, anInt1856);
@@ -119,7 +119,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable {
         musicdef.method523();
     }
 
-    public void method828() {
+    public void remove() {
         synchronized (this) {
             aBoolean1853 = true;
         }

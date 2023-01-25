@@ -17,12 +17,12 @@ public class JavaMidiPlayer extends Class56_Sub1 implements Receiver {
     private static Receiver receiver = null;
     private static Sequencer sequencer = null;
 
-	public void method827(int i, byte[] payload, int i_0_, boolean bool) {
+	public void method827(int i, byte[] payload, int i_0_, boolean loop) {
     	if (sequencer != null) {
     		try {
     			Sequence sequence = MidiSystem.getSequence(new ByteArrayInputStream(payload));
     			sequencer.setSequence(sequence);
-    			sequencer.setLoopCount(!bool ? 0 : -1);
+    			sequencer.setLoopCount(!loop ? 0 : -1);
     			method835(0, i, -1L);
     			sequencer.start();
     		} catch (Exception exception) {
@@ -31,7 +31,7 @@ public class JavaMidiPlayer extends Class56_Sub1 implements Receiver {
     	}
     }
     
-    public void method833() {
+    public void stop() {
 		if (sequencer != null) {
 		    sequencer.stop();
 		    method838(-1L);
@@ -56,7 +56,7 @@ public class JavaMidiPlayer extends Class56_Sub1 implements Receiver {
 		}
     }
 
-	public void method828() {
+	public void remove() {
     	if (sequencer != null) {
     		sequencer.close();
     		sequencer = null;
@@ -89,12 +89,12 @@ public class JavaMidiPlayer extends Class56_Sub1 implements Receiver {
     		message.setMessage(i, i_5_, i_6_);
     		receiver.send(message, l);
     	} catch (InvalidMidiDataException invalidmididataexception) {
-    		/* empty */
+			invalidmididataexception.printStackTrace();
 		}
     }
     
     public void method832(int i) {
 	if (i > -90)
-	    method833();
+	    stop();
     }
 }

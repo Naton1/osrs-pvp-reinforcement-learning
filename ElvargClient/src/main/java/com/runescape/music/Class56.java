@@ -4,7 +4,7 @@ public abstract class Class56 {
 
     public abstract void method827(int i, byte[] payload, int i_2_, boolean bool);
 
-    public abstract void method828();
+    public abstract void remove();
     
   	public Class56() {
 	/* empty */
@@ -16,5 +16,5 @@ public abstract class Class56 {
     
     public abstract void method832(int i);
     
-    public abstract void method833();
+    public abstract void stop();
 }
