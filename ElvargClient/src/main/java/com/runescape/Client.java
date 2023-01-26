@@ -4535,6 +4535,9 @@ public class Client extends GameApplet {
 
             SoundEffects.unpack(buffer);
 
+            resourceProvider = new ResourceProvider();
+            resourceProvider.initialize(streamLoader_6, this);
+
             requestMusic(SoundConstants.SCAPE_RUNE);
 
             tileFlags = new byte[4][104][104];
@@ -4547,8 +4550,7 @@ public class Client extends GameApplet {
             minimapImage = new Sprite(512, 512);
             drawLoadingText(60, "Connecting to update server");
             Frame.animationlist = new Frame[3000][0];
-            resourceProvider = new ResourceProvider();
-            resourceProvider.initialize(streamLoader_6, this);
+
             Model.init();
             drawLoadingText(80, "Unpacking media");
 
