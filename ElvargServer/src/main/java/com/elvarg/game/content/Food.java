@@ -3,6 +3,8 @@ package com.elvarg.game.content;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.elvarg.game.Sound;
+import com.elvarg.game.Sounds;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Item;
@@ -75,6 +77,9 @@ public class Food {
 
 		// Stop skilling..
 		player.getSkillManager().stopSkillable();
+
+		// Send sound..
+		Sounds.sendSound(player, Sound.FOOD_EAT);
 
 		// Start animation..
 		player.performAnimation(ANIMATION);
@@ -190,6 +195,15 @@ public class Food {
 		}
 
 		public Item getItem() { return item; }
+
+		/**
+		 * Returns an array of all Edible item ids.
+		 *
+		 * @return {Integer[]} edibleTypes
+		 */
+		public static Integer[] getTypes() {
+			return types.keySet().toArray(new Integer[0]);
+		}
 
 		public int getHeal() {
 			return heal;

@@ -79,7 +79,7 @@ public class Thieving extends ItemIdentifiers {
 					player.performAnimation(THIEVING_ANIMATION);
 
 					// Send message..
-					String name = npc.getDefinition().getName().toLowerCase();
+					String name = npc.getCurrentDefinition().getName().toLowerCase();
 					if (!name.endsWith("s")) {
 						name += "'s";
 					}

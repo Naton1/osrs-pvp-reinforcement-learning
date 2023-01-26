@@ -2,6 +2,7 @@ package com.elvarg.game.content;
 
 import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.PlayerStatus;
 import com.elvarg.game.model.Location;
@@ -186,6 +187,11 @@ public class Dueling {
             } else {
                 player.getPacketSender().sendMessage("You've sent a duel challenge to " + t_.getUsername() + "...");
                 t_.getPacketSender().sendMessage(player.getUsername() + ":duelreq:");
+
+                if (t_.isPlayerBot()) {
+                    // Player Bots: Automatically accept any duel request
+                    t_.getDueling().requestDuel(player);
+                }
             }
 
             // Set the request delay to 2 seconds at least.
@@ -416,6 +422,10 @@ public class Dueling {
                 // Go into confirm screen!
                 player.getDueling().confirmScreen();
                 interact_.getDueling().confirmScreen();
+            } else {
+                if (interact_.isPlayerBot()) {
+                    interact_.getDueling().acceptDuel();
+                }
             }
         } else if (state == DuelState.CONFIRM_SCREEN) {
             // Both are in the same state. Do the second-stage accept.
@@ -446,6 +456,10 @@ public class Dueling {
 
                 player.getDueling().startDuel(pos1);
                 interact_.getDueling().startDuel(pos2);
+            } else {
+                if (interact_.isPlayerBot()) {
+                    interact_.getDueling().acceptDuel();
+                }
             }
         }
 

@@ -310,7 +310,21 @@ public class Client extends GameApplet {
     private static final String validUserPassChars =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"\243$%^&*()-_=+[{]};:'@#~,<.>/?\\| ";
     public static final SpriteCache spriteCache = new SpriteCache();
-    public static ScreenMode frameMode = ScreenMode.FIXED;
+    public static ScreenMode frameMode = ScreenMode.RESIZABLE;
+
+    /**
+     * Utility function to get the current dimensions of the client frame.
+     *
+     * @return Dimension - The current dimensions of the client frame.
+     */
+    public static Dimension frameDimension() {
+        if (frameMode == ScreenMode.RESIZABLE) {
+            return new Dimension(800, 600);
+        }
+
+        return new Dimension(765, 503);
+    }
+
     public static int frameWidth = 765;
     public static int frameHeight = 503;
     public static int screenAreaWidth = 512;
@@ -779,7 +793,7 @@ public class Client extends GameApplet {
     private int[] anIntArray1191;
     public Buffer chatBuffer;
     private int anInt1193;
-    private int splitPrivateChat;
+    public int splitPrivateChat;
     private IndexedImage mapBack;
     private String[] menuActionText;
     private Sprite flameLeftSprite;
@@ -1036,27 +1050,24 @@ public class Client extends GameApplet {
     }
 
     public void frameMode(ScreenMode screenMode) {
-        if (frameMode != screenMode) {
-            frameMode = screenMode;
-            if (screenMode == ScreenMode.FIXED) {
-                frameWidth = 765;
-                frameHeight = 503;
-                cameraZoom = 600;
-                SceneGraph.viewDistance = 9;
-            } else if (screenMode == ScreenMode.RESIZABLE) {
-                frameWidth = 766;
-                frameHeight = 529;
-                cameraZoom = 850;
-                SceneGraph.viewDistance = 10;
-            } else if (screenMode == ScreenMode.FULLSCREEN) {
-                cameraZoom = 600;
-                SceneGraph.viewDistance = 10;
-                frameWidth = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-                frameHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-            }
-            rebuildFrameSize(screenMode, frameWidth, frameHeight);
-            setBounds();
+        frameMode = screenMode;
+        frameWidth = frameDimension().width;
+        frameHeight = frameDimension().height;
+        if (screenMode == ScreenMode.FIXED) {
+            cameraZoom = 600;
+            SceneGraph.viewDistance = 9;
+        } else if (screenMode == ScreenMode.RESIZABLE) {
+            cameraZoom = 850;
+            SceneGraph.viewDistance = 10;
+        } else if (screenMode == ScreenMode.FULLSCREEN) {
+            cameraZoom = 600;
+            SceneGraph.viewDistance = 10;
+            frameWidth = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+            frameHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         }
+        rebuildFrameSize(screenMode, frameWidth, frameHeight);
+        setBounds();
+
         stackSideStones = screenMode != ScreenMode.FIXED && stackSideStones;
         showChatComponents = screenMode == ScreenMode.FIXED || showChatComponents;
         showTabComponents = screenMode == ScreenMode.FIXED || showTabComponents;
@@ -1067,7 +1078,7 @@ public class Client extends GameApplet {
         screenAreaHeight = (screenMode == ScreenMode.FIXED) ? 334 : height;
         frameWidth = width;
         frameHeight = height;
-        instance.rebuildFrame(width, height, screenMode == ScreenMode.RESIZABLE, screenMode == ScreenMode.FULLSCREEN);
+        this.rebuildFrame(width, height, screenMode == ScreenMode.RESIZABLE, screenMode == ScreenMode.FULLSCREEN);
     }
 
     private static void setBounds() {
@@ -1236,9 +1247,8 @@ public class Client extends GameApplet {
             if (SignLink.mainapp == null) {
                 SignLink.init(this);
             }
-            frameMode(ScreenMode.FIXED);
             instance = this;
-            initClientFrame(503, 765);
+            initClientFrame(frameDimension().width, frameDimension().height);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1262,7 +1272,7 @@ public class Client extends GameApplet {
                 stream.writeBoolean(true); // Accept aid
                 stream.writeBoolean(settings[152] == 1); // Run
                 stream.writeBoolean(true); // Chat effects
-                stream.writeBoolean(true); // Split private chat
+                stream.writeBoolean(splitPrivateChat == 1); // Split private chat
                 stream.writeBoolean(true); // Mouse buttons
                 stream.writeBoolean(Configuration.enableShiftClickDrop);
                 stream.writeByte(Configuration.playerAttackOptionPriority);
@@ -1328,7 +1338,7 @@ public class Client extends GameApplet {
             stream.readBoolean(); // Accept aid
             settings[152] = stream.readBoolean() ? 1 : 0;
             stream.readBoolean(); // Chat effects
-            stream.readBoolean(); // Split private chat
+            splitPrivateChat = stream.readBoolean() ? 1 : 0; // Split private chat
             stream.readBoolean(); // Mouse buttons
             Configuration.enableShiftClickDrop = stream.readBoolean();
             Configuration.playerAttackOptionPriority = stream.readByte();
@@ -3181,7 +3191,7 @@ public class Client extends GameApplet {
     private void updateNPCs(Buffer stream, int i) {
         removedMobCount = 0;
         mobsAwaitingUpdateCount = 0;
-        method139(stream);
+        updateDirection(stream);
         updateNPCMovement(i, stream);
         npcUpdateMask(stream);
         for (int k = 0; k < removedMobCount; k++) {
@@ -3520,13 +3530,14 @@ public class Client extends GameApplet {
         }
 
         if (parameter == 8) {
-            splitPrivateChat = state;
+            //splitPrivateChat = state;
             updateChatbox = true;
         }
 
         if (parameter == 9) {
             anInt913 = state;
         }
+        System.err.println("Para=" + parameter + " " + state);
 
     }
 
@@ -4411,7 +4422,7 @@ public class Client extends GameApplet {
         currentSong = -1;
         nextSong = -1;
         prevSong = 0;
-        frameMode(ScreenMode.FIXED);
+        frameMode(frameMode);
         savePlayerData();
         requestMusic(SoundConstants.SCAPE_RUNE);
     }
@@ -5614,8 +5625,10 @@ public class Client extends GameApplet {
         if (SceneGraph.clickedTileX != -1) {
             int k = SceneGraph.clickedTileX;
             int k1 = SceneGraph.clickedTileY;
-            boolean flag = doWalkTo(0, 0, 0, 0, localPlayer.pathY[0], 0, 0, k1,
-                    localPlayer.pathX[0], true, k);
+            int destX = (regionBaseX + k);
+            int destY = (regionBaseY + k1);
+            boolean flag = true;
+            createPathRequest(destX, destY, plane);
             SceneGraph.clickedTileX = -1;
             if (flag) {
                 crossX = super.saveClickX;
@@ -5806,31 +5819,28 @@ public class Client extends GameApplet {
     }
 
     private boolean clickObject(int uid, int finalY, int finalX) {
-        int i1 = uid >> 14 & 0x7fff;
+        int id = uid >> 14 & 0x7fff;
         int mask = scene.getMask(plane, finalX, finalY, uid);
         if (mask == -1)
             return false;
         int type = mask & 0x1f;
-        int orientation = mask >> 6 & 3;
+        int direction = mask >> 6 & 3;
+        System.err.println("Mask=" + mask + " type=" + type + " orientation=" + direction);
         if (type == 10 || type == 11 || type == 22) {
-            ObjectDefinition class46 = ObjectDefinition.lookup(i1);
-            int width;
-            int height;
-            if (orientation == 0 || orientation == 2) {
-                width = class46.objectSizeX;
-                height = class46.objectSizeY;
+            ObjectDefinition class46 = ObjectDefinition.lookup(id);
+            int yLength;
+            int xLength;
+            if (direction == 0 || direction == 2) {
+                yLength = class46.objectSizeX;
+                xLength = class46.objectSizeY;
             } else {
-                width = class46.objectSizeY;
-                height = class46.objectSizeX;
+                yLength = class46.objectSizeY;
+                xLength = class46.objectSizeX;
             }
-            int rotation = class46.surroundings;
-            if (orientation != 0)
-                rotation = (rotation << orientation & 0xf) + (rotation >> 4 - orientation);
-            doWalkTo(2, 0, height, 0, localPlayer.pathY[0], width, rotation, finalY, localPlayer.pathX[0],
-                    false, finalX);
-        } else {
-            doWalkTo(2, orientation, 0, type + 1, localPlayer.pathY[0], 0, 0, finalY, localPlayer.pathX[0],
-                    false, finalX);
+            int blockingMask = class46.surroundings;
+            if (direction != 0) {
+                blockingMask = (blockingMask << direction & 0xf) + (blockingMask >> 4 - direction);
+            }
         }
         crossX = super.saveClickX;
         crossY = super.saveClickY;
@@ -6117,11 +6127,6 @@ public class Client extends GameApplet {
 
         // picking up ground item
         if (action == 234) {
-            boolean flag1 = doWalkTo(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, button,
-                    localPlayer.pathX[0], false, first);
-            if (!flag1)
-                flag1 = doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, button,
-                        localPlayer.pathX[0], false, first);
             crossX = super.saveClickX;
             crossY = super.saveClickY;
             crossType = 2;
@@ -6137,11 +6142,6 @@ public class Client extends GameApplet {
 
         // using item on ground item
         if (action == 511) {
-            boolean flag2 = doWalkTo(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, button,
-                    localPlayer.pathX[0], false, first);
-            if (!flag2)
-                flag2 = doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, button,
-                        localPlayer.pathX[0], false, first);
             crossX = super.saveClickX;
             crossY = super.saveClickY;
             crossType = 2;
@@ -6197,6 +6197,15 @@ public class Client extends GameApplet {
                         spawnType = SpawnTabType.BANK;
                         searchingSpawnTab = true;
                         break;
+                    case 42542: {//Split Chat
+                        if (splitPrivateChat == 0)
+                            splitPrivateChat = 1;
+                        else
+                            splitPrivateChat = 0;
+                        updateChatbox = true;
+                        savePlayerData();
+                        break;
+                    }
 
                     case Keybinding.RESTORE_DEFAULT:
                         Keybinding.restoreDefault();
@@ -6276,9 +6285,6 @@ public class Client extends GameApplet {
         if (action == 20) {
             Npc npc = npcs[clicked];
             if (npc != null) {
-                doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                        npc.pathY[0], localPlayer.pathX[0],
-                        false, npc.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6291,9 +6297,6 @@ public class Client extends GameApplet {
         if (action == 779) {
             Player player = players[clicked];
             if (player != null) {
-                doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                        player.pathY[0], localPlayer.pathX[0],
-                        false, player.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6524,9 +6527,6 @@ public class Client extends GameApplet {
         if (action == 27) {
             Player player = players[clicked];
             if (player != null) {
-                doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                        player.pathY[0], localPlayer.pathX[0],
-                        false, player.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6821,9 +6821,6 @@ public class Client extends GameApplet {
         if (action == 225) {
             Npc npc = npcs[clicked];
             if (npc != null) {
-                doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                        npc.pathY[0], localPlayer.pathX[0],
-                        false, npc.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6844,7 +6841,6 @@ public class Client extends GameApplet {
         if (action == 965) {
             Npc npc = npcs[clicked];
             if (npc != null) {
-                doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, npc.pathY[0], localPlayer.pathX[0], false, npc.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6865,8 +6861,6 @@ public class Client extends GameApplet {
         if (action == 413) {
             Npc npc = npcs[clicked];
             if (npc != null) {
-                doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, npc.pathY[0],
-                        localPlayer.pathX[0], false, npc.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6904,9 +6898,6 @@ public class Client extends GameApplet {
         if (action == 412) {
             Npc npc = npcs[clicked];
             if (npc != null) {
-                doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                        npc.pathY[0], localPlayer.pathX[0],
-                        false, npc.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -6933,9 +6924,6 @@ public class Client extends GameApplet {
         if (action == 729) {
             Player player = players[clicked];
             if (player != null) {
-                doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0,
-                        player.pathY[0], localPlayer.pathX[0],
-                        false, player.pathX[0]);
                 crossX = super.saveClickX;
                 crossY = super.saveClickY;
                 crossType = 2;
@@ -7177,11 +7165,6 @@ public class Client extends GameApplet {
 
         // Click First Option Ground Item
         if (action == 244) {
-            boolean flag7 = doWalkTo(2, 0, 0, 0, localPlayer.pathY[0], 0, 0, button,
-                    localPlayer.pathX[0], false, first);
-            if (!flag7)
-                flag7 = doWalkTo(2, 0, 1, 0, localPlayer.pathY[0], 1, 0, button,
-                        localPlayer.pathX[0], false, first);
             crossX = super.saveClickX;
             crossY = super.saveClickY;
             crossType = 2;
@@ -8514,10 +8497,11 @@ public class Client extends GameApplet {
         for (int j = 0; j < 100; j++) {
             if (chatMessages[j] != null) {
                 int k = chatMessages[j].getType();
-                String s = chatMessages[j].getMessage();
+                String message = chatMessages[j].getMessage();
+                String reciever = chatMessages[j].getName();
                 List<ChatCrown> crowns = chatMessages[j].getCrowns();
                 if ((k == 3 || k == 7) && (k == 7 || privateChatMode == 0
-                        || privateChatMode == 1 && isFriendOrSelf(s))) {
+                        || privateChatMode == 1 && isFriendOrSelf(message))) {
                     int l = 329 - i * 13;
                     if (frameMode != ScreenMode.FIXED) {
                         l = frameHeight - 170 - i * 13;
@@ -8535,6 +8519,10 @@ public class Client extends GameApplet {
                     }
                     textDrawingArea.render(0, s + ": " + chatMessages[j], l, k1);
                     textDrawingArea.render(65535, s + ": " + chatMessages[j], l - 1, k1);
+
+                    textDrawingArea.render(0, reciever + ": " + message, l, k1);
+                    textDrawingArea.render(65535, reciever + ": " + message, l - 1, k1);
+
                     if (++i >= 5) {
                         return;
                     }
@@ -8544,8 +8532,8 @@ public class Client extends GameApplet {
                     if (frameMode != ScreenMode.FIXED) {
                         i1 = frameHeight - 170 - i * 13;
                     }
-                    textDrawingArea.render(0, chatMessages[j].getMessage(), i1, 4);
-                    textDrawingArea.render(65535, chatMessages[j].getMessage(), i1 - 1, 4);
+                    textDrawingArea.render(0, message, i1, 4);
+                    textDrawingArea.render(65535, message, i1 - 1, 4);
                     if (++i >= 5) {
                         return;
                     }
@@ -8555,8 +8543,8 @@ public class Client extends GameApplet {
                     if (frameMode != ScreenMode.FIXED) {
                         j1 = frameHeight - 170 - i * 13;
                     }
-                    textDrawingArea.render(0, "To " + s + ": " + chatMessages[j], j1, 4);
-                    textDrawingArea.render(65535, "To " + s + ": " + chatMessages[j],
+                    textDrawingArea.render(0, "To " + reciever + ": " + message, j1, 4);
+                    textDrawingArea.render(65535, "To " + reciever + ": " + message,
                             j1 - 1, 4);
                     if (++i >= 5) {
                         return;
@@ -9425,7 +9413,7 @@ public class Client extends GameApplet {
                 SettingsWidget.updateSettings();
                 midi_player.stop();
                 setupGameplayScreen();
-                frameMode(ScreenMode.FIXED);
+                frameMode(frameMode);
                 return;
             }
             if (response == 28) {
@@ -9616,14 +9604,14 @@ public class Client extends GameApplet {
         return (shiftDown && myPrivilege >= 2 && myPrivilege <= 4);
     }
 
-    private boolean doWalkTo(int movementType, int orientation, int height, int type, int initialY, int width, int rotation, int finalY, int initialX,
-                             boolean flag, int finalX) {
+    private boolean doWalkTo(int movementType, int direction, int height, int size, int localY, int width, int rotation, int destY, int localX,
+                             boolean flag, int destX) {
 
         int[][] clipData = collisionMaps[plane].clipData;
 
         boolean shiftTeleport = shiftTeleport();
         if (shiftTeleport) {
-            packetSender.sendCommand("tele " + (regionBaseX + finalX) + " " + (regionBaseY + finalY) + " " + plane + "");
+            packetSender.sendCommand("tele " + (regionBaseX + destX) + " " + (regionBaseY + destY) + " " + plane + "");
             return true;
         }
 
@@ -9636,166 +9624,165 @@ public class Client extends GameApplet {
                     anIntArrayArray825[l2][i3] = 0x5f5e0ff;
                 }
             }
-            int currentX = initialX;
-            int currentY = initialY;
-            anIntArrayArray901[initialX][initialY] = 99;
-            anIntArrayArray825[initialX][initialY] = 0;
-            int l3 = 0;
-            int i4 = 0;
-            bigX[l3] = initialX;
-            bigY[l3++] = initialY;
-            boolean flag1 = false;
-            int j4 = bigX.length;
-            while (i4 != l3) {
-                currentX = bigX[i4];
-                currentY = bigY[i4];
-                i4 = (i4 + 1) % j4;
-                if (currentX == finalX && currentY == finalY) {
-                    flag1 = true;
+            int baseX = localX;
+            int baseY = localY;
+            anIntArrayArray901[localX][localY] = 99;
+            anIntArrayArray825[localX][localY] = 0;
+            int tail = 0;
+            int queueIndex = 0;
+            bigX[tail] = localX;
+            bigY[tail++] = localY;
+            boolean foundRoute = false;
+            int queueSizeX = bigX.length;
+            while (queueIndex != tail) {
+                baseX = bigX[queueIndex];
+                baseY = bigY[queueIndex];
+                queueIndex = (queueIndex + 1) % queueSizeX;
+                if (baseX == destX && baseY == destY) {
+                    foundRoute = true;
                     break;
                 }
-                if (type != 0) {
-                    if ((type < 5 || type == 10)
-                            && collisionMaps[plane].method219(finalX, currentX, currentY, orientation, type - 1, finalY)) {
-                        flag1 = true;
+                if (size != 0) {
+                    if ((size < 5 || size == 10)
+                            && collisionMaps[plane].method219(destX, baseX, baseY, direction, size - 1, destY)) {
+                        foundRoute = true;
                         break;
                     }
-                    if (type < 10 && collisionMaps[plane].method220(finalX, finalY, currentY, type - 1, orientation, currentX)) {
-                        flag1 = true;
+                    if (size < 10 && collisionMaps[plane].method220(destX, destY, baseY, size - 1, direction, baseX)) {
+                        foundRoute = true;
                         break;
                     }
                 }
                 if (width != 0 && height != 0
-                        && collisionMaps[plane].atObject(finalY, finalX, currentX, height, rotation, width, currentY)) {
-                    flag1 = true;
+                        && collisionMaps[plane].atObject(destY, destX, baseX, height, rotation, width, baseY)) {
+                    foundRoute = true;
                     break;
                 }
-                int l4 = anIntArrayArray825[currentX][currentY] + 1;
-                if (currentX > 0 && anIntArrayArray901[currentX - 1][currentY] == 0
-                        && (clipData[currentX - 1][currentY] & 0x1280108) == 0) {
-                    bigX[l3] = currentX - 1;
-                    bigY[l3] = currentY;
-                    l3 = (l3 + 1) % j4;
-                    anIntArrayArray901[currentX - 1][currentY] = 2;
-                    anIntArrayArray825[currentX - 1][currentY] = l4;
+                int priceValue = anIntArrayArray825[baseX][baseY] + 1;
+                if (baseX > 0 && anIntArrayArray901[baseX - 1][baseY] == 0
+                        && (clipData[baseX - 1][baseY] & 0x1280108) == 0) {
+                    bigX[tail] = baseX - 1;
+                    bigY[tail] = baseY;
+                    tail = (tail + 1) % queueSizeX;
+                    anIntArrayArray901[baseX - 1][baseY] = 2;
+                    anIntArrayArray825[baseX - 1][baseY] = priceValue;
                 }
-                if (currentX < byte0 - 1 && anIntArrayArray901[currentX + 1][currentY] == 0
-                        && (clipData[currentX + 1][currentY] & 0x1280180) == 0) {
-                    bigX[l3] = currentX + 1;
-                    bigY[l3] = currentY;
-                    l3 = (l3 + 1) % j4;
-                    anIntArrayArray901[currentX + 1][currentY] = 8;
-                    anIntArrayArray825[currentX + 1][currentY] = l4;
+                if (baseX < byte0 - 1 && anIntArrayArray901[baseX + 1][baseY] == 0
+                        && (clipData[baseX + 1][baseY] & 0x1280180) == 0) {
+                    bigX[tail] = baseX + 1;
+                    bigY[tail] = baseY;
+                    tail = (tail + 1) % queueSizeX;
+                    anIntArrayArray901[baseX + 1][baseY] = 8;
+                    anIntArrayArray825[baseX + 1][baseY] = priceValue;
                 }
-                if (currentY > 0 && anIntArrayArray901[currentX][currentY - 1] == 0
-                        && (clipData[currentX][currentY - 1] & 0x1280102) == 0) {
-                    bigX[l3] = currentX;
-                    bigY[l3] = currentY - 1;
-                    l3 = (l3 + 1) % j4;
-                    anIntArrayArray901[currentX][currentY - 1] = 1;
-                    anIntArrayArray825[currentX][currentY - 1] = l4;
+                if (baseY > 0 && anIntArrayArray901[baseX][baseY - 1] == 0
+                        && (clipData[baseX][baseY - 1] & 0x1280102) == 0) {
+                    bigX[tail] = baseX;
+                    bigY[tail] = baseY - 1;
+                    tail = (tail + 1) % queueSizeX;
+                    anIntArrayArray901[baseX][baseY - 1] = 1;
+                    anIntArrayArray825[baseX][baseY - 1] = priceValue;
                 }
-                if (currentY < byte1 - 1 && anIntArrayArray901[currentX][currentY + 1] == 0
-                        && (clipData[currentX][currentY + 1] & 0x1280120) == 0) {
-                    bigX[l3] = currentX;
-                    bigY[l3] = currentY + 1;
-                    l3 = (l3 + 1) % j4;
-                    anIntArrayArray901[currentX][currentY + 1] = 4;
-                    anIntArrayArray825[currentX][currentY + 1] = l4;
+                if (baseY < byte1 - 1 && anIntArrayArray901[baseX][baseY + 1] == 0
+                        && (clipData[baseX][baseY + 1] & 0x1280120) == 0) {
+                    bigX[tail] = baseX;
+                    bigY[tail] = baseY + 1;
+                    tail = (tail + 1) % queueSizeX;
+                    anIntArrayArray901[baseX][baseY + 1] = 4;
+                    anIntArrayArray825[baseX][baseY + 1] = priceValue;
                 }
-                if (currentX > 0 && currentY > 0 && anIntArrayArray901[currentX - 1][currentY - 1] == 0
-                        && (clipData[currentX - 1][currentY - 1] & 0x128010e) == 0
-                        && (clipData[currentX - 1][currentY] & 0x1280108) == 0
-                        && (clipData[currentX][currentY - 1] & 0x1280102) == 0) {
-                    bigX[l3] = currentX - 1;
-                    bigY[l3] = currentY - 1;
-                    l3 = (l3 + 1) % j4;
-                    anIntArrayArray901[currentX - 1][currentY - 1] = 3;
-                    anIntArrayArray825[currentX - 1][currentY - 1] = l4;
+                if (baseX > 0 && baseY > 0 && anIntArrayArray901[baseX - 1][baseY - 1] == 0
+                        && (clipData[baseX - 1][baseY - 1] & 0x128010e) == 0
+                        && (clipData[baseX - 1][baseY] & 0x1280108) == 0
+                        && (clipData[baseX][baseY - 1] & 0x1280102) == 0) {
+                    bigX[tail] = baseX - 1;
+                    bigY[tail] = baseY - 1;
+                    tail = (tail + 1) % queueSizeX;
+                    anIntArrayArray901[baseX - 1][baseY - 1] = 3;
+                    anIntArrayArray825[baseX - 1][baseY - 1] = priceValue;
                 }
-                if (currentX < byte0 - 1 && currentY > 0 && anIntArrayArray901[currentX + 1][currentY - 1] == 0
-                        && (clipData[currentX + 1][currentY - 1] & 0x1280183) == 0
-                        && (clipData[currentX + 1][currentY] & 0x1280180) == 0
-                        && (clipData[currentX][currentY - 1] & 0x1280102) == 0) {
-                    bigX[l3] = currentX + 1;
-                    bigY[l3] = currentY - 1;
-                    l3 = (l3 + 1) % j4;
-                    anIntArrayArray901[currentX + 1][currentY - 1] = 9;
-                    anIntArrayArray825[currentX + 1][currentY - 1] = l4;
+                if (baseX < byte0 - 1 && baseY > 0 && anIntArrayArray901[baseX + 1][baseY - 1] == 0
+                        && (clipData[baseX + 1][baseY - 1] & 0x1280183) == 0
+                        && (clipData[baseX + 1][baseY] & 0x1280180) == 0
+                        && (clipData[baseX][baseY - 1] & 0x1280102) == 0) {
+                    bigX[tail] = baseX + 1;
+                    bigY[tail] = baseY - 1;
+                    tail = (tail + 1) % queueSizeX;
+                    anIntArrayArray901[baseX + 1][baseY - 1] = 9;
+                    anIntArrayArray825[baseX + 1][baseY - 1] = priceValue;
                 }
-                if (currentX > 0 && currentY < byte1 - 1 && anIntArrayArray901[currentX - 1][currentY + 1] == 0
-                        && (clipData[currentX - 1][currentY + 1] & 0x1280138) == 0
-                        && (clipData[currentX - 1][currentY] & 0x1280108) == 0
-                        && (clipData[currentX][currentY + 1] & 0x1280120) == 0) {
-                    bigX[l3] = currentX - 1;
-                    bigY[l3] = currentY + 1;
-                    l3 = (l3 + 1) % j4;
-                    anIntArrayArray901[currentX - 1][currentY + 1] = 6;
-                    anIntArrayArray825[currentX - 1][currentY + 1] = l4;
+                if (baseX > 0 && baseY < byte1 - 1 && anIntArrayArray901[baseX - 1][baseY + 1] == 0
+                        && (clipData[baseX - 1][baseY + 1] & 0x1280138) == 0
+                        && (clipData[baseX - 1][baseY] & 0x1280108) == 0
+                        && (clipData[baseX][baseY + 1] & 0x1280120) == 0) {
+                    bigX[tail] = baseX - 1;
+                    bigY[tail] = baseY + 1;
+                    tail = (tail + 1) % queueSizeX;
+                    anIntArrayArray901[baseX - 1][baseY + 1] = 6;
+                    anIntArrayArray825[baseX - 1][baseY + 1] = priceValue;
                 }
-                if (currentX < byte0 - 1 && currentY < byte1 - 1 && anIntArrayArray901[currentX + 1][currentY + 1] == 0
-                        && (clipData[currentX + 1][currentY + 1] & 0x12801e0) == 0
-                        && (clipData[currentX + 1][currentY] & 0x1280180) == 0
-                        && (clipData[currentX][currentY + 1] & 0x1280120) == 0) {
-                    bigX[l3] = currentX + 1;
-                    bigY[l3] = currentY + 1;
-                    l3 = (l3 + 1) % j4;
-                    anIntArrayArray901[currentX + 1][currentY + 1] = 12;
-                    anIntArrayArray825[currentX + 1][currentY + 1] = l4;
+                if (baseX < byte0 - 1 && baseY < byte1 - 1 && anIntArrayArray901[baseX + 1][baseY + 1] == 0
+                        && (clipData[baseX + 1][baseY + 1] & 0x12801e0) == 0
+                        && (clipData[baseX + 1][baseY] & 0x1280180) == 0
+                        && (clipData[baseX][baseY + 1] & 0x1280120) == 0) {
+                    bigX[tail] = baseX + 1;
+                    bigY[tail] = baseY + 1;
+                    tail = (tail + 1) % queueSizeX;
+                    anIntArrayArray901[baseX + 1][baseY + 1] = 12;
+                    anIntArrayArray825[baseX + 1][baseY + 1] = priceValue;
                 }
             }
             anInt1264 = 0;
-            if (!flag1) {
+            if (!foundRoute) {
                 if (flag) {
                     int i5 = 100;
                     for (int k5 = 1; k5 < 2; k5++) {
-                        for (int i6 = finalX - k5; i6 <= finalX + k5; i6++) {
-                            for (int l6 = finalY - k5; l6 <= finalY + k5; l6++) {
-                                if (i6 >= 0 && l6 >= 0 && i6 < 104 && l6 < 104
-                                        && anIntArrayArray825[i6][l6] < i5) {
+                        for (int i6 = destX - k5; i6 <= destX + k5; i6++) {
+                            for (int l6 = destY - k5; l6 <= destY + k5; l6++) {
+                                if (i6 >= 0 && l6 >= 0 && i6 < 104 && l6 < 104 && anIntArrayArray825[i6][l6] < i5) {
                                     i5 = anIntArrayArray825[i6][l6];
-                                    currentX = i6;
-                                    currentY = l6;
+                                    baseX = i6;
+                                    baseY = l6;
                                     anInt1264 = 1;
-                                    flag1 = true;
+                                    foundRoute = true;
                                 }
                             }
                         }
-                        if (flag1)
+                        if (foundRoute)
                             break;
                     }
                 }
-                if (!flag1) {
+                if (!foundRoute) {
                     return false;
                 }
             }
-            i4 = 0;
-            bigX[i4] = currentX;
-            bigY[i4++] = currentY;
+            queueIndex = 0;
+            bigX[queueIndex] = baseX;
+            bigY[queueIndex++] = baseY;
             int l5;
-            for (int j5 = l5 = anIntArrayArray901[currentX][currentY]; currentX != initialX || currentY != initialY; j5 =
-                    anIntArrayArray901[currentX][currentY]) {
+            for (int j5 = l5 = anIntArrayArray901[baseX][baseY]; baseX != localX || baseY != localY; j5 =
+                    anIntArrayArray901[baseX][baseY]) {
                 if (j5 != l5) {
                     l5 = j5;
-                    bigX[i4] = currentX;
-                    bigY[i4++] = currentY;
+                    bigX[queueIndex] = baseX;
+                    bigY[queueIndex++] = baseY;
                 }
                 if ((j5 & 2) != 0)
-                    currentX++;
+                    baseX++;
                 else if ((j5 & 8) != 0)
-                    currentX--;
+                    baseX--;
                 if ((j5 & 1) != 0)
-                    currentY++;
+                    baseY++;
                 else if ((j5 & 4) != 0)
-                    currentY--;
+                    baseY--;
             }
-            if (i4 > 0) {
-                int k4 = i4;
+            if (queueIndex > 0) {
+                int k4 = queueIndex;
                 if (k4 > 25)
                     k4 = 25;
-                i4--;
-                int k6 = bigX[i4];
-                int i7 = bigY[i4];
+                queueIndex--;
+                int k6 = bigX[queueIndex];
+                int i7 = bigY[queueIndex];
                 anInt1288 += k4;
                 if (anInt1288 >= 92) {
 					/*Anti-cheatValidates, walking. Not used. OUTPUT_BUFFER.createFrame(36);
@@ -9803,29 +9790,8 @@ public class Client extends GameApplet {
                     anInt1288 = 0;
                 }
 
-                if (movementType == 0) {
-                    packetSender.getBuffer().writeOpcode(164);
-                    packetSender.getBuffer().writeByte(k4 + k4 + 4);
-                } else if (movementType == 1) {
-                    packetSender.getBuffer().writeOpcode(248);
-                    // packetSender.getBuffer().putByte(k4 + k4 + 4 + 14);
-                    packetSender.getBuffer().writeByte(k4 + k4 + 4);
-                } else if (movementType == 2) {
-                    packetSender.getBuffer().writeOpcode(98);
-                    packetSender.getBuffer().writeByte(k4 + k4 + 4);
-                }
-                packetSender.getBuffer().writeByte(plane);
-                packetSender.getBuffer().writeLEShortA(k6 + regionBaseX);
                 destinationX = bigX[0];
                 destinationY = bigY[0];
-                int i_4 = i4;
-                for (int j7 = 1; j7 < k4; j7++) {
-                    i_4--;
-                    packetSender.getBuffer().writeByte(bigX[i_4] - k6);
-                    packetSender.getBuffer().writeByte(bigY[i_4] - i7);
-                }
-                packetSender.getBuffer().writeLEShort(i7 + regionBaseY);
-                packetSender.getBuffer().writeNegatedByte((super.keyArray[5] != 1 ? 0 : 1));
                 return true;
             }
         } catch (Exception e) {
@@ -10219,10 +10185,12 @@ public class Client extends GameApplet {
                 int l1 = j * j1 - i * i1 >> 11;
                 int i2 = localPlayer.x + k1 >> 7;
                 int j2 = localPlayer.y - l1 >> 7;
-                boolean flag1 = doWalkTo(1, 0, 0, 0, localPlayer.pathY[0], 0, 0, j2,
-                        localPlayer.pathX[0], true, i2);
+                boolean flag1 = true;
+                int destX = (regionBaseX + i2);
+                int destY = (regionBaseY + j2);
+                boolean flag = true;
+                createPathRequest(destX, destY, plane);
                 if (flag1) {
-
 					/*outgoing.writeByte(i);
 					outgoing.writeByte(j);
 					outgoing.writeShort(cameraHorizontal);
@@ -10280,7 +10248,7 @@ public class Client extends GameApplet {
     private void showErrorScreen() {
         Graphics g = getGameComponent().getGraphics();
         g.setColor(Color.black);
-        g.fillRect(0, 0, 765, 503);
+        g.fillRect(0, 0, frameDimension().width, frameDimension().height);
         method4(1);
         if (loadingError) {
             aBoolean831 = false;
@@ -10464,8 +10432,8 @@ public class Client extends GameApplet {
                     Widget rsInterface_1 = Widget.interfaceCache[openInterfaceId];
                     if (rsInterface_1.width == 512 && rsInterface_1.height == 334
                             && rsInterface_1.type == 0) {
-                        rsInterface_1.width = 765;
-                        rsInterface_1.height = 503;
+                        rsInterface_1.width = frameDimension().width;
+                        rsInterface_1.height = frameDimension().height;
                     }
                     try {
                         drawInterface(0, 0, rsInterface_1, 8);
@@ -10476,8 +10444,8 @@ public class Client extends GameApplet {
                 Widget rsInterface = Widget.interfaceCache[fullscreenInterfaceID];
                 if (rsInterface.width == 512 && rsInterface.height == 334
                         && rsInterface.type == 0) {
-                    rsInterface.width = 765;
-                    rsInterface.height = 503;
+                    rsInterface.width = frameDimension().width;
+                    rsInterface.height = frameDimension().height;
                 }
                 try {
                     drawInterface(0, 0, rsInterface, 8);
@@ -13671,16 +13639,16 @@ public class Client extends GameApplet {
             }
         }
         if (packetType == PacketConstants.SEND_OBJECT) {
-            int offset = stream.readUByteA();
-            int x = localX + (offset >> 4 & 7);
-            int y = localY + (offset & 7);
+            int z = stream.readUByteA();
+            int x = localX;
+            int y = localY;
             int id = stream.readLEUShort();
             int objectTypeFace = stream.readUByteS();
             int type = objectTypeFace >> 2;
             int orientation = objectTypeFace & 3;
             int group = objectGroups[type];
             if (x >= 0 && y >= 0 && x < 104 && y < 104) {
-                requestSpawnObject(-1, id, orientation, group, y, type, plane, x, 0);
+                requestSpawnObject(-1, id, orientation, group, y, type, z, x, 0);
             }
             return;
         }
@@ -13757,7 +13725,7 @@ public class Client extends GameApplet {
         }
     }
 
-    private void method139(Buffer stream) {
+    private void updateDirection(Buffer stream) {
         stream.initBitAccess();
         int k = stream.readBits(8);
         if (k < npcCount) {
@@ -13771,29 +13739,29 @@ public class Client extends GameApplet {
         }
         npcCount = 0;
         for (int i1 = 0; i1 < k; i1++) {
-            int j1 = npcIndices[i1];
-            Npc npc = npcs[j1];
-            npc.index = j1;
-            int k1 = stream.readBits(1);
-            if (k1 == 0) {
-                npcIndices[npcCount++] = j1;
+            int index = npcIndices[i1];
+            Npc npc = npcs[index];
+            npc.index = index;
+            int requiresUpdate = stream.readBits(1);
+            if (requiresUpdate == 0) {
+                npcIndices[npcCount++] = index;
                 npc.time = tick;
             } else {
-                int l1 = stream.readBits(2);
-                if (l1 == 0) {
-                    npcIndices[npcCount++] = j1;
+                int updateType = stream.readBits(2);
+                if (updateType == 0) {
+                    npcIndices[npcCount++] = index;
                     npc.time = tick;
-                    mobsAwaitingUpdate[mobsAwaitingUpdateCount++] = j1;
-                } else if (l1 == 1) {
-                    npcIndices[npcCount++] = j1;
+                    mobsAwaitingUpdate[mobsAwaitingUpdateCount++] = index;
+                } else if (updateType == 1) {
+                    npcIndices[npcCount++] = index;
                     npc.time = tick;
-                    int i2 = stream.readBits(3);
-                    npc.moveInDir(false, i2);
-                    int k2 = stream.readBits(1);
-                    if (k2 == 1)
-                        mobsAwaitingUpdate[mobsAwaitingUpdateCount++] = j1;
-                } else if (l1 == 2) {
-                    npcIndices[npcCount++] = j1;
+                    int direction = stream.readBits(3);
+                    npc.moveInDir(false, direction);
+                    int update = stream.readBits(1);
+                    if (update == 1)
+                        mobsAwaitingUpdate[mobsAwaitingUpdateCount++] = index;
+                } else if (updateType == 2) {
+                    npcIndices[npcCount++] = index;
                     npc.time = tick;
                     int j2 = stream.readBits(3);
                     npc.moveInDir(true, j2);
@@ -13801,9 +13769,9 @@ public class Client extends GameApplet {
                     npc.moveInDir(true, l2);
                     int i3 = stream.readBits(1);
                     if (i3 == 1)
-                        mobsAwaitingUpdate[mobsAwaitingUpdateCount++] = j1;
-                } else if (l1 == 3)
-                    removedMobs[removedMobCount++] = j1;
+                        mobsAwaitingUpdate[mobsAwaitingUpdateCount++] = index;
+                } else if (updateType == 3)
+                    removedMobs[removedMobCount++] = index;
             }
         }
 
@@ -14468,7 +14436,7 @@ public class Client extends GameApplet {
 
             if (opcode == PacketConstants.MOVE_COMPONENT) {
                 int horizontalOffset = incoming.readShort();
-                int verticalOffset = incoming.readLEShort();
+                int verticalOffset = incoming.readShort();
                 int id = incoming.readLEUShort();
                 Widget widget = Widget.interfaceCache[id];
                 widget.horizontalOffset = horizontalOffset;
@@ -15157,9 +15125,9 @@ public class Client extends GameApplet {
                     ItemDefinition definition = ItemDefinition.lookup(item);
                     Widget.interfaceCache[widget].defaultMediaType = 4;
                     Widget.interfaceCache[widget].defaultMedia = item;
-                    //Widget.interfaceCache[widget].modelRotation1 = definition.rotation_y;
-                    //Widget.interfaceCache[widget].modelRotation2 = definition.rotation_x;
-                    Widget.interfaceCache[widget].modelZoom = (definition.modelZoom * 100) / scale;
+                    Widget.interfaceCache[widget].modelRotation1 = definition.rotation_y;
+                    Widget.interfaceCache[widget].modelRotation2 = definition.rotation_x;
+                    Widget.interfaceCache[widget].modelZoom = (definition.modelZoom * 100 / scale);
                     opcode = -1;
                     return true;
                 }
@@ -15230,8 +15198,8 @@ public class Client extends GameApplet {
             }
 
             if (opcode == PacketConstants.SEND_MODEL_TO_INTERFACE) {
-                int id = incoming.readLEUShortA();
-                int model = incoming.readUShort();
+                int id = incoming.readShort();
+                int model = incoming.readShort();
                 Widget.interfaceCache[id].defaultMediaType = 1;
                 Widget.interfaceCache[id].defaultMedia = model;
                 opcode = -1;
@@ -15879,7 +15847,7 @@ public class Client extends GameApplet {
         loginMusicImageProducer = null;
         middleLeft1BackgroundTile = null;
         aRSImageProducer_1115 = null;
-        super.fullGameScreen = new ProducingGraphicsBuffer(765, 503);
+        super.fullGameScreen = new ProducingGraphicsBuffer(frameDimension().width, frameDimension().height);
         welcomeScreenRaised = true;
     }
 
@@ -16006,6 +15974,17 @@ public class Client extends GameApplet {
                     || !resourceProvider.landscapePresent(resource.ID));
             //  MapRegion.passiveRequestGameObjectModels(new Buffer(resource.buffer), resourceProvider);
         } while (true);
+    }
+
+    private void createPathRequest(int x, int y, int plane) {
+        if (shiftTeleport()) {
+            packetSender.sendCommand("tele " + (x) + " " + (y) + " " + plane + "");
+            return;
+        }
+        packetSender.sendPathRequest(x, y, plane);
+        this.destinationX = x - regionBaseX;
+        this.destinationY = y - regionBaseY;
+        return;
     }
 
     public enum ScreenMode {

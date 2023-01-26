@@ -10,9 +10,11 @@ public class SpawnObjectCommand implements Command {
 
     @Override
     public void execute(Player player, String command, String[] parts) {
-        int id = Integer.parseInt(parts[1]);        
-        // player.getPacketSender().sendObject(new GameObject(id, player.getLocation().clone(), 10, 0, player.getPrivateArea()));
-        ObjectManager.register(new GameObject(id, player.getLocation().clone(), 10, 0, player.getPrivateArea()), true);
+        int id = Integer.parseInt(parts[1]);
+        int type = parts.length == 3 ? Integer.parseInt(parts[2]) : 10;
+        int face = parts.length == 4 ? Integer.parseInt(parts[3]) : 0;
+        GameObject gameObject = new GameObject(id, player.getLocation().clone(), type, face, player.getPrivateArea());
+        ObjectManager.register(gameObject, true);
     }
 
     @Override

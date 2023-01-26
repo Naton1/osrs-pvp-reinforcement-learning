@@ -40,7 +40,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
     public boolean occludes;
     public boolean removeClipping;
     public boolean solid;
-    public int surroundings;
+    public int blockingMask;
     public boolean delayShading;
     public int scaleY;
     public int[] modelIds;
@@ -56,6 +56,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
     public String interactions[];
     private short[] originalModelTexture;
     private short[] modifiedModelTexture;
+    public int clipType = 2;
     
 
     public ObjectDefinition() {
@@ -72,6 +73,10 @@ public final class ObjectDefinition extends ObjectIdentifiers {
         }
         writer.close();
     }
+    public boolean isClippedDecoration() {
+        return isInteractive || clipType == 1 || obstructsGround;
+    }
+
 
     public static ObjectDefinition forId(int id) {
         if (id > streamIndices.length)
@@ -229,7 +234,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
         scaleX = 128;
         scaleY = 128;
         scaleZ = 128;
-        surroundings = 0;
+        blockingMask = 0;
         translateX = 0;
         translateY = 0;
         translateZ = 0;
@@ -299,7 +304,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
                     animation = -1;
                 }
             } else if (opcode == 27) {
-                // clipType = 1;
+                //clipType = 1;
             } else if (opcode == 28) {
                 decorDisplacement = buffer.readUnsignedByte();
             } else if (opcode == 29) {
@@ -344,7 +349,7 @@ public final class ObjectDefinition extends ObjectIdentifiers {
             } else if (opcode == 68) {
                 mapscene = buffer.readUShort();
             } else if (opcode == 69) {
-                surroundings = buffer.readUnsignedByte();
+                blockingMask = buffer.readUnsignedByte();
             } else if (opcode == 70) {
                 translateX = buffer.readUShort();
             } else if (opcode == 71) {

@@ -2,6 +2,7 @@ package com.elvarg.game.entity.impl.npc;
 
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.method.CombatMethod;
+import com.elvarg.game.definition.NpcDefinition;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.areas.AreaManager;
 import com.elvarg.game.model.areas.impl.PrivateArea;
@@ -24,7 +25,7 @@ public final class NpcAggression {
      * Time that has to be spent in a region before npcs stop acting aggressive
      * toward a specific player.
      */
-    public static final int NPC_TOLERANCE_SECONDS = 300; // 5 mins
+    public static final int NPC_TOLERANCE_SECONDS = 600; // 10 mins (Accurate to OSRS)
 
     public static void process(Player player) {
         // Make sure we can attack the player
@@ -40,52 +41,49 @@ public final class NpcAggression {
     }
 
     private static void runAggression(Player player, Collection<NPC> npcs) {
-        // Loop through all of the aggressive npcs.
         for (NPC npc : npcs) {
 
-            // Make sure the npc is available to attack the player.
-            if (npc == null || npc.getDefinition() == null || npc.getHitpoints() <= 0
-                    || !npc.getDefinition().isAggressive()
-                    || npc.getPrivateArea() != player.getPrivateArea()) {
+            if (npc == null) {
                 continue;
             }
 
-            // Don't handle aggression if we've been in the region for quite some time.
-            if (player.getAggressionTolerance().finished() && (player.getArea() == null
-                    || !player.getArea().overridesNpcAggressionTolerance(player, npc.getId()))) {
+            // Get the NPC's current definition (taking into account possible transformation)
+            NpcDefinition npcDefinition = npc.getCurrentDefinition();
+            if (npcDefinition == null || npc.getHitpoints() <= 0
+                    || !npcDefinition.isAggressive()
+                    || npc.getPrivateArea() != player.getPrivateArea()) {
+                // Make sure the npc is available to attack the player.
+                continue;
+            }
+
+            if (npcDefinition.buildsAggressionTolerance() && player.getAggressionTolerance().finished()
+                    && (player.getArea() == null || !player.getArea().overridesNpcAggressionTolerance(player, npc.getId()))) {
+                // If Player has obtained tolerance to this NPC, don't be aggressive.
                 return;
             }
 
-
-            // Randomly attack different players if they're a team.
             if (CombatFactory.inCombat(npc)) {
-                if (AreaManager.inMulti(npc)) {
+                if (AreaManager.inMulti(npc) && player.getLocalPlayers().size() > 0) {
+                    // Randomly attack different players if they're a team.
                     if (Misc.getRandom(9) <= 2) {
-                        if (player.getLocalPlayers().size() > 0) {
+                        // Get a random player from the player's local players list.
+                        Player randomPlayer = player.getLocalPlayers().get(Misc.getRandom(player.getLocalPlayers().size() - 1));
 
-                            // Get a random player from the player's local players list.
-                            Player randomPlayer = player.getLocalPlayers().get(Misc.getRandom(player.getLocalPlayers().size() - 1));
-
-                            // Attack the new player if they're a valid target.
-                            if (CombatFactory.validTarget(npc, randomPlayer)) {
-                                npc.getCombat().attack(randomPlayer);
-                                break;
-                            }
+                        // Attack the new player if they're a valid target.
+                        if (CombatFactory.validTarget(npc, randomPlayer)) {
+                            npc.getCombat().attack(randomPlayer);
+                            break;
                         }
                     }
                 }
+
+                // Don't process tolerance if NPC is already in combat.
                 continue;
             }
 
-            // Are we processing bandits?
-            boolean bandits = npc.getId() == 690;
-            if (!bandits) {
-                // Unless in Wilderness, don't be aggressive to players with twice our combat
-                // level.
-                if (player.getSkillManager().getCombatLevel() > (npc.getDefinition().getCombatLevel() * 2)
-                        && !(player.getArea() instanceof WildernessArea)) {
-                    continue;
-                }
+            if (!npc.isAggressiveTo(player)) {
+                // Ensure the NPC can be aggressive to this player.
+                continue;
             }
 
             // Make sure we have the proper distance to attack the player.
@@ -96,31 +94,10 @@ public final class NpcAggression {
 
             // Get the max distance this npc can attack from.
             // We should always attack if we're at least 3 tiles from the player.
-            final int aggressionDistance = npc.aggressionDistance() < 3 ? 3 : npc.aggressionDistance();
+            final int aggressionDistance = npc.aggressionDistance();
 
-            if (distanceToPlayer < npc.getDefinition().getCombatFollowDistance() && distanceToPlayer <= aggressionDistance) {
-
-                // Make sure that we can actually attack the player.
+            if (distanceToPlayer < npcDefinition.getCombatFollowDistance() && distanceToPlayer <= aggressionDistance) {
                 if (CombatFactory.canAttack(npc, method, player) == CombatFactory.CanAttackResponse.CAN_ATTACK) {
-
-                    // Bandits
-                    if (bandits) {
-                        int zammy = Equipment.getItemCount(player, "Zamorak", true);
-                        int sara = Equipment.getItemCount(player, "Saradomin", true);
-                        if (!(zammy > 0 || sara > 0)) {
-                            continue;
-                        }
-                        if (Misc.getRandom(2) == 1) {
-                            String s = zammy > 0 ? "Zamorak" : "Saradomin";
-                            if (Misc.getRandom(2) == 1) {
-                                npc.forceChat("Filthy " + s + " follower scum!");
-                            } else {
-                                npc.forceChat("" + s + " scum! You will regret coming here!");
-                            }
-                        }
-                    }
-
-                    // Attack the player!
                     npc.getCombat().attack(player);
                     break;
                 }

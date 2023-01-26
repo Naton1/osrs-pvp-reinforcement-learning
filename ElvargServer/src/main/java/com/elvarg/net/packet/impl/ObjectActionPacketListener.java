@@ -2,8 +2,10 @@ package com.elvarg.net.packet.impl;
 
 import com.elvarg.Server;
 import com.elvarg.game.collision.RegionManager;
+import com.elvarg.game.content.DepositBox;
 import com.elvarg.game.content.combat.CombatSpecial;
-import com.elvarg.game.content.minigames.FightCaves;
+import com.elvarg.game.content.minigames.MinigameHandler;
+import com.elvarg.game.content.minigames.impl.FightCaves;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.content.skill.skillable.impl.Smithing;
 import com.elvarg.game.content.skill.skillable.impl.Smithing.Bar;
@@ -12,21 +14,15 @@ import com.elvarg.game.content.skill.skillable.impl.Thieving.StallThieving;
 import com.elvarg.game.definition.ObjectDefinition;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
+import com.elvarg.game.entity.impl.object.impl.WebHandler;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.model.Animation;
-import com.elvarg.game.model.Flag;
-import com.elvarg.game.model.ForceMovement;
-import com.elvarg.game.model.Graphic;
-import com.elvarg.game.model.Location;
-import com.elvarg.game.model.MagicSpellbook;
-import com.elvarg.game.model.Skill;
+import com.elvarg.game.model.*;
 import com.elvarg.game.model.areas.impl.PrivateArea;
-import com.elvarg.game.model.dialogues.builders.impl.EmblemTraderDialogue;
 import com.elvarg.game.model.dialogues.builders.impl.SpellBookDialogue;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportHandler;
 import com.elvarg.game.model.teleportation.TeleportType;
+import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.ForceMovementTask;
 import com.elvarg.net.packet.Packet;
@@ -34,6 +30,7 @@ import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.ObjectIdentifiers;
 import com.elvarg.game.entity.impl.object.ObjectManager;
+import java.util.Objects;
 
 /**
  * This packet listener is called when a player clicked on a game object.
@@ -48,20 +45,41 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *
 	 * @param player
 	 *            The player that clicked on the object.
-	 * @param packet
+	 * @param object
 	 *            The packet containing the object's information.
 	 */
     private static void firstClick(Player player, GameObject object) {
         if(doorHandler(player, object)) {
-	    return;
-	}
+	        return;
+	    }
 
         // Skills..
         if (player.getSkillManager().startSkillable(object)) {
             return;
         }
 
+        if (MinigameHandler.firstClickObject(player, object)) {
+            // Player has clicked an object inside a minigame
+            return;
+        }
+
+        final ObjectDefinition defs = object.getDefinition();
+        if (defs != null) {
+            if (defs.name != null && Objects.equals(defs.name, "Bank Deposit Box")) {
+                DepositBox.open(player);
+                return;
+            }
+
+        }
+
         switch (object.getId()) {
+            case WEB:
+                if (!WebHandler.wieldingSharpItem(player)) {
+                    player.getPacketSender().sendMessage("Only a sharp blade can cut through this sticky web.");
+                    return;
+                }
+                WebHandler.handleSlashWeb(player, object, false);
+                break;
         case KBD_LADDER_DOWN:
             TeleportHandler.teleport(player, new Location(3069, 10255), TeleportType.LADDER_DOWN, false);
             break;
@@ -112,7 +130,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
             break;
 
         case WILDERNESS_DITCH:
-            player.getMovementQueue().reset();
+            //player.getMovementQueue().reset();
             if (player.getForceMovement() == null && player.getClickDelay().elapsed(2000)) {
                 final Location crossDitch = new Location(0, player.getLocation().getY() < 3522 ? 3 : -3);
                 TaskManager.submit(new ForceMovementTask(player, 3, new ForceMovement(player.getLocation().clone(),
@@ -158,7 +176,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
      *
      * @param player
      *            The player that clicked on the object.
-     * @param packet
+     * @param object
      *            The packet containing the object's information.
      */
     private static void secondClick(Player player, GameObject object) {
@@ -197,7 +215,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *
 	 * @param player
 	 *            The player that clicked on the object.
-	 * @param packet
+	 * @param object
 	 *            The packet containing the object's information.
 	 */
 	private static void thirdClick(Player player, GameObject object) {
@@ -217,7 +235,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *
 	 * @param player
 	 *            The player that clicked on the object.
-	 * @param packet
+	 * @param object
 	 *            The packet containing the object's information.
 	 */
 	private static void fourthClick(Player player, GameObject object) {
@@ -234,38 +252,38 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 
     private static void objectInteract(Player player, int id, int x, int y, int clickType) {
         final Location location = new Location(x, y, player.getLocation().getZ());
-        
-        if (player.getRights() == PlayerRights.DEVELOPER) {
-            player.getPacketSender().sendMessage("" + clickType + "-click object: " + id + ". " + location.toString());
-        }
-        
+
         final GameObject object = MapObjects.get(player, id, location);
+
+        if (player.getRights() == PlayerRights.DEVELOPER) {
+            String typeFace = object != null ? "[F: " + object.getFace() + " T:" +object.getType() + "]" : "";
+            player.getPacketSender().sendMessage(clickType + "-click object: " + id + ". " + location + " " + typeFace);
+        }
+
         if (object == null) {
             return;
         }
 
         // Get object definition
         final ObjectDefinition def = ObjectDefinition.forId(id);
+
         if (def == null) {
             Server.getLogger().info("ObjectDefinition for object " + id + " is null.");
             return;
         }
 
-        player.setWalkToTask(new WalkToAction(player) {
-            @Override
-            public void execute() {
+        player.getMovementQueue().walkToObject(object, () -> {
+            // Face object..
+            player.setPositionToFace(location);
 
-                // Face object..
-                player.setPositionToFace(location);
-
-                // Areas
-                if (player.getArea() != null) {
-                    if (player.getArea().handleObjectClick(player, id, clickType)) {
-                        return;
-                    }
+            // Areas
+            if (player.getArea() != null) {
+                if (player.getArea().handleObjectClick(player, id, clickType)) {
+                    return;
                 }
-                
-                switch (clickType) {
+            }
+
+            switch (clickType) {
                 case 1:
                     firstClick(player, object);
                     break;
@@ -278,32 +296,6 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
                 case 4:
                     fourthClick(player, object);
                     break;
-                }
-            }
-            
-            @Override
-            public boolean inDistance() {
-                int type = object.getType();
-                int orientation = object.getFace();
-                int width;
-                int height;
-                if (orientation == 0 || orientation == 2) {
-                    width = def.objectSizeX;
-                    height = def.objectSizeY;
-                } else {
-                    width = def.objectSizeY;
-                    height = def.objectSizeX;
-                }
-                int rotation = def.surroundings;
-                if (orientation != 0)
-                    rotation = (rotation << orientation & 0xf) + (rotation >> 4 - orientation);
-                if (type == 10 || type == 11 || type == 22) {
-                    return atObject(location.getY(), location.getX(), player.getLocation().getX(), height, rotation,
-                            width, player.getLocation().getY(), player.getPrivateArea());
-                }
-                
-                return atObject(location.getY(), location.getX(), player.getLocation().getX(), 0, 0,
-                            width, player.getLocation().getY(), player.getPrivateArea());
             }
         });
     }
@@ -324,8 +316,8 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
                 || y == maxY + 1 && x >= finalX && x <= maxX && (RegionManager.getClipping(x, y, height, privateArea) & 0x20) == 0
                         && (rotation & 1) == 0;
     }
-    
-    private static boolean doorHandler(Player player, GameObject object) { 
+
+    private static boolean doorHandler(Player player, GameObject object) {
         if (object.getDefinition().getName() != null && object.getDefinition().getName().contains("Door") ) {
             final int[][] openOffset = new int[][] { new int[] { -1, 0 }, new int[] { 0, 1 }, new int[] { 1, 0 }, new int[] { 0, -1 },
                     new int[] { 0, -1 } };
@@ -354,7 +346,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 
             return true;
         }
-	
+
 	return false;
     }
 

@@ -92,6 +92,11 @@ public class GameConstants {
 	public static final double REGULAR_SKILLS_EXP_MULTIPLIER = 18;
 
 	/**
+	 * Enabled debugging of attack distance for {@link PlayerRights} DEVELOPER
+	 */
+	public static final boolean DEBUG_ATTACK_DISTANCE = false;
+
+	/**
 	 * The gameframe's tab interface ids.
 	 */
 	public static final int TAB_INTERFACES[] = { 2423, 3917, 31000, 3213, 1644, 5608, -1, 37128, 5065, 5715, 2449,

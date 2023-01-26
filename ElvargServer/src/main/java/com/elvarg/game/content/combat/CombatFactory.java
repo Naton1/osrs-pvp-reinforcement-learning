@@ -1,5 +1,8 @@
 package com.elvarg.game.content.combat;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 import com.elvarg.game.Sound;
@@ -46,6 +49,8 @@ import com.elvarg.game.model.areas.AreaManager;
 import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
+import com.elvarg.game.model.movement.MovementQueue;
+import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.game.model.movement.path.RS317PathFinder;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.task.Task;
@@ -65,19 +70,24 @@ import com.elvarg.util.timers.TimerKey;
  * @author Professor Oak
  */
 public class CombatFactory {
+	private static final RandomGen RANDOM = new RandomGen();
 
 	public enum CanAttackResponse {
 		INVALID_TARGET,
 		ALREADY_UNDER_ATTACK,
 		CANT_ATTACK_IN_AREA,
 		COMBAT_METHOD_NOT_ALLOWED,
+		LEVEL_DIFFERENCE_TOO_GREAT,
 		NOT_ENOUGH_SPECIAL_ENERGY,
 		STUNNED,
+		DUEL_NOT_STARTED_YET,
 		DUEL_MELEE_DISABLED,
 		DUEL_RANGED_DISABLED,
 		DUEL_MAGIC_DISABLED,
+		DUEL_WRONG_OPPONENT,
 		TARGET_IS_IMMUNE,
 		CAN_ATTACK,
+		CASTLE_WARS_FRIENDLY_FIRE,
 	}
 
 	/**
@@ -131,66 +141,11 @@ public class CombatFactory {
 			}
 
 		} else if (attacker.isNpc()) {
-
-			NPC npc = attacker.getAsNpc();
-
-			// Attempt to return the npc's defined combat method..
-			if (npc.getCombatMethod() != null) {
-				return npc.getCombatMethod();
-			}
+			return attacker.getAsNpc().getCombatMethod();
 		}
 
 		// Return melee by default
 		return MELEE_COMBAT;
-	}
-
-	/**
-	 * Assigns the combat method for the specified {@link NPC}.
-	 *
-	 * @param npc
-	 */
-	public static void assignCombatMethod(NPC npc) {
-		// Assign combat methods for npcs.
-		switch (npc.getId()) {
-		case NpcIdentifiers.CHAOS_ELEMENTAL:
-			npc.setCombatMethod(new ChaosElementalCombatMethod());
-			break;
-		case NpcIdentifiers.VENENATIS:
-			npc.setCombatMethod(new VenenatisCombatMethod());
-			break;
-		case NpcIdentifiers.CALLISTO:
-			// npc.setCombatMethod(new CallistoCombatMethod());
-			break;
-		case NpcIdentifiers.KING_BLACK_DRAGON:
-			npc.setCombatMethod(new KingBlackDragonMethod());
-			break;
-		case NpcIdentifiers.TZTOK_JAD:
-			npc.setCombatMethod(new JadCombatMethod());
-			break;
-		case NpcIdentifiers.AHRIM_THE_BLIGHTED:
-			npc.getCombat().setAutocastSpell(CombatSpells.FIRE_WAVE.getSpell());
-			npc.setCombatMethod(MAGIC_COMBAT);
-			break;
-		case NpcIdentifiers.KARIL_THE_TAINTED:
-			npc.getCombat().setRangedWeapon(RangedWeapon.KARILS_CROSSBOW);
-			npc.getCombat().setAmmunition(Ammunition.BOLT_RACK);
-			npc.setCombatMethod(RANGED_COMBAT);
-			break;
-		case NpcIdentifiers.ELDER_CHAOS_DRUID:
-			npc.getCombat().setAutocastSpell(CombatSpells.WIND_WAVE.getSpell());
-			npc.setCombatMethod(MAGIC_COMBAT);
-			break;
-		case NpcIdentifiers.CRAZY_ARCHAEOLOGIST:
-			npc.setCombatMethod(new CrazyArchaeologistCombatMethod());
-			break;
-		case NpcIdentifiers.CHAOS_FANATIC:
-			npc.setCombatMethod(new ChaosFanaticCombatMethod());
-			break;
-		case NpcIdentifiers.VETION:
-		case NpcIdentifiers.VETION_REBORN:
-			npc.setCombatMethod(new VetionCombatMethod());
-			break;
-		}
 	}
 
 	/**
@@ -326,10 +281,11 @@ public class CombatFactory {
 
 	/**
 	 * Checks if an entity can reach a target.
+	 * If false, combat is reset for the attacker.
 	 *
 	 * @param attacker
 	 *            The entity which wants to attack.
-	 * @param cb_type
+/	 * @param cb_type
 	 *            The combat type the attacker is using.
 	 * @param target
 	 *            The victim.
@@ -341,15 +297,17 @@ public class CombatFactory {
 			return true;
 		}
 
+		boolean isMoving = target.getMovementQueue().isMoving();
+
 		// Walk back if npc is too far away from spawn position.
 		if (attacker.isNpc()) {
 			NPC npc = attacker.getAsNpc();
-			if (npc.getDefinition().doesRetreat()) {
+			if (npc.getCurrentDefinition().doesRetreat()) {
 				if (npc.getMovementCoordinator().getCoordinateState() == CoordinateState.RETREATING) {
 					npc.getCombat().reset();
 					return false;
 				}
-				if (npc.getLocation().getDistance(npc.getSpawnPosition()) >= npc.getDefinition().getCombatFollowDistance()) {
+				if (npc.getLocation().getDistance(npc.getSpawnPosition()) >= npc.getCurrentDefinition().getCombatFollowDistance()) {
 					npc.getCombat().reset();
 					npc.getMovementCoordinator().setCoordinateState(CoordinateState.RETREATING);
 					return false;
@@ -361,6 +319,10 @@ public class CombatFactory {
 		final Location targetPosition = target.getLocation();
 		
 		if (attackerPosition.equals(targetPosition)) {
+			if (!attacker.getTimers().has(TimerKey.STEPPING_OUT)) {
+				MovementQueue.clippedStep(attacker);
+				attacker.getTimers().register(TimerKey.STEPPING_OUT, 2);
+			}
 		    return false;
 		}
 
@@ -377,14 +339,20 @@ public class CombatFactory {
             }
         }
 
+		if (method.type() == CombatType.MELEE && isMoving && attacker.getMovementQueue().isMoving()) {
+			// If we're using Melee and either player is moving, increase required distance
+			requiredDistance++;
+		}
+
         // Too far away from the target
 		if (distance > requiredDistance) {
 		    return false;
 		}
 
 		// Don't allow diagonal attacks for smaller entities
-		if (method.type() == CombatType.MELEE && attacker.size() == 1 && target.size() == 1) {
-			if (RS317PathFinder.isInDiagonalBlock(attackerPosition, targetPosition)) {
+		if (method.type() == CombatType.MELEE && attacker.size() == 1 && target.size() == 1 && !isMoving && !target.getMovementQueue().isMoving()) {
+			if (PathFinder.isDiagonalLocation(attacker, target)) {
+				stepOut(attacker, target);
 				return false;
 			}
 		}
@@ -397,12 +365,23 @@ public class CombatFactory {
 		return true;
 	}
 
+	private static void stepOut(Mobile attacker, Mobile target) {
+		List<Location> tiles = Arrays.asList(
+				new Location(target.getLocation().getX() - 1, target.getLocation().getY()),
+				new Location(target.getLocation().getX() + 1, target.getLocation().getY()),
+				new Location(target.getLocation().getX(), target.getLocation().getY() + 1),
+				new Location(target.getLocation().getX(), target.getLocation().getY() - 1));
+		/** If a tile is present it will step out **/
+		tiles.stream().filter(t -> !RegionManager.blocked(t, attacker.getPrivateArea())).min(Comparator.comparing(attacker.getLocation()::getDistance)).ifPresent(tile ->
+				PathFinder.calculateWalkRoute(attacker, tile.getX(), tile.getY()));
+	}
+
 	/**
 	 * Checks if an entity can attack a target.
 	 *
 	 * @param attacker
 	 *            The entity which wants to attack.
-	 * @param cb_type
+//	 * @param cb_type
 	 *            The combat type the attacker is using.
 	 * @param target
 	 *            The victim.
@@ -431,8 +410,9 @@ public class CombatFactory {
 		}
 
 		// Check if we can attack in this area
-		if (!AreaManager.canAttack(attacker, target)) {
-			return CanAttackResponse.CANT_ATTACK_IN_AREA;
+		CanAttackResponse areaResponse = AreaManager.canAttack(attacker, target);
+		if (areaResponse != CanAttackResponse.CAN_ATTACK) {
+			return areaResponse;
 		}
 
 		if (!method.canAttack(attacker, target)) {
@@ -492,20 +472,23 @@ public class CombatFactory {
 			return;
 		}
 
+		if (target.isUntargetable() || target.isNeedsPlacement()) {
+			// If target is teleporting or needs placement, don't register the hit
+			return;
+		}
+
 		if (attacker.isPlayer()) {
 			// Reward the player experience for this attack..
 			rewardExp(attacker.getAsPlayer(), qHit);
+
+			if (attacker.getAsPlayer().getArea() != null) {
+				attacker.getAsPlayer().getArea().onPlayerDealtDamage(attacker.getAsPlayer(), target, qHit);
+			}
 
 			// Check if the player should be skulled for making this attack..
 			if (target.isPlayer()) {
 				handleSkull(attacker.getAsPlayer(), target.getAsPlayer());
 			}
-		}
-
-		// If target is teleporting or needs placement
-		// Dont continue to add the hit.
-		if (target.isUntargetable() || target.isNeedsPlacement()) {
-			return;
 		}
 
 		// Add this hit to the target's hitQueue
@@ -621,7 +604,7 @@ public class CombatFactory {
 			}
 		} else if (attacker.isNpc()) {
 			NPC npc = attacker.getAsNpc();
-			if (npc.getDefinition().isPoisonous()) {
+			if (npc.getCurrentDefinition().isPoisonous()) {
 				if (Misc.getRandom(10) <= 5) {
 					CombatFactory.poisonEntity(target, PoisonType.SUPER);
 				}
@@ -801,12 +784,8 @@ public class CombatFactory {
 		if (damage == 0) {
 			return;
 		}
-
-		int returnDmg = (int) (damage * 0.1) + 1;
-
-		if(returnDmg < 3 && new RandomGen().inclusive(1, 3) == 2) {
-			returnDmg = 0;
-		}
+		final double RECOIL_DMG_MULTIPLIER = 0.1;
+		int returnDmg = RANDOM.inclusive(1, 3) == 2 ? 0 : (int) (damage * RECOIL_DMG_MULTIPLIER) + 1;
 
 		// Increase recoil damage for a player.
 		player.setRecoilDamage(player.getRecoilDamage() + returnDmg);
@@ -827,7 +806,7 @@ public class CombatFactory {
 	 * Handles the spell "Vengeance" for a player. The spell returns damage to the
 	 * attacker.
 	 *
-	 * @param player
+//	 * @param player
 	 * @param attacker
 	 * @param damage
 	 */
@@ -910,7 +889,7 @@ public class CombatFactory {
 	/**
 	 * Stuns a character for the specified seconds.
 	 *
-	 * @param player
+//	 * @param player
 	 * @param seconds
 	 */
 	public static void stun(Mobile character, int seconds, boolean force) {

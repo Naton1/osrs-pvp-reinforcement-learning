@@ -72,7 +72,7 @@ public class PacketConstants {
 	public static final int FIRST_ITEM_ACTION_OPCODE = 122, SECOND_ITEM_ACTION_OPCODE = 75,
 			THIRD_ITEM_ACTION_OPCODE = 16;
 
-	public static final int ITEM_ON_NPC = 57, ITEM_ON_ITEM = 53, ITEM_ON_OBJECT = 192, ITEM_ON_GROUND_ITEM = 109,
+	public static final int ITEM_ON_NPC = 57, ITEM_ON_ITEM = 53, ITEM_ON_OBJECT = 192, ITEM_ON_GROUND_ITEM = 25,
 			ITEM_ON_PLAYER = 14;
 
 	static {

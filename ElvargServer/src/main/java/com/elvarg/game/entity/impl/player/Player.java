@@ -13,12 +13,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.Sound;
 import com.elvarg.game.World;
-import com.elvarg.game.content.Dueling;
-import com.elvarg.game.content.PetHandler;
-import com.elvarg.game.content.PrayerHandler;
+import com.elvarg.game.content.*;
 import com.elvarg.game.content.PrayerHandler.PrayerData;
-import com.elvarg.game.content.QuickPrayers;
-import com.elvarg.game.content.Trading;
 import com.elvarg.game.content.clan.ClanChat;
 import com.elvarg.game.content.clan.ClanChatManager;
 import com.elvarg.game.content.combat.CombatFactory;
@@ -30,8 +26,8 @@ import com.elvarg.game.content.combat.WeaponInterfaces.WeaponInterface;
 import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.combat.magic.Autocasting;
-import com.elvarg.game.content.minigames.Barrows;
-import com.elvarg.game.content.minigames.Barrows.Brother;
+import com.elvarg.game.content.minigames.impl.Barrows;
+import com.elvarg.game.content.minigames.impl.Barrows.Brother;
 import com.elvarg.game.content.presets.Presetable;
 import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.content.skill.SkillManager;
@@ -44,7 +40,6 @@ import com.elvarg.game.definition.PlayerBotDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NpcAggression;
-import com.elvarg.game.entity.impl.player.persistence.PlayerPersistence;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Appearance;
@@ -74,7 +69,6 @@ import com.elvarg.game.model.dialogues.DialogueManager;
 import com.elvarg.game.model.equipment.BonusManager;
 import com.elvarg.game.model.menu.CreationMenu;
 import com.elvarg.game.model.movement.MovementQueue;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.DonatorRights;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportButton;
@@ -158,7 +152,6 @@ public class Player extends Mobile {
 	private int skillAnimation;
 	private boolean drainingPrayer;
 	private double prayerPointDrain;
-	private WalkToAction walkToTask;
 	private MagicSpellbook spellbook = MagicSpellbook.NORMAL;
 	private final Map<TeleportButton, Location> previousTeleports = new HashMap<>();
 	private boolean teleportInterfaceOpen;
@@ -167,6 +160,9 @@ public class Player extends Mobile {
 	private boolean newPlayer;
 	private boolean packetsBlocked = false;
 	private int regionHeight;
+
+	private int questPoints;
+	private Map<Integer, Integer> questProgress = new HashMap<Integer, Integer>();
 	// Skilling
 	private Optional<Skillable> skill = Optional.empty();
 	private CreationMenu creationMenu;
@@ -204,6 +200,9 @@ public class Player extends Mobile {
 	private int highestKillstreak;
 	private int deaths;
 	private int safeTimer = 180;
+	//Pest Control
+	public int pcDamage = 0;
+	public int pcPoints = 0;
 	// Barrows
 	private int barrowsCrypt;
 	private int barrowsChestsLooted;
@@ -395,11 +394,6 @@ public class Player extends Mobile {
 			session.processPackets();
 		}
 
-		// Process walk to task..
-		if (walkToTask != null) {
-			walkToTask.process();
-		}
-
 		// Process walking queue..
 		getMovementQueue().process();
 
@@ -556,6 +550,7 @@ public class Player extends Mobile {
 		// Leave area
 		if (getArea() != null) {
 			getArea().leave(this, true);
+			getArea().postLeave(this, true);
 		}
 
 		// Do stuff...
@@ -691,7 +686,7 @@ public class Player extends Mobile {
 	 * Resets the player's attributes to default.
 	 */
 	public void resetAttributes() {
-		performAnimation(new Animation(65535));
+		performAnimation(Animation.DEFAULT_RESET_ANIMATION);
 		setSpecialActivated(false);
 		CombatSpecial.updateBar(this);
 		setHasVengeance(false);
@@ -981,14 +976,6 @@ public class Player extends Mobile {
 
 	public Stopwatch getLastItemPickup() {
 		return lastItemPickup;
-	}
-
-	public WalkToAction getWalkToTask() {
-		return walkToTask;
-	}
-
-	public void setWalkToTask(WalkToAction walkToTask) {
-		this.walkToTask = walkToTask;
 	}
 
 	public CombatSpecial getCombatSpecial() {
@@ -1665,4 +1652,25 @@ public class Player extends Mobile {
 	public void setCachedDiscordAccessToken(String cachedDiscordAccessToken) {
 		this.cachedDiscordAccessToken = cachedDiscordAccessToken;
 	}
+
+	public Map<Integer, Integer> getQuestProgress() {
+		return this.questProgress;
+	}
+
+	public int getQuestPoints() {
+		return this.questPoints;
+	}
+
+	public void setQuestPoints(int questPoints) {
+		this.questPoints = questPoints;
+	}
+
+	public void setQuestProgress(Map<Integer, Integer> questProgress) {
+		if (questProgress == null) {
+			return;
+		}
+		this.questProgress = questProgress;
+	}
+
+	public int castlewarsKills, castlewarsDeaths;
 }

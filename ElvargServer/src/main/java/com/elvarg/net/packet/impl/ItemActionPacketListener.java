@@ -5,11 +5,12 @@ import com.elvarg.game.content.Food;
 import com.elvarg.game.content.Gambling;
 import com.elvarg.game.content.PotionConsumable;
 import com.elvarg.game.content.combat.CombatSpecial;
-import com.elvarg.game.content.minigames.Barrows;
+import com.elvarg.game.content.minigames.impl.Barrows;
 import com.elvarg.game.content.skill.skillable.impl.Herblore;
 import com.elvarg.game.content.skill.skillable.impl.Prayer;
 import com.elvarg.game.content.skill.skillable.impl.Runecrafting;
 import com.elvarg.game.definition.ItemDefinition;
+import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.BarrowsSet;
@@ -23,6 +24,9 @@ import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.ItemIdentifiers;
+
+import static com.elvarg.game.content.skill.skillable.impl.woodcutting.BirdNest.handleSearchNest;
+
 
 public class ItemActionPacketListener implements PacketExecutor {
 
@@ -44,6 +48,10 @@ public class ItemActionPacketListener implements PacketExecutor {
 
 		// Herblore
 		if (Herblore.cleanHerb(player, itemId)) {
+			return;
+		}
+
+		if (itemId == Barricades.ITEM_ID && Barricades.canSetup(player)) {
 			return;
 		}
 
@@ -73,6 +81,13 @@ public class ItemActionPacketListener implements PacketExecutor {
 		}
 
 		switch (itemId) {
+			case ItemIdentifiers.BIRD_NEST:
+			case ItemIdentifiers.BIRD_NEST_2:
+			case ItemIdentifiers.BIRD_NEST_3:
+			case ItemIdentifiers.BIRD_NEST_4:
+			case ItemIdentifiers.BIRD_NEST_5:
+				handleSearchNest(player, itemId);
+				break;
 		case ItemIdentifiers.SPADE:
 			player.performAnimation(new Animation(830));
 			TaskManager.submit(new Task(1, player, false) {

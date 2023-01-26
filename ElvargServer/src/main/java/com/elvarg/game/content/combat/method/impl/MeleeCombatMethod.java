@@ -16,9 +16,7 @@ public class MeleeCombatMethod extends CombatMethod {
         int animation = character.getAttackAnim();
         if (animation != -1) {
             character.performAnimation(new Animation(animation));
-            if (character.isPlayer()) {
-                Sounds.sendSound((Player) character, character.getAttackSound());
-            }
+            Sounds.sendSound(character.getAsPlayer(), character.getAttackSound());
         }
     }
 

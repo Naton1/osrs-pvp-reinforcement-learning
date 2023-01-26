@@ -3647,7 +3647,7 @@
     "retreats": true,
     "aggressive": true,
     "poisonous": false,
-    "respawn": 25,
+    "respawn": 50,
     "maxHit": 1,
     "hitpoints": 50,
     "attackSpeed": 4,
@@ -3684,7 +3684,11 @@
     "examine": "",
     "size": 1,
     "walkRadius": 0,
-    "attackable": false
+    "respawn": 50,
+    "hitpoints": 50,
+    "attackable": false,
+    "aggressive": true,
+    "combatFollowDistance": 7
   },
   {
     "id": 102,
@@ -3696,7 +3700,7 @@
     "retreats": true,
     "aggressive": true,
     "poisonous": false,
-    "respawn": 25,
+    "respawn": 50,
     "maxHit": 1,
     "hitpoints": 50,
     "attackSpeed": 4,
@@ -3733,7 +3737,11 @@
     "examine": "",
     "size": 1,
     "walkRadius": 0,
-    "attackable": false
+    "respawn": 50,
+    "hitpoints": 50,
+    "attackable": false,
+    "aggressive": true,
+    "combatFollowDistance": 7
   },
   {
     "id": 104,
@@ -8149,7 +8157,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 29,
     "stats": [
       22,
@@ -8190,7 +8198,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 47,
     "stats": [
       0,
@@ -8231,7 +8239,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 34,
     "stats": [
       0,
@@ -8272,7 +8280,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 34,
     "stats": [
       0,
@@ -8313,7 +8321,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 34,
     "stats": [
       0,
@@ -8354,7 +8362,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 70,
     "stats": [
       0,
@@ -10951,7 +10959,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 66,
     "stats": [
       1,
@@ -10992,7 +11000,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 66,
     "stats": [
       1,
@@ -11033,7 +11041,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 66,
     "stats": [
       1,
@@ -11074,7 +11082,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 66,
     "stats": [
       1,
@@ -11115,7 +11123,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 66,
     "stats": [
       1,
@@ -16248,7 +16256,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 110,
     "stats": [
       85,
@@ -17681,7 +17689,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 103,
     "stats": [
       320,
@@ -17722,7 +17730,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 174,
     "stats": [
       320,
@@ -17771,7 +17779,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 95,
     "stats": [
       90,
@@ -17836,21 +17844,21 @@
     "walkRadius": 0,
     "attackable": true,
     "retreats": true,
-    "aggressive": false,
+    "aggressive": true,
     "poisonous": false,
     "respawn": 25,
-    "maxHit": 0,
-    "hitpoints": 1,
-    "attackSpeed": 0,
-    "attackAnim": -1,
-    "defenceAnim": -1,
-    "deathAnim": 814,
+    "maxHit": 6,
+    "hitpoints": 50,
+    "attackSpeed": 4,
+    "attackAnim": 400,
+    "defenceAnim": 424,
+    "deathAnim": 836,
     "combatLevel": 74,
     "stats": [
-      0,
-      0,
-      0,
-      0,
+      50,
+      50,
+      50,
+      50,
       0,
       0,
       0,
@@ -17917,7 +17925,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 57,
     "stats": [
       0,
@@ -19268,7 +19276,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 41,
     "stats": [
       0,
@@ -19309,7 +19317,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 41,
     "stats": [
       0,
@@ -19350,7 +19358,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 70,
     "stats": [
       59,
@@ -20059,7 +20067,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       0,
@@ -20100,7 +20108,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       0,
@@ -20221,7 +20229,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 79,
     "stats": [
       225,
@@ -20262,7 +20270,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 79,
     "stats": [
       225,
@@ -20590,7 +20598,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 93,
     "stats": [
       90,
@@ -20795,7 +20803,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 66,
     "stats": [
       90,
@@ -21218,7 +21226,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 43,
     "stats": [
       0,
@@ -23115,7 +23123,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 13,
     "stats": [
       15,
@@ -25433,7 +25441,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 50,
     "stats": [
       55,
@@ -25474,7 +25482,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 50,
     "stats": [
       55,
@@ -25515,7 +25523,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 50,
     "stats": [
       55,
@@ -25556,7 +25564,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 50,
     "stats": [
       55,
@@ -25597,7 +25605,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       19,
@@ -28067,7 +28075,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 11,
     "stats": [
       95,
@@ -28108,7 +28116,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       95,
@@ -28165,7 +28173,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 4,
     "stats": [
       1,
@@ -28206,7 +28214,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 3,
     "stats": [
       1,
@@ -28542,7 +28550,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 217,
     "stats": [
       0,
@@ -28624,7 +28632,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 4,
     "stats": [
       1,
@@ -28665,7 +28673,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 3,
     "stats": [
       1,
@@ -28722,7 +28730,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 200,
     "stats": [
       0,
@@ -28763,7 +28771,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 272,
     "stats": [
       0,
@@ -28804,7 +28812,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 18,
     "stats": [
       95,
@@ -28894,7 +28902,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 4,
     "stats": [
       1,
@@ -28935,7 +28943,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 12,
     "stats": [
       1,
@@ -28976,7 +28984,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 3,
     "stats": [
       1,
@@ -29017,7 +29025,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 14,
     "stats": [
       1,
@@ -29066,7 +29074,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 59,
     "stats": [
       54,
@@ -29164,7 +29172,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       95,
@@ -29205,7 +29213,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 13,
     "stats": [
       95,
@@ -29246,7 +29254,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 12,
     "stats": [
       95,
@@ -30041,7 +30049,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 13,
     "stats": [
       0,
@@ -30123,7 +30131,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 13,
     "stats": [
       0,
@@ -30164,7 +30172,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 13,
     "stats": [
       0,
@@ -30205,7 +30213,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -30246,7 +30254,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -30287,7 +30295,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -30328,7 +30336,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -30410,7 +30418,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 112,
     "stats": [
       0,
@@ -32337,7 +32345,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 37,
     "stats": [
       0,
@@ -32378,7 +32386,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 34,
     "stats": [
       0,
@@ -32435,7 +32443,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       0,
@@ -32476,7 +32484,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 30,
     "stats": [
       0,
@@ -33751,7 +33759,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 31,
     "stats": [
       0,
@@ -33792,7 +33800,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 31,
     "stats": [
       0,
@@ -33833,7 +33841,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 31,
     "stats": [
       0,
@@ -33874,7 +33882,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 31,
     "stats": [
       0,
@@ -33915,7 +33923,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 25,
     "stats": [
       0,
@@ -34877,7 +34885,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -36673,7 +36681,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 132,
     "stats": [
       115,
@@ -36796,7 +36804,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 132,
     "stats": [
       115,
@@ -36894,7 +36902,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 33,
     "stats": [
       25,
@@ -36935,7 +36943,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 21,
     "stats": [
       19,
@@ -36976,7 +36984,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 21,
     "stats": [
       19,
@@ -37017,7 +37025,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 21,
     "stats": [
       19,
@@ -37058,7 +37066,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 21,
     "stats": [
       19,
@@ -37099,7 +37107,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 21,
     "stats": [
       19,
@@ -37345,7 +37353,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 13,
     "stats": [
       5,
@@ -37386,7 +37394,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 13,
     "stats": [
       5,
@@ -37427,7 +37435,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 13,
     "stats": [
       5,
@@ -37468,7 +37476,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 13,
     "stats": [
       5,
@@ -37935,7 +37943,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 0,
     "stats": [
       0,
@@ -38140,7 +38148,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 54,
     "stats": [
       0,
@@ -38181,7 +38189,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 54,
     "stats": [
       0,
@@ -42215,7 +42223,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 65,
     "stats": [
       130,
@@ -42256,7 +42264,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 108,
     "stats": [
       130,
@@ -48044,7 +48052,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       5,
@@ -48085,7 +48093,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       5,
@@ -48126,7 +48134,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 11,
     "stats": [
       5,
@@ -48167,7 +48175,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 11,
     "stats": [
       5,
@@ -50074,7 +50082,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       40,
@@ -52601,7 +52609,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 113,
     "stats": [
       120,
@@ -52642,7 +52650,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 125,
     "stats": [
       1,
@@ -52683,7 +52691,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 122,
     "stats": [
       1,
@@ -52724,7 +52732,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 120,
     "stats": [
       1,
@@ -52806,7 +52814,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 101,
     "stats": [
       70,
@@ -54023,7 +54031,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 94,
     "stats": [
       99,
@@ -55915,7 +55923,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 11,
     "stats": [
       10,
@@ -55956,7 +55964,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       20,
@@ -55997,7 +56005,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 46,
     "stats": [
       50,
@@ -56038,7 +56046,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 69,
     "stats": [
       60,
@@ -56079,7 +56087,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 92,
     "stats": [
       80,
@@ -56161,7 +56169,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 138,
     "stats": [
       120,
@@ -58176,7 +58184,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 75,
     "stats": [
       75,
@@ -58217,7 +58225,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 82,
     "stats": [
       75,
@@ -58258,7 +58266,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 86,
     "stats": [
       75,
@@ -58299,7 +58307,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 75,
     "stats": [
       75,
@@ -58340,7 +58348,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 82,
     "stats": [
       75,
@@ -58381,7 +58389,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 86,
     "stats": [
       75,
@@ -59045,7 +59053,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 12,
     "stats": [
       0,
@@ -59086,7 +59094,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 18,
     "stats": [
       0,
@@ -59127,7 +59135,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       0,
@@ -59488,7 +59496,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 5,
     "stats": [
       2,
@@ -60585,7 +60593,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -60626,7 +60634,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -60667,7 +60675,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -60708,7 +60716,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -60749,7 +60757,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -60790,7 +60798,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -60831,7 +60839,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -60872,7 +60880,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -60913,7 +60921,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -60954,7 +60962,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -60995,7 +61003,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -61036,7 +61044,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -61077,7 +61085,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -61118,7 +61126,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -61159,7 +61167,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -61200,7 +61208,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -61241,7 +61249,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -61282,7 +61290,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -61323,7 +61331,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -61364,7 +61372,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       10,
@@ -64381,7 +64389,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 51,
     "stats": [
       42,
@@ -64504,7 +64512,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 64,
     "stats": [
       56,
@@ -65463,7 +65471,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       5,
@@ -65504,7 +65512,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       17,
@@ -65545,7 +65553,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 7,
     "stats": [
       5,
@@ -65586,7 +65594,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 6,
     "stats": [
       0,
@@ -65627,7 +65635,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 25,
     "stats": [
       0,
@@ -65668,7 +65676,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 25,
     "stats": [
       0,
@@ -65709,7 +65717,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 33,
     "stats": [
       25,
@@ -65750,7 +65758,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 33,
     "stats": [
       25,
@@ -65791,7 +65799,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 5,
     "stats": [
       2,
@@ -65832,7 +65840,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 5,
     "stats": [
       2,
@@ -65873,7 +65881,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 13,
     "stats": [
       8,
@@ -65914,7 +65922,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -65955,7 +65963,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -65996,7 +66004,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 26,
     "stats": [
       0,
@@ -66037,7 +66045,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -66078,7 +66086,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 10,
     "stats": [
       7,
@@ -66119,7 +66127,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 15,
     "stats": [
       140,
@@ -66160,7 +66168,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       8,
@@ -66201,7 +66209,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 17,
     "stats": [
       8,
@@ -66242,7 +66250,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       8,
@@ -66283,7 +66291,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       0,
@@ -66324,7 +66332,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 8,
     "stats": [
       0,
@@ -66365,7 +66373,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 37,
     "stats": [
       32,
@@ -66406,7 +66414,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 26,
     "stats": [
       0,
@@ -66447,7 +66455,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       0,
@@ -66488,7 +66496,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       0,
@@ -66529,7 +66537,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 8,
     "stats": [
       0,
@@ -67141,7 +67149,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 132,
     "stats": [
       115,
@@ -67933,7 +67941,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 65,
     "stats": [
       24,
@@ -67974,7 +67982,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 108,
     "stats": [
       100,
@@ -68821,7 +68829,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 59,
     "stats": [
       52,
@@ -69106,7 +69114,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -69147,7 +69155,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -71287,7 +71295,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 15,
     "stats": [
       8,
@@ -71328,7 +71336,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 17,
     "stats": [
       8,
@@ -71369,7 +71377,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 10,
     "stats": [
       8,
@@ -71410,7 +71418,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 10,
     "stats": [
       8,
@@ -71451,7 +71459,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 9,
     "stats": [
       8,
@@ -71664,7 +71672,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -71705,7 +71713,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -71746,7 +71754,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -71787,7 +71795,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -71828,7 +71836,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -71869,7 +71877,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -71910,7 +71918,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -71951,7 +71959,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -71992,7 +72000,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 7,
     "stats": [
       0,
@@ -72033,7 +72041,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 7,
     "stats": [
       0,
@@ -72074,7 +72082,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 7,
     "stats": [
       0,
@@ -72238,7 +72246,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 16,
     "stats": [
       14,
@@ -72279,7 +72287,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 16,
     "stats": [
       14,
@@ -72369,7 +72377,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 7,
     "stats": [
       8,
@@ -72410,7 +72418,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 9,
     "stats": [
       0,
@@ -72451,7 +72459,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 33,
     "stats": [
       28,
@@ -72500,7 +72508,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 24,
     "stats": [
       22,
@@ -72541,7 +72549,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -72582,7 +72590,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 8,
     "stats": [
       8,
@@ -72664,7 +72672,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 62,
     "stats": [
       54,
@@ -72705,7 +72713,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 62,
     "stats": [
       54,
@@ -72746,7 +72754,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 69,
     "stats": [
       54,
@@ -72787,7 +72795,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 15,
     "stats": [
       14,
@@ -72828,7 +72836,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 46,
     "stats": [
       38,
@@ -72869,7 +72877,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -72910,7 +72918,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -72992,7 +73000,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 37,
     "stats": [
       0,
@@ -73951,7 +73959,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 77,
     "stats": [
       65,
@@ -74292,7 +74300,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 115,
     "stats": [
       1,
@@ -74333,7 +74341,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 118,
     "stats": [
       1,
@@ -74374,7 +74382,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 121,
     "stats": [
       1,
@@ -76542,7 +76550,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 72,
     "stats": [
       65,
@@ -76665,7 +76673,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 61,
     "stats": [
       65,
@@ -76747,7 +76755,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 25,
     "stats": [
       65,
@@ -76828,7 +76836,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       19,
@@ -76909,7 +76917,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 33,
     "stats": [
       31,
@@ -76950,7 +76958,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 28,
     "stats": [
       0,
@@ -77007,7 +77015,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 11,
     "stats": [
       0,
@@ -77048,7 +77056,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 11,
     "stats": [
       0,
@@ -77105,7 +77113,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       40,
@@ -77146,7 +77154,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -77244,7 +77252,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -77285,7 +77293,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -77326,7 +77334,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -77367,7 +77375,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -77408,7 +77416,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -77449,7 +77457,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 21,
     "stats": [
       19,
@@ -77531,7 +77539,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 19,
     "stats": [
       19,
@@ -77572,7 +77580,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       19,
@@ -77613,7 +77621,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       19,
@@ -77654,7 +77662,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       19,
@@ -77695,7 +77703,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 4,
     "stats": [
       0,
@@ -77736,7 +77744,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 3,
     "stats": [
       0,
@@ -77793,7 +77801,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 3,
     "stats": [
       1,
@@ -77834,7 +77842,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -77875,7 +77883,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -77916,7 +77924,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -77957,7 +77965,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 19,
     "stats": [
       19,
@@ -77998,7 +78006,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       0,
@@ -78039,7 +78047,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       0,
@@ -79373,7 +79381,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 1337,
     "stats": [
       19,
@@ -80404,7 +80412,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 90,
     "stats": [
       10,
@@ -80445,7 +80453,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 108,
     "stats": [
       10,
@@ -80543,7 +80551,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 110,
     "stats": [
       85,
@@ -80584,7 +80592,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 110,
     "stats": [
       85,
@@ -80837,7 +80845,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       0,
@@ -80878,7 +80886,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 43,
     "stats": [
       0,
@@ -80927,7 +80935,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 84,
     "stats": [
       0,
@@ -81057,7 +81065,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 167,
     "stats": [
       380,
@@ -81147,7 +81155,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 139,
     "stats": [
       198,
@@ -81188,7 +81196,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 139,
     "stats": [
       198,
@@ -81686,7 +81694,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 34,
     "stats": [
       198,
@@ -81776,7 +81784,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       8,
@@ -81817,7 +81825,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 17,
     "stats": [
       8,
@@ -81858,7 +81866,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 30,
     "stats": [
       8,
@@ -83030,7 +83038,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 55,
     "stats": [
       0,
@@ -83071,7 +83079,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 75,
     "stats": [
       85,
@@ -83587,7 +83595,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 25,
     "stats": [
       0,
@@ -84828,7 +84836,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 4,
     "stats": [
       0,
@@ -84869,7 +84877,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -85309,7 +85317,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 1,
     "stats": [
       0,
@@ -85350,7 +85358,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 1,
     "stats": [
       1,
@@ -85391,7 +85399,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 1,
     "stats": [
       1,
@@ -85432,7 +85440,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 1,
     "stats": [
       1,
@@ -85473,7 +85481,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 1,
     "stats": [
       0,
@@ -85514,7 +85522,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 1,
     "stats": [
       0,
@@ -85563,7 +85571,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       3,
@@ -85604,7 +85612,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       0,
@@ -85645,7 +85653,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       3,
@@ -85686,7 +85694,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       0,
@@ -85727,7 +85735,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       3,
@@ -85768,7 +85776,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       0,
@@ -85809,7 +85817,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       3,
@@ -86365,7 +86373,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 64,
     "stats": [
       0,
@@ -86406,7 +86414,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 64,
     "stats": [
       0,
@@ -89593,7 +89601,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 37,
     "stats": [
       0,
@@ -89642,7 +89650,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 37,
     "stats": [
       0,
@@ -89964,7 +89972,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 0,
     "stats": [
       0,
@@ -90005,7 +90013,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 0,
     "stats": [
       0,
@@ -90046,7 +90054,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 0,
     "stats": [
       0,
@@ -90087,7 +90095,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 0,
     "stats": [
       0,
@@ -90560,7 +90568,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 69,
     "stats": [
       0,
@@ -90787,7 +90795,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 48,
     "stats": [
       40,
@@ -90828,7 +90836,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 48,
     "stats": [
       40,
@@ -90869,7 +90877,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 48,
     "stats": [
       40,
@@ -90951,7 +90959,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 48,
     "stats": [
       0,
@@ -90992,7 +91000,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 48,
     "stats": [
       0,
@@ -91033,7 +91041,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 48,
     "stats": [
       40,
@@ -91172,7 +91180,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 48,
     "stats": [
       40,
@@ -91213,7 +91221,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 48,
     "stats": [
       0,
@@ -91302,7 +91310,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 70,
     "stats": [
       147,
@@ -91343,7 +91351,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 169,
     "stats": [
       147,
@@ -91384,7 +91392,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 90,
     "stats": [
       0,
@@ -93805,7 +93813,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 57,
     "stats": [
       0,
@@ -93846,7 +93854,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 57,
     "stats": [
       0,
@@ -93887,7 +93895,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 57,
     "stats": [
       0,
@@ -93928,7 +93936,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 57,
     "stats": [
       0,
@@ -93969,7 +93977,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 57,
     "stats": [
       0,
@@ -94010,7 +94018,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 57,
     "stats": [
       0,
@@ -94051,7 +94059,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 57,
     "stats": [
       0,
@@ -94092,7 +94100,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 57,
     "stats": [
       0,
@@ -94133,7 +94141,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 57,
     "stats": [
       0,
@@ -94174,7 +94182,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 57,
     "stats": [
       0,
@@ -94368,7 +94376,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 5,
     "stats": [
       2,
@@ -94594,7 +94602,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 48,
     "stats": [
       0,
@@ -94683,7 +94691,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 4,
     "stats": [
       0,
@@ -94724,7 +94732,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 42,
     "stats": [
       0,
@@ -94765,7 +94773,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 42,
     "stats": [
       0,
@@ -94806,7 +94814,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 42,
     "stats": [
       0,
@@ -94847,7 +94855,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 37,
     "stats": [
       19,
@@ -94888,7 +94896,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 37,
     "stats": [
       19,
@@ -94953,7 +94961,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 5,
     "stats": [
       0,
@@ -95010,7 +95018,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 5,
     "stats": [
       0,
@@ -95051,7 +95059,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 5,
     "stats": [
       0,
@@ -95092,7 +95100,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 5,
     "stats": [
       0,
@@ -95133,7 +95141,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 4,
     "stats": [
       0,
@@ -95174,7 +95182,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 4,
     "stats": [
       0,
@@ -95272,7 +95280,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 299,
     "stats": [
       0,
@@ -96679,7 +96687,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 47,
     "stats": [
       140,
@@ -96744,7 +96752,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       35,
@@ -96785,7 +96793,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       35,
@@ -96826,7 +96834,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       35,
@@ -96867,7 +96875,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       35,
@@ -96908,7 +96916,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       35,
@@ -96949,7 +96957,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       35,
@@ -96990,7 +96998,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       35,
@@ -97031,7 +97039,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       35,
@@ -97072,7 +97080,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       35,
@@ -97113,7 +97121,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       35,
@@ -97496,7 +97504,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 81,
     "stats": [
       0,
@@ -97537,7 +97545,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 75,
     "stats": [
       0,
@@ -97578,7 +97586,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 75,
     "stats": [
       0,
@@ -97619,7 +97627,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 75,
     "stats": [
       0,
@@ -97748,7 +97756,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 91,
     "stats": [
       0,
@@ -98102,7 +98110,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 3,
     "stats": [
       2,
@@ -98143,7 +98151,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 14,
     "stats": [
       14,
@@ -98184,7 +98192,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 26,
     "stats": [
       24,
@@ -98738,7 +98746,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 26,
     "stats": [
       19,
@@ -98779,7 +98787,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 26,
     "stats": [
       19,
@@ -98820,7 +98828,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 26,
     "stats": [
       19,
@@ -98861,7 +98869,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 26,
     "stats": [
       19,
@@ -99871,7 +99879,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 33,
     "stats": [
       25,
@@ -100616,7 +100624,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 127,
     "stats": [
       0,
@@ -100657,7 +100665,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 124,
     "stats": [
       0,
@@ -100698,7 +100706,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 122,
     "stats": [
       0,
@@ -100739,7 +100747,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 120,
     "stats": [
       0,
@@ -100780,7 +100788,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 118,
     "stats": [
       0,
@@ -100821,7 +100829,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 115,
     "stats": [
       0,
@@ -100862,7 +100870,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 112,
     "stats": [
       0,
@@ -100903,7 +100911,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 110,
     "stats": [
       0,
@@ -102047,7 +102055,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 28,
     "stats": [
       0,
@@ -102088,7 +102096,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 38,
     "stats": [
       0,
@@ -102454,7 +102462,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 54,
     "stats": [
       70,
@@ -102495,7 +102503,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 54,
     "stats": [
       70,
@@ -102536,7 +102544,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 54,
     "stats": [
       70,
@@ -102577,7 +102585,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 54,
     "stats": [
       70,
@@ -102618,7 +102626,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 64,
     "stats": [
       70,
@@ -102790,7 +102798,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       40,
@@ -102831,7 +102839,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       40,
@@ -102872,7 +102880,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       40,
@@ -102970,7 +102978,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 75,
     "stats": [
       70,
@@ -103011,7 +103019,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 50,
     "stats": [
       70,
@@ -103586,7 +103594,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 50,
     "stats": [
       70,
@@ -103627,7 +103635,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 54,
     "stats": [
       70,
@@ -104699,7 +104707,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       19,
@@ -104740,7 +104748,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       19,
@@ -104781,7 +104789,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       19,
@@ -104822,7 +104830,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       19,
@@ -104863,7 +104871,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       19,
@@ -105180,7 +105188,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 62,
     "stats": [
       0,
@@ -105221,7 +105229,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 62,
     "stats": [
       0,
@@ -105262,7 +105270,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 62,
     "stats": [
       0,
@@ -105556,7 +105564,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 13,
     "stats": [
       0,
@@ -106816,7 +106824,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 10,
     "stats": [
       7,
@@ -106857,7 +106865,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 47,
     "stats": [
       32,
@@ -106954,7 +106962,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       0,
@@ -107207,7 +107215,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 43,
     "stats": [
       0,
@@ -107248,7 +107256,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 56,
     "stats": [
       0,
@@ -107289,7 +107297,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       32,
@@ -107330,7 +107338,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       32,
@@ -107371,7 +107379,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       32,
@@ -107412,7 +107420,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       32,
@@ -107453,7 +107461,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       19,
@@ -107494,7 +107502,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       19,
@@ -107535,7 +107543,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       19,
@@ -107576,7 +107584,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       19,
@@ -107617,7 +107625,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       19,
@@ -107658,7 +107666,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       19,
@@ -107699,7 +107707,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       19,
@@ -107740,7 +107748,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       19,
@@ -107781,7 +107789,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       19,
@@ -107822,7 +107830,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       19,
@@ -107927,7 +107935,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       32,
@@ -107992,7 +108000,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       0,
@@ -109285,7 +109293,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 21,
     "stats": [
       0,
@@ -109326,7 +109334,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 21,
     "stats": [
       19,
@@ -109367,7 +109375,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 21,
     "stats": [
       19,
@@ -109636,7 +109644,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       0,
@@ -109677,7 +109685,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       0,
@@ -109718,7 +109726,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       0,
@@ -109759,7 +109767,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       0,
@@ -109800,7 +109808,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       0,
@@ -111342,7 +111350,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 75,
     "stats": [
       40,
@@ -111506,7 +111514,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 136,
     "stats": [
       1,
@@ -112231,7 +112239,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       18,
@@ -112288,7 +112296,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 111,
     "stats": [
       95,
@@ -112353,7 +112361,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 19,
     "stats": [
       18,
@@ -113442,7 +113450,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       25,
@@ -113532,7 +113540,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 0,
     "stats": [
       0,
@@ -113621,7 +113629,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 19,
     "stats": [
       17,
@@ -113662,7 +113670,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 19,
     "stats": [
       17,
@@ -113744,7 +113752,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 48,
     "stats": [
       0,
@@ -115250,7 +115258,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 7,
     "stats": [
       5,
@@ -115291,7 +115299,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 7,
     "stats": [
       5,
@@ -115332,7 +115340,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       5,
@@ -115373,7 +115381,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 20,
     "stats": [
       5,
@@ -116119,7 +116127,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 22,
     "stats": [
       19,
@@ -116160,7 +116168,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 64,
     "stats": [
       55,
@@ -116201,7 +116209,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 64,
     "stats": [
       55,
@@ -116242,7 +116250,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 64,
     "stats": [
       55,
@@ -116283,7 +116291,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 64,
     "stats": [
       55,
@@ -116324,7 +116332,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 64,
     "stats": [
       55,
@@ -116544,7 +116552,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 30,
     "stats": [
       0,
@@ -116585,7 +116593,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 30,
     "stats": [
       0,
@@ -118065,7 +118073,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -118114,7 +118122,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       0,
@@ -118212,7 +118220,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 16,
     "stats": [
       14,
@@ -118253,7 +118261,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 16,
     "stats": [
       14,
@@ -118294,7 +118302,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 16,
     "stats": [
       14,
@@ -118335,7 +118343,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 16,
     "stats": [
       14,
@@ -119779,7 +119787,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 11,
     "stats": [
       95,
@@ -119820,7 +119828,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 11,
     "stats": [
       95,
@@ -119861,7 +119869,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 11,
     "stats": [
       95,
@@ -119942,7 +119950,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 108,
     "stats": [
       10,
@@ -119983,7 +119991,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 108,
     "stats": [
       10,
@@ -120024,7 +120032,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 90,
     "stats": [
       10,
@@ -120065,7 +120073,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 90,
     "stats": [
       10,
@@ -120218,7 +120226,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 108,
     "stats": [
       95,
@@ -125409,7 +125417,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 59,
     "stats": [
       127,
@@ -125450,7 +125458,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 90,
     "stats": [
       127,
@@ -125491,7 +125499,7 @@
     "attackSpeed": 4,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 119,
     "stats": [
       127,
@@ -125655,7 +125663,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 70,
     "stats": [
       0,
@@ -125696,7 +125704,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 100,
     "stats": [
       0,
@@ -125737,7 +125745,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 130,
     "stats": [
       0,
@@ -128974,15 +128982,77 @@
     "examine": "Handy for hindering the enemy team's movement.",
     "size": 1,
     "walkRadius": 0,
-    "attackable": true
+    "attackable": true,
+    "retreats": false,
+    "aggressive": false,
+    "poisonous": false,
+    "fightsBack": false,
+    "attackSpeed": -1,
+    "respawn": -1,
+    "maxHit": -1,
+    "hitpoints": 50,
+    "deathAnim": 5972,
+    "stats": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "slayerLevel": 1,
+    "combatFollowDistance": 0
   },
   {
     "id": 5723,
     "name": "Barricade",
     "examine": "Handy for hindering the enemy team's movement.",
-    "size": 1,
+     "size": 1,
     "walkRadius": 0,
-    "attackable": true
+    "attackable": true,
+    "retreats": false,
+    "aggressive": false,
+    "poisonous": false,
+    "fightsBack": false,
+    "attackSpeed": -1,
+    "respawn": -1,
+    "maxHit": -1,
+    "hitpoints": 50,
+    "deathAnim": 5972,
+    "stats": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "slayerLevel": 1,
+    "combatFollowDistance": 0
   },
   {
     "id": 5724,
@@ -134583,7 +134653,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 19,
     "stats": [
       17,
@@ -134624,7 +134694,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 19,
     "stats": [
       17,
@@ -135913,7 +135983,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 37,
     "stats": [
       19,
@@ -136018,7 +136088,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 19,
     "stats": [
       0,
@@ -136059,7 +136129,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 34,
     "stats": [
       0,
@@ -136100,7 +136170,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 49,
     "stats": [
       0,
@@ -136141,7 +136211,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 64,
     "stats": [
       0,
@@ -143828,7 +143898,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 209,
     "stats": [
       0,
@@ -143951,7 +144021,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 186,
     "stats": [
       0,
@@ -144361,7 +144431,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 201,
     "stats": [
       0,
@@ -144689,7 +144759,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 188,
     "stats": [
       0,
@@ -144730,7 +144800,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 192,
     "stats": [
       0,
@@ -144853,7 +144923,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 177,
     "stats": [
       0,
@@ -145312,7 +145382,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 139,
     "stats": [
       198,
@@ -145394,7 +145464,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 103,
     "stats": [
       320,
@@ -145435,7 +145505,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 174,
     "stats": [
       320,
@@ -145476,7 +145546,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 167,
     "stats": [
       380,
@@ -146296,7 +146366,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 75,
     "stats": [
       40,
@@ -146419,7 +146489,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 136,
     "stats": [
       1,
@@ -146829,7 +146899,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 79,
     "stats": [
       225,
@@ -147157,7 +147227,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 47,
     "stats": [
       140,
@@ -147198,7 +147268,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 112,
     "stats": [
       165,
@@ -147321,7 +147391,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 34,
     "stats": [
       198,
@@ -147829,7 +147899,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 32,
     "stats": [
       0,
@@ -148440,7 +148510,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 53,
     "stats": [
       50,
@@ -149899,7 +149969,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 69,
     "stats": [
       40,
@@ -153118,7 +153188,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 135,
     "stats": [
       140,
@@ -153200,7 +153270,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 130,
     "stats": [
       0,
@@ -153241,7 +153311,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 145,
     "stats": [
       0,
@@ -153323,7 +153393,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 86,
     "stats": [
       75,
@@ -156921,7 +156991,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 12500,
     "stats": [
       0,
@@ -158117,7 +158187,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 54,
     "stats": [
       0,
@@ -158158,7 +158228,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 56,
     "stats": [
       0,
@@ -158199,7 +158269,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 62,
     "stats": [
       0,
@@ -158432,7 +158502,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       50,
@@ -158473,7 +158543,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 45,
     "stats": [
       50,
@@ -158514,7 +158584,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 50,
     "stats": [
       50,
@@ -158555,7 +158625,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 50,
     "stats": [
       50,
@@ -158596,7 +158666,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 83,
     "stats": [
       1,
@@ -158637,7 +158707,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 83,
     "stats": [
       1,
@@ -158678,7 +158748,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 76,
     "stats": [
       1,
@@ -158719,7 +158789,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 76,
     "stats": [
       1,
@@ -158883,7 +158953,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 48,
     "stats": [
       40,
@@ -158965,7 +159035,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 58,
     "stats": [
       50,
@@ -159047,7 +159117,7 @@
     "attackSpeed": 5,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 70,
     "stats": [
       60,
@@ -159129,7 +159199,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 99,
     "stats": [
       85,
@@ -159902,7 +159972,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 5,
     "stats": [
       2,
@@ -160282,7 +160352,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -160323,7 +160393,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -160364,7 +160434,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -160405,7 +160475,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -160446,7 +160516,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -160487,7 +160557,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 2,
     "stats": [
       1,
@@ -160528,7 +160598,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -160569,7 +160639,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -160610,7 +160680,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 23,
     "stats": [
       0,
@@ -160651,7 +160721,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 6,
     "stats": [
       0,
@@ -160910,7 +160980,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 21,
     "stats": [
       19,
@@ -160951,7 +161021,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 84,
     "stats": [
       75,
@@ -161320,7 +161390,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 0,
     "stats": [
       0,
@@ -161410,7 +161480,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 0,
     "stats": [
       0,
@@ -165689,7 +165759,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 15,
     "stats": [
       14,
@@ -166402,7 +166472,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 95,
     "stats": [
       75,
@@ -167564,7 +167634,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 95,
     "stats": [
       100,
@@ -167685,7 +167755,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 98,
     "stats": [
       120,
@@ -167767,7 +167837,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 112,
     "stats": [
       120,
@@ -167808,7 +167878,7 @@
     "attackSpeed": 7,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 140,
     "stats": [
       80,
@@ -167857,7 +167927,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 141,
     "stats": [
       130,
@@ -168044,7 +168114,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 9,
     "stats": [
       7,
@@ -168991,7 +169061,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 162,
     "stats": [
       0,
@@ -169728,7 +169798,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 84,
     "stats": [
       90,
@@ -169769,7 +169839,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 85,
     "stats": [
       90,
@@ -169810,7 +169880,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 81,
     "stats": [
       75,
@@ -169851,7 +169921,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 82,
     "stats": [
       75,
@@ -169892,7 +169962,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 84,
     "stats": [
       0,
@@ -169933,7 +170003,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 82,
     "stats": [
       0,
@@ -170023,7 +170093,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 19,
     "stats": [
       15,
@@ -170064,7 +170134,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 19,
     "stats": [
       15,
@@ -172605,7 +172675,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 0,
     "stats": [
       0,
@@ -172646,7 +172716,7 @@
     "attackSpeed": 0,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 0,
     "stats": [
       0,
@@ -173835,7 +173905,7 @@
     "attackSpeed": 6,
     "attackAnim": -1,
     "defenceAnim": -1,
-    "deathAnim": 814,
+    "deathAnim": 836,
     "combatLevel": 112,
     "stats": [
       165,

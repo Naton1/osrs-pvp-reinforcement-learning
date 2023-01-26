@@ -1,6 +1,7 @@
 package com.elvarg.game.content.combat.method.impl;
 
-import com.elvarg.game.content.Dueling.DuelRule;
+import com.elvarg.game.Sound;
+import com.elvarg.game.Sounds;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.hit.PendingHit;
@@ -23,13 +24,13 @@ public class RangedCombatMethod extends CombatMethod {
     @Override
     public PendingHit[] hits(Mobile character, Mobile target) {
         if (character.getCombat().getRangedWeapon() == RangedWeapon.DARK_BOW) {
-            return new PendingHit[] { new PendingHit(character, target, this, 2), new PendingHit(character, target, this, 3) };
+            return new PendingHit[] { new PendingHit(character, target, this, 1), new PendingHit(character, target, this, 2) };
         }
         if (character.getCombat().getRangedWeapon() == RangedWeapon.BALLISTA) {
-            return new PendingHit[] { new PendingHit(character, target, this, 3) };
+            return new PendingHit[] { new PendingHit(character, target, this, 2) };
         }
 
-        return new PendingHit[]{new PendingHit(character, target, this, 2)};
+        return new PendingHit[]{new PendingHit(character, target, this, 1)};
     }
 
     @Override
@@ -102,6 +103,9 @@ public class RangedCombatMethod extends CombatMethod {
 
         // Fire projectile
         new Projectile(character, target, projectileId, delay, speed, heightStart, heightEnd).sendProjectile();
+
+        // Send sound
+        Sounds.sendSound(character.getAsPlayer(), Sound.SHOOT_ARROW);
 
         // Dark bow sends two arrows, so send another projectile and delete another
         // arrow.

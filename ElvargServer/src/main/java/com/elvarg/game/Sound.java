@@ -2,6 +2,10 @@ package com.elvarg.game;
 
 public enum Sound {
 
+    // crafting sounds
+
+    CUTTING(375, 1, 0),
+
     // cooking sounds
 
     COOKING_COOK(1039, 1, 10),
@@ -43,6 +47,8 @@ public enum Sound {
 
     IMP_ATTACKING(10, 1, 25),
 
+    SHOOT_ARROW(370),
+
     WEAPON(398, 1, 25), // default/other
 
     WEAPON_GODSWORD(390, 1, 25),
@@ -64,20 +70,45 @@ public enum Sound {
 
     // Spell sounds
 
+    SPELL_FAIL_SPLASH(193),
+
+    TELEPORT(202),
+
     ICA_BARRAGE_IMPACT(1125, 1, 0),
 
     DROP_ITEM(376, 1, 0),
     PICK_UP_ITEM(358, 1, 0),
+
+    SET_UP_BARRICADE(358, 1, 0),
+
+    FIRE_LIGHT(375, 1, 0),
+    FIRE_SUCCESSFUL(608, 1, 0),
+    FIRE_FIRST_ATTEMPT(2584, 1, 0),
+    SLASH_WEB(237, 1, 0),
+    FAIL_SLASH_WEB(2548, 1, 0),
+    FOOD_EAT(317),
+    DRINK(334),
     ;
 
     private final int id;
     private final int volume;
     private final int delay;
 
-    Sound(int id, int volume, int delay) {
+    private final int loopType;
+
+    Sound(int id, int volume, int delay, int loopType) {
         this.id = id;
         this.volume = volume;
         this.delay = delay;
+        this.loopType = loopType;
+    }
+
+    Sound(int id, int volume, int delay) {
+        this(id, volume, delay, 0);
+    }
+
+    Sound(int id) {
+        this(id, 1, 0, 0);
     }
 
     public int getId() {
@@ -91,6 +122,8 @@ public enum Sound {
     public int getDelay() {
         return delay;
     }
+
+    public int getLoopType() { return loopType; }
 }
 
 /*

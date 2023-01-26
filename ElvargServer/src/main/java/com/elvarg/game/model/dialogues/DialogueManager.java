@@ -9,6 +9,7 @@ import com.elvarg.game.model.dialogues.builders.DialogueBuilder;
 import com.elvarg.game.model.dialogues.builders.impl.TestStaticDialogue;
 import com.elvarg.game.model.dialogues.entries.Dialogue;
 import com.elvarg.game.model.dialogues.entries.impl.OptionDialogue;
+import com.elvarg.game.model.dialogues.entries.impl.OptionsDialogue;
 
 public class DialogueManager {
 
@@ -54,6 +55,21 @@ public class DialogueManager {
      * Advances, starting the next dialogue.
      */
     public void advance() {
+        Dialogue current = dialogues.get(index);
+        if (current == null) {
+            reset();
+            player.getPacketSender().sendInterfaceRemoval();
+            return;
+        }
+
+        DialogueAction continueAction = current.getContinueAction();
+        if(continueAction != null) {
+            // This dialogue has a custom continue action
+            continueAction.execute(player);
+            reset();
+            return;
+        }
+
         start(index + 1);
     }
 
@@ -136,6 +152,10 @@ public class DialogueManager {
      */
     public void handleOption(Player player, DialogueOption option) {
         final Dialogue dialogue = dialogues.get(index);
+        if (dialogue instanceof OptionsDialogue) {
+            ((OptionsDialogue) dialogue).execute(option.ordinal(), player);
+            return;
+        }
         if (!(dialogue instanceof OptionDialogue)) {
             player.getPacketSender().sendInterfaceRemoval();
             return;

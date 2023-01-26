@@ -107,6 +107,11 @@ public class EquipPacketListener implements PacketExecutor {
 					return;
 				}
 
+				// Handle area equipping behavior
+				if (player.getArea() != null && !player.getArea().canEquipItem(player, equipmentSlot, item)) {
+					return;
+				}
+
 				// Handle duel arena settings..
 				if (player.getDueling().inDuel()) {
 					for (int i = 11; i < player.getDueling().getRules().length; i++) {
@@ -184,8 +189,7 @@ public class EquipPacketListener implements PacketExecutor {
 				}
 
 				if (equipmentSlot == Equipment.WEAPON_SLOT) {
-					var newWeaponHasSpecial = CombatSpecial.SPECIAL_ATTACK_WEAPON_IDS.contains(id);
-					resetWeapon(player, !newWeaponHasSpecial);
+					resetWeapon(player, true);
 				}
 
 				if (player.getEquipment().get(Equipment.WEAPON_SLOT).getId() != 4153) {

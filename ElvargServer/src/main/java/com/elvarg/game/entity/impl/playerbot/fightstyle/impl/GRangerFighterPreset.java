@@ -51,7 +51,7 @@ public class GRangerFighterPreset implements FighterPreset {
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
                     return playerBot.getSpecialPercentage() >= 50 &&
                             // Don't switch to Melee if we're frozen
-                            playerBot.getMovementQueue().canMove() &&
+                            playerBot.getMovementQueue().getMobility().canMove() &&
                             // Switch if the enemy has enabled protect from missles or has lowish health
                             (!enemy.getPrayerActive()[PrayerHandler.PROTECT_FROM_MELEE] && enemy.getHitpointsAfterPendingDamage() < 45);
                 }

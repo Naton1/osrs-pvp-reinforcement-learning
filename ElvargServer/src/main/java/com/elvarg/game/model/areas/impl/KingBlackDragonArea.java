@@ -26,14 +26,6 @@ public class KingBlackDragonArea extends Area {
 	}
 
 	@Override
-	public boolean canAttack(Mobile attacker, Mobile target) {
-		if (attacker.isPlayer() && target.isPlayer()) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public boolean canTrade(Player player, Player target) {
 		return true;
 	}
@@ -70,11 +62,6 @@ public class KingBlackDragonArea extends Area {
 	@Override
 	public void defeated(Player player, Mobile character) {
 	}
-	
-    @Override
-    public boolean overridesNpcAggressionTolerance(Player player, int npcId) {
-        return false;
-    }
 
 	@Override
 	public boolean handleObjectClick(Player player, int objectId, int type) {
