@@ -8517,9 +8517,6 @@ public class Client extends GameApplet {
                             k1 += sprite.myWidth + 2;
                         }
                     }
-                    textDrawingArea.render(0, s + ": " + chatMessages[j], l, k1);
-                    textDrawingArea.render(65535, s + ": " + chatMessages[j], l - 1, k1);
-
                     textDrawingArea.render(0, reciever + ": " + message, l, k1);
                     textDrawingArea.render(65535, reciever + ": " + message, l - 1, k1);
 
