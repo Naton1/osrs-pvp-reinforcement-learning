@@ -1,4 +1,4 @@
-package com.runescape.sound;
+package com.runescape.soundeffects;
 
 import com.runescape.io.Buffer;
 

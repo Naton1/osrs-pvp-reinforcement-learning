@@ -144,6 +144,14 @@ public class PacketSender {
 		return this;
 	}
 
+	public PacketSender playMusic(int musicId) {
+		PacketBuilder out = new PacketBuilder(121);
+		out.putShort(musicId);//songid
+		out.putShort(0);//delay
+		player.getSession().write(out);
+		return this;
+	}
+
 	public PacketSender sendAutocastId(int id) {
 		PacketBuilder out = new PacketBuilder(38);
 		out.putShort(id);
