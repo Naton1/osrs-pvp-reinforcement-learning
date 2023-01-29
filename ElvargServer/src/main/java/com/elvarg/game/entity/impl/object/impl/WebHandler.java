@@ -1,7 +1,7 @@
 package com.elvarg.game.entity.impl.object.impl;
 
-import com.elvarg.game.Sound;
-import com.elvarg.game.Sounds;
+import com.elvarg.game.content.sound.Sound;
+import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.model.Item;
@@ -75,10 +75,10 @@ public class WebHandler {
         int successfulSlashChance = Misc.random(2);
         if (successfulSlashChance < 2) {
             player.sendMessage("You slash the web apart.");
-            Sounds.sendSound(player, SLASH_SOUND);
+            SoundManager.sendSound(player, SLASH_SOUND);
             TaskManager.submit(new TimedObjectReplacementTask(web, new GameObject(ObjectIdentifiers.SLASHED_WEB, web.getLocation(), web.getType(), web.getFace(), player.getPrivateArea()), WEB_RESPAWN));
         } else {
-            Sounds.sendSound(player, FAIL_SLASH_SOUND);
+            SoundManager.sendSound(player, FAIL_SLASH_SOUND);
             player.sendMessage("You fail to slash the web.");
         }
 

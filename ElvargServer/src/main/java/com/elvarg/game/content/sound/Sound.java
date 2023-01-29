@@ -1,4 +1,4 @@
-package com.elvarg.game;
+package com.elvarg.game.content.sound;
 
 public enum Sound {
 

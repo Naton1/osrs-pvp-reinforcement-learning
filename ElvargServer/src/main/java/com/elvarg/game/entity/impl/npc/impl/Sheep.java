@@ -1,7 +1,7 @@
 package com.elvarg.game.entity.impl.npc.impl;
 
-import com.elvarg.game.Sound;
-import com.elvarg.game.Sounds;
+import com.elvarg.game.content.sound.Sound;
+import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NPCInteraction;
@@ -74,7 +74,7 @@ public class Sheep extends NPC implements NPCInteraction {
         }
 
         player.performAnimation(SHEARING);
-        Sounds.sendSound(player, Sound.CUTTING);
+        SoundManager.sendSound(player, Sound.CUTTING);
 
         // Shear the sheep and add the wool
         TaskManager.submit(new Task(3, npc, false) {

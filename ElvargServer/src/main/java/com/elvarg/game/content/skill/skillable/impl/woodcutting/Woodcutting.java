@@ -1,7 +1,7 @@
 package com.elvarg.game.content.skill.skillable.impl.woodcutting;
 
-import com.elvarg.game.Sound;
-import com.elvarg.game.Sounds;
+import com.elvarg.game.content.sound.Sound;
+import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.content.PetHandler;
 
 import com.elvarg.game.content.skill.skillable.impl.DefaultSkillable;
@@ -68,7 +68,7 @@ public class Woodcutting extends DefaultSkillable {
         Task animLoop = new Task(4, player, true) {
             @Override
             protected void execute() {
-                Sounds.sendSound(player, Sound.WOODCUTTING_CHOP);
+                SoundManager.sendSound(player, Sound.WOODCUTTING_CHOP);
                 player.performAnimation(axe.get().getAnimation());
             }
         };
@@ -78,7 +78,7 @@ public class Woodcutting extends DefaultSkillable {
         Task soundLoop = new Task(2, player, false) {
             @Override
             protected void execute() {
-                Sounds.sendSound(player, Sound.WOODCUTTING_CHOP);
+                SoundManager.sendSound(player, Sound.WOODCUTTING_CHOP);
             }
         };
         TaskManager.submit(soundLoop);

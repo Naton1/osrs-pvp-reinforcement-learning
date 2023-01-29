@@ -11,10 +11,7 @@ import com.elvarg.game.model.container.shop.Shop;
 import com.elvarg.game.model.container.shop.ShopManager;
 import com.elvarg.game.model.container.shop.currency.ShopCurrencies;
 import com.elvarg.game.model.dialogues.builders.DialogueChainBuilder;
-import com.elvarg.game.model.dialogues.entries.impl.EndDialogue;
-import com.elvarg.game.model.dialogues.entries.impl.NpcDialogue;
-import com.elvarg.game.model.dialogues.entries.impl.OptionsDialogue;
-import com.elvarg.game.model.dialogues.entries.impl.PlayerDialogue;
+import com.elvarg.game.model.dialogues.entries.impl.*;
 
 import java.util.LinkedHashMap;
 
@@ -93,7 +90,10 @@ public class Lanthus extends NPC implements NPCInteraction {
                         (player -> player.getDialogueManager().start(this.dialogueBuilder, 1))),
 
                 new PlayerDialogue(4, "Do you have a manual? I'd like to learn how to play!"),
-                new NpcDialogue(5, LANTHUS, "Sure, here you go.", (player) -> player.getInventory().add(CastleWars.MANUAL)),
+                new NpcDialogue(5, LANTHUS, "Sure, here you go.", (player) -> {
+                    player.getInventory().add(CastleWars.MANUAL);
+                    ItemStatementDialogue.send(player, "", new String[] {"Lanthus gives you a Castlewars Manual."}, CastleWars.MANUAL.getId(), 200);
+                }),
                 new EndDialogue(6)
         );
     }

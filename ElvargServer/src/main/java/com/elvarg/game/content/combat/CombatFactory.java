@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import com.elvarg.game.Sound;
-import com.elvarg.game.Sounds;
+import com.elvarg.game.content.sound.Sound;
+import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.PrayerHandler;
 import com.elvarg.game.content.Dueling.DuelRule;
@@ -15,18 +15,10 @@ import com.elvarg.game.content.combat.formula.DamageFormulas;
 import com.elvarg.game.content.combat.hit.HitDamage;
 import com.elvarg.game.content.combat.hit.HitMask;
 import com.elvarg.game.content.combat.hit.PendingHit;
-import com.elvarg.game.content.combat.magic.CombatSpells;
 import com.elvarg.game.content.combat.method.CombatMethod;
 import com.elvarg.game.content.combat.method.impl.MagicCombatMethod;
 import com.elvarg.game.content.combat.method.impl.MeleeCombatMethod;
 import com.elvarg.game.content.combat.method.impl.RangedCombatMethod;
-import com.elvarg.game.content.combat.method.impl.npcs.ChaosElementalCombatMethod;
-import com.elvarg.game.content.combat.method.impl.npcs.ChaosFanaticCombatMethod;
-import com.elvarg.game.content.combat.method.impl.npcs.CrazyArchaeologistCombatMethod;
-import com.elvarg.game.content.combat.method.impl.npcs.JadCombatMethod;
-import com.elvarg.game.content.combat.method.impl.npcs.KingBlackDragonMethod;
-import com.elvarg.game.content.combat.method.impl.npcs.VenenatisCombatMethod;
-import com.elvarg.game.content.combat.method.impl.npcs.VetionCombatMethod;
 import com.elvarg.game.content.combat.ranged.RangedData;
 import com.elvarg.game.content.combat.ranged.RangedData.Ammunition;
 import com.elvarg.game.content.combat.ranged.RangedData.RangedWeapon;
@@ -48,10 +40,8 @@ import com.elvarg.game.model.SkullType;
 import com.elvarg.game.model.areas.AreaManager;
 import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Equipment;
-import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
 import com.elvarg.game.model.movement.MovementQueue;
 import com.elvarg.game.model.movement.path.PathFinder;
-import com.elvarg.game.model.movement.path.RS317PathFinder;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
@@ -529,7 +519,7 @@ public class CombatFactory {
 		// Do other stuff for players..
 		if (target.isPlayer()) {
 			final Player p_ = target.getAsPlayer();
-			Sounds.sendSound(p_, Sound.FEMALE_GETTING_HIT);
+			SoundManager.sendSound(p_, Sound.FEMALE_GETTING_HIT);
 
 			// Close their current interface
 			if (p_.getRights() != PlayerRights.DEVELOPER && p_.busy()) {

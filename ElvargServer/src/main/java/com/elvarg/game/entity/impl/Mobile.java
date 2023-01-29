@@ -1,6 +1,6 @@
 package com.elvarg.game.entity.impl;
 
-import com.elvarg.game.Sound;
+import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.Combat;
 import com.elvarg.game.content.combat.CombatType;

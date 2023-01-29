@@ -1,7 +1,7 @@
 package com.elvarg.game.entity.impl.npc.impl;
 
-import com.elvarg.game.Sound;
-import com.elvarg.game.Sounds;
+import com.elvarg.game.content.sound.Sound;
+import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.World;
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.skill.skillable.impl.Firemaking;
@@ -106,7 +106,7 @@ public class Barricades extends NPC implements NPCInteraction {
         }
 
         player.performAnimation(Firemaking.LIGHT_FIRE);
-        Sounds.sendSound(player, Sound.FIRE_FIRST_ATTEMPT);
+        SoundManager.sendSound(player, Sound.FIRE_FIRST_ATTEMPT);
 
         TaskManager.submit(new Task(3, player, false) {
             @Override
@@ -147,7 +147,7 @@ public class Barricades extends NPC implements NPCInteraction {
         player.getInventory().delete(ITEM_ID, 1);
         barricades.add(tile);
         World.getAddNPCQueue().add(new NPC(BARRICADE, tile.clone()));
-        Sounds.sendSound(player, Sound.PICK_UP_ITEM);
+        SoundManager.sendSound(player, Sound.PICK_UP_ITEM);
     }
 
     @Override

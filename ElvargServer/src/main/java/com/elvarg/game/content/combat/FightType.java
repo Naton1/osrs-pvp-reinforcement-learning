@@ -1,6 +1,6 @@
 package com.elvarg.game.content.combat;
 
-import com.elvarg.game.Sound;
+import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.model.equipment.BonusManager;
 
 /**

@@ -2,8 +2,8 @@ package com.elvarg.game.content;
 
 import java.util.Optional;
 
-import com.elvarg.game.Sound;
-import com.elvarg.game.Sounds;
+import com.elvarg.game.content.sound.Sound;
+import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.EffectTimer;
@@ -204,7 +204,7 @@ public enum PotionConsumable {
         player.getPacketSender().sendInterfaceRemoval();
 		player.getCombat().reset();
 		player.performAnimation(new Animation(829));
-		Sounds.sendSound(player, Sound.DRINK);
+		SoundManager.sendSound(player, Sound.DRINK);
 		player.getInventory().setItem(slot, getReplacementItem(item)).refreshItems();
 		potion.get().onEffect(player);
 		
