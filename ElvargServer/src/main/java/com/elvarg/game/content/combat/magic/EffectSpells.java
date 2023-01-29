@@ -1,7 +1,5 @@
 package com.elvarg.game.content.combat.magic;
 
-import com.elvarg.game.Sound;
-import com.elvarg.game.Sounds;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.*;

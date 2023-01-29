@@ -11,7 +11,8 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.elvarg.game.GameConstants;
-import com.elvarg.game.Sound;
+import com.elvarg.game.collision.RegionManager;
+import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.World;
 import com.elvarg.game.content.*;
 import com.elvarg.game.content.PrayerHandler.PrayerData;
@@ -1385,6 +1386,10 @@ public class Player extends Mobile {
 
 	public int getRegionHeight() {
 		return regionHeight;
+	}
+
+	public int getRegionId() {
+		return RegionManager.calculateRegionId(getLocation().getX(), getLocation().getY());
 	}
 
 	public void setRegionHeight(int regionHeight) {

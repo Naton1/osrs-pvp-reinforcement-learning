@@ -1,6 +1,6 @@
 package com.elvarg.game.content.combat.magic;
 
-import com.elvarg.game.Sound;
+import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;

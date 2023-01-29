@@ -1,7 +1,7 @@
 package com.elvarg.net.packet.impl;
 
-import com.elvarg.game.Sound;
-import com.elvarg.game.Sounds;
+import com.elvarg.game.content.sound.Sound;
+import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.content.PetHandler;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.player.Player;
@@ -75,7 +75,7 @@ public class DropItemPacketListener implements PacketExecutor {
 
         // Check if we're dropping a pet..
         if (PetHandler.drop(player, id, false)) {
-            Sounds.sendSound(player, Sound.DROP_ITEM);
+            SoundManager.sendSound(player, Sound.DROP_ITEM);
             return;
         }
 
@@ -90,7 +90,7 @@ public class DropItemPacketListener implements PacketExecutor {
             
             player.getInventory().setItem(itemSlot, new Item(-1, 0)).refreshItems();
 
-            Sounds.sendSound(player, Sound.DROP_ITEM);
+            SoundManager.sendSound(player, Sound.DROP_ITEM);
         } else {
             destroyItemInterface(player, item);
         }

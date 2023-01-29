@@ -89,10 +89,21 @@ public class RegionManager {
      */
     public static Optional<Region> getRegion(int x, int y) {
         loadMapFiles(x, y);
+        return getRegion(calculateRegionId(x, y));
+    }
+
+
+    /**
+     * Calculates the region id for a absolute x and y coordinates.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public static int calculateRegionId(int x, int y) {
         int regionX = x >> 3;
         int regionY = y >> 3;
-        int regionId = ((regionX / 8) << 8) + (regionY / 8);
-        return getRegion(regionId);
+        return ((regionX / 8) << 8) + (regionY / 8);
     }
 
     /**

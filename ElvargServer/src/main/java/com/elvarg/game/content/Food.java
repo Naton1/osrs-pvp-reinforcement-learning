@@ -3,8 +3,8 @@ package com.elvarg.game.content;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.elvarg.game.Sound;
-import com.elvarg.game.Sounds;
+import com.elvarg.game.content.sound.Sound;
+import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Item;
@@ -79,7 +79,7 @@ public class Food {
 		player.getSkillManager().stopSkillable();
 
 		// Send sound..
-		Sounds.sendSound(player, Sound.FOOD_EAT);
+		SoundManager.sendSound(player, Sound.FOOD_EAT);
 
 		// Start animation..
 		player.performAnimation(ANIMATION);
