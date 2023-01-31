@@ -1,19 +1,17 @@
 package com.elvarg.util;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
@@ -24,7 +22,13 @@ import com.elvarg.game.model.Location;
 import com.google.common.cache.CacheLoader;
 
 public class Misc {
-	
+
+    /**
+     * Gets the number of seconds represented in Game ticks
+     *
+     * @param seconds
+     * @return
+     */
 	public static int getTicks(int seconds) {
 		return (int) (seconds / 0.6);
 	}
@@ -55,6 +59,7 @@ public class Misc {
      * Random instance, used to generate pseudo-random primitive types.
      */
     private static final RandomGen RANDOM = new RandomGen();
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     private static final String[] BLOCKED_WORDS = new String[]{
             ".com", ".net", ".org", "<img", "@cr", "<img=", ":tradereq:", ":duelreq:",
             "<col=", "<shad="};
@@ -219,7 +224,6 @@ public class Misc {
         if (text.length() > 80) {
             text = text.substring(0, 80);
         }
-
 
         byte[] packedData = new byte[text.getBytes().length];
         text = text.toLowerCase();
@@ -823,5 +827,47 @@ public class Misc {
         } else {
             throw new RuntimeException("Root dir not found in user directory.");
         }
+    }
+
+    public static int random(int range) {
+        return (int) (java.lang.Math.random() * (range + 1));
+    }
+
+    public static int random(int minRange, int maxRange) {
+        return minRange + random(maxRange - minRange);
+    }
+
+    /**
+     * Get a random number between a range and exclude some numbers.
+     * The excludes list MUST BE MODIFIABLE.
+     *
+     * @param start start number
+     * @param end end number
+     * @param excludes list of numbers to be excluded
+     * @return value between {@code start} (inclusive) and {@code end} (inclusive)
+     */
+    public static int getRandomExlcuding(int start, int end, ArrayList<Integer> excludes) {
+        // Using ArrayList as the list needs to be modifiable for Collections.sort:
+        Collections.sort(excludes);
+
+        int random = start + SECURE_RANDOM.nextInt(end - start + 1 - excludes.size());
+        for (int exclude : excludes) {
+            if (random < exclude) {
+                break;
+            }
+            random++;
+        }
+        return random;
+    }
+
+    public static <T> T[] concatWithCollection(T[] array1, T[] array2) {
+        List<T> resultList = new ArrayList<>(array1.length + array2.length);
+        Collections.addAll(resultList, array1);
+        Collections.addAll(resultList, array2);
+
+        @SuppressWarnings("unchecked")
+        //the type cast is safe as the array1 has the type T[]
+        T[] resultArray = (T[]) Array.newInstance(array1.getClass().getComponentType(), 0);
+        return resultList.toArray(resultArray);
     }
 }

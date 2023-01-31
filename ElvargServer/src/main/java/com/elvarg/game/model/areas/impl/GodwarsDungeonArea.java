@@ -50,14 +50,6 @@ public class GodwarsDungeonArea extends Area {
 	}
 
 	@Override
-	public boolean canAttack(Mobile attacker, Mobile target) {
-		if (attacker.isPlayer() && target.isPlayer()) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public boolean canTrade(Player player, Player target) {
 		return true;
 	}
@@ -101,11 +93,6 @@ public class GodwarsDungeonArea extends Area {
 			updateInterface(player);
 		}
 	}
-	
-    @Override
-    public boolean overridesNpcAggressionTolerance(Player player, int npcId) {
-        return false;
-    }
 
 	@Override
 	public boolean handleObjectClick(Player player, int objectId, int type) {

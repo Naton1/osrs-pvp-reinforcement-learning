@@ -67,6 +67,10 @@ public class Equipment extends ItemContainer {
      * The arrows slot.
      */
     public static final int AMMUNITION_SLOT = 13;
+    /**
+     * Item which can be reused to unequip items from any slot.
+     */
+    public static final Item NO_ITEM = new Item(-1);
 
     /**
      * The Equipment constructor.
@@ -156,5 +160,14 @@ public class Equipment extends ItemContainer {
 
     public Item getWeapon() {
         return get(Equipment.WEAPON_SLOT);
+    }
+
+    public boolean hasCastleWarsBracelet() {
+        Item hands = get(HANDS_SLOT);
+        return hands != null && hands.getId() >= 11079 && hands.getId() <= 11083;
+    }
+
+    public boolean hasGodsword() {
+        return get(WEAPON_SLOT) != null && get(WEAPON_SLOT).getDefinition().getName().toLowerCase().contains("godsword");
     }
 }

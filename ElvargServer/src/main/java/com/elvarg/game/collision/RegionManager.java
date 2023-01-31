@@ -83,15 +83,27 @@ public class RegionManager {
     /**
      * Attempts to get a {@link Region} based on coordinates.
      *
-     * @param regionId
+     * @param x
+     * @param y
      * @return
      */
     public static Optional<Region> getRegion(int x, int y) {
         loadMapFiles(x, y);
+        return getRegion(calculateRegionId(x, y));
+    }
+
+
+    /**
+     * Calculates the region id for a absolute x and y coordinates.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public static int calculateRegionId(int x, int y) {
         int regionX = x >> 3;
         int regionY = y >> 3;
-        int regionId = ((regionX / 8) << 8) + (regionY / 8);
-        return getRegion(regionId);
+        return ((regionX / 8) << 8) + (regionY / 8);
     }
 
     /**
@@ -102,9 +114,9 @@ public class RegionManager {
      * @param height
      * @param type
      * @param direction
-     * @param flag
+     * @param tall
      */
-    private static void addClippingForVariableObject(int x, int y, int height, int type, int direction, boolean flag, PrivateArea privateArea) {
+    private static void addClippingForVariableObject(int x, int y, int height, int type, int direction, boolean tall, PrivateArea privateArea) {
         if (type == 0) {
             if (direction == 0) {
                 addClipping(x, y, height, 128, privateArea);
@@ -152,7 +164,8 @@ public class RegionManager {
                 addClipping(x - 1, y, height, 8, privateArea);
             }
         }
-        if (flag) {
+        if (tall) {
+            // If an object is tall, it blocks projectiles too
             if (type == 0) {
                 if (direction == 0) {
                     addClipping(x, y, height, 65536, privateArea);
@@ -212,104 +225,105 @@ public class RegionManager {
      * @param height
      * @param type
      * @param direction
-     * @param flag
+     * @param tall
      */
     private static void removeClippingForVariableObject(int x, int y, int height, int type, int direction,
-                                                        boolean flag, PrivateArea privateArea) {
+                                                        boolean tall, PrivateArea privateArea) {
         if (type == 0) {
             if (direction == 0) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x - 1, y, height, 0, privateArea);
+                removeClipping(x, y, height, 128, privateArea);
+                removeClipping(x - 1, y, height, 8, privateArea);
             } else if (direction == 1) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x, y + 1, height, 0, privateArea);
+                removeClipping(x, y, height, 2, privateArea);
+                removeClipping(x, y + 1, height, 32, privateArea);
             } else if (direction == 2) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x + 1, y, height, 0, privateArea);
+                removeClipping(x, y, height, 8, privateArea);
+                removeClipping(x + 1, y, height, 128, privateArea);
             } else if (direction == 3) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x, y - 1, height, 0, privateArea);
+                removeClipping(x, y, height, 32, privateArea);
+                removeClipping(x, y - 1, height, 2, privateArea);
             }
         } else if (type == 1 || type == 3) {
             if (direction == 0) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x - 1, y, height, 0, privateArea);
+                removeClipping(x, y, height, 1, privateArea);
+                removeClipping(x - 1, y, height, 16, privateArea);
             } else if (direction == 1) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x + 1, y + 1, height, 0, privateArea);
+                removeClipping(x, y, height, 4, privateArea);
+                removeClipping(x + 1, y + 1, height, 64, privateArea);
             } else if (direction == 2) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x + 1, y - 1, height, 0, privateArea);
+                removeClipping(x, y, height, 16, privateArea);
+                removeClipping(x + 1, y - 1, height, 1, privateArea);
             } else if (direction == 3) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x - 1, y - 1, height, 0, privateArea);
+                removeClipping(x, y, height, 64, privateArea);
+                removeClipping(x - 1, y - 1, height, 4, privateArea);
             }
         } else if (type == 2) {
             if (direction == 0) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x - 1, y, height, 0, privateArea);
-                addClipping(x, y + 1, height, 0, privateArea);
+                removeClipping(x, y, height, 130, privateArea);
+                removeClipping(x - 1, y, height, 8, privateArea);
+                removeClipping(x, y + 1, height, 32, privateArea);
             } else if (direction == 1) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x, y + 1, height, 0, privateArea);
-                addClipping(x + 1, y, height, 0, privateArea);
+                removeClipping(x, y, height, 10, privateArea);
+                removeClipping(x, y + 1, height, 32, privateArea);
+                removeClipping(x + 1, y, height, 128, privateArea);
             } else if (direction == 2) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x + 1, y, height, 0, privateArea);
-                addClipping(x, y - 1, height, 0, privateArea);
+                removeClipping(x, y, height, 40, privateArea);
+                removeClipping(x + 1, y, height, 128, privateArea);
+                removeClipping(x, y - 1, height, 2, privateArea);
             } else if (direction == 3) {
-                addClipping(x, y, height, 0, privateArea);
-                addClipping(x, y - 1, height, 0, privateArea);
-                addClipping(x - 1, y, height, 0, privateArea);
+                removeClipping(x, y, height, 160, privateArea);
+                removeClipping(x, y - 1, height, 2, privateArea);
+                removeClipping(x - 1, y, height, 8, privateArea);
             }
         }
-        if (flag) {
+        if (tall) {
+            // If an object is tall, it blocks projectiles too
             if (type == 0) {
                 if (direction == 0) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x - 1, y, height, 0, privateArea);
+                    removeClipping(x, y, height, 65536, privateArea);
+                    removeClipping(x - 1, y, height, 4096, privateArea);
                 } else if (direction == 1) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x, y + 1, height, 0, privateArea);
+                    removeClipping(x, y, height, 1024, privateArea);
+                    removeClipping(x, y + 1, height, 16384, privateArea);
                 } else if (direction == 2) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x + 1, y, height, 0, privateArea);
+                    removeClipping(x, y, height, 4096, privateArea);
+                    removeClipping(x + 1, y, height, 65536, privateArea);
                 } else if (direction == 3) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x, y - 1, height, 0, privateArea);
+                    removeClipping(x, y, height, 16384, privateArea);
+                    removeClipping(x, y - 1, height, 1024, privateArea);
                 }
             }
             if (type == 1 || type == 3) {
                 if (direction == 0) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x - 1, y + 1, height, 0, privateArea);
+                    removeClipping(x, y, height, 512, privateArea);
+                    removeClipping(x - 1, y + 1, height, 8192, privateArea);
                 } else if (direction == 1) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x + 1, y + 1, height, 0, privateArea);
+                    removeClipping(x, y, height, 2048, privateArea);
+                    removeClipping(x + 1, y + 1, height, 32768, privateArea);
                 } else if (direction == 2) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x + 1, y + 1, height, 0, privateArea);
+                    removeClipping(x, y, height, 8192, privateArea);
+                    removeClipping(x + 1, y + 1, height, 512, privateArea);
                 } else if (direction == 3) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x - 1, y - 1, height, 0, privateArea);
+                    removeClipping(x, y, height, 32768, privateArea);
+                    removeClipping(x - 1, y - 1, height, 2048, privateArea);
                 }
             } else if (type == 2) {
                 if (direction == 0) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x - 1, y, height, 0, privateArea);
-                    addClipping(x, y + 1, height, 0, privateArea);
+                    removeClipping(x, y, height, 66560, privateArea);
+                    removeClipping(x - 1, y, height, 4096, privateArea);
+                    removeClipping(x, y + 1, height, 16384, privateArea);
                 } else if (direction == 1) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x, y + 1, height, 0, privateArea);
-                    addClipping(x + 1, y, height, 0, privateArea);
+                    removeClipping(x, y, height, 5120, privateArea);
+                    removeClipping(x, y + 1, height, 16384, privateArea);
+                    removeClipping(x + 1, y, height, 65536, privateArea);
                 } else if (direction == 2) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x + 1, y, height, 0, privateArea);
-                    addClipping(x, y - 1, height, 0, privateArea);
+                    removeClipping(x, y, height, 20480, privateArea);
+                    removeClipping(x + 1, y, height, 65536, privateArea);
+                    removeClipping(x, y - 1, height, 1024, privateArea);
                 } else if (direction == 3) {
-                    addClipping(x, y, height, 0, privateArea);
-                    addClipping(x, y - 1, height, 0, privateArea);
-                    addClipping(x - 1, y, height, 0, privateArea);
+                    removeClipping(x, y, height, 81920, privateArea);
+                    removeClipping(x, y - 1, height, 1024, privateArea);
+                    removeClipping(x - 1, y, height, 4096, privateArea);
                 }
             }
         }
@@ -348,9 +362,14 @@ public class RegionManager {
      * @param flag
      */
     private static void removeClippingForSolidObject(int x, int y, int height, int xLength, int yLength, boolean flag, PrivateArea privateArea) {
+        int clipping = 256;
+        if (flag) {
+            clipping += 0x20000;
+        }
+
         for (int x_ = x; x_ < x + xLength; x_++) {
             for (int y_ = y; y_ < y + yLength; y_++) {
-                addClipping(x_, y_, height, 0, privateArea);
+                removeClipping(x_, y_, height, clipping, privateArea);
             }
         }
     }
@@ -459,7 +478,7 @@ public class RegionManager {
 
         if (type == 22) {
             if (def.hasActions() && def.solid) {
-                addClipping(x, y, height, 0, object.getPrivateArea());
+                removeClipping(x, y, height, 0x200000, object.getPrivateArea());
             }
         } else if (type >= 9) {
             if (def.solid) {
@@ -566,9 +585,7 @@ public class RegionManager {
     /**
      * Tells you if this direction is walkable.
      *
-     * @param x         the x coordinate.
-     * @param y         the y coordinate.
-     * @param z         the z coordinate.
+     * @param pos The destination.
      * @param direction the direction.
      * @return if the direction is walkable.
      */
@@ -648,7 +665,7 @@ public class RegionManager {
         Location b = to.getLocation();
 
         if (from.isPlayer() && to.isPlayer()) {
-            // If both participants are players, line of sight is calculated from the player on the western side. I
+            // If both participants are players, line of sight is calculated from the player on the western side.
             if (a.getX() > b.getX()) {
                 a = to.getLocation();
                 b = from.getLocation();

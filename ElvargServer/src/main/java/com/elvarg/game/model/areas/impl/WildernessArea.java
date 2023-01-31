@@ -2,9 +2,11 @@ package com.elvarg.game.model.areas.impl;
 
 import com.elvarg.game.content.Obelisks;
 import com.elvarg.game.content.combat.CombatFactory;
+import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.areas.Area;
 import com.elvarg.game.model.rights.PlayerRights;
@@ -13,6 +15,11 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class WildernessArea extends Area {
+
+	@Override
+	public String getName() {
+		return "the Wilderness";
+	}
 
 	public static int getLevel(int y) {
 		return ((((y > 6400 ? y - 6400 : y) - 3520) / 8) + 1);
@@ -81,7 +88,7 @@ public class WildernessArea extends Area {
 	}
 
 	@Override
-	public boolean canAttack(Mobile attacker, Mobile target) {
+	public CanAttackResponse canAttack(Mobile attacker, Mobile target) {
 		if (attacker.isPlayer() && target.isPlayer()) {
 
 			Player a = attacker.getAsPlayer();
@@ -90,13 +97,14 @@ public class WildernessArea extends Area {
 			int combatDifference = CombatFactory.combatLevelDifference(a.getSkillManager().getCombatLevel(),
 					t.getSkillManager().getCombatLevel());
 			if (combatDifference > a.getWildernessLevel() + 5 || combatDifference > t.getWildernessLevel() + 5) {
-				return false;
+				return CanAttackResponse.LEVEL_DIFFERENCE_TOO_GREAT;
 			}
 			if (!(t.getArea() instanceof WildernessArea)) {
-				return false;
+				return CanAttackResponse.CANT_ATTACK_IN_AREA;
 			}
 		}
-		return true;
+
+		return CanAttackResponse.CAN_ATTACK;
 	}
 
 	@Override
@@ -153,5 +161,11 @@ public class WildernessArea extends Area {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean canPlayerBotIdle(PlayerBot playerBot) {
+		// Player Bots can always idle in the Wilderness
+		return true;
 	}
 }

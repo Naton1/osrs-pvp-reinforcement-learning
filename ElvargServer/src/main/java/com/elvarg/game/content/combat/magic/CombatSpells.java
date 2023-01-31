@@ -3,6 +3,7 @@ package com.elvarg.game.content.combat.magic;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.content.PrayerHandler;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.entity.impl.Mobile;
@@ -2732,6 +2733,11 @@ public enum CombatSpells {
         @Override
         public int spellId() {
             return 12891;
+        }
+
+        @Override
+        public Sound impactSound() {
+            return Sound.ICA_BARRAGE_IMPACT;
         }
     }),
     TRIDENT_OF_THE_SEAS(new CombatNormalSpell() {

@@ -1,6 +1,6 @@
 package com.elvarg.game.model.areas.impl;
 
-import com.elvarg.game.content.minigames.Barrows;
+import com.elvarg.game.content.minigames.impl.Barrows;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
@@ -37,14 +37,6 @@ public class BarrowsArea extends Area {
 
     @Override
     public boolean canTeleport(Player player) {
-        return true;
-    }
-
-    @Override
-    public boolean canAttack(Mobile attacker, Mobile target) {
-        if (attacker.isPlayer() && target.isPlayer()) {
-            return false;
-        }
         return true;
     }
 
@@ -87,11 +79,6 @@ public class BarrowsArea extends Area {
         if (character.isNpc()) {
             Barrows.brotherDeath(player, character.getAsNpc());
         }
-    }
-    
-    @Override
-    public boolean overridesNpcAggressionTolerance(Player player, int npcId) {
-        return false;
     }
 
     @Override

@@ -143,6 +143,14 @@ public class PacketSender {
 		return this;
 	}
 
+	public PacketSender playMusic(int musicId) {
+		PacketBuilder out = new PacketBuilder(121);
+		out.putShort(musicId);//songid
+		out.putShort(0);//delay
+		player.getSession().write(out);
+		return this;
+	}
+
 	public PacketSender sendAutocastId(int id) {
 		PacketBuilder out = new PacketBuilder(38);
 		out.putShort(id);
@@ -184,7 +192,7 @@ public class PacketSender {
 	}
 
 	public PacketSender sendSpecialMessage(String name, int type, String message) {
-		PacketBuilder out = new PacketBuilder(252);
+		PacketBuilder out = new PacketBuilder(252, PacketType.VARIABLE);
 		out.put(type);
 		out.putString(name);
 		out.putString(message);
@@ -345,6 +353,10 @@ public class PacketSender {
 	}
 
 	public PacketSender sendInterface(int id) {
+		if (player.isPlayerBot()) {
+			return this;
+		}
+
 		PacketBuilder out = new PacketBuilder(97);
 		out.putShort(id);
 		player.getSession().write(out);
@@ -445,6 +457,14 @@ public class PacketSender {
 		PacketBuilder out = new PacketBuilder(246);
 		out.putShort(interfaceId, ByteOrder.LITTLE);
 		out.putShort(zoom).putShort(itemId);
+		player.getSession().write(out);
+		return this;
+	}
+
+	public PacketSender sendWidgetModel(int widget, int model) {
+		PacketBuilder out = new PacketBuilder(8);
+		out.putShort(widget);
+		out.putShort(model);
 		player.getSession().write(out);
 		return this;
 	}
@@ -628,6 +648,10 @@ public class PacketSender {
 	}
 
 	public PacketSender sendInterfaceItems(int interfaceId, List<Item> items) {
+		if (player.isPlayerBot()) {
+			return this;
+		}
+
 		PacketBuilder out = new PacketBuilder(53, PacketType.VARIABLE_SHORT);
 		out.putInt(interfaceId);
 		out.putShort(items.size());
@@ -682,8 +706,8 @@ public class PacketSender {
 	public PacketSender sendSmithingData(int id, int slot, int interfaceId, int amount) {
 		PacketBuilder out = new PacketBuilder(34, PacketType.VARIABLE_SHORT);
 		out.putShort(interfaceId);
-		out.put(4);
-		out.putInt(slot);
+		out.put(slot);
+		out.putInt(amount);
 		out.putShort(id + 1);
 		out.put(amount);
 		player.getSession().write(out);
@@ -711,6 +735,10 @@ public class PacketSender {
 		out.putInt(id);
 		player.getSession().write(out);
 		return this;
+	}
+
+	public PacketSender sendString(String string, int id) {
+		return this.sendString(id, string);
 	}
 
 	public PacketSender clearInterfaceText(int start, int end) {
@@ -805,6 +833,11 @@ public class PacketSender {
 	}
 
 	public PacketSender sendPrivateMessage(Player target, byte[] message, int size) {
+		if (player instanceof PlayerBot) {
+			((PlayerBot) player).getChatInteraction().receivedPrivateMessage(message, target);
+			return this;
+		}
+
 		PacketBuilder out = new PacketBuilder(196, PacketType.VARIABLE);
 		out.putLong(target.getLongUsername());
 		out.putInt(target.getRelations().getPrivateMessageId());
@@ -895,6 +928,10 @@ public class PacketSender {
 	}
 
 	public PacketSender sendObjectRemoval(GameObject object) {
+		if (object == null) {
+			return this;
+		}
+
 		sendPosition(object.getLocation());
 		PacketBuilder out = new PacketBuilder(101);
 		out.put((object.getType() << 2) + (object.getFace() & 3), ValueType.C);

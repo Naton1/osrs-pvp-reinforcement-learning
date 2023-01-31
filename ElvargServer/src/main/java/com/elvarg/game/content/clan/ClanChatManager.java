@@ -24,7 +24,7 @@ import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
 public class ClanChatManager {
 
 	public static final int CLAN_CHAT_SETUP_INTERFACE_ID = 38300;
-	private static final String FILE_DIRECTORY = "./ElvargServer/data/saves/clans/";
+	private static final String FILE_DIRECTORY = "./data/saves/clans/";
 	private static ClanChat[] clans = new ClanChat[3000];
 
 	public static void init() {

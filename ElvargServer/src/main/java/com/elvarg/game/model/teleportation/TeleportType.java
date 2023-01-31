@@ -9,9 +9,8 @@ public enum TeleportType {
 
 	// Spellbooks
     NORMAL(3, new Animation(714, Priority.HIGH), null, new Animation(715, Priority.HIGH), new Graphic(308, 50, GraphicHeight.HIGH), null, null),
-    ANCIENT(5, new Animation(6303, Priority.HIGH), null, Animation.DEFAULT_RESET_ANIMATION, new Graphic(392, Priority.HIGH), null, null),
-    LUNAR(4, new Animation(9606, Priority.HIGH), null, new Animation(9013, Priority.HIGH), new Graphic(1685, Priority.HIGH), null, null),
-
+    ANCIENT(5, new Animation(1979, Priority.HIGH), null, Animation.DEFAULT_RESET_ANIMATION, new Graphic(392, Priority.HIGH), null, null),
+    LUNAR(4, new Animation(1816, Priority.HIGH), null, new Animation(715, Priority.HIGH), new Graphic(308, Priority.HIGH), null, null),
     // Ladders
     LADDER_DOWN(1, new Animation(827, Priority.HIGH), null, Animation.DEFAULT_RESET_ANIMATION, null, null, null),
 	LADDER_UP(1, new Animation(828, Priority.HIGH), null, Animation.DEFAULT_RESET_ANIMATION, null, null, null),

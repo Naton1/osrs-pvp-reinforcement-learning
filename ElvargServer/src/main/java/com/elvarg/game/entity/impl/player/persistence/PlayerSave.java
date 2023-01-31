@@ -20,6 +20,8 @@ import java.util.Map;
 
 public class PlayerSave {
     private String passwordHashWithSalt;
+    private boolean isDiscordLogin;
+    private String cachedDiscordAccessToken;
     private String title;
     private PlayerRights rights;
     private DonatorRights donatorRights;
@@ -70,6 +72,8 @@ public class PlayerSave {
     private List<Long> ignores;
     private Map<Integer, List<Item>> banks;
     private Presetable[] presets;
+    private int questPoints;
+    private Map<Integer, Integer> questProgress;
 
     public String getPasswordHashWithSalt() {
         return passwordHashWithSalt;
@@ -479,8 +483,42 @@ public class PlayerSave {
         this.presets = presets;
     }
 
+    public boolean isDiscordLogin() {
+        return isDiscordLogin;
+    }
+
+    public void setDiscordLogin(boolean discordLogin) {
+        isDiscordLogin = discordLogin;
+    }
+
+    public String getCachedDiscordAccessToken() {
+        return cachedDiscordAccessToken;
+    }
+
+    public void setCachedDiscordAccessToken(String cachedDiscordAccessToken) {
+        this.cachedDiscordAccessToken = cachedDiscordAccessToken;
+    }
+
+    public int getQuestPoints() {
+        return questPoints;
+    }
+
+    public void setQuestPoints(int questPoints) {
+        this.questPoints = questPoints;
+    }
+
+    public Map<Integer, Integer> getQuestProgress() {
+        return questProgress;
+    }
+
+    public void setQuestProgress(Map<Integer, Integer> questProgress) {
+        this.questProgress = questProgress;
+    }
+
     public void applyToPlayer(Player player) {
         player.setPasswordHashWithSalt(this.passwordHashWithSalt);
+        player.setDiscordLogin(this.isDiscordLogin);
+        player.setCachedDiscordAccessToken(this.cachedDiscordAccessToken);
         player.setLoyaltyTitle(this.title);
 
         player.setLoyaltyTitle(this.title);
@@ -537,6 +575,8 @@ public class PlayerSave {
         player.getAppearance().set(this.appearance);
         player.getSkillManager().setSkills(this.skills);
         player.getQuickPrayers().setPrayers(this.quickPrayers);
+        player.setQuestPoints(this.questPoints);
+        player.setQuestProgress(this.questProgress);
 
         if (this.presets != null) {
             player.setPresets(this.presets);
@@ -565,6 +605,8 @@ public class PlayerSave {
         var playerSave = new PlayerSave();
 
         playerSave.passwordHashWithSalt = player.getPasswordHashWithSalt().trim();
+        playerSave.isDiscordLogin = player.isDiscordLogin();
+        playerSave.cachedDiscordAccessToken = player.getCachedDiscordAccessToken();
         playerSave.title = player.getLoyaltyTitle();
         playerSave.rights = player.getRights();
         playerSave.donatorRights = player.getDonatorRights();
@@ -620,6 +662,8 @@ public class PlayerSave {
         playerSave.appearance = player.getAppearance().getLook();
         playerSave.skills = player.getSkillManager().getSkills();
         playerSave.quickPrayers = player.getQuickPrayers().getPrayers();
+        playerSave.questPoints = player.getQuestPoints();
+        playerSave.questProgress = player.getQuestProgress();
 
         playerSave.friends = player.getRelations().getFriendList();
         playerSave.ignores = player.getRelations().getIgnoreList();

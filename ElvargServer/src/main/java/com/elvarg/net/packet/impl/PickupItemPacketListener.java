@@ -2,13 +2,14 @@ package com.elvarg.net.packet.impl;
 
 import java.util.Optional;
 
+import com.elvarg.game.content.sound.Sound;
+import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGround;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager.OperationType;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Location;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketExecutor;
@@ -33,20 +34,16 @@ public class PickupItemPacketListener implements PacketExecutor {
 					.sendMessage("Pick up item: " + itemId + ". " + position.toString());
 		}
 
-		if (player.busy()) {
+		if (player.busy() || !player.getLastItemPickup().elapsed(300)) {
+			// If player is busy or last item was picked up less than 0.3 seconds ago
 			return;
 		}
 
-		if (!player.getLastItemPickup().elapsed(300))
-			return;
-
-		player.getMovementQueue().walkToGroundItem(player, position, () -> takeItem(player, itemId, position));
+		player.getMovementQueue().walkToGroundItem(position, () -> takeItem(player, itemId, position));
 	}
 
 	private void takeItem(Player player, int itemId, Location position) {
-		int x = position.getX();
-
-		int y = position.getY();
+		int x = position.getX(), y = position.getY();
 
 		if (Math.abs(player.getLocation().getX() - x) > 25 || Math.abs(player.getLocation().getY() - y) > 25) {
 			player.getMovementQueue().reset();
@@ -84,6 +81,7 @@ public class PickupItemPacketListener implements PacketExecutor {
 				ItemOnGroundManager.deregister(item.get());
 			}
 			player.getInventory().add(item.get().getItem());
+			SoundManager.sendSound(player, Sound.PICK_UP_ITEM);
 			player.getLastItemPickup().reset();
 		}
 	}

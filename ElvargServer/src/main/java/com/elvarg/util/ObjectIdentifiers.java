@@ -2507,7 +2507,7 @@ public class ObjectIdentifiers {
     public static final int TRAPDOOR_16 = 4471;
     public static final int TRAPDOOR_17 = 4472;
     public static final int TAP_3 = 4482;
-    public static final int BANK_CHEST_2 = 4483;
+    public static final int CASTLEWARS_BANK_CHEST = 4483;
     public static final int SCOREBOARD_2 = 4484;
     public static final int IRON_LADDER_5 = 4485;
     public static final int WASHING_LINE_4 = 4487;

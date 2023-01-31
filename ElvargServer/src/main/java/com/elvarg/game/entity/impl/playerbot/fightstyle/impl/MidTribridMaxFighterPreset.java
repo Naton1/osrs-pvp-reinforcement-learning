@@ -124,7 +124,7 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
                     boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 1);
-                    return canAttackNextTick && playerBot.getMovementQueue().canMove()
+                    return canAttackNextTick && playerBot.getMovementQueue().getMobility().canMove()
                             && enemy.getHitpointsAfterPendingDamage() <= 49
                             && playerBot.getSpecialPercentage() >= 50
                             && !enemy.getPrayerActive()[PrayerHandler.PROTECT_FROM_MELEE];
@@ -150,7 +150,7 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
 
                     return cantAttack
                             && playerBot.getMovementQueue().size() == 0
-                            && !enemy.getMovementQueue().canMove()
+                            && !enemy.getMovementQueue().getMobility().canMove()
                             && distance == 1
                             && CombatFactory.canReach(enemy, combatMethod, playerBot);
                 }
@@ -194,7 +194,7 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
                     boolean canAttackNextTick = playerBot.getTimers().willEndIn(TimerKey.COMBAT_ATTACK, 1);
 
                     return canAttackNextTick
-                            && enemy.getMovementQueue().canMove() && !enemy.getTimers().has(TimerKey.FREEZE_IMMUNITY)
+                            && enemy.getMovementQueue().getMobility().canMove() && !enemy.getTimers().has(TimerKey.FREEZE_IMMUNITY)
                             && CombatSpells.ICE_BARRAGE.getSpell().canCast(playerBot, false);
                 }
 
@@ -244,7 +244,7 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
 
                                 @Override
                                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
-                                    return playerBot.getMovementQueue().canMove()
+                                    return playerBot.getMovementQueue().getMobility().canMove()
                                             && enemy.getHitpointsAfterPendingDamage() <= 45;
                                 }
 

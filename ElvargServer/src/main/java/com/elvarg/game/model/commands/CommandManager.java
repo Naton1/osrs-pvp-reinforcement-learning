@@ -9,16 +9,16 @@ import com.elvarg.game.model.commands.impl.*;
 public class CommandManager {
 
     public static final Map<String, Command> commands = new HashMap<String, Command>();
-    
+
     private static void put(Command command, String... keys) {
         for (String key : keys) {
             commands.put(key, command);
         }
     }
-    
+
     public static void loadCommands() {
         commands.clear();
-        
+
         /**
          * Players Command
          */
@@ -32,6 +32,7 @@ public class CommandManager {
         put(new TimePlayed(), "timeplayed");
         put(new GroundItemCommand(), "ground");
         put(new Store(), "store", "donate");
+        put(new MaxHit(), "maxhit", "mh");
 
         /**
          * Donators Command
@@ -52,6 +53,7 @@ public class CommandManager {
         put(new TeleToPlayer(), "teleto");
         put(new ExitClient(), "exit");
         put(new KickPlayer(), "kick");
+        put(new MusicCommand(), "music");
 
         /**
          * Administrator Commands
@@ -78,6 +80,8 @@ public class CommandManager {
         put(new Title(), "title");
         put(new Runes(), "runes");
         put(new BarrageCommand(), "barrage");
+        put(new Donator(), "donator");
+        put(new GiveDonator(), "givedonator");
 
         /**
          * Developer Commands
@@ -106,8 +110,12 @@ public class CommandManager {
         put(new Up(), "up");
         put(new Down(), "down");
         put(new Save(), "save");
+        put(new CWarInterfaceCommand(), "cwar");
         put(new ListSizesCommand(), "listsizes");
-        
+        put(new AttackRange(), "atkrange", "attackrange");
+        put(new Donator(), "donator");
+        put(new GiveDonator(), "givedonator");
+
         if (!Server.PRODUCTION) {
             put(new DebugCommand(), "t");
         }

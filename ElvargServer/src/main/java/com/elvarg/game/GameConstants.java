@@ -35,12 +35,12 @@ public class GameConstants {
 	/**
 	 * The directory of the definition files.
 	 */
-	public static final String DEFINITIONS_DIRECTORY = "./ElvargServer/data/definitions/";
+	public static final String DEFINITIONS_DIRECTORY = "./data/definitions/";
 
 	/**
 	 * The directory of the clipping files.
 	 */
-	public static final String CLIPPING_DIRECTORY = "./ElvargServer/data/clipping/";
+	public static final String CLIPPING_DIRECTORY = "./data/clipping/";
 
 	/**
 	 * The method used to save/load players.
@@ -90,6 +90,11 @@ public class GameConstants {
 	 */
 	public static final double COMBAT_SKILLS_EXP_MULTIPLIER = 6;
 	public static final double REGULAR_SKILLS_EXP_MULTIPLIER = 18;
+
+	/**
+	 * Enabled debugging of attack distance for {@link PlayerRights} DEVELOPER
+	 */
+	public static final boolean DEBUG_ATTACK_DISTANCE = false;
 
 	/**
 	 * The gameframe's tab interface ids.
@@ -145,6 +150,7 @@ public class GameConstants {
 			new PlayerBotDefinition("Bot Josh", new Location(3091, 3533), new DDSPureMFighterPreset()),
 			new PlayerBotDefinition("Bot Odablock", new Location(3091, 3536), new TribridMaxFighterPreset()),
 			new PlayerBotDefinition("Bot SKillSpecs", new Location(3095, 3535), new MidTribridMaxFighterPreset()),
+			new PlayerBotDefinition("Bot F2P Pure", new Location(3096, 3530), new F2PMeleeFighterPreset()),
 	};
 
 	// The password for every player bot account

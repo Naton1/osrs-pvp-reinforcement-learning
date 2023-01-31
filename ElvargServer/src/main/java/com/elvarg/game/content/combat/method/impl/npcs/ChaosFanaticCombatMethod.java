@@ -86,7 +86,7 @@ public class ChaosFanaticCombatMethod extends CombatMethod {
                 public void execute() {
                     for (Location pos : attackPositions) {
                         target.getAsPlayer().getPacketSender().sendGlobalGraphic(EXPLOSION_END_GFX, pos);
-                        for (Player player : character.getAsNpc().getNearbyPlayers(10)) {
+                        for (Player player : character.getAsNpc().getPlayersWithinDistance(10)) {
                             if (player.getLocation().equals(pos)) {
                                 player.getCombat().getHitQueue()
                                         .addPendingDamage(new HitDamage(Misc.getRandom(25), HitMask.RED));

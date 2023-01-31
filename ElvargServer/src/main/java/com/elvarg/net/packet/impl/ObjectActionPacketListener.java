@@ -2,8 +2,10 @@ package com.elvarg.net.packet.impl;
 
 import com.elvarg.Server;
 import com.elvarg.game.collision.RegionManager;
+import com.elvarg.game.content.DepositBox;
 import com.elvarg.game.content.combat.CombatSpecial;
-import com.elvarg.game.content.minigames.FightCaves;
+import com.elvarg.game.content.minigames.MinigameHandler;
+import com.elvarg.game.content.minigames.impl.FightCaves;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.content.skill.skillable.impl.Smithing;
 import com.elvarg.game.content.skill.skillable.impl.Smithing.Bar;
@@ -12,20 +14,23 @@ import com.elvarg.game.content.skill.skillable.impl.Thieving.StallThieving;
 import com.elvarg.game.definition.ObjectDefinition;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
+import com.elvarg.game.entity.impl.object.impl.WebHandler;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.*;
 import com.elvarg.game.model.areas.impl.PrivateArea;
 import com.elvarg.game.model.dialogues.builders.impl.SpellBookDialogue;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportHandler;
 import com.elvarg.game.model.teleportation.TeleportType;
+import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.ForceMovementTask;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.ObjectIdentifiers;
+import com.elvarg.game.entity.impl.object.ObjectManager;
+import java.util.Objects;
 
 /**
  * This packet listener is called when a player clicked on a game object.
@@ -40,16 +45,41 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *
 	 * @param player
 	 *            The player that clicked on the object.
-	 * @param packet
+	 * @param object
 	 *            The packet containing the object's information.
 	 */
     private static void firstClick(Player player, GameObject object) {
+        if(doorHandler(player, object)) {
+	        return;
+	    }
+
         // Skills..
         if (player.getSkillManager().startSkillable(object)) {
             return;
         }
 
+        if (MinigameHandler.firstClickObject(player, object)) {
+            // Player has clicked an object inside a minigame
+            return;
+        }
+
+        final ObjectDefinition defs = object.getDefinition();
+        if (defs != null) {
+            if (defs.name != null && Objects.equals(defs.name, "Bank Deposit Box")) {
+                DepositBox.open(player);
+                return;
+            }
+
+        }
+
         switch (object.getId()) {
+            case WEB:
+                if (!WebHandler.wieldingSharpItem(player)) {
+                    player.getPacketSender().sendMessage("Only a sharp blade can cut through this sticky web.");
+                    return;
+                }
+                WebHandler.handleSlashWeb(player, object, false);
+                break;
         case KBD_LADDER_DOWN:
             TeleportHandler.teleport(player, new Location(3069, 10255), TeleportType.LADDER_DOWN, false);
             break;
@@ -100,7 +130,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
             break;
 
         case WILDERNESS_DITCH:
-            player.getMovementQueue().reset();
+            //player.getMovementQueue().reset();
             if (player.getForceMovement() == null && player.getClickDelay().elapsed(2000)) {
                 final Location crossDitch = new Location(0, player.getLocation().getY() < 3522 ? 3 : -3);
                 TaskManager.submit(new ForceMovementTask(player, 3, new ForceMovement(player.getLocation().clone(),
@@ -146,7 +176,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
      *
      * @param player
      *            The player that clicked on the object.
-     * @param packet
+     * @param object
      *            The packet containing the object's information.
      */
     private static void secondClick(Player player, GameObject object) {
@@ -185,7 +215,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *
 	 * @param player
 	 *            The player that clicked on the object.
-	 * @param packet
+	 * @param object
 	 *            The packet containing the object's information.
 	 */
 	private static void thirdClick(Player player, GameObject object) {
@@ -205,7 +235,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *
 	 * @param player
 	 *            The player that clicked on the object.
-	 * @param packet
+	 * @param object
 	 *            The packet containing the object's information.
 	 */
 	private static void fourthClick(Player player, GameObject object) {
@@ -223,11 +253,12 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
     private static void objectInteract(Player player, int id, int x, int y, int clickType) {
         final Location location = new Location(x, y, player.getLocation().getZ());
 
-        if (player.getRights() == PlayerRights.DEVELOPER) {
-            player.getPacketSender().sendMessage("" + clickType + "-click object: " + id + ". " + location.toString());
-        }
-
         final GameObject object = MapObjects.get(player, id, location);
+
+        if (player.getRights() == PlayerRights.DEVELOPER) {
+            String typeFace = object != null ? "[F: " + object.getFace() + " T:" +object.getType() + "]" : "";
+            player.getPacketSender().sendMessage(clickType + "-click object: " + id + ". " + location + " " + typeFace);
+        }
 
         if (object == null) {
             return;
@@ -241,7 +272,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
             return;
         }
 
-        player.getMovementQueue().walkToObject(player, object, () -> {
+        player.getMovementQueue().walkToObject(object, () -> {
             // Face object..
             player.setPositionToFace(location);
 
@@ -267,6 +298,56 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
                     break;
             }
         });
+    }
+
+    private static boolean atObject(int finalY, int finalX, int x, int height, int rotation, int width, int y, PrivateArea privateArea) {
+        int maxX = (finalX + width) - 1;
+        int maxY = (finalY + height) - 1;
+        if (x >= finalX && x <= maxX && y >= finalY && y <= maxY)
+            return true;
+        if (x == finalX - 1 && y >= finalY && y <= maxY && (RegionManager.getClipping(x, y, height, privateArea) & 8) == 0
+                && (rotation & 8) == 0)
+            return true;
+        if (x == maxX + 1 && y >= finalY && y <= maxY && (RegionManager.getClipping(x, y, height, privateArea) & 0x80) == 0
+                && (rotation & 2) == 0)
+            return true;
+        return y == finalY - 1 && x >= finalX && x <= maxX && (RegionManager.getClipping(x, y, height, privateArea) & 2) == 0
+                && (rotation & 4) == 0
+                || y == maxY + 1 && x >= finalX && x <= maxX && (RegionManager.getClipping(x, y, height, privateArea) & 0x20) == 0
+                        && (rotation & 1) == 0;
+    }
+
+    private static boolean doorHandler(Player player, GameObject object) {
+        if (object.getDefinition().getName() != null && object.getDefinition().getName().contains("Door") ) {
+            final int[][] openOffset = new int[][] { new int[] { -1, 0 }, new int[] { 0, 1 }, new int[] { 1, 0 }, new int[] { 0, -1 },
+                    new int[] { 0, -1 } };
+            final int[][] closeOffset = new int[][] { new int[] { 1, 0 }, new int[] { 1, 0 }, new int[] { 0, 1 }, new int[] { -1, 0 },
+                    new int[] { 0, 1 } };
+            /* check if its an open or closed door */
+            boolean open = object.getDefinition().interactions[0].contains("Open");
+
+            /* gets offset coords based on door face */
+            int[] offset = open? openOffset[object.getFace()] :closeOffset[object.getFace()] ;
+            /* adjust door direction based on if it needs to be opened or closed */
+            int face = open? object.getFace() + 1 : object.getFace() - 1;
+
+            Location loc =  new Location( object.getLocation().getX() + offset[0],object.getLocation().getY() + offset[1]   , object.getLocation().getZ());
+            GameObject obj = new GameObject(open? object.getId() + 1 : object.getId() - 1, loc, object.getType(), face , null);
+
+            /* spawns/despawns doors accordingly */
+
+            if (open) {
+                ObjectManager.register(new GameObject(-1, object.getLocation(), 0, 0, object.getPrivateArea()), true);
+                ObjectManager.register(new GameObject(-1, loc, object.getType(), object.getFace(), object.getPrivateArea()), true);
+            }
+
+            ObjectManager.deregister(object, true);
+            ObjectManager.register(obj, true);
+
+            return true;
+        }
+
+	return false;
     }
 
 	@Override

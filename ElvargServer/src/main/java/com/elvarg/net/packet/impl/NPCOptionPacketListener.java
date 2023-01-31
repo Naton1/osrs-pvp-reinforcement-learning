@@ -1,29 +1,29 @@
 package com.elvarg.net.packet.impl;
 
+import com.elvarg.Server;
 import com.elvarg.game.World;
 import com.elvarg.game.content.PetHandler;
 import com.elvarg.game.content.combat.magic.CombatSpell;
 import com.elvarg.game.content.combat.magic.CombatSpells;
+import com.elvarg.game.content.quests.QuestHandler;
 import com.elvarg.game.content.skill.skillable.impl.Fishing;
 import com.elvarg.game.content.skill.skillable.impl.Fishing.FishingTool;
 import com.elvarg.game.content.skill.skillable.impl.Thieving.Pickpocketing;
 import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.container.shop.ShopManager;
 import com.elvarg.game.model.dialogues.builders.impl.EmblemTraderDialogue;
 import com.elvarg.game.model.dialogues.builders.impl.NieveDialogue;
 import com.elvarg.game.model.dialogues.builders.impl.ParduDialogue;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.PlayerRights;
+import com.elvarg.game.entity.impl.npc.NPCInteractionSystem;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
 import com.elvarg.util.NpcIdentifiers;
 import com.elvarg.util.ShopIdentifiers;
 
-/**
- * @author Ynneh
- */
 public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExecutor {
 
     @Override
@@ -32,23 +32,19 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
             return;
         }
 
-        int index = packet.readLEShortA();//writeLEShortA
+        int index = packet.readLEShortA();
 
         if (index < 0 || index > World.getNpcs().capacity()) {
-            System.err.println("index is too low/high.. "+index);
             return;
         }
 
         final NPC npc = World.getNpcs().get(index);
 
         if (npc == null) {
-            System.err.println("npc doesn't exist... "+index);
             return;
         }
 
         if (!player.getLocation().isWithinDistance(npc.getLocation(), 24)) {
-            /** Must be within a 24 tile radius **/
-            System.err.println("Distance to NPC is over 24.. current distance="+player.getLocation().getDistance(npc.getLocation()));
             return;
         }
 
@@ -59,7 +55,7 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
         player.setPositionToFace(npc.getLocation());
 
         if (packet.getOpcode() == PacketConstants.ATTACK_NPC_OPCODE || packet.getOpcode() == PacketConstants.MAGE_NPC_OPCODE) {
-            if (!npc.getDefinition().isAttackable()) {
+            if (!npc.getCurrentDefinition().isAttackable()) {
                 return;
             }
             if (npc.getHitpoints() <= 0) {
@@ -69,7 +65,7 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 
             if (packet.getOpcode() == PacketConstants.MAGE_NPC_OPCODE) {
 
-                int spellId = packet.readShortA();//writeShortA
+                int spellId = packet.readShortA();
 
                 CombatSpell spell = CombatSpells.getCombatSpell(spellId);
 
@@ -87,7 +83,7 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
             return;
         }
 
-        player.getMovementQueue().walkToEntity(player, npc, () -> handleInteraction(player, npc, packet));
+        player.getMovementQueue().walkToEntity(npc, () -> handleInteraction(player, npc, packet));
 
     }
 
@@ -95,12 +91,25 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 
         final int opcode = packet.getOpcode();
 
+        npc.setMobileInteraction(player);
+
         npc.setPositionToFace(player.getLocation());
 
         if (opcode == PacketConstants.FIRST_CLICK_NPC_OPCODE) {
             if (PetHandler.interact(player, npc)) {
+				// Player was interacting with their pet
                 return;
             }
+
+			if (QuestHandler.firstClickNpc(player, npc)) {
+				// NPC Click was handled by a quest
+				return;
+			}
+
+			if (NPCInteractionSystem.handleFirstOption(player, npc)) {
+				// Player is interacting with a defined NPC
+				return;
+			}
 
             switch (npc.getId()) {
                 case SHOP_KEEPER_4:
@@ -155,15 +164,20 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 
 
         if (opcode == PacketConstants.SECOND_CLICK_NPC_OPCODE) {
-            // Check if we're picking up our pet..
-            if (PetHandler.pickup(player, npc)) {
-                return;
-            }
+			if (PetHandler.pickup(player, npc)) {
+				// Player is picking up their pet
+				return;
+			}
 
-            // Check if we're thieving..
-            if (Pickpocketing.init(player, npc)) {
-                return;
-            }
+			if (Pickpocketing.init(player, npc)) {
+				// Player is trying to thieve from an NPC
+				return;
+			}
+
+			if (NPCInteractionSystem.handleSecondOption(player, npc)) {
+				// Player is interacting with a defined NPC
+				return;
+			}
 
             switch (npc.getId()) {
                 case NIEVE:
@@ -201,8 +215,15 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
 
         if (opcode == PacketConstants.THIRD_CLICK_NPC_OPCODE) {
             if (PetHandler.morph(player, npc)) {
+				// Player is morphing their pet
                 return;
             }
+
+			if (NPCInteractionSystem.handleThirdOption(player, npc)) {
+				// Player is interacting with a defined NPC
+				return;
+			}
+
             switch (npc.getId()) {
 
                 case EMBLEM_TRADER:
@@ -216,6 +237,11 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
         }
 
         if (opcode == PacketConstants.FOURTH_CLICK_NPC_OPCODE) {
+			if (NPCInteractionSystem.handleForthOption(player, npc)) {
+				// Player is interacting with a defined NPC
+				return;
+			}
+
             switch (npc.getId()) {
                 case EMBLEM_TRADER:
                     player.getDialogueManager().start(new EmblemTraderDialogue(), 5);

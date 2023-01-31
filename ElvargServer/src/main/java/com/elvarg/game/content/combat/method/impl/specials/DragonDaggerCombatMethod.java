@@ -1,12 +1,11 @@
 package com.elvarg.game.content.combat.method.impl.specials;
 
-import com.elvarg.game.Sound;
-import com.elvarg.game.Sounds;
+import com.elvarg.game.content.sound.Sound;
+import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.combat.method.impl.MeleeCombatMethod;
 import com.elvarg.game.entity.impl.Mobile;
-import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Graphic;
 import com.elvarg.game.model.GraphicHeight;
@@ -28,8 +27,6 @@ public class DragonDaggerCombatMethod extends MeleeCombatMethod {
         CombatSpecial.drain(character, CombatSpecial.DRAGON_DAGGER.getDrainAmount());
         character.performAnimation(ANIMATION);
         character.performGraphic(GRAPHIC);
-        if (character.isPlayer()) {
-            Sounds.sendSound((Player)character, Sound.DRAGON_DAGGER_SPECIAL);
-        }
+        SoundManager.sendSound(character.getAsPlayer(), Sound.DRAGON_DAGGER_SPECIAL);
     }
 }

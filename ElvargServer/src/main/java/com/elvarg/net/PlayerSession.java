@@ -65,11 +65,12 @@ public class PlayerSession {
         SocketChannel channel = (SocketChannel) msg.getContext().channel();
 
         // Update the player
-        player.setUsername(msg.getUsername()).setLongUsername(Misc.stringToLong(msg.getUsername()))
-                .setHostAddress(msg.getHost());
+        player.setUsername(msg.getUsername()).setHostAddress(msg.getHost());
 
         // Get the response code
         int response = LoginResponses.evaluate(player, msg);
+
+        player.setLongUsername(Misc.stringToLong(player.getUsername()));
 
         // Write the response and flush the channel
         ChannelFuture future = channel.writeAndFlush(new LoginResponsePacket(response, player.getRights()));
@@ -85,7 +86,6 @@ public class PlayerSession {
 
         // Replace decoder/encoder to packets
         channel.pipeline().replace("encoder", "encoder", new PacketEncoder(msg.getEncryptor()));
-
         channel.pipeline().replace("decoder", "decoder", new PacketDecoder(msg.getDecryptor()));
 
         // Queue the login

@@ -6,6 +6,7 @@ import com.elvarg.game.World;
 import com.elvarg.game.content.skill.slayer.Slayer;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NPCDropGenerator;
+import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Priority;
@@ -58,7 +59,7 @@ public class NPCDeathTask extends Task {
                     killer = npc.getCombat().getKiller(true);
 
                     // Start death animation..
-                    npc.performAnimation(new Animation(npc.getDefinition().getDeathAnim(), Priority.HIGH));
+                    npc.performAnimation(new Animation(npc.getCurrentDefinition().getDeathAnim(), Priority.HIGH));
 
                     // Reset combat..
                     npc.getCombat().reset();
@@ -98,15 +99,23 @@ public class NPCDeathTask extends Task {
         // Remove from area..
         if (npc.getArea() != null) {
             npc.getArea().leave(npc, false);
+            npc.getArea().postLeave(npc, false);
             npc.setArea(null);
         }
 
         // Flag that we are no longer dying.
         npc.setDying(false);
 
+        // Reset NPC transformation
+        npc.setNpcTransformationId(-1);
+
         // Handle respawn..
         if (npc.getDefinition().getRespawn() > 0) {
             TaskManager.submit(new NPCRespawnTask(npc, npc.getDefinition().getRespawn()));
+        }
+
+        if (npc.isBarricade()) {
+            Barricades.checkTile(npc.getLocation());
         }
 
         // Add us to the global remove list.

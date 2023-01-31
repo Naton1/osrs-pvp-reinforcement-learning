@@ -7,7 +7,9 @@ import com.elvarg.game.content.clan.ClanChatManager;
 import com.elvarg.game.content.combat.WeaponInterfaces;
 import com.elvarg.game.content.combat.magic.Autocasting;
 import com.elvarg.game.content.combat.magic.EffectSpells;
+import com.elvarg.game.content.minigames.MinigameHandler;
 import com.elvarg.game.content.presets.Presetables;
+import com.elvarg.game.content.quests.QuestHandler;
 import com.elvarg.game.content.skill.skillable.impl.Smithing;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.container.impl.Bank;
@@ -116,6 +118,12 @@ public class ButtonClickPacketListener implements PacketExecutor {
 		if (Presetables.handleButton(player, button)) {
 			return true;
 		}
+		if (QuestHandler.handleQuestButtonClick(player, button)) {
+			return true;
+		}
+		if (MinigameHandler.handleButtonClick(player, button)) {
+			return true;
+		}
 		return false;
 	}
 
@@ -136,6 +144,8 @@ public class ButtonClickPacketListener implements PacketExecutor {
 		}
 
 		switch (button) {
+
+
 
 		case OPEN_PRESETS:
 			if (player.busy()) {
@@ -259,6 +269,7 @@ public class ButtonClickPacketListener implements PacketExecutor {
 
 		case CLOSE_BUTTON_1:
 		case CLOSE_BUTTON_2:
+		case 16999:
 			player.getPacketSender().sendInterfaceRemoval();
 			break;
 

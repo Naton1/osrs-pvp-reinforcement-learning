@@ -1301,7 +1301,6 @@ public class Widget {
 
 	public static void itemsKeptOnDeath() {
 
-		removeSomething(16999); // close button in text
 		Widget rsinterface = interfaceCache[10494];
 		rsinterface.spritePaddingX = 6;
 		rsinterface.spritePaddingY = 5;
@@ -1315,6 +1314,7 @@ public class Widget {
 		 * Widget scroll = addTabInterface(17149); scroll.width = 300; scroll.height =
 		 * 183; scroll.scrollMax = 220;
 		 */
+		addButton(16999, 142, "Close");
 		addText(17103, "Items Kept on Death", fonts, 2, 0xff981f, false, false);
 		addText(17104, "Items you will keep on death:", fonts, 1, 0xff981f, false, false);
 		addText(17105, "Items you will lose on death:", fonts, 1, 0xff981f, false, false);
@@ -3130,14 +3130,14 @@ public class Widget {
 		setBounds(30314, 105, 214, child++, Interface);
 		setBounds(30322, 147, 214, child++, Interface);
 
-		setBounds(30064, 39, 39, child++, Interface);
-		setBounds(30075, 71, 39, child++, Interface);
-		setBounds(30083, 103, 39, child++, Interface);
-		setBounds(30106, 12, 68, child++, Interface);
-		setBounds(30114, 42, 68, child++, Interface);
-		setBounds(30138, 135, 68, child++, Interface);
-		setBounds(30146, 165, 68, child++, Interface);
-		setBounds(30162, 42, 97, child++, Interface);
+		setBounds(30064, 49, 9, child++, Interface);
+		setBounds(30075, 79, 9, child++, Interface);
+		setBounds(30083, 109, 9, child++, Interface);
+		setBounds(30106, 139, 9, child++, Interface);
+		setBounds(30114, 19, 34, child++, Interface);
+		setBounds(30138, 49, 34, child++, Interface);
+		setBounds(30146, 79, 34, child++, Interface);
+		setBounds(30162, 109, 34, child++, Interface);
 		setBounds(30170, 71, 97, child++, Interface);
 
 		setBounds(30226, 103, 125, child++, Interface);
@@ -3188,9 +3188,9 @@ public class Widget {
 		setBounds(30307, 5, 40, child++, Interface);
 		setBounds(30323, 5, 40, child++, Interface);
 		setBounds(30315, 5, 40, child++, Interface);
-		
+
 		// Add home button
-		setBounds(19210, 20, 60, child++, Interface);
+		setBounds(19210, 19, 9, child++, Interface);//home
 		setBounds(19211, 2, 50, child++, Interface);
 	}
 
@@ -3480,18 +3480,18 @@ public class Widget {
 		tab.active = false;
 	}
 
-	public static void configHoverButton(int id, String tooltip, int enabledSprite, int disabledSprite,
-			int enabledAltSprite, int disabledAltSprite, boolean active, int... buttonsToDisable) {
+	public static void configHoverButton(int id, String tooltip, int initialEnabledSprite, int initialDisabledSprite,
+			int switchedEnabledSprite, int switchedDisabledSprite, boolean active, int... buttonsToDisable) {
 		Widget tab = addInterface(id);
 		tab.tooltip = tooltip;
 		tab.atActionType = OPTION_OK;
 		tab.type = TYPE_CONFIG_HOVER;
-		tab.enabledSprite = Client.spriteCache.lookup(enabledSprite);
-		tab.disabledSprite = Client.spriteCache.lookup(disabledSprite);
+		tab.enabledSprite = Client.spriteCache.lookup(initialEnabledSprite);
+		tab.disabledSprite = Client.spriteCache.lookup(initialDisabledSprite);
 		tab.width = tab.enabledSprite.myWidth;
 		tab.height = tab.disabledSprite.myHeight;
-		tab.enabledAltSprite = Client.spriteCache.lookup(enabledAltSprite);
-		tab.disabledAltSprite = Client.spriteCache.lookup(disabledAltSprite);
+		tab.enabledAltSprite = Client.spriteCache.lookup(switchedEnabledSprite);
+		tab.disabledAltSprite = Client.spriteCache.lookup(switchedDisabledSprite);
 		tab.buttonsToDisable = buttonsToDisable;
 		tab.active = active;
 		tab.spriteOpacity = 255;

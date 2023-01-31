@@ -2,18 +2,22 @@ package com.elvarg.game.content;
 
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.object.GameObject;
+import com.elvarg.game.entity.impl.object.ObjectManager;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.model.Graphic;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.util.Misc;
 
+import static com.elvarg.game.model.teleportation.TeleportType.NORMAL;
+
 /**
  * Handles the obelisks which teleport players around in the Wilderness. (from
  * Ruse)
  *
- * @author Swiffy
+ * @author Swiffy, updates by syuil
  */
 public class Obelisks {
 
@@ -49,22 +53,10 @@ public class Obelisks {
         if (index >= 0) {
             if (!OBELISK_ACTIVATED[index]) {
                 OBELISK_ACTIVATED[index] = true;
-
-                int obeliskX, obeliskY;
-                for (int i = 0; i < obelisks.length; i++) {
-                    obeliskX = i == 1 || i == 3 ? OBELISK_COORDS[index][0] + 4 : OBELISK_COORDS[index][0];
-                    obeliskY = i >= 2 ? OBELISK_COORDS[index][1] + 4 : OBELISK_COORDS[index][1];
-
-                    final int obeliskX_ = obeliskX;
-                    final int obeliskY_ = obeliskY;
-                    /*
-					 * obelisks[i] = new GameObject(14825, 3, new Position(obeliskX_, obeliskY_)) {
-					 * 
-					 * @Override public void onDespawn() { ObjectHandler.spawnGlobalObject(new
-					 * GameObject(OBELISK_IDS[index], new Position(obeliskX_, obeliskY_))); } };
-					 * ObjectHandler.spawnGlobalObject(obelisks[i]);
-					 */
-                }
+                ObjectManager.register(new GameObject(14825, new Location(OBELISK_COORDS[index][0], OBELISK_COORDS[index][1]), 10, 0, null), true);
+                ObjectManager.register(new GameObject(14825, new Location(OBELISK_COORDS[index][0] + 4, OBELISK_COORDS[index][1]), 10, 0, null), true);
+                ObjectManager.register(new GameObject(14825, new Location(OBELISK_COORDS[index][0], OBELISK_COORDS[index][1] + 4), 10, 0, null), true);
+                ObjectManager.register(new GameObject(14825, new Location(OBELISK_COORDS[index][0] + 4, OBELISK_COORDS[index][1] + 4), 10, 0, null), true);
                 TaskManager.submit(new Task(4, false) {
                     @Override
                     public void execute() {
@@ -78,11 +70,16 @@ public class Obelisks {
                         for (Player player : World.getPlayers()) {
                             if (player == null || !(player.getArea() instanceof WildernessArea))
                                 continue;
-                            if (player.getLocation().isWithinDistance(obeliskLocation, 1)) {
+                            if (player.getLocation().isWithinDistance(obeliskLocation, 1) && !player.getCombat().getTeleBlockTimer().finished())
+                                player.getPacketSender().sendMessage("A magical spell is blocking you from teleporting.");
+
+                            if (player.getLocation().isWithinDistance(obeliskLocation, 1) && player.getCombat().getTeleBlockTimer().finished()) {
+                                player.performGraphic(new Graphic(661));
                                 player.moveTo(newLocation);
+                                player.performAnimation(NORMAL.getEndAnimation());
                             }
                         }
-
+                        deactivate(index);
                         stop();
                     }
 
@@ -96,6 +93,15 @@ public class Obelisks {
             return true;
         }
         return false;
+    }
+
+    public static void deactivate(int index) {
+        int obeliskX, obeliskY;
+        for (int i = 0; i < obelisks.length; i++) {
+            obeliskX = i == 1 || i == 3 ? OBELISK_COORDS[index][0] + 4 : OBELISK_COORDS[index][0];
+            obeliskY = i >= 2 ? OBELISK_COORDS[index][1] + 4 : OBELISK_COORDS[index][1];
+            ObjectManager.register(new GameObject(OBELISK_IDS[index], new Location(obeliskX, obeliskY), 10, 0, null), true);
+        }
     }
 
     /*

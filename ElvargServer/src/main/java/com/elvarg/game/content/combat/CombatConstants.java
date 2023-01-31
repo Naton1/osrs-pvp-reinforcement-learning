@@ -43,4 +43,8 @@ public class CombatConstants {
     // effect.
     public static final int RETRIBUTION_RADIUS = 3;
 
+    /**
+     * The absolute maximum attack distance possible.
+     */
+    public static final int MAX_ATTACK_DISTANCE = 10;
 }

@@ -1,8 +1,8 @@
 package com.elvarg.game.entity.impl;
 
-import com.elvarg.game.Sound;
+import com.elvarg.game.content.sound.Sound;
+import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.Combat;
-import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.hit.HitDamage;
 import com.elvarg.game.content.combat.hit.PendingHit;
@@ -10,17 +10,16 @@ import com.elvarg.game.entity.Entity;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
-import com.elvarg.game.model.Animation;
-import com.elvarg.game.model.Direction;
-import com.elvarg.game.model.Flag;
-import com.elvarg.game.model.Graphic;
-import com.elvarg.game.model.Location;
-import com.elvarg.game.model.UpdateFlag;
+import com.elvarg.game.model.*;
 import com.elvarg.game.model.movement.MovementQueue;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
+import com.elvarg.util.Misc;
 import com.elvarg.util.Stopwatch;
 import com.elvarg.util.timers.TimerRepository;
+import com.google.common.collect.Maps;
+
+import java.util.Map;
 
 /**
  * Represents a {@link Player} or {@link NPC}.
@@ -41,10 +40,32 @@ public abstract class Mobile extends Entity {
 	private Graphic graphic;
 	private Mobile following;
 
+	private Map<Object, Object> attributes = Maps.newConcurrentMap();
+
+	public Object getAttribute(Object name) {
+		return attributes.get(name);
+	}
+
+	/**
+	 * Returns an attribute value, or a default.
+	 *
+	 * @param name
+	 * @param defaultValue
+	 * @return
+	 */
+	public Object getAttribute(Object name, Object defaultValue) {
+		Object result = attributes.get(name);
+		return result != null ? result : defaultValue;
+	}
+
+	public void setAttribute(Object name, Object object) {
+		this.attributes.put(name, object);
+	}
 	/*
 	 * Fields
 	 */
 	private Mobile interactingMobile;
+	private Mobile combatFollowing;
 	private int npcTransformationId = -1;
 	private int poisonDamage;
 	private boolean[] prayerActive = new boolean[30], curseActive = new boolean[20];
@@ -104,6 +125,54 @@ public abstract class Mobile extends Entity {
 		return this;
 	}
 
+	public Mobile smartMove(Location location, int radius) {
+		Location chosen = null;
+		int requestedX = location.getX();
+		int requestedY = location.getY();
+		int height = location.getZ();
+		while(true) {
+			int randomX = Misc.random(requestedX - radius, requestedX + radius);
+			int randomY = Misc.random(requestedY - radius, requestedY + radius);
+			Location randomLocation = new Location(randomX, randomY, height);
+			if (!RegionManager.blocked(randomLocation, null)) {
+				chosen = randomLocation;
+				break;
+			}
+		}
+		getMovementQueue().reset();
+		setLocation(chosen.clone());
+		setNeedsPlacement(true);
+		setResetMovementQueue(true);
+		setMobileInteraction(null);
+		if (this instanceof Player) {
+			getMovementQueue().handleRegionChange();
+		}
+		return this;
+	}
+
+	public Mobile smartMove(Boundary bounds) {
+		Location chosen = null;
+		int height = bounds.height;
+		while(true) {
+			int randomX = Misc.random(bounds.getX(), bounds.getX2());
+			int randomY = Misc.random(bounds.getY(), bounds.getY2());
+			Location randomLocation = new Location(randomX, randomY, height);
+			if (!RegionManager.blocked(randomLocation, null)) {
+				chosen = randomLocation;
+				break;
+			}
+		}
+		getMovementQueue().reset();
+		setLocation(chosen.clone());
+		setNeedsPlacement(true);
+		setResetMovementQueue(true);
+		setMobileInteraction(null);
+		if (this instanceof Player) {
+			getMovementQueue().handleRegionChange();
+		}
+		return this;
+	}
+
 	/**
 	 * Resets all flags related to updating.
 	 */
@@ -114,8 +183,6 @@ public abstract class Mobile extends Entity {
 		needsPlacement = false;
 		resetMovementQueue = false;
 		forcedChat = null;
-		interactingMobile = null;
-		positionToFace = null;
 		animation = null;
 		graphic = null;
 	}
@@ -541,6 +608,14 @@ public abstract class Mobile extends Entity {
     public void setFollowing(Mobile following) {
         this.following = following;
     }
+
+	public Mobile getCombatFollowing() {
+		return this.combatFollowing;
+	}
+
+	public void setCombatFollowing(Mobile target) {
+		this.combatFollowing = target;
+	}
     
     public int getIndex() {
         return index;
@@ -596,4 +671,17 @@ public abstract class Mobile extends Entity {
         }
         return ((NPC) this);
     }
+
+	/**
+	 * Sends a message (if this character is a human player).
+	 *
+	 * @param message
+	 */
+	public void sendMessage(String message) {
+		if (!this.isPlayer() || this.isPlayerBot()) {
+			return;
+		}
+
+		this.getAsPlayer().getPacketSender().sendMessage(message);
+	}
 }

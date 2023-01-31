@@ -8,7 +8,12 @@ public class InterfaceCommand implements Command {
 
     @Override
     public void execute(Player player, String command, String[] parts) {
-        player.getPacketSender().sendInterface(Integer.parseInt(parts[1]));
+        if (parts.length > 2) {
+            player.getPacketSender().sendWalkableInterface(Integer.parseInt(parts[1]));
+        } else {
+            player.getPacketSender().sendInterface(Integer.parseInt(parts[1]));
+        }
+
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.elvarg.game.model.dialogues.entries.impl;
 
 import com.elvarg.game.definition.NpcDefinition;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.model.dialogues.DialogueAction;
 import com.elvarg.game.model.dialogues.DialogueExpression;
 import com.elvarg.game.model.dialogues.entries.Dialogue;
 import com.elvarg.util.Misc;
@@ -23,6 +24,16 @@ public class NpcDialogue extends Dialogue {
 
     public NpcDialogue(int index, int npcId, String text) {
         this(index, npcId, text, DialogueExpression.CALM);
+    }
+
+    public NpcDialogue(int index, int npcId, String text, DialogueExpression expression, DialogueAction continueAction) {
+        this(index, npcId, text, expression);
+        this.setContinueAction(continueAction);
+    }
+
+    public NpcDialogue(int index, int npcId, String text, DialogueAction continueAction) {
+        this(index, npcId, text, DialogueExpression.CALM);
+        this.setContinueAction(continueAction);
     }
 
     @Override

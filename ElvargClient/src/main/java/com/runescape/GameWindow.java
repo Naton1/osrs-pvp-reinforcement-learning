@@ -60,7 +60,7 @@ public class GameWindow extends JFrame implements ActionListener {
         appletInstance = applet;
         appletInstance.init();
         appletInstance.setMinimumSize(new Dimension(765, 503));
-        appletInstance.setPreferredSize(new Dimension(765, 503));
+        appletInstance.setPreferredSize(((Client) appletInstance).frameDimension());
 
         GridBagConstraints gbc_panel = new GridBagConstraints();
         gbc_panel.fill = GridBagConstraints.BOTH;

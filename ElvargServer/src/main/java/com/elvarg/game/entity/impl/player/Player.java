@@ -11,14 +11,11 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.elvarg.game.GameConstants;
-import com.elvarg.game.Sound;
+import com.elvarg.game.collision.RegionManager;
+import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.World;
-import com.elvarg.game.content.Dueling;
-import com.elvarg.game.content.PetHandler;
-import com.elvarg.game.content.PrayerHandler;
+import com.elvarg.game.content.*;
 import com.elvarg.game.content.PrayerHandler.PrayerData;
-import com.elvarg.game.content.QuickPrayers;
-import com.elvarg.game.content.Trading;
 import com.elvarg.game.content.clan.ClanChat;
 import com.elvarg.game.content.clan.ClanChatManager;
 import com.elvarg.game.content.combat.CombatFactory;
@@ -30,8 +27,8 @@ import com.elvarg.game.content.combat.WeaponInterfaces.WeaponInterface;
 import com.elvarg.game.content.combat.bountyhunter.BountyHunter;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.combat.magic.Autocasting;
-import com.elvarg.game.content.minigames.Barrows;
-import com.elvarg.game.content.minigames.Barrows.Brother;
+import com.elvarg.game.content.minigames.impl.Barrows;
+import com.elvarg.game.content.minigames.impl.Barrows.Brother;
 import com.elvarg.game.content.presets.Presetable;
 import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.content.skill.SkillManager;
@@ -44,7 +41,6 @@ import com.elvarg.game.definition.PlayerBotDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NpcAggression;
-import com.elvarg.game.entity.impl.player.persistence.PlayerPersistence;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Appearance;
@@ -74,11 +70,9 @@ import com.elvarg.game.model.dialogues.DialogueManager;
 import com.elvarg.game.model.equipment.BonusManager;
 import com.elvarg.game.model.menu.CreationMenu;
 import com.elvarg.game.model.movement.MovementQueue;
-import com.elvarg.game.model.movement.WalkToAction;
 import com.elvarg.game.model.rights.DonatorRights;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportButton;
-import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.CombatPoisonEffect;
 import com.elvarg.game.task.impl.PlayerDeathTask;
@@ -138,6 +132,8 @@ public class Player extends Mobile {
 	private String username;
 	private String passwordHashWithSalt;
 	private String hostAddress;
+	private boolean isDiscordLogin;
+	private String cachedDiscordAccessToken;
 	private Long longUsername;
 	private PlayerSession session;
 	private PlayerInteractingOption playerInteractingOption = PlayerInteractingOption.NONE;
@@ -157,7 +153,6 @@ public class Player extends Mobile {
 	private int skillAnimation;
 	private boolean drainingPrayer;
 	private double prayerPointDrain;
-	private WalkToAction walkToTask;
 	private MagicSpellbook spellbook = MagicSpellbook.NORMAL;
 	private final Map<TeleportButton, Location> previousTeleports = new HashMap<>();
 	private boolean teleportInterfaceOpen;
@@ -166,6 +161,9 @@ public class Player extends Mobile {
 	private boolean newPlayer;
 	private boolean packetsBlocked = false;
 	private int regionHeight;
+
+	private int questPoints;
+	private Map<Integer, Integer> questProgress = new HashMap<Integer, Integer>();
 	// Skilling
 	private Optional<Skillable> skill = Optional.empty();
 	private CreationMenu creationMenu;
@@ -203,6 +201,9 @@ public class Player extends Mobile {
 	private int highestKillstreak;
 	private int deaths;
 	private int safeTimer = 180;
+	//Pest Control
+	public int pcDamage = 0;
+	public int pcPoints = 0;
 	// Barrows
 	private int barrowsCrypt;
 	private int barrowsChestsLooted;
@@ -394,11 +395,6 @@ public class Player extends Mobile {
 			session.processPackets();
 		}
 
-		// Process walk to task..
-		if (walkToTask != null) {
-			walkToTask.process();
-		}
-
 		// Process walking queue..
 		getMovementQueue().process();
 
@@ -555,6 +551,7 @@ public class Player extends Mobile {
 		// Leave area
 		if (getArea() != null) {
 			getArea().leave(this, true);
+			getArea().postLeave(this, true);
 		}
 
 		// Do stuff...
@@ -579,11 +576,14 @@ public class Player extends Mobile {
 		System.out.println(
 				"[World] Registering player - [username, host] : [" + getUsername() + ", " + getHostAddress() + "]");
 
-		setRights(PlayerRights.OWNER);
 		setNeedsPlacement(true);
 		getPacketSender().sendMapRegion().sendDetails(); // Map region, player index and player rights
 		getPacketSender().sendTabs(); // Client sideicons
 		getPacketSender().sendMessage("Welcome to @red@" + GameConstants.NAME + ".");
+		if (this.isDiscordLogin()) {
+			getPacketSender().sendMessage(":discordtoken:" + this.getCachedDiscordAccessToken());
+		}
+
 		long totalExp = 0;
 		for (Skill skill : Skill.values()) {
 			getSkillManager().updateSkill(skill);
@@ -687,7 +687,7 @@ public class Player extends Mobile {
 	 * Resets the player's attributes to default.
 	 */
 	public void resetAttributes() {
-		performAnimation(new Animation(65535));
+		performAnimation(Animation.DEFAULT_RESET_ANIMATION);
 		setSpecialActivated(false);
 		CombatSpecial.updateBar(this);
 		setHasVengeance(false);
@@ -977,14 +977,6 @@ public class Player extends Mobile {
 
 	public Stopwatch getLastItemPickup() {
 		return lastItemPickup;
-	}
-
-	public WalkToAction getWalkToTask() {
-		return walkToTask;
-	}
-
-	public void setWalkToTask(WalkToAction walkToTask) {
-		this.walkToTask = walkToTask;
 	}
 
 	public CombatSpecial getCombatSpecial() {
@@ -1396,6 +1388,10 @@ public class Player extends Mobile {
 		return regionHeight;
 	}
 
+	public int getRegionId() {
+		return RegionManager.calculateRegionId(getLocation().getX(), getLocation().getY());
+	}
+
 	public void setRegionHeight(int regionHeight) {
 		this.regionHeight = regionHeight;
 	}
@@ -1644,4 +1640,42 @@ public class Player extends Mobile {
     public void setAutoRetaliate(boolean autoRetaliate) {
         this.autoRetaliate = autoRetaliate;
     }
+
+
+	public boolean isDiscordLogin() {
+		return isDiscordLogin;
+	}
+
+	public void setDiscordLogin(boolean discordLogin) {
+		isDiscordLogin = discordLogin;
+	}
+
+	public String getCachedDiscordAccessToken() {
+		return cachedDiscordAccessToken;
+	}
+
+	public void setCachedDiscordAccessToken(String cachedDiscordAccessToken) {
+		this.cachedDiscordAccessToken = cachedDiscordAccessToken;
+	}
+
+	public Map<Integer, Integer> getQuestProgress() {
+		return this.questProgress;
+	}
+
+	public int getQuestPoints() {
+		return this.questPoints;
+	}
+
+	public void setQuestPoints(int questPoints) {
+		this.questPoints = questPoints;
+	}
+
+	public void setQuestProgress(Map<Integer, Integer> questProgress) {
+		if (questProgress == null) {
+			return;
+		}
+		this.questProgress = questProgress;
+	}
+
+	public int castlewarsKills, castlewarsDeaths;
 }

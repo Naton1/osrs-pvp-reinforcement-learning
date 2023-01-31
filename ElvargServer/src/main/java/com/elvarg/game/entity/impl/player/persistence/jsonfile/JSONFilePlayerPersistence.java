@@ -68,6 +68,7 @@ public class JSONFilePlayerPersistence extends PlayerPersistence {
         return plainPassword;
     }
 
+    @Override
     public boolean checkPassword(String plainPassword, PlayerSave playerSave) {
         // TODO: Fix password encryption for JSON
         return plainPassword.equals(playerSave.getPasswordHashWithSalt());

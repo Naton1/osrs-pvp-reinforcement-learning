@@ -6,10 +6,7 @@ import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.definition.PlayerBotDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.entity.impl.playerbot.commands.BotCommand;
-import com.elvarg.game.entity.impl.playerbot.commands.FollowPlayer;
-import com.elvarg.game.entity.impl.playerbot.commands.HoldItems;
-import com.elvarg.game.entity.impl.playerbot.commands.LoadPreset;
+import com.elvarg.game.entity.impl.playerbot.commands.*;
 import com.elvarg.game.entity.impl.playerbot.interaction.*;
 import com.elvarg.game.entity.updating.PlayerUpdating;
 import com.elvarg.game.model.ChatMessage;
@@ -27,14 +24,14 @@ public class PlayerBot extends Player {
     }
 
     private static final BotCommand[] CHAT_COMMANDS = new BotCommand[]{
-//            new FollowPlayer(), new HoldItems(), new LoadPreset()
+        new FollowPlayer(), new HoldItems(), new LoadPreset(), new FightCommand(), new PlayCastleWars(),
+            new GoToDuelArena(), new LocateBot()
     };
 
     private final Location spawnPosition = GameConstants.DEFAULT_LOCATION;
 
     // The current interaction of this PlayerBot
     private InteractionState currentState = InteractionState.IDLE;
-
 
     private BotCommand activeCommand;
 
@@ -171,7 +168,5 @@ public class PlayerBot extends Player {
     @Override
     public void resetAttributes() {
         super.resetAttributes();
-
-        stopCommand();
     }
 }

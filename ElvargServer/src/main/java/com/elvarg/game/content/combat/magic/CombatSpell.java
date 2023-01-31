@@ -1,5 +1,6 @@
 package com.elvarg.game.content.combat.magic;
 
+import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
@@ -150,4 +151,13 @@ public abstract class CombatSpell extends Spell {
      * @param damage the damage inflicted.
      */
     public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {};
+
+    /**
+     * Gets the impact sound for a given spell
+     *
+     * @return {Sound} impactSound
+     */
+    public Sound impactSound() {
+        return null;
+    }
 }

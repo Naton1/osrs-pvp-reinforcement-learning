@@ -410,4 +410,8 @@ public final class Buffer extends Cacheable {
 		/* Put the bytes of the {@code #encodedBuffer} into the buffer. */
         writeBytes(encodedBuffer, encodedBuffer.length, 0);
     }
+
+    public int method428() {
+        return 128 - payload[currentPosition++] & 0xff;
+    }
 }

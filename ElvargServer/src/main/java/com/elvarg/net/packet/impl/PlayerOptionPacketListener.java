@@ -2,7 +2,7 @@ package com.elvarg.net.packet.impl;
 
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.model.movement.WalkToAction;
+import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
@@ -29,6 +29,10 @@ public class PlayerOptionPacketListener implements PacketExecutor {
             return;
         }
 
+        if (player.getRights() == PlayerRights.DEVELOPER) {
+            player.getPacketSender().sendMessage("AttacKInfo "+attacked.getLocation().toString() + " " + player.getLocation().getDistance(attacked.getLocation()));
+        }
+
         player.getCombat().attack(attacked);
     }
 
@@ -45,18 +49,9 @@ public class PlayerOptionPacketListener implements PacketExecutor {
         Player player2 = World.getPlayers().get(id);
         if (player2 == null)
             return;
-        player.setFollowing(player2);
-        player.setWalkToTask(new WalkToAction(player) {
-            @Override
-            public void execute() {
-                if (player.getArea() != null) {
-                    player.getArea().onPlayerRightClick(player, player2, 1);
-                }
-            }
-            
-            @Override
-            public boolean inDistance() {
-                return player.calculateDistance(player2) == 1;
+        player.getMovementQueue().walkToEntity(player2, () -> {
+            if (player.getArea() != null) {
+                player.getArea().onPlayerRightClick(player, player2, 1);
             }
         });
     }
@@ -74,19 +69,10 @@ public class PlayerOptionPacketListener implements PacketExecutor {
         Player player2 = World.getPlayers().get(id);
         if (player2 == null)
             return;
-        player.setFollowing(player2);
-        player.setWalkToTask(new WalkToAction(player) {
-            @Override
-            public void execute() {
+        player.getMovementQueue().walkToEntity(player2, () -> {
                 if (player.getArea() != null) {
                     player.getArea().onPlayerRightClick(player, player2, 2);
                 }
-            }
-            
-            @Override
-            public boolean inDistance() {
-                return player.calculateDistance(player2) == 1;
-            }
         });
     }
 
@@ -103,18 +89,10 @@ public class PlayerOptionPacketListener implements PacketExecutor {
         Player player2 = World.getPlayers().get(id);
         if (player2 == null)
             return;
-        player.setFollowing(player2);
-        player.setWalkToTask(new WalkToAction(player) {
-            @Override
-            public void execute() {
+        player.getMovementQueue().walkToEntity(player2, () -> {
                 if (player.getArea() != null) {
                     player.getArea().onPlayerRightClick(player, player2, 3);
                 }
-            }
-            @Override
-            public boolean inDistance() {
-                return player.calculateDistance(player2) == 1;
-            }
         });
     }
 
@@ -128,6 +106,7 @@ public class PlayerOptionPacketListener implements PacketExecutor {
         if (player.busy()) {
             return;
         }
+
         switch (packet.getOpcode()) {
             case PacketConstants.ATTACK_PLAYER_OPCODE:
                 attack(player, packet);
