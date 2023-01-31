@@ -1677,5 +1677,12 @@ public class Player extends Mobile {
 		this.questProgress = questProgress;
 	}
 
-	public int castlewarsKills, castlewarsDeaths;
+	public int castlewarsKills, castlewarsDeaths, castlewarsIdleTime;
+
+	public void resetCastlewarsIdleTime() {
+		this.castlewarsIdleTime = 200;
+	}
+
+
+
 }
