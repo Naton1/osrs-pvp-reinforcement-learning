@@ -29,6 +29,7 @@ import com.elvarg.game.task.impl.CountdownTask;
 import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
 import com.elvarg.util.timers.TimerKey;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.awt.*;
@@ -55,6 +56,8 @@ public class CastleWars implements Minigame {
     public static final CastleWarsGameArea GAME_AREA = new CastleWarsGameArea();
 
     public static final CastleWarsLobbyArea LOBBY_AREA = new CastleWarsLobbyArea();
+
+    private static List<GameObject> spawned_objects = Lists.newCopyOnWriteArrayList();
 
     public static boolean handleItemOnPlayer(Player player, Player target, Item item) {
         if (item.getId() != BANDAGES)
@@ -565,6 +568,7 @@ public class CastleWars implements Minigame {
      */
     public static void startGame() {
         SARADOMIN_WAITING_AREA.getPlayers().forEach((player) -> {
+            player.resetCastlewarsIdleTime();
             Team.SARADOMIN.addPlayer(player);
             player.getPacketSender().sendWalkableInterface(-1);
             player.moveTo(new Location(
@@ -573,6 +577,7 @@ public class CastleWars implements Minigame {
         });
 
         ZAMORAK_WAITING_AREA.getPlayers().forEach((player) -> {
+            player.resetCastlewarsIdleTime();
             Team.ZAMORAK.addPlayer(player);
             player.getPacketSender().sendWalkableInterface(-1);
             player.moveTo(new Location(
@@ -608,7 +613,7 @@ public class CastleWars implements Minigame {
             // Teleport player after checking scores and adding tickets.
             player.moveTo(new Location(2440 + Misc.random(3), 3089 - Misc.random(3), 0));
         });
-
+        spawned_objects.forEach(o -> { if (o != null)  ObjectManager.deregister(o, true);});
         // Reset game after processing players.
         resetGame();
     }
@@ -687,6 +692,7 @@ public class CastleWars implements Minigame {
     public static void changeFlagObject(int objectId, int team) {
         GameObject gameObject = new GameObject(objectId, new Location(FLAG_STANDS[team][0], FLAG_STANDS[team][1], 3), 10, 2, null);
         ObjectManager.register(gameObject, true);
+        spawned_objects.add(gameObject);
     }
 
     @Override
@@ -724,6 +730,7 @@ public class CastleWars implements Minigame {
                     player.getPacketSender().sendMessage("You are not allowed in the other teams spawn point.");
                     return true;
                 }
+                player.resetCastlewarsIdleTime();
                 if (x == 2426) {
                     if (playerY == 3080) {
                         player.moveTo(new Location(2426, 3081, playerZ));
@@ -743,6 +750,7 @@ public class CastleWars implements Minigame {
                     player.getPacketSender().sendMessage("You are not allowed in the other teams spawn point.");
                     return true;
                 }
+                player.resetCastlewarsIdleTime();
                 if (x == 2373 && y == 3126) {
                     if (playerY == 3126) {
                         player.moveTo(new Location(2373, 3127, 1));
@@ -970,6 +978,7 @@ public class CastleWars implements Minigame {
      * Processes all actions to keep the minigame running smoothly.
      */
     public void process() {
+
     }
 
     private static Map<Integer, Integer> catapults = Maps.newConcurrentMap();
@@ -1246,19 +1255,19 @@ public class CastleWars implements Minigame {
 
                         if (saradomin) {
                             if (saradominCatapult != CatapultState.BURNING) {
-                                changeCatapultState(this, fixed, CatapultState.FIXED, saradomin);
+                                changeCatapultState(this, fixed, CatapultState.FIXED, true);
                                 return;
                             }
                             if (ticks == 16) {//4385, 4386
-                                changeCatapultState(this, burnt, CatapultState.REPAIR, saradomin);
+                                changeCatapultState(this, burnt, CatapultState.REPAIR, true);
                             }
                         } else {
                             if (zamorakCatapult != CatapultState.BURNING) {
-                                changeCatapultState(this, fixed, CatapultState.FIXED, saradomin);
+                                changeCatapultState(this, fixed, CatapultState.FIXED, false);
                                 return;
                             }
                             if (ticks == 16) {//4385, 4386
-                                changeCatapultState(this, burnt, CatapultState.REPAIR, saradomin);
+                                changeCatapultState(this, burnt, CatapultState.REPAIR, false);
                             }
                         }
 
