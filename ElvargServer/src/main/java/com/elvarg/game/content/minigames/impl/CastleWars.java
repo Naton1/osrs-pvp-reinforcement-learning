@@ -32,6 +32,7 @@ import com.elvarg.util.timers.TimerKey;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import javax.swing.text.Position;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -59,6 +60,14 @@ public class CastleWars implements Minigame {
 
     private static List<GameObject> spawned_objects = Lists.newCopyOnWriteArrayList();
 
+    @Override
+    public void init() {
+        /** Saradomin Altar **/
+        ObjectManager.register(new GameObject(411, new Location(2431, 3076, 1), 10, 1, null), true);
+        /** Zamorak Altar **/
+        ObjectManager.register(new GameObject(411, new Location(2373, 3135, 1), 10, 0, null), true);
+    }
+
     public static boolean handleItemOnPlayer(Player player, Player target, Item item) {
         if (item.getId() != BANDAGES)
             return false;
@@ -81,6 +90,10 @@ public class CastleWars implements Minigame {
         int hp = (int) Math.floor(maxHP * (bracelet ? 1.60 : 1.1));
         /** Heals the target **/
         player.heal(hp);
+    }
+
+    private static boolean isSteppingStones(Location loc) {
+        return loc.getX() >= 2418 && loc.getX() <= 2420 && loc.getY() >= 3122 && loc.getY() <= 3125 || loc.getX() >= 2377 && loc.getX() <= 2378 && loc.getY() >= 3084 && loc.getY() <= 3088;
     }
 
     /**
@@ -464,22 +477,24 @@ public class CastleWars implements Minigame {
             case SARADOMIN:
                 setSaraFlag(2);
                 object = 4900;
-                createFlagHintIcon(player.getLocation());
                 break;
             case ZAMORAK:
                 setZammyFlag(2);
                 object = 4901;
-                createFlagHintIcon(player.getLocation());
                 break;
         }
-
         player.getEquipment().setItem(Equipment.WEAPON_SLOT, NO_ITEM);
         player.getEquipment().refreshItems();
         player.getUpdateFlag().flag(Flag.APPEARANCE);
-
-        int finalObject = object;
+        if (isSteppingStones(player.getLocation()) && object != -1) {
+            returnFlag(player, Team.getTeamForPlayer(player) == Team.SARADOMIN ? SARA_BANNER : ZAMMY_BANNER);
+            return;
+        }
+        createFlagHintIcon(player.getLocation());
+        GameObject obj = new GameObject(object, player.getLocation(), 10, 0, null);
         // Spawn the flag object for all players
-        GAME_AREA.getPlayers().forEach((teamPlayer) -> teamPlayer.getPacketSender().sendObject(new GameObject(finalObject, player.getLocation(), 10, 0, null)));
+        spawned_objects.add(obj);
+        GAME_AREA.getPlayers().forEach((teamPlayer) -> teamPlayer.getPacketSender().sendObject(obj));
     }
 
     /**
@@ -513,9 +528,13 @@ public class CastleWars implements Minigame {
                 break;
         }
         createHintIcon(player, Team.getTeamForPlayer(player) == Team.SARADOMIN ? Team.SARADOMIN : Team.ZAMORAK);
+
         GAME_AREA.getPlayers().forEach((teamPlayer) -> {
+            GameObject flag = new GameObject(object.getId(), object.getLocation(), 10, 0, teamPlayer.getPrivateArea());
+            if (spawned_objects.contains(flag))
+                spawned_objects.remove(flag);
             teamPlayer.getPacketSender().sendPositionalHint(object.getLocation(), -1);
-            teamPlayer.getPacketSender().sendObjectRemoval(new GameObject(-1, object.getLocation(), 10, 0, teamPlayer.getPrivateArea()));
+            teamPlayer.getPacketSender().sendObjectRemoval(flag);
         });
     }
 
