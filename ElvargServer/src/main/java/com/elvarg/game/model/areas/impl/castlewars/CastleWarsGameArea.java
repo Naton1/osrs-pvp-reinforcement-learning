@@ -73,7 +73,7 @@ public class CastleWarsGameArea extends Area {
 
         player.getPacketSender().sendString(inSpawn ? "You have "+Misc.ticksToTime(player.castlewarsIdleTime)+" to leave the respawn room." : "", 12837);
 
-        if (inSpawn) {
+        if (inSpawn && !player.isPlayerBot()) {
             if (player.castlewarsIdleTime > 0) {
                 player.castlewarsIdleTime--;
                 if (player.castlewarsIdleTime == 0) {
