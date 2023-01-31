@@ -633,6 +633,7 @@ public class CastleWars implements Minigame {
             player.moveTo(new Location(2440 + Misc.random(3), 3089 - Misc.random(3), 0));
         });
         spawned_objects.forEach(o -> { if (o != null)  ObjectManager.deregister(o, true);});
+        spawned_objects.clear();
         // Reset game after processing players.
         resetGame();
     }
