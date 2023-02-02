@@ -70,4 +70,8 @@ public class MinigameHandler {
     public static void process() {
         Minigames.getAll().forEach(m -> m.minigame.process());
     }
+
+    public static void init() {
+        Minigames.getAll().forEach(m -> m.minigame.init());
+    }
 }

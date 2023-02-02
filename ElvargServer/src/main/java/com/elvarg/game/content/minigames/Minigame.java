@@ -7,4 +7,6 @@ public interface Minigame {
     boolean firstClickObject(Player player, GameObject object);
     boolean handleButtonClick(Player player, int button);
     void process();
+
+    void init();
 }

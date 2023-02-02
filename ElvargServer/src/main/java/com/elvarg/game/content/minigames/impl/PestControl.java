@@ -165,6 +165,11 @@ public class PestControl implements Minigame {
         }
     }
 
+    @Override
+    public void init() {
+
+    }
+
     /**
      * Method we use for removing a player from the pc game
      *
