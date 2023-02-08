@@ -99,7 +99,7 @@ public class Client extends GameApplet {
     public static byte[] music_payload;
     public static int anInt155 = 0;
     public static int anInt2200 = 0;
-    public static int anInt1478;
+    public static int jmp_volume;
     public static boolean aBoolean475;
     public static int fadeDuration;
     public static boolean repeatMusic;
@@ -123,12 +123,12 @@ public class Client extends GameApplet {
                 } else
                     anInt720 = 1;
                 music_payload = is;
-                anInt1478 = volume;
+                jmp_volume = volume;
                 aBoolean475 = bool;
             } else if (anInt720 == 0)
                 method853(volume, is, bool);
             else {
-                anInt1478 = volume;
+                jmp_volume = volume;
                 aBoolean475 = bool;
                 music_payload = is;
             }
@@ -151,11 +151,11 @@ public class Client extends GameApplet {
                 }
                 aBoolean475 = bool;
                 music_payload = payload;
-                anInt1478 = i_30_;
+                jmp_volume = i_30_;
             } else if (anInt720 != 0) {
                 aBoolean475 = bool;
                 music_payload = payload;
-                anInt1478 = i_30_;
+                jmp_volume = i_30_;
             } else
                 method853(i_30_, payload, bool);
         }
@@ -189,9 +189,9 @@ public class Client extends GameApplet {
                         if (music_payload == null)
                             midi_player.method831(256);
                         else {
-                            midi_player.method831(anInt1478);
-                            anInt478 = anInt1478;
-                            midi_player.method827(anInt1478, music_payload, 0, aBoolean475);
+                            midi_player.method831(jmp_volume);
+                            anInt478 = jmp_volume;
+                            midi_player.method827(jmp_volume, music_payload, 0, aBoolean475);
                             music_payload = null;
                         }
                         anInt155 = 0;
@@ -3386,46 +3386,18 @@ public class Client extends GameApplet {
         }
     }
 
-    public void changeMusicVolume(int newVolume) {//used
-
-        if (newVolume == musicVolume)
-            return;
-
-        if (newVolume == 0) {
-            setVolume(0);
-            return;
-        }
-
-        newVolume *= 20;
-
-        if (musicVolume != 0 || currentSong == -1) {
-            setVolume(newVolume);
-        } else {
-            requestMusic(currentSong);//TODO look into
-            prevSong = 0;
-        }
-        musicVolume = newVolume;
-    }
-
-    public static final void setVolume(int i) {
-        if (musicIsntNull()) {
-            if (fetchMusic)
-                music_volume = i;
-            else
-                method900(i);
-        }
-    }
-
-    public static final void method900(int i) {
+    public static final void setMusicVolume(int volume) {
         if (midi_player != null) {
             if (anInt720 == 0) {
                 if (anInt478 >= 0) {
-                    anInt478 = i;
-                    midi_player.method830(i, 0);
+                    anInt478 = volume;
+                    midi_player.method830(volume, 0);
                 }
-            } else if (music_payload != null)
-                anInt1478 = i;
+            } else if (music_payload != null) {
+                jmp_volume = volume;
+            }
         }
+        music_volume = musicVolume = volume;
     }
 
     public void changeSoundVolume(int newVolume) {
@@ -3537,7 +3509,6 @@ public class Client extends GameApplet {
         if (parameter == 9) {
             anInt913 = state;
         }
-        System.err.println("Para=" + parameter + " " + state);
 
     }
 
@@ -4428,6 +4399,8 @@ public class Client extends GameApplet {
     }
 
     final synchronized void requestMusic(int musicId) {
+        if (!Configuration.enableMusic)
+            setMusicVolume(0);
         if (musicIsntNull()) {
             nextSong = musicId;
             resourceProvider.provide(2, nextSong);
@@ -4548,8 +4521,6 @@ public class Client extends GameApplet {
 
             resourceProvider = new ResourceProvider();
             resourceProvider.initialize(streamLoader_6, this);
-
-            requestMusic(SoundConstants.SCAPE_RUNE);
 
             tileFlags = new byte[4][104][104];
             tileHeights = new int[4][105][105];
@@ -4694,8 +4665,8 @@ public class Client extends GameApplet {
             SceneObject.clientInstance = this;
             ObjectDefinition.clientInstance = this;
             NpcDefinition.clientInstance = this;
-
             loadPlayerData();
+            requestMusic(SoundConstants.SCAPE_RUNE);
             //resourceProvider.writeAll();
             
             /*repackCacheIndex(1);
@@ -5825,7 +5796,6 @@ public class Client extends GameApplet {
             return false;
         int type = mask & 0x1f;
         int direction = mask >> 6 & 3;
-        System.err.println("Mask=" + mask + " type=" + type + " orientation=" + direction);
         if (type == 10 || type == 11 || type == 22) {
             ObjectDefinition class46 = ObjectDefinition.lookup(id);
             int yLength;
@@ -13302,11 +13272,7 @@ public class Client extends GameApplet {
 
         loginMusicImageProducer.drawGraphics(265, super.graphics, 562);
         loginMusicImageProducer.initDrawingArea();
-        if (Configuration.enableMusic) {
-            spriteCache.draw(58, 158, 196);
-        } else {
-            spriteCache.draw(59, 158, 196);
-        }
+        spriteCache.draw(Configuration.enableMusic ? 58 : 59, 158, 196);
 
     }
 
@@ -13778,10 +13744,6 @@ public class Client extends GameApplet {
         if (loading)
             return;
         if (loginScreenState == 0) {
-            if (super.clickMode3 == 1 && super.saveClickX >= 722 && super.saveClickX <= 751 && super.saveClickY >= 463 && super.saveClickY <= 493) {
-                Configuration.enableMusic = !Configuration.enableMusic;
-            }
-
             if (super.clickMode3 == 1) {
                 if (mouseInRegion(394, 530, 275, 307)) {
                     firstLoginMessage = "";
@@ -13791,7 +13753,8 @@ public class Client extends GameApplet {
                         loginScreenCursorPos = 0;
                     }
                 } else if (mouseInRegion(229, 375, 271, 312)) {
-                    if (!Configuration.DiscordConfiguration.ENABLE_DISCORD_OAUTH_LOGIN) return;
+                    if (!Configuration.DiscordConfiguration.ENABLE_DISCORD_OAUTH_LOGIN)
+                        return;
 
                     canUseCachedToken = true;
                     loginScreenState = 1;
@@ -13810,6 +13773,8 @@ public class Client extends GameApplet {
                     MiscUtils.launchURL(DiscordOAuth.getOAuthUrl());
                     firstLoginMessage = "Waiting for OAuth...";
                     secondLoginMessage = "";
+                } else if (mouseInRegion(720, 754, 460, 492)) {
+                    handleMuteMusic();
                 }
             }
         } else if (loginScreenState == 1) {
@@ -13825,10 +13790,7 @@ public class Client extends GameApplet {
             }
         } else if (loginScreenState == 2) {
             if (super.clickMode3 == 1) {
-                if (super.saveClickX >= 722 && super.saveClickX <= 753 && super.saveClickY >= 463 && super.saveClickY <= 493) {
-                    Configuration.enableMusic = !Configuration.enableMusic;
-                    savePlayerData();
-                } else if (rememberUsernameHover) {
+                if (rememberUsernameHover) {
                     rememberUsername = !rememberUsername;
                     savePlayerData();
                 } else if (rememberPasswordHover) {
@@ -13836,6 +13798,9 @@ public class Client extends GameApplet {
                     savePlayerData();
                 } else if (forgottenPasswordHover) {
                     MiscUtils.launchURL("www.aqp.io");
+                } else if (mouseInRegion(720, 754, 460, 492)) {
+                    /** Handles clicking once typing login info **/
+                    handleMuteMusic();
                 }
             }
             int j = super.myHeight / 2 - 45;
@@ -13908,6 +13873,12 @@ public class Client extends GameApplet {
             } while (true);
             return;
         }
+    }
+
+    private void handleMuteMusic() {
+        Configuration.enableMusic = !Configuration.enableMusic;
+        savePlayerData();
+        setMusicVolume(Configuration.enableMusic ? 255 : 0);
     }
 
     private void removeObject(int y, int z, int k, int l, int x, int group, int previousId) {
