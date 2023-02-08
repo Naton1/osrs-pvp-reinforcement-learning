@@ -120,7 +120,6 @@ public class Slider {
                     Configuration.enableMusic = false;
                 }
 
-
                 Client.instance.setMusicVolume(id);
                 break;
             case SOUND:

@@ -1,6 +1,7 @@
 package com.elvarg.game.content.sound;
 
 import com.elvarg.game.entity.impl.player.Player;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Optional;
 
@@ -27,6 +28,8 @@ public class SoundManager {
         int regionId = player.getRegionId();
         Optional<Music> regionMusic = Music.getForRegion(regionId);
 
-        regionMusic.ifPresent(music -> player.getPacketSender().playMusic(music.getSongId()));
+        regionMusic.ifPresent(music -> {
+            player.getPacketSender().sendString(42538, StringUtils.capitalize(music.getSongName()));
+            player.getPacketSender().playMusic(music.getSongId()); });
     }
 }
