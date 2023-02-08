@@ -2,7 +2,7 @@ package com.elvarg.game.model.areas;
 
 import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.content.minigames.impl.CastleWars;
-import com.elvarg.game.content.minigames.impl.PestControl;
+import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;

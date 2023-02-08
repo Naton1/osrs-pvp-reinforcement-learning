@@ -10,12 +10,19 @@ public class DebugCommand implements Command {
 
     @Override
     public void execute(Player player, String command, String[] parts) {
-        System.out.println(RegionManager.wallsExist(player.getLocation().clone(), player.getPrivateArea()));
+       // System.out.println(RegionManager.wallsExist(player.getLocation().clone(), player.getPrivateArea()));
+        for (int i = 0; i < 4; i++) {
+            player.getPacketSender().sendString("Dead", 21111+i);
+
+        }
+        player.getPacketSender().sendString("10000", 21115);
+        player.getPacketSender().sendString("5", 21116);
+        player.getPacketSender().sendString("Time remaining: 5mins", 21117);
     }
 
     @Override
     public boolean canUse(Player player) {
-        return (player.getRights() == PlayerRights.DEVELOPER);
+        return true;
     }
 
 }

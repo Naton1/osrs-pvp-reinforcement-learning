@@ -3,7 +3,7 @@ package com.elvarg.game.model.areas.impl.pestcontrol;
 import com.elvarg.game.content.PrayerHandler;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.minigames.MinigameHandler;
-import com.elvarg.game.content.minigames.impl.PestControl;
+import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
@@ -14,7 +14,7 @@ import com.elvarg.net.packet.impl.EquipPacketListener;
 import java.util.List;
 import java.util.Optional;
 
-import static com.elvarg.game.content.minigames.impl.PestControl.gameTimer;
+import static com.elvarg.game.content.minigames.impl.pestcontrol.PestControl.gameTimer;
 
 public class PestControlArea extends Area {
 

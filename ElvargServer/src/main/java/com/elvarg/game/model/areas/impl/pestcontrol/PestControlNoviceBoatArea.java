@@ -1,6 +1,6 @@
 package com.elvarg.game.model.areas.impl.pestcontrol;
 
-import com.elvarg.game.content.minigames.impl.PestControl;
+import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
@@ -8,7 +8,7 @@ import com.elvarg.game.model.areas.Area;
 
 import java.util.List;
 
-import static com.elvarg.game.content.minigames.impl.PestControl.*;
+import static com.elvarg.game.content.minigames.impl.pestcontrol.PestControl.*;
 import static com.elvarg.util.ObjectIdentifiers.LADDER_175;
 
 public class PestControlNoviceBoatArea extends Area {

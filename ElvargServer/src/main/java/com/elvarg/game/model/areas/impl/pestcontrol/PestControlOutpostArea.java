@@ -1,14 +1,13 @@
 package com.elvarg.game.model.areas.impl.pestcontrol;
 
-import com.elvarg.game.content.minigames.impl.PestControl;
-import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
+import com.elvarg.game.content.minigames.impl.pestcontrol.PestControlBoat;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.areas.Area;
 
 import java.util.List;
-
-import static com.elvarg.util.ObjectIdentifiers.*;
+import java.util.Optional;
 
 public class PestControlOutpostArea extends Area {
 
@@ -24,11 +23,27 @@ public class PestControlOutpostArea extends Area {
     @Override
     public boolean handleObjectClick(Player player, int objectId, int type) {
         switch (objectId) {
-            case GANGPLANK_27:
-                PestControl.addToWaitRoom(player);
-                return true;
+
         }
 
-        return false;
+        Optional<PestControlBoat> boatdata = PestControlBoat.getBoat(objectId);
+
+        if (boatdata == null || !boatdata.isPresent())
+            return false;
+
+        PestControlBoat boat = boatdata.get();
+
+        if (player.getSkillManager().getCombatLevel() < boat.combatLevelRequirement) {
+            player.getPacketSender().sendMessage("You need a combat level of "+boat.combatLevelRequirement+" to board this boat.");
+            return false;
+        }
+
+        if (player.getCurrentPet() != null) {
+            player.getPacketSender().sendMessage("You cannot bring your follower with you.");
+            return false;
+        }
+
+        PestControl.addToWaitingRoom(player, boat);
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-package com.elvarg.game.content.minigames.impl;
+package com.elvarg.game.content.minigames.impl.pestcontrol;
 
 import com.elvarg.game.World;
 import com.elvarg.game.content.minigames.Minigame;
@@ -12,9 +12,12 @@ import com.elvarg.game.model.areas.impl.pestcontrol.PestControlNoviceBoatArea;
 import com.elvarg.game.model.areas.impl.pestcontrol.PestControlOutpostArea;
 import com.elvarg.game.model.dialogues.DialogueExpression;
 import com.elvarg.game.model.dialogues.entries.impl.NpcDialogue;
-import com.elvarg.net.packet.impl.EquipPacketListener;
 import com.elvarg.util.Misc;
 import com.elvarg.util.NpcIdentifiers;
+import com.google.common.collect.Lists;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 import static com.elvarg.game.World.getNpcs;
 import static com.elvarg.util.NpcIdentifiers.*;
@@ -31,7 +34,7 @@ public class PestControl implements Minigame {
      * Instanced games and support for novice/med/advanced boats
      * Gates need to open
      * Fence damaging and repairing
-     *
+     * <p>
      * Handle gates
      * Fix NPC ids for portal spawns
      */
@@ -64,8 +67,8 @@ public class PestControl implements Minigame {
     /**
      * Array used for storing the portals health
      */
-    public static int[] portalHealth = { 200, 200, 200, 200 };
-    public static int[] portals = { 3777, 3778, 3779, 3780 };
+    public static int[] portalHealth = {200, 200, 200, 200};
+    public static int[] portals = {3777, 3778, 3779, 3780};
 
     public int shifter = SHIFTER + Misc.random(9);
     public int brawler = BRAWLER + Misc.random(4);
@@ -74,11 +77,11 @@ public class PestControl implements Minigame {
     public int torcher = TORCHER + Misc.random(7);
     public int splater = SPLATTER + Misc.random(4);
 
-    private final int[][] pcNPCData = { { portals[0], 2628, 2591 }, // portal
-            { portals[1], 2680, 2588 }, // portal
-            { portals[2], 2669, 2570 }, // portal
-            { portals[3], 2645, 2569 }, // portal
-            { VOID_KNIGHT_GAME, 2656, 2592 },
+    private final int[][] pcNPCData = {{portals[0], 2628, 2591}, // portal
+            {portals[1], 2680, 2588}, // portal
+            {portals[2], 2669, 2570}, // portal
+            {portals[3], 2645, 2569}, // portal
+            {VOID_KNIGHT_GAME, 2656, 2592},
     };
 
     /**
@@ -105,20 +108,20 @@ public class PestControl implements Minigame {
      * @order npcId, xSpawn, ySpawn, health
      */
     private final int[][] voidMonsterData = {
-            { shifter, 2660 + Misc.random(4), 2592 + Misc.random(4) },
-            { brawler, 2663 + Misc.random(4), 2575 + Misc.random(4) },
-            { defiler, 2656 + Misc.random(4), 2572 + Misc.random(4) },
-            { ravager, 2664 + Misc.random(4), 2574 + Misc.random(4) },
-            { torcher, 2656 + Misc.random(4), 2595 + Misc.random(4) },
-            { ravager, 2634 + Misc.random(4), 2596 + Misc.random(4) },
-            { brawler, 2638 + Misc.random(4), 2588 + Misc.random(4) },
-            { shifter, 2637 + Misc.random(4), 2598 + Misc.random(4) },
-            { ravager, 2677 + Misc.random(4), 2579 + Misc.random(4) },
-            { defiler, 2673 + Misc.random(4), 2584 + Misc.random(4) },
-            { defiler, 2673 + Misc.random(4), 2584 + Misc.random(4) },
-            { defiler, 2675 + Misc.random(4), 2591 + Misc.random(4) },
-            { splater, 2644 + Misc.random(4), 2575 + Misc.random(4) },
-            { splater, 2633 + Misc.random(4), 2595 + Misc.random(4) }};
+            {shifter, 2660 + Misc.random(4), 2592 + Misc.random(4)},
+            {brawler, 2663 + Misc.random(4), 2575 + Misc.random(4)},
+            {defiler, 2656 + Misc.random(4), 2572 + Misc.random(4)},
+            {ravager, 2664 + Misc.random(4), 2574 + Misc.random(4)},
+            {torcher, 2656 + Misc.random(4), 2595 + Misc.random(4)},
+            {ravager, 2634 + Misc.random(4), 2596 + Misc.random(4)},
+            {brawler, 2638 + Misc.random(4), 2588 + Misc.random(4)},
+            {shifter, 2637 + Misc.random(4), 2598 + Misc.random(4)},
+            {ravager, 2677 + Misc.random(4), 2579 + Misc.random(4)},
+            {defiler, 2673 + Misc.random(4), 2584 + Misc.random(4)},
+            {defiler, 2673 + Misc.random(4), 2584 + Misc.random(4)},
+            {defiler, 2675 + Misc.random(4), 2591 + Misc.random(4)},
+            {splater, 2644 + Misc.random(4), 2575 + Misc.random(4)},
+            {splater, 2633 + Misc.random(4), 2595 + Misc.random(4)}};
 
     @Override
     public boolean firstClickObject(Player player, GameObject object) {
@@ -173,8 +176,7 @@ public class PestControl implements Minigame {
     /**
      * Method we use for removing a player from the pc game
      *
-     * @param player
-     *            The Player.
+     * @param player The Player.
      */
     public static void removePlayerGame(Player player) {
         player.moveTo(new Location(2657, 2639, 0));
@@ -215,6 +217,7 @@ public class PestControl implements Minigame {
 
     /**
      * Checks how many players are in the game
+     *
      * @return players in the game
      */
     private int playersInGame() {
@@ -226,7 +229,7 @@ public class PestControl implements Minigame {
             player.moveTo(new Location(2657, 2639, 0));
             if (won && player.pcDamage > 50) {
                 NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT, "Do not let the Void Knights health reach 0!" +
-                        "You can regain health by destroying more monsters,", DialogueExpression.SLIGHTLY_SAD );
+                        "You can regain health by destroying more monsters,", DialogueExpression.SLIGHTLY_SAD);
                 int POINT_REWARD = 4;
                 player.getPacketSender().sendMessage(
                         "You have won the pest control game and have been awarded "
@@ -236,11 +239,11 @@ public class PestControl implements Minigame {
             } else if (won) {
                 int POINT_REWARD2 = 2;
                 NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT, "The void knights notice your lack of zeal. You only gain "
-                        + POINT_REWARD2 + " points.", DialogueExpression.DISTRESSED );
+                        + POINT_REWARD2 + " points.", DialogueExpression.DISTRESSED);
                 player.pcPoints += POINT_REWARD2;
             } else {
                 NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT,
-                        "You failed to kill all the portals in 3 minutes and have not been awarded points.", DialogueExpression.CALM );
+                        "You failed to kill all the portals in 3 minutes and have not been awarded points.", DialogueExpression.CALM);
                 player.getPacketSender()
                         .sendMessage(
                                 "You failed to kill all the portals in 3 minutes and have not been awarded points.");
@@ -311,28 +314,38 @@ public class PestControl implements Minigame {
         return count >= 4;
     }
 
+    private static Queue<Player> novice_boat = Lists.newLinkedList(), intermediate_boat = Lists.newLinkedList(), veteran_boat = Lists.newLinkedList();
+
+    private static boolean onList(Player player) {
+        return novice_boat.contains(player) || intermediate_boat.contains(player) || veteran_boat.contains(player);
+    }
+    private static void addToQueue(Player player, PestControlBoat boat) {
+        if (onList(player)) {
+            System.err.println("Error.. adding "+player.getUsername()+" to "+boat.name()+" list.. already on the list.");
+            return;
+        }
+        /**
+         * TODO.. might be a good idea to get the players in the area then add all to the list.. however.. pest control uses a queue system not list!
+         */
+        switch (boat) {
+            case VETERAN -> veteran_boat.add(player);
+            case INTERMEDIATE -> intermediate_boat.add(player);
+            case NOVICE -> novice_boat.add(player);
+        }
+    }
     /**
      * Moves a player into the hash and into the lobby
      *
-     * @param player
-     *            The player
+     * @param player The player
      */
-    public static void addToWaitRoom(Player player) {
-        if (player != null && player.getSkillManager().getCombatLevel() > 39) {
-            player.getPacketSender().sendMessage(
-                    "You have joined the Pest Control boat.");
-            player.getPacketSender().sendMessage(
-                    "You currently have " + player.pcPoints
-                            + " Pest Control Points.");
-            player.getPacketSender().sendMessage(
-                    "There are currently " + playersInBoat()
-                            + " players ready in the boat.");
-            player.getPacketSender().sendMessage(
-                    "Players needed: " + PLAYERS_REQUIRED + " to 25 players.");
-            player.moveTo(new Location(2661, 2639, 0));
-        } else if (player.getSkillManager().getCombatLevel() < 40) {
-            player.getPacketSender().sendMessage("You need 40 combat to play pest control.");
-        }
+    public static void addToWaitingRoom(Player player, PestControlBoat boat) {
+
+        player.getPacketSender().sendMessage("You have joined the Pest Control boat.");
+        player.getPacketSender().sendMessage("You currently have " + player.pcPoints + " Pest Control Points.");
+        player.getPacketSender().sendMessage("There are currently " + playersInBoat() + " players ready in the boat.");
+        player.getPacketSender().sendMessage("Players needed: " + PLAYERS_REQUIRED + " to 25 players.");
+        addToQueue(player, boat);
+        player.moveTo(boat.enterBoatLocation);
     }
 
 
