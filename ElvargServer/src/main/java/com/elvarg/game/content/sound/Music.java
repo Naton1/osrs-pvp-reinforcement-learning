@@ -482,16 +482,16 @@ public enum Music {
         player.getPacketSender().sendTabInterface(11, musicSelection ? 962 : 42500);
     }
 
-    public static void handleMusicSelection(Player player, int buttonId) {
+    public static boolean handleMusicSelection(Player player, int buttonId) {
         Optional<Music> musicdata = Arrays.stream(Music.values()).filter(m -> m.getButtonId() == buttonId).findFirst();
 
-        if (musicdata == null || !musicdata.isPresent()) {
-            player.getPacketSender().sendMessage("This song isn't available. Pick a different song to return to the main menu.");
-            return;
-        }
+        if (musicdata == null || !musicdata.isPresent())
+            return false;
+
         Music music = musicdata.get();
         player.getPacketSender().sendString(42538, StringUtils.capitalize(music.getSongName()));
         player.getPacketSender().playMusic(music.getSongId());
         switchTabs(player, false);
+        return true;
     }
 }

@@ -129,6 +129,9 @@ public class ButtonClickPacketListener implements PacketExecutor {
 		if (MinigameHandler.handleButtonClick(player, button)) {
 			return true;
 		}
+		if (Music.handleMusicSelection(player, button) && player.getCurrentInterfaceTabId() == 11 && player.choosingMusic) {
+			return true;
+		}
 		return false;
 	}
 
@@ -144,10 +147,6 @@ public class ButtonClickPacketListener implements PacketExecutor {
 			player.getPacketSender().sendMessage("Button clicked: " + Integer.toString(button) + ".");
 		}
 
-		if (player.choosingMusic) {
-			Music.handleMusicSelection(player, button);
-			return;
-		}
 
 		if (handlers(player, button)) {
 			return;

@@ -1172,9 +1172,10 @@ public class Client extends GameApplet {
         MapRegion.lowMem = false;
     }
 
-    public static void setTab(int id) {
+    public void setInterfaceTab(int id) {
         tabId = id;
         tabAreaAltered = true;
+        packetSender.sendInterfaceTab(id);
     }
 
     private static String combatDiffColor(int i, int j) {
@@ -5977,8 +5978,7 @@ public class Client extends GameApplet {
                 } else {
                     showTabComponents = true;
                 }
-                tabId = 10;
-                tabAreaAltered = true;
+                setInterfaceTab(10);
             }
         }
 
@@ -6475,8 +6475,7 @@ public class Client extends GameApplet {
             //		"spellId: " + spellId + " - spellSelected: " + spellSelected);
             //	System.out.println(button + " " + widget.selectedActionName + " " + anInt1137);
             if (spellUsableOn == 16) {
-                tabId = 3;
-                tabAreaAltered = true;
+                setInterfaceTab(3);
             }
             return;
         }
@@ -6545,8 +6544,7 @@ public class Client extends GameApplet {
 
         if (action == 1004) {
             if (tabInterfaceIDs[10] != -1) {
-                tabId = 10;
-                tabAreaAltered = true;
+                setInterfaceTab(10);
             }
         }
         if (action == 1003) {
@@ -8595,8 +8593,7 @@ public class Client extends GameApplet {
                             && super.mouseY >= tabClickY[i] + yOffset
                             && super.mouseY < tabClickY[i] + 37 + yOffset
                             && tabInterfaceIDs[i] != -1) {
-                        tabId = i;
-                        tabAreaAltered = true;
+                        setInterfaceTab(i);
 
                         //Spawn tab
                         searchingSpawnTab = tabId == 2;
@@ -8615,8 +8612,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 0;
-                    tabAreaAltered = true;
+                    setInterfaceTab(0);
 
                 }
                 if (super.saveClickX >= frameWidth - 194
@@ -8629,8 +8625,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 1;
-                    tabAreaAltered = true;
+                    setInterfaceTab(1);
 
                 }
                 if (super.saveClickX >= frameWidth - 162
@@ -8643,8 +8638,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 2;
-                    tabAreaAltered = true;
+                    setInterfaceTab(2);
 
                 }
                 if (super.saveClickX >= frameWidth - 129
@@ -8657,8 +8651,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 3;
-                    tabAreaAltered = true;
+                    setInterfaceTab(3);
 
                 }
                 if (super.saveClickX >= frameWidth - 97
@@ -8671,8 +8664,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 4;
-                    tabAreaAltered = true;
+                    setInterfaceTab(4);
 
                 }
                 if (super.saveClickX >= frameWidth - 65
@@ -8685,8 +8677,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 5;
-                    tabAreaAltered = true;
+                    setInterfaceTab(5);
 
                 }
                 if (super.saveClickX >= frameWidth - 33 && super.saveClickX <= frameWidth
@@ -8698,8 +8689,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 6;
-                    tabAreaAltered = true;
+                    setInterfaceTab(6);
 
                 }
 
@@ -8713,8 +8703,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 8;
-                    tabAreaAltered = true;
+                    setInterfaceTab(8);
 
                 }
                 if (super.saveClickX >= frameWidth - 162
@@ -8727,8 +8716,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 9;
-                    tabAreaAltered = true;
+                    setInterfaceTab(9);
 
                 }
                 if (super.saveClickX >= frameWidth - 129
@@ -8741,8 +8729,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 7;
-                    tabAreaAltered = true;
+                    setInterfaceTab(7);
 
                 }
                 if (super.saveClickX >= frameWidth - 97
@@ -8755,8 +8742,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 11;
-                    tabAreaAltered = true;
+                    setInterfaceTab(11);
 
                 }
                 if (super.saveClickX >= frameWidth - 65
@@ -8769,8 +8755,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 12;
-                    tabAreaAltered = true;
+                    setInterfaceTab(12);
 
                 }
                 if (super.saveClickX >= frameWidth - 33 && super.saveClickX <= frameWidth
@@ -8782,8 +8767,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 13;
-                    tabAreaAltered = true;
+                    setInterfaceTab(13);
 
                 }
             } else if (stackSideStones && frameWidth >= 1000) {
@@ -8795,8 +8779,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 0;
-                        tabAreaAltered = true;
+                        setInterfaceTab(0);
                     }
                     if (super.mouseX >= frameWidth - 385
                             && super.mouseX <= frameWidth - 354) {
@@ -8805,8 +8788,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 1;
-                        tabAreaAltered = true;
+                        setInterfaceTab(1);
                     }
                     if (super.mouseX >= frameWidth - 353
                             && super.mouseX <= frameWidth - 322) {
@@ -8815,8 +8797,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 2;
-                        tabAreaAltered = true;
+                        setInterfaceTab(2);
                     }
                     if (super.mouseX >= frameWidth - 321
                             && super.mouseX <= frameWidth - 290) {
@@ -8825,8 +8806,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 3;
-                        tabAreaAltered = true;
+                        setInterfaceTab(3);
                     }
                     if (super.mouseX >= frameWidth - 289
                             && super.mouseX <= frameWidth - 258) {
@@ -8835,8 +8815,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 4;
-                        tabAreaAltered = true;
+                        setInterfaceTab(4);
                     }
                     if (super.mouseX >= frameWidth - 257
                             && super.mouseX <= frameWidth - 226) {
@@ -8845,8 +8824,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 5;
-                        tabAreaAltered = true;
+                        setInterfaceTab(5);
                     }
                     if (super.mouseX >= frameWidth - 225
                             && super.mouseX <= frameWidth - 194) {
@@ -8855,8 +8833,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 6;
-                        tabAreaAltered = true;
+                        setInterfaceTab(6);
                     }
                     if (super.mouseX >= frameWidth - 193
                             && super.mouseX <= frameWidth - 163) {
@@ -8865,8 +8842,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 8;
-                        tabAreaAltered = true;
+                        setInterfaceTab(8);
                     }
                     if (super.mouseX >= frameWidth - 162
                             && super.mouseX <= frameWidth - 131) {
@@ -8875,8 +8851,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 9;
-                        tabAreaAltered = true;
+                        setInterfaceTab(9);
                     }
                     if (super.mouseX >= frameWidth - 130
                             && super.mouseX <= frameWidth - 99) {
@@ -8885,8 +8860,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 7;
-                        tabAreaAltered = true;
+                        setInterfaceTab(7);
                     }
                     if (super.mouseX >= frameWidth - 98
                             && super.mouseX <= frameWidth - 67) {
@@ -8895,8 +8869,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 11;
-                        tabAreaAltered = true;
+                        setInterfaceTab(11);
                     }
                     if (super.mouseX >= frameWidth - 66
                             && super.mouseX <= frameWidth - 45) {
@@ -8905,8 +8878,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 12;
-                        tabAreaAltered = true;
+                        setInterfaceTab(12);
                     }
                     if (super.mouseX >= frameWidth - 31 && super.mouseX <= frameWidth) {
                         if (tabId == 13) {
@@ -8914,8 +8886,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 13;
-                        tabAreaAltered = true;
+                        setInterfaceTab(13);
                     }
                 }
             }

@@ -1685,5 +1685,12 @@ public class Player extends Mobile {
 	}
 
 
+	public int currentInterfaceTabId;
 
+	public int getCurrentInterfaceTabId() {
+		return currentInterfaceTabId;
+	}
+    public void setCurrentInterfaceTab(int currentInterfaceTabId) {
+		this.currentInterfaceTabId = currentInterfaceTabId;
+    }
 }
