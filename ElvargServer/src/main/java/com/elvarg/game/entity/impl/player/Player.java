@@ -117,6 +117,7 @@ public class Player extends Mobile {
 	private final SecondsTimer targetSearchTimer = new SecondsTimer();
 	private final List<String> recentKills = new ArrayList<String>(); // Contains ip addresses of recent kills
 	private final Queue<ChatMessage> chatMessageQueue = new ConcurrentLinkedQueue<>();
+	public boolean choosingMusic;
 	private ChatMessage currentChatMessage;
 	// Logout
 	private final SecondsTimer forcedLogoutTimer = new SecondsTimer();

@@ -11,13 +11,10 @@ public class DebugCommand implements Command {
     @Override
     public void execute(Player player, String command, String[] parts) {
        // System.out.println(RegionManager.wallsExist(player.getLocation().clone(), player.getPrivateArea()));
-        for (int i = 0; i < 4; i++) {
-            player.getPacketSender().sendString("Dead", 21111+i);
-
-        }
-        player.getPacketSender().sendString("10000", 21115);
-        player.getPacketSender().sendString("5", 21116);
-        player.getPacketSender().sendString("Time remaining: 5mins", 21117);
+        player.getPacketSender().sendTabInterface(Integer.valueOf(parts[1]), Integer.valueOf(parts[2]));//962 42500 - green = unlocked - 5449
+        player.choosingMusic = true;
+        player.getPacketSender().sendTabInterface(11, player.choosingMusic  ? 962 : 42500);
+        player.getPacketSender().sendMessage("sending inter..");
     }
 
     @Override
