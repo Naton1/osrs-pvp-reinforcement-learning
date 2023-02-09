@@ -1,12 +1,11 @@
 package com.elvarg.game.content.minigames;
 
 import com.elvarg.game.content.minigames.impl.CastleWars;
-import com.elvarg.game.content.minigames.impl.PestControl;
+import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 public class MinigameHandler {
