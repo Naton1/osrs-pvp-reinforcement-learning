@@ -4,6 +4,7 @@ import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.content.minigames.impl.pestcontrol.PestControlBoat;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
+import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class PestControlOutpostArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
+    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
         switch (objectId) {
 
         }

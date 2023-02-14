@@ -174,7 +174,7 @@ public class CastleWarsGameArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
+    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
         switch (objectId) {
             case PORTAL_10:// Portals in team respawn room
             case PORTAL_11:

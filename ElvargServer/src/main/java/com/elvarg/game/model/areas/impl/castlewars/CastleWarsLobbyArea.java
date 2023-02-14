@@ -5,6 +5,7 @@ import com.elvarg.game.entity.impl.npc.impl.Lanthus;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
+import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
 
 import java.util.Arrays;
@@ -25,7 +26,7 @@ public class CastleWarsLobbyArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
+    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
         switch (objectId) {
             case ZAMORAK_PORTAL:
                 CastleWars.addToWaitingRoom(player, CastleWars.Team.ZAMORAK);

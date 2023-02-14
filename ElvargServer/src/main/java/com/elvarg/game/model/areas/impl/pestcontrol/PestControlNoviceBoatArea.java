@@ -4,6 +4,7 @@ import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
+import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
 
 import java.util.List;
@@ -46,9 +47,9 @@ public class PestControlNoviceBoatArea extends Area {
         }
 
         if (gameStarted) {
-            player.getPacketSender().sendString("Next Departure: " + (lobbyTimer + gameTimer) / 60 + " minutes", 21120);
+            player.getPacketSender().sendString("Next Departure: " + (DEFAULT_BOAT_WAITING_TICKS + gameTimer) / 60 + " minutes", 21120);
         } else {
-            player.getPacketSender().sendString("Next Departure: " + lobbyTimer + " seconds.", 21120);
+            player.getPacketSender().sendString("Next Departure: " + DEFAULT_BOAT_WAITING_TICKS + " seconds.", 21120);
         }
         player.getPacketSender().sendString("Players Ready: " + NOVICE_BOAT_AREA.getPlayers().size(), 21121);
         player.getPacketSender().sendString("(Need 3 to 25 players)", 21122);
@@ -56,7 +57,7 @@ public class PestControlNoviceBoatArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
+    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
         switch (objectId) {
             case LADDER_175:
                 // Move player to the pier

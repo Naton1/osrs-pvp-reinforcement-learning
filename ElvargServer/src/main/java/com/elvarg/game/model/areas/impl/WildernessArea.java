@@ -8,6 +8,7 @@ import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
+import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
 import com.elvarg.game.model.rights.PlayerRights;
 
@@ -156,7 +157,7 @@ public class WildernessArea extends Area {
     }
 
 	@Override
-	public boolean handleObjectClick(Player player, int objectId, int type) {
+	public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
 		if (Obelisks.activate(objectId)) {
 			return true;
 		}

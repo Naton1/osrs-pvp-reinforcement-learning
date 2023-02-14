@@ -8,6 +8,7 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Item;
+import com.elvarg.game.model.Location;
 
 import java.util.*;
 
@@ -118,7 +119,7 @@ public abstract class Area {
         // By default, do not do any extra processing for when players deal damage in an area.
     }
 
-    public boolean handleObjectClick(Player player, int objectId, int type) {
+    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
         // By default, Areas don't need to handle any specific object clicking.
         return false;
     }

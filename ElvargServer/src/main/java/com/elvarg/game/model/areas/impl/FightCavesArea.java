@@ -9,6 +9,7 @@ import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Item;
+import com.elvarg.game.model.Location;
 import com.elvarg.util.NpcIdentifiers;
 
 public class FightCavesArea extends PrivateArea {
@@ -91,7 +92,7 @@ public class FightCavesArea extends PrivateArea {
     }
     
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
+    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
         return false;
     }
 }

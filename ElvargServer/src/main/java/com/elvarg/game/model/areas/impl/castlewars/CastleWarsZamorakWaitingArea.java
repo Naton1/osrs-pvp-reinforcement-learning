@@ -86,7 +86,7 @@ public class CastleWarsZamorakWaitingArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
+    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
         switch (objectId) {
             case PORTAL_9:
                 player.moveTo(new Location(2439 + Misc.random(4),
