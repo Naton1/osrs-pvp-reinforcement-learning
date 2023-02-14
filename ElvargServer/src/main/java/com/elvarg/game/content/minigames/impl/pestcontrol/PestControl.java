@@ -70,8 +70,11 @@ public class PestControl implements Minigame {
 
     @Override
     public void init() {
+        /** Knight in the middle **/
         spawnNPC(VOID_KNIGHT_GAME, new Location(2656, 2592));
-
+        /** Squire to leave next to boat **/
+        spawnNPC(SQUIRE_12, new Location(2655, 2607));
+        /** Portal spawns **/
         portals.stream().forEach(p -> spawnNPC(p.id, p.location));
 
         PestControlBoat novice_boat = PestControlBoat.NOVICE;
@@ -119,7 +122,13 @@ public class PestControl implements Minigame {
     }
 
     private void moveToGame(PestControlBoat boat, Player player) {
+        player.smartMove(PestControlArea.LAUNCHER_BOAT_BOUNDARY);
+        NpcDialogue.sendStatement(player, NpcIdentifiers.VOID_KNIGHT, new String[] {"You must defend the Void Knight while the portals are", "unsummoned. The ritual takes twenty minutes though,", "so you can help out by destroying them yourselves!", "Now GO GO GO!" }, DialogueExpression.DISTRESSED);
 
+        /**
+         * gameStarted = true;
+         * gameTimer = 400;
+         */
     }
 
     /**
@@ -137,15 +146,6 @@ public class PestControl implements Minigame {
          */
         NPC npc = new NPC(id, pos);
         spawned_npcs.add(npc);
-    }
-
-    /**
-     * Moves the player to a random spot within the launcher boat.
-     *
-     * @param player
-     */
-    public void movePlayerToBoat(Player player) {
-        player.smartMove(PestControlArea.LAUNCHER_BOAT_BOUNDARY);
     }
 
     private static final int[][] PEST_CONTROL_MONSTERS = {
@@ -206,28 +206,6 @@ public class PestControl implements Minigame {
                 return npc.getHitpoints();
         }
         return 0;
-    }
-
-    /***
-     * Moving players to arena if there's enough players
-     */
-    private void startGame() {
-        gameStarted = true;
-        gameTimer = 400;
-        // Send all the players into the minigame
-        NOVICE_BOAT_AREA.getPlayers().forEach((player) -> {
-            movePlayerToBoat(player);
-            NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT, "The Pest Control game has begun!", DialogueExpression.HAPPY);
-        });
-    }
-
-    /**
-     * Checks how many players are in the waiting lobby
-     *
-     * @return players waiting
-     */
-    private static int playersInBoat() {
-        return NOVICE_BOAT_AREA.getPlayers().size();
     }
 
     /**
@@ -306,7 +284,6 @@ public class PestControl implements Minigame {
     public static void addToWaitingRoom(Player player, PestControlBoat boat) {
         player.getPacketSender().sendMessage("You have joined the Pest Control boat.");
         player.getPacketSender().sendMessage("You currently have " + player.pcPoints + " Pest Control Points.");
-        player.getPacketSender().sendMessage("There are currently " + playersInBoat() + " players ready in the boat.");
         player.getPacketSender().sendMessage("Players needed: " + PLAYERS_REQUIRED + " to 25 players.");
         addToQueue(player, boat);
         player.moveTo(boat.enterBoatLocation);
