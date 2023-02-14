@@ -8,6 +8,7 @@ import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
+import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
 import com.elvarg.net.packet.impl.EquipPacketListener;
 
@@ -168,12 +169,24 @@ public class PestControlArea extends Area {
 
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
-
+    public boolean handleObjectClick(Player player, int objectId, Location location, int optionId) {
+        int oX = location.getX();
+        int oY = location.getY();
         switch (objectId) {
 
             // Handle minigame objects here (fences and gates and shit)
 
+
+        }
+
+        if (objectId == 14296) {
+            if (oX == 2666 && oY == 2586) {
+                boolean down = player.getLocation().getY() == 2585;
+                player.climb(down, down ? new Location(2666, 2587, 0) : new Location(2666, 2585));
+                return true;
+            }
+
+            return true;
         }
 
         return false;

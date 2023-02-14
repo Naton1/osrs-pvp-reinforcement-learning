@@ -1,6 +1,5 @@
 package com.elvarg.game.content.minigames.impl.pestcontrol;
 
-import com.elvarg.game.World;
 import com.elvarg.game.content.minigames.Minigame;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.object.GameObject;
@@ -12,16 +11,13 @@ import com.elvarg.game.model.areas.impl.pestcontrol.PestControlNoviceBoatArea;
 import com.elvarg.game.model.areas.impl.pestcontrol.PestControlOutpostArea;
 import com.elvarg.game.model.dialogues.DialogueExpression;
 import com.elvarg.game.model.dialogues.entries.impl.NpcDialogue;
-import com.elvarg.util.Misc;
+import com.elvarg.game.task.Task;
+import com.elvarg.game.task.TaskManager;
 import com.elvarg.util.NpcIdentifiers;
 import com.google.common.collect.Lists;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 
-import static com.elvarg.game.World.getNpcs;
 import static com.elvarg.util.NpcIdentifiers.*;
 
 public class PestControl implements Minigame {
@@ -30,7 +26,6 @@ public class PestControl implements Minigame {
      * TODO:
      * Spawn all NPCS outside arena
      * Make NPCs auto attack the gates, then void knight, defend portals
-     * Change player.pcDamage to an attribute
      * Waiting boat interface
      * Game area interface
      * Instanced games and support for novice/med/advanced boats
@@ -61,12 +56,10 @@ public class PestControl implements Minigame {
     private final static int PLAYERS_REQUIRED = 1;
 
     public static int gameTimer;
-    public static int lobbyTimer = 60;
+    public static final int DEFAULT_BOAT_WAITING_TICKS = 60;
     public static boolean gameStarted = false;
 
     private List<NPC> spawned_npcs = Lists.newArrayList();
-
-    private static Queue<Player> novice_boat = Lists.newLinkedList(), intermediate_boat = Lists.newLinkedList(), veteran_boat = Lists.newLinkedList();
 
     private List<PestControlPortal> portals = Arrays.asList(
             new PestControlPortal(3777, new Location(2628, 2591)),
@@ -78,7 +71,55 @@ public class PestControl implements Minigame {
     @Override
     public void init() {
         spawnNPC(VOID_KNIGHT_GAME, new Location(2656, 2592));
+
         portals.stream().forEach(p -> spawnNPC(p.id, p.location));
+
+        PestControlBoat novice_boat = PestControlBoat.NOVICE;
+        Task noviceLobbyTask = new Task(1, PestControlBoat.NOVICE.name()) {
+
+            int noviceWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+            @Override
+            protected void execute() {
+
+                int playersReady = novice_boat.getQueue().size();
+
+                if (playersReady <= 1) {
+                    noviceWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+                    return;
+                }
+
+                noviceWaitTicks--;
+
+                if (noviceWaitTicks == 0) {
+                    noviceWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+
+                    Queue<Player> queue = novice_boat.getQueue();
+
+                    Iterator lobbyQueue = queue.iterator();
+
+                    int movedPlayers = 0;
+                    while (lobbyQueue.hasNext()) {
+                        if (movedPlayers >= 25) {
+                            break;
+                        }
+                        movedPlayers++;
+                        Player player = queue.poll();
+                        if (player != null) {
+                            moveToGame(novice_boat, player);
+                        }
+                    }
+                    if (queue.size() > 0) {
+                        queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority for the next game!"));
+                    }
+                }
+
+            }
+        };
+        TaskManager.submit(noviceLobbyTask);
+    }
+
+    private void moveToGame(PestControlBoat boat, Player player) {
+
     }
 
     /**
@@ -171,13 +212,8 @@ public class PestControl implements Minigame {
      * Moving players to arena if there's enough players
      */
     private void startGame() {
-        if (playersInBoat() < PLAYERS_REQUIRED) {
-            lobbyTimer = WAIT_TIMER;
-            return;
-        }
         gameStarted = true;
         gameTimer = 400;
-        lobbyTimer = -1;
         // Send all the players into the minigame
         NOVICE_BOAT_AREA.getPlayers().forEach((player) -> {
             movePlayerToBoat(player);
@@ -240,29 +276,26 @@ public class PestControl implements Minigame {
      */
     private void cleanUp() {
         gameTimer = -1;
-        lobbyTimer = WAIT_TIMER;
         gameStarted = false;
         spawned_npcs.stream().filter(n -> n != null).forEach(n -> n.setDying(true));
         spawned_npcs.clear();
     }
 
-    private static boolean onList(Player player) {
-        return novice_boat.contains(player) || intermediate_boat.contains(player) || veteran_boat.contains(player);
+    private static boolean isQueued(Player player, PestControlBoat boat) {
+        return boat.getQueue().contains(player);
     }
 
+
+
     private static void addToQueue(Player player, PestControlBoat boat) {
-        if (onList(player)) {
+        if (isQueued(player, boat)) {
             System.err.println("Error.. adding " + player.getUsername() + " to " + boat.name() + " list.. already on the list.");
             return;
         }
         /**
          * TODO.. might be a good idea to get the players in the area then add all to the list.. however.. pest control uses a queue system not list!
          */
-        switch (boat) {
-            case VETERAN -> veteran_boat.add(player);
-            case INTERMEDIATE -> intermediate_boat.add(player);
-            case NOVICE -> novice_boat.add(player);
-        }
+        boat.getQueue().add(player);
     }
 
     /**
