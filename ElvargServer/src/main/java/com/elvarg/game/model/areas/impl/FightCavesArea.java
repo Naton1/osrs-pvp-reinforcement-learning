@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.elvarg.game.content.minigames.impl.FightCaves;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Item;
@@ -92,7 +93,7 @@ public class FightCavesArea extends PrivateArea {
     }
     
     @Override
-    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
+    public boolean handleObjectClick(Player player, GameObject object, int type) {
         return false;
     }
 }

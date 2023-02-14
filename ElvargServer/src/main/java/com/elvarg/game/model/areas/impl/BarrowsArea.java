@@ -2,6 +2,7 @@ package com.elvarg.game.model.areas.impl;
 
 import com.elvarg.game.content.minigames.impl.Barrows;
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Location;
@@ -83,7 +84,7 @@ public class BarrowsArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
-        return Barrows.handleObject(player, objectId);
+    public boolean handleObjectClick(Player player, GameObject object, int type) {
+        return Barrows.handleObject(player, object.getId());
     }
 }

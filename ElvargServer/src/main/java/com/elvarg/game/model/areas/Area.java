@@ -4,6 +4,7 @@ import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
@@ -119,7 +120,7 @@ public abstract class Area {
         // By default, do not do any extra processing for when players deal damage in an area.
     }
 
-    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
+    public boolean handleObjectClick(Player player, GameObject object, int type) {
         // By default, Areas don't need to handle any specific object clicking.
         return false;
     }

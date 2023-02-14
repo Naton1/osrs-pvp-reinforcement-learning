@@ -7,6 +7,7 @@ import com.elvarg.game.content.Dueling.DuelRule;
 import com.elvarg.game.content.Dueling.DuelState;
 import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
@@ -147,7 +148,7 @@ public class DuelArenaArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
+    public boolean handleObjectClick(Player player, GameObject object, int type) {
         return false;
     }
 

@@ -2,6 +2,7 @@ package com.elvarg.game.model.areas.impl.pestcontrol;
 
 import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Location;
@@ -57,8 +58,8 @@ public class PestControlNoviceBoatArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, Location location, int type) {
-        switch (objectId) {
+    public boolean handleObjectClick(Player player, GameObject object, int type) {
+        switch (object.getId()) {
             case LADDER_175:
                 // Move player to the pier
                 player.moveTo(PestControl.GANG_PLANK_START);

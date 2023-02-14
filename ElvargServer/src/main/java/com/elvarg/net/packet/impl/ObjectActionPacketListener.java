@@ -278,7 +278,7 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 
             // Areas
             if (player.getArea() != null) {
-                if (player.getArea().handleObjectClick(player, id, location, clickType)) {
+                if (player.getArea().handleObjectClick(player, object, clickType)) {
                     return;
                 }
             }
