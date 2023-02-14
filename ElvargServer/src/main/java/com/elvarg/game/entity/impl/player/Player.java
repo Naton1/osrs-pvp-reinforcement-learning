@@ -73,6 +73,7 @@ import com.elvarg.game.model.movement.MovementQueue;
 import com.elvarg.game.model.rights.DonatorRights;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportButton;
+import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.CombatPoisonEffect;
 import com.elvarg.game.task.impl.PlayerDeathTask;
@@ -1681,6 +1682,21 @@ public class Player extends Mobile {
 		this.castlewarsIdleTime = 200;
 	}
 
+    public void climb(boolean down, Location location) {
+        this.performAnimation(new Animation(down ? 827 : 828));
+        Task task = new Task(1, this.getIndex(), true) {
+            int ticks = 0;
 
+            @Override
+            protected void execute() {
+                ticks++;
+                if (ticks == 2) {
+                    moveTo(location);
+                    stop();
+                }
+            }
+        };
+        TaskManager.submit(task);
+    }
 
 }
