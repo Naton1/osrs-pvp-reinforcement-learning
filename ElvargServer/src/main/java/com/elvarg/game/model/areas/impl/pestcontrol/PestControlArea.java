@@ -4,18 +4,23 @@ import com.elvarg.game.content.PrayerHandler;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.minigames.MinigameHandler;
 import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
+import com.elvarg.game.definition.ObjectDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.entity.impl.object.GameObject;
+import com.elvarg.game.entity.impl.object.ObjectManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
 import com.elvarg.net.packet.impl.EquipPacketListener;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static com.elvarg.game.content.minigames.impl.pestcontrol.PestControl.gameTimer;
+import static com.elvarg.util.ObjectIdentifiers.LADDER_174;
 
 public class PestControlArea extends Area {
 
@@ -25,12 +30,13 @@ public class PestControlArea extends Area {
 
     /**
      * Returns the singleton instance of the Pest Control minigame.
-     *
+     * <p>
      * Will fetch it if not alraedy populated.
+     *
      * @return
      */
     private PestControl getMinigame() {
-        if(this.minigame == null) {
+        if (this.minigame == null) {
             this.minigame = (PestControl) MinigameHandler.Minigames.PEST_CONTROL.get();
         }
 
@@ -169,26 +175,110 @@ public class PestControlArea extends Area {
 
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, Location location, int optionId) {
-        int oX = location.getX();
-        int oY = location.getY();
+    public boolean handleObjectClick(Player player, GameObject object, int optionId) {
+        Location objLoc = object.getLocation();
+        int oX = objLoc.getX();
+        int oY = objLoc.getY();
+        int objectId = object.getId();
+        int direction = object.getFace();
+        int myX = player.getLocation().getX();
+        int myY = player.getLocation().getY();
         switch (objectId) {
 
-            // Handle minigame objects here (fences and gates and shit)
-
-
         }
 
-        if (objectId == 14296) {
-            if (oX == 2666 && oY == 2586) {
-                boolean down = player.getLocation().getY() == 2585;
-                player.climb(down, down ? new Location(2666, 2587, 0) : new Location(2666, 2585));
-                return true;
-            }
-
+        /**
+         * Simple ladder formula
+         */
+        if (objectId == LADDER_174) {
+            boolean down = direction == 1 && myX < oX || direction == 3 && myX > oX || direction == 0 && myY < oY;
+            player.climb(down, down ? new Location((direction == 0 ? oX : direction == 1 ? oX + 1 : oX - 1), (direction == 1 ? oY : direction == 3 ? oY : oY + 1)) : new Location(direction == 1 ? oX - 1 : direction == 3 ? oX + 1 : oX, direction == 0 ? oY - 1 : oY));
             return true;
         }
+        if (objectId >= 14233 && objectId <= 14236) {
 
+            ObjectDefinition defs = ObjectDefinition.forId(objectId);
+
+            if (defs == null) {
+                System.err.println("no defs for objid="+objectId);
+                return false;
+            }
+
+            boolean open = Arrays.stream(defs.interactions).filter(i -> i != null).anyMatch(d -> d.contains("Open"));
+
+            boolean westernGate = oX == 2643;
+            boolean southernGate = oY == 2585;
+            boolean easternGate = oX == 2670;
+
+            Location spawn = objLoc;
+            GameObject gate = object;
+
+            System.err.println("direction="+direction+" open="+open+" "+objLoc.toString()+" newOffset="+ getGateDirectionOffset(direction, objectId, open));
+
+            if (open) {
+                spawn = new Location(westernGate ? objLoc.getX() - 1 : easternGate ? objLoc.getX() + 1 : objLoc.getX(), southernGate ? objLoc.getY() - 1 : objLoc.getY());
+                gate = new GameObject(objectId == 14233 ? 14234 : 14236, spawn, object.getType(), getGateDirectionOffset(direction, objectId, true), object.getPrivateArea());
+            } else {
+                spawn = new Location(oX == 2642 ? oX + 1 : oX == 2671 ? objLoc.getX() - 1 : objLoc.getX(), oY == 2584 ? objLoc.getY() + 1 : objLoc.getY());
+                gate = new GameObject(objectId == 14234 ? 14233 : 14235, spawn, object.getType(), getGateDirectionOffset(direction, objectId, false), object.getPrivateArea());
+            }
+            ObjectManager.deregister(object, true);
+            ObjectManager.register(gate, true);
+            return true;
+        }
         return false;
+    }
+
+    private int getGateDirectionOffset(int direction, int objectId, boolean opening) {
+        if (opening) {
+            if (direction == 0) {
+                if (objectId == 14233) {
+                    return 1;
+                }
+                if (objectId == 14235) {
+                    return 3;
+                }
+            } else if (direction == 3) {
+                if (objectId == 14233) {
+                    return 4;
+                }
+                if (objectId == 14235) {
+                    return 2;
+                }
+            } else if (direction == 2) {
+                if (objectId == 14233) {
+                    return 3;
+                }
+                if (objectId == 14235) {
+                    return 1;
+                }
+            }
+        } else {
+            if (direction == 1) {
+                if (objectId == 14234) {
+                    return 0;
+                }
+                if (objectId == 14236) {
+                    return 2;
+                }
+            } else if (direction == 2) {
+                if (objectId == 14236) {
+                    return 3;
+                }
+            } else if (direction == 3) {
+                if (objectId == 14236) {
+                    return 0;
+                }
+                if (objectId == 14234) {
+                    return 2;
+                }
+
+            } else if (direction == 4) {
+                if (objectId == 14234) {
+                    return 3;
+                }
+            }
+        }
+        return -1;
     }
 }
