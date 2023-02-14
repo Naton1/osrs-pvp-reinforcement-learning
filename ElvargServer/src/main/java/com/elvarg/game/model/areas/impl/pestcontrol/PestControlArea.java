@@ -116,8 +116,8 @@ public class PestControlArea extends Area {
         player.getCombat().reset();
         player.getInventory().resetItems().refreshItems();
         player.resetAttributes();
-        player.setSpecialPercentage(10);
-        player.pcDamage = 0;
+        player.setSpecialPercentage(100);
+        player.setAttribute("pcDamage", 0);
         EquipPacketListener.resetWeapon(player, true);
     }
 
@@ -140,7 +140,17 @@ public class PestControlArea extends Area {
 
     @Override
     public void onPlayerDealtDamage(Player player, Mobile target, PendingHit hit) {
-        player.pcDamage += hit.getTotalDamage();
+        final String pcDamage = "pcDamage";
+        int pendingDamage = hit.getTotalDamage();
+        if (pendingDamage == 0)
+            return;
+        Integer damage = (Integer) player.getAttribute(pcDamage);
+        if (damage == null) {
+            player.setAttribute(pcDamage, pendingDamage);
+            return;
+        }
+        player.setAttribute(pcDamage, damage + pendingDamage);
+
     }
 
     @Override

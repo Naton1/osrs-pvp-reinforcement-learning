@@ -46,9 +46,9 @@ public class PestControlNoviceBoatArea extends Area {
         }
 
         if (gameStarted) {
-            player.getPacketSender().sendString("Next Departure: " + (waitTimer + gameTimer) / 60 + " minutes", 21120);
+            player.getPacketSender().sendString("Next Departure: " + (lobbyTimer + gameTimer) / 60 + " minutes", 21120);
         } else {
-            player.getPacketSender().sendString("Next Departure: " + waitTimer + " seconds.", 21120);
+            player.getPacketSender().sendString("Next Departure: " + lobbyTimer + " seconds.", 21120);
         }
         player.getPacketSender().sendString("Players Ready: " + NOVICE_BOAT_AREA.getPlayers().size(), 21121);
         player.getPacketSender().sendString("(Need 3 to 25 players)", 21122);

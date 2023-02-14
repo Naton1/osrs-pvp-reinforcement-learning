@@ -201,9 +201,7 @@ public class Player extends Mobile {
 	private int highestKillstreak;
 	private int deaths;
 	private int safeTimer = 180;
-	//Pest Control
-	public int pcDamage = 0;
-	public int pcPoints = 0;
+	public int pcPoints;
 	// Barrows
 	private int barrowsCrypt;
 	private int barrowsChestsLooted;

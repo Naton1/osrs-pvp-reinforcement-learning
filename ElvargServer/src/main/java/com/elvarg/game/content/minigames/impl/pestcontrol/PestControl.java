@@ -16,7 +16,8 @@ import com.elvarg.util.Misc;
 import com.elvarg.util.NpcIdentifiers;
 import com.google.common.collect.Lists;
 
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 
 import static com.elvarg.game.World.getNpcs;
@@ -58,24 +59,17 @@ public class PestControl implements Minigame {
      */
     private final static int PLAYERS_REQUIRED = 1;
 
-    public static int gameTimer = -1;
-    public static int waitTimer = 60;
+    public static int gameTimer;
+    public static int lobbyTimer = 60;
     public static boolean gameStarted = false;
-    private int properTimer = 0;
-    public static int KNIGHTS_HEALTH = -1;
+
+    private List<NPC> spawned_npcs = Lists.newArrayList();
 
     /**
      * Array used for storing the portals health
      */
     public static int[] portalHealth = {200, 200, 200, 200};
     public static int[] portals = {3777, 3778, 3779, 3780};
-
-    public int shifter = SHIFTER + Misc.random(9);
-    public int brawler = BRAWLER + Misc.random(4);
-    public int defiler = DEFILER + Misc.random(9);
-    public int ravager = RAVAGER + Misc.random(4);
-    public int torcher = TORCHER + Misc.random(7);
-    public int splater = SPLATTER + Misc.random(4);
 
     private final int[][] pcNPCData = {{portals[0], 2628, 2591}, // portal
             {portals[1], 2680, 2588}, // portal
@@ -93,6 +87,14 @@ public class PestControl implements Minigame {
         return gameTimer > 0 && gameStarted;
     }
 
+    public void spawnNPC(int id, Location pos) {
+        /**
+         * TODO support for private area
+         */
+        NPC npc = new NPC(id, pos);
+        spawned_npcs.add(npc);
+    }
+
     /**
      * Moves the player to a random spot within the launcher boat.
      *
@@ -102,26 +104,21 @@ public class PestControl implements Minigame {
         player.smartMove(PestControlArea.LAUNCHER_BOAT_BOUNDARY);
     }
 
-    /**
-     * array used for storing the npcs used in the minigame
-     *
-     * @order npcId, xSpawn, ySpawn, health
-     */
-    private final int[][] voidMonsterData = {
-            {shifter, 2660 + Misc.random(4), 2592 + Misc.random(4)},
-            {brawler, 2663 + Misc.random(4), 2575 + Misc.random(4)},
-            {defiler, 2656 + Misc.random(4), 2572 + Misc.random(4)},
-            {ravager, 2664 + Misc.random(4), 2574 + Misc.random(4)},
-            {torcher, 2656 + Misc.random(4), 2595 + Misc.random(4)},
-            {ravager, 2634 + Misc.random(4), 2596 + Misc.random(4)},
-            {brawler, 2638 + Misc.random(4), 2588 + Misc.random(4)},
-            {shifter, 2637 + Misc.random(4), 2598 + Misc.random(4)},
-            {ravager, 2677 + Misc.random(4), 2579 + Misc.random(4)},
-            {defiler, 2673 + Misc.random(4), 2584 + Misc.random(4)},
-            {defiler, 2673 + Misc.random(4), 2584 + Misc.random(4)},
-            {defiler, 2675 + Misc.random(4), 2591 + Misc.random(4)},
-            {splater, 2644 + Misc.random(4), 2575 + Misc.random(4)},
-            {splater, 2633 + Misc.random(4), 2595 + Misc.random(4)}};
+    private static final int[][] PEST_CONTROL_MONSTERS = {
+            {
+                1724,//Defiler - level 33
+                    1726,//Defiler - level 50
+            },
+            {
+                1725,//Defiler - level 50
+                    1727,//Defiler - level 66
+                    1728,//Defiler - level 80
+            },
+            {
+                1730,//Defiler - level 80
+                    1732,//Defiler - level 97
+            }
+    };
 
     @Override
     public boolean firstClickObject(Player player, GameObject object) {
@@ -137,35 +134,35 @@ public class PestControl implements Minigame {
     @Override
     public void process() {
         try {
-            if (properTimer > 0) {
-                properTimer--;
+
+            if (!isActive()) {
                 return;
-            } else {
-                properTimer = 1;
             }
-            if (waitTimer > 0) {
-                waitTimer--;
-            } else if (waitTimer == 0) {
-                startGame();
-            }
-            if (KNIGHTS_HEALTH == 0) {
+
+            gameTimer--;
+
+            if (playersInGame() < 1 || getKnightsHealth() == 0) {
                 endGame(false);
             }
-            if (gameStarted && playersInGame() < 1) {
-                endGame(false);
+            if (allPortalsDead() || allPortalsDead3()) {
+                endGame(true);
             }
-            if (isActive()) {
-                gameTimer--;
-                if (allPortalsDead() || allPortalsDead3()) {
-                    endGame(true);
-                }
-            } else if (gameTimer <= 0 && gameStarted) {
-                endGame(false);
-            }
-        } catch (RuntimeException e) {
-            System.out.println("Failed to set process");
+
+
+
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int getKnightsHealth() {
+        /** For loop due to calling every tick **/
+        for (NPC npc : spawned_npcs) {
+            if (npc != null && npc.getId() == 1755)
+                return npc.getHitpoints();
+        }
+        return 0;
     }
 
     @Override
@@ -187,7 +184,7 @@ public class PestControl implements Minigame {
      */
     private void startGame() {
         if (playersInBoat() < PLAYERS_REQUIRED) {
-            waitTimer = WAIT_TIMER;
+            lobbyTimer = WAIT_TIMER;
             return;
         }
         for (int i = 0; i < portalHealth.length; i++) {
@@ -195,8 +192,7 @@ public class PestControl implements Minigame {
         }
         gameStarted = true;
         gameTimer = 400;
-        KNIGHTS_HEALTH = 250;
-        waitTimer = -1;
+        lobbyTimer = -1;
         spawnNPC();
 
         // Send all the players into the minigame
@@ -227,7 +223,9 @@ public class PestControl implements Minigame {
     private void endGame(boolean won) {
         for (Player player : GAME_AREA.getPlayers()) {
             player.moveTo(new Location(2657, 2639, 0));
-            if (won && player.pcDamage > 50) {
+            Integer damage = (Integer) player.getAttribute("pcDamage");
+            int myDamage = damage == null ? 0 : damage;
+            if (won && myDamage > 50) {
                 NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT, "Do not let the Void Knights health reach 0!" +
                         "You can regain health by destroying more monsters,", DialogueExpression.SLIGHTLY_SAD);
                 int POINT_REWARD = 4;
@@ -257,23 +255,13 @@ public class PestControl implements Minigame {
      */
     private void cleanUp() {
         gameTimer = -1;
-        KNIGHTS_HEALTH = -1;
-        waitTimer = WAIT_TIMER;
+        lobbyTimer = WAIT_TIMER;
         gameStarted = false;
 
         /*
          * Removes the npcs from the game if any left over for whatever reason
          */
         for (int[] aPcNPCData : pcNPCData) {
-            for (int j = 0; j < NPC.npcs.length; j++) {
-                if (NPC.npcs[j] != null) {
-                    if (NPC.npcs[j].getId() == aPcNPCData[0]) {
-                        NPC.npcs[j] = null;
-                    }
-                }
-            }
-        }
-        for (int[] aPcNPCData : voidMonsterData) {
             for (int j = 0; j < NPC.npcs.length; j++) {
                 if (NPC.npcs[j] != null) {
                     if (NPC.npcs[j].getId() == aPcNPCData[0]) {
@@ -361,9 +349,6 @@ public class PestControl implements Minigame {
         //npcid, npcx, npcy, heightlevel, walking type, hp, att, def
         for (int[] aPcNPCData : pcNPCData) {
             World.getAddNPCQueue().add(new NPC(aPcNPCData[0], new Location(aPcNPCData[1], aPcNPCData[2])));
-        }
-        for (int[] voidMonsters : voidMonsterData) {
-            World.getAddNPCQueue().add(new NPC(voidMonsters[0], new Location(voidMonsters[1], voidMonsters[2])));
         }
     }
 }
