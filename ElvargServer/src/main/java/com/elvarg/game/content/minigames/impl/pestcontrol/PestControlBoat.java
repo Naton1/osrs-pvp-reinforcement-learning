@@ -1,9 +1,10 @@
 package com.elvarg.game.content.minigames.impl.pestcontrol;
 
+import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Location;
+import com.google.common.collect.Lists;
 
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Ynneh | 08/02/2023 - 03:53
@@ -17,6 +18,13 @@ public enum PestControlBoat {
 
     public int combatLevelRequirement, objectId;
     public Location enterBoatLocation;
+
+    private Queue<Player> queue;
+    public Queue<Player> getQueue() {
+        if (queue == null)
+            queue = new LinkedList<>();
+        return queue;
+    }
 
     PestControlBoat(int combatLevelRequirement, int ladderId, Location enterBoatLocation) {
         this.combatLevelRequirement = combatLevelRequirement;
