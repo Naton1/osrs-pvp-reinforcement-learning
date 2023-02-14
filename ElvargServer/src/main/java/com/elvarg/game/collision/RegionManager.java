@@ -395,9 +395,7 @@ public class RegionManager {
         }
 
         switch (objectId) {
-            case 14233: // pest control gates
-            case 14235: // pest control gates
-                return;
+
         }
 
         if (objectId == -1) {
