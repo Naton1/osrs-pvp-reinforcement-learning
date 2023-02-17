@@ -3193,7 +3193,7 @@ public class Client extends GameApplet {
         removedMobCount = 0;
         mobsAwaitingUpdateCount = 0;
         updateDirection(stream);
-        updateNPCMovement(i, stream);
+        addLocalNPC(i, stream);
         npcUpdateMask(stream);
         for (int k = 0; k < removedMobCount; k++) {
             int l = removedMobs[k];
@@ -4426,9 +4426,9 @@ public class Client extends GameApplet {
         }
     }
 
-    private void updateNPCMovement(int i, Buffer stream) {
-        while (stream.bitPosition + 21 < i * 8) {
-            int npcIndex = stream.readBits(14);
+    private void addLocalNPC(int packetLength, Buffer buffer) {
+        while (buffer.bitPosition + 21 < packetLength * 8) {
+            int npcIndex = buffer.readBits(14);
             if (npcIndex == 16383)
                 break;
             boolean added = false;
@@ -4439,21 +4439,20 @@ public class Client extends GameApplet {
             Npc npc = npcs[npcIndex];
             npcIndices[npcCount++] = npcIndex;
             npc.time = tick;
-            int yLocation = stream.readBits(5);
+            int yLocation = buffer.readBits(5);
             if (yLocation > 15)
                 yLocation -= 32;
-            int xLocation = stream.readBits(5);
+            int xLocation = buffer.readBits(5);
             if (xLocation > 15)
                 xLocation -= 32;
-            int updateFlag = stream.readBits(1);
-            int direction = stream.readBits(3);
+            int updateFlag = buffer.readBits(1);
+            int direction = buffer.readBits(3);
             if (added) {
-                npc.nextStepOrientation = npc.getDirectionOffsetValue(direction);
+                npc.nextStepOrientation = directions[direction];
             }
-            int npcId = stream.readBits(14);
+            int npcId = buffer.readBits(14);
             npc.desc = NpcDefinition.lookup(npcId);
-            System.err.println("added="+added+" direction="+direction+" npcId="+npcId);
-            int updateRequired = stream.readBits(1);
+            int updateRequired = buffer.readBits(1);
             if (updateRequired == 1)
                 mobsAwaitingUpdate[mobsAwaitingUpdateCount++] = npcIndex;
             npc.size = npc.desc.size;
@@ -4465,8 +4464,20 @@ public class Client extends GameApplet {
             npc.idleAnimation = npc.desc.standAnim;
             npc.setPos(localPlayer.pathX[0] + xLocation, localPlayer.pathY[0] + yLocation, updateFlag == 1);
         }
-        stream.disableBitAccess();
+        buffer.disableBitAccess();
     }
+
+    //starts north-west
+    private static int[] directions = {
+            768, //north west
+            1024, //north
+            1280, //north-east
+            512, //west
+            1536,//east
+            256,//south-west
+            0,//south
+            1792//south-east
+    };
 
     public void processGameLoop() {
         if (rsAlreadyLoaded || loadingError || genericLoadingError)

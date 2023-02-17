@@ -198,26 +198,7 @@ public class Mob extends Renderable {
         orientation = nextStepOrientation;
     }
 
-    public int getDirectionOffsetValue(int direction) {
-        switch (direction) {
-            case 0:
-                return 700;
-            case 1:
-                return 1024;
-            case 2:
-            case 7:
-                return 0;
-            case 3://west
-                return 512;
-            case 4:
-                return 1536;
-            case 5:
-                return 300;
-            case 6:
-                return 4096;
-        }
-        return 0;
-    }
+
 
     public void nextStep() {
         movementAnimation = idleAnimation;
