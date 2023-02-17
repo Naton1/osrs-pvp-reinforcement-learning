@@ -4428,25 +4428,34 @@ public class Client extends GameApplet {
 
     private void updateNPCMovement(int i, Buffer stream) {
         while (stream.bitPosition + 21 < i * 8) {
-            int k = stream.readBits(14);
-            if (k == 16383)
+            int npcIndex = stream.readBits(14);
+            if (npcIndex == 16383)
                 break;
-            if (npcs[k] == null)
-                npcs[k] = new Npc();
-            Npc npc = npcs[k];
-            npcIndices[npcCount++] = k;
+            boolean added = false;
+            if (npcs[npcIndex] == null) {
+                npcs[npcIndex] = new Npc();
+                added = true;
+            }
+            Npc npc = npcs[npcIndex];
+            npcIndices[npcCount++] = npcIndex;
             npc.time = tick;
-            int l = stream.readBits(5);
-            if (l > 15)
-                l -= 32;
-            int i1 = stream.readBits(5);
-            if (i1 > 15)
-                i1 -= 32;
-            int j1 = stream.readBits(1);
-            npc.desc = NpcDefinition.lookup(stream.readBits(Configuration.npcBits));
+            int yLocation = stream.readBits(5);
+            if (yLocation > 15)
+                yLocation -= 32;
+            int xLocation = stream.readBits(5);
+            if (xLocation > 15)
+                xLocation -= 32;
+            int updateFlag = stream.readBits(1);
+            int direction = stream.readBits(3);
+            if (added) {
+                npc.nextStepOrientation = npc.getDirectionOffsetValue(direction);
+            }
+            int npcId = stream.readBits(14);
+            npc.desc = NpcDefinition.lookup(npcId);
+            System.err.println("added="+added+" direction="+direction+" npcId="+npcId);
             int updateRequired = stream.readBits(1);
             if (updateRequired == 1)
-                mobsAwaitingUpdate[mobsAwaitingUpdateCount++] = k;
+                mobsAwaitingUpdate[mobsAwaitingUpdateCount++] = npcIndex;
             npc.size = npc.desc.size;
             npc.degreesToTurn = npc.desc.degreesToTurn;
             npc.walkAnimIndex = npc.desc.walkAnim;
@@ -4454,7 +4463,7 @@ public class Client extends GameApplet {
             npc.turn90CWAnimIndex = npc.desc.turn90CWAnimIndex;
             npc.turn90CCWAnimIndex = npc.desc.turn90CCWAnimIndex;
             npc.idleAnimation = npc.desc.standAnim;
-            npc.setPos(localPlayer.pathX[0] + i1, localPlayer.pathY[0] + l, j1 == 1);
+            npc.setPos(localPlayer.pathX[0] + xLocation, localPlayer.pathY[0] + yLocation, updateFlag == 1);
         }
         stream.disableBitAccess();
     }
