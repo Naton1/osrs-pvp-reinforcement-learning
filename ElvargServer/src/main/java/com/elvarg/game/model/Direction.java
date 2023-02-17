@@ -12,7 +12,7 @@ public enum Direction {
 	/**
 	 * North west movement.
 	 */
-	NORTH_WEST(0, -1, 1, 7, 700),
+	NORTH_WEST(0, -1, 1, 7, 768),
 	/**
 	 * North movement.
 	 */
@@ -21,7 +21,7 @@ public enum Direction {
 	/**
 	 * North east movement.
 	 */
-	NORTH_EAST(2, 1, 1, 5, 0),
+	NORTH_EAST(2, 1, 1, 5, 1280),
 
 	/**
 	 * West movement.
@@ -36,17 +36,17 @@ public enum Direction {
 	/**
 	 * South west movement.
 	 */
-	SOUTH_WEST(5, -1, -1, 2, 300),
+	SOUTH_WEST(5, -1, -1, 2, 256),
 
 	/**
 	 * South movement.
 	 */
-	SOUTH(6, 0, -1, 1, 4096),
+	SOUTH(6, 0, -1, 1, 0),
 
 	/**
 	 * South east movement.
 	 */
-	SOUTH_EAST(7, 1, -1, 0, 0),
+	SOUTH_EAST(7, 1, -1, 0, 1792),
 	/**
 	 * No movement.
 	 */
