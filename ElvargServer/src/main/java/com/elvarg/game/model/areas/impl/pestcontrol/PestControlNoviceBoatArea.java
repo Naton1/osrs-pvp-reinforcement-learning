@@ -31,6 +31,18 @@ public class PestControlNoviceBoatArea extends Area {
     }
 
     @Override
+    public boolean allowDwarfCannon(Player player) {
+        player.sendMessage("This would be a silly.");
+        return false;
+    }
+
+    @Override
+    public boolean allowSummonPet(Player player) {
+        player.sendMessage("The squire doesn't allow you to bring your pet with you.");
+        return false;
+    }
+
+    @Override
     public void postLeave(Mobile character, boolean logout) {
         if (!character.isPlayer()) {
             return;

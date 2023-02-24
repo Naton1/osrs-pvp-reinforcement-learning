@@ -56,6 +56,20 @@ public class PestControlArea extends Area {
     }
 
     @Override
+    public boolean allowSummonPet(Player player) {
+        player.sendMessage("The squire doesn't allow you to bring your pet with you.");
+        return false;
+    }
+
+    @Override
+    public boolean allowDwarfCannon(Player player) {
+        player.sendMessage("Cannons are not allowed in pest control.");
+        return false;
+    }
+
+
+
+    @Override
     public void process(Mobile character) {
         if (getMinigame().isActive()) {
             // Prevent any processing if the game is not actually underway.

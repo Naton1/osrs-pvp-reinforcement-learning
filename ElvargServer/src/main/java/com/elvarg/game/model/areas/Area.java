@@ -28,6 +28,14 @@ public abstract class Area {
         this.playerBots = new HashMap<>();
     }
 
+    public boolean allowSummonPet(Player player) {
+        return true;
+    }
+
+    public boolean allowDwarfCannon(Player player) {
+        return true;
+    }
+
     public final void enter(Mobile character) {
         if (character.isPlayerBot()) {
             this.playerBots.put(character.getIndex(), character.getAsPlayerBot());
