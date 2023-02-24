@@ -41812,7 +41812,7 @@
     "retreats": true,
     "aggressive": false,
     "poisonous": false,
-    "respawn": 25,
+    "respawn": 0,
     "maxHit": 0,
     "hitpoints": 1,
     "attackSpeed": 0,
