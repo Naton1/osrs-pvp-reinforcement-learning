@@ -118,6 +118,7 @@ public class Player extends Mobile {
 	private final SecondsTimer targetSearchTimer = new SecondsTimer();
 	private final List<String> recentKills = new ArrayList<String>(); // Contains ip addresses of recent kills
 	private final Queue<ChatMessage> chatMessageQueue = new ConcurrentLinkedQueue<>();
+	public boolean choosingMusic;
 	private ChatMessage currentChatMessage;
 	// Logout
 	private final SecondsTimer forcedLogoutTimer = new SecondsTimer();
@@ -1682,21 +1683,29 @@ public class Player extends Mobile {
 		this.castlewarsIdleTime = 200;
 	}
 
-    public void climb(boolean down, Location location) {
-        this.performAnimation(new Animation(down ? 827 : 828));
-        Task task = new Task(1, this.getIndex(), true) {
-            int ticks = 0;
+	public void climb(boolean down, Location location) {
+		this.performAnimation(new Animation(down ? 827 : 828));
+		Task task = new Task(1, this.getIndex(), true) {
+			int ticks = 0;
 
-            @Override
-            protected void execute() {
-                ticks++;
-                if (ticks == 2) {
-                    moveTo(location);
-                    stop();
-                }
-            }
-        };
-        TaskManager.submit(task);
+			@Override
+			protected void execute() {
+				ticks++;
+				if (ticks == 2) {
+					moveTo(location);
+					stop();
+				}
+			}
+		};
+		TaskManager.submit(task);
+	}
+
+	public int currentInterfaceTabId;
+
+	public int getCurrentInterfaceTabId() {
+		return currentInterfaceTabId;
+	}
+    public void setCurrentInterfaceTab(int currentInterfaceTabId) {
+		this.currentInterfaceTabId = currentInterfaceTabId;
     }
-
 }

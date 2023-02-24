@@ -17,13 +17,13 @@ public class JavaMidiPlayer extends Class56_Sub1 implements Receiver {
     private static Receiver receiver = null;
     private static Sequencer sequencer = null;
 
-	public void method827(int i, byte[] payload, int i_0_, boolean loop) {
+	public void method827(int volume, byte[] payload, int i_0_, boolean loop) {
     	if (sequencer != null) {
     		try {
     			Sequence sequence = MidiSystem.getSequence(new ByteArrayInputStream(payload));
     			sequencer.setSequence(sequence);
     			sequencer.setLoopCount(!loop ? 0 : -1);
-    			method835(0, i, -1L);
+    			method835(0, volume, -1L);
     			sequencer.start();
     		} catch (Exception exception) {
     			/* empty */
