@@ -122,6 +122,10 @@ public class NpcDefinition {
         return hitpoints;
     }
 
+    public void setMaxHitpoints(int hitpoints) {
+        this.hitpoints = hitpoints;
+    }
+
     public int getAttackSpeed() {
         return attackSpeed;
     }
