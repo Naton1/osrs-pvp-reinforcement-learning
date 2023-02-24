@@ -59,6 +59,13 @@ public class CombatPoisonEffect extends Task {
 			return;
 		}
 
+		if (entity.isImmuneToPoison()) {
+			this.stop();
+			return;
+		}
+
+
+
 		// Deal the damage, then try and decrement the damage count.
 		int poisonDamage = (this.tick % 5 == 0) ? entity.getPoisonDamage() - 1 : entity.getPoisonDamage();
 		entity.setPoisonDamage(poisonDamage);
