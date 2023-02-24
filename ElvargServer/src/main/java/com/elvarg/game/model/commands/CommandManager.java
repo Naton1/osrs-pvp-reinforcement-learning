@@ -94,7 +94,7 @@ public class CommandManager {
         put(new SpawnNPCCommand(), "npc");
         put(new SpawnPermanentNPCCommand(), "n");
         put(new SpawnObjectCommand(), "object");
-        put(new PositionDebug(), "mypos");
+        put(new PositionDebug(), "coords");
         put(new ConfigCommand(), "config");
         put(new SpecCommand(), "spec");
         put(new GFXCommand(), "gfx");
