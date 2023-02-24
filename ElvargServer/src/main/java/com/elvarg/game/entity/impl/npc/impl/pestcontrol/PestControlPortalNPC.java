@@ -18,6 +18,7 @@ import static com.elvarg.util.NpcIdentifiers.*;
 public class PestControlPortalNPC extends NPC {
 
     private static final CombatMethod COMBAT_METHOD = new PestControlPortalCombatMethod();
+
     public PestControlPortalNPC(int id, Location position) {
         super(id, position);
     }
@@ -31,8 +32,5 @@ public class PestControlPortalNPC extends NPC {
     public CombatMethod getCombatMethod() {
         return COMBAT_METHOD;
     }
-
-
-
 
 }
