@@ -6,13 +6,15 @@ import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.impl.pestcontrol.PestControlPortalNPC;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
 import com.elvarg.game.model.areas.impl.pestcontrol.PestControlArea;
 import com.elvarg.game.model.areas.impl.pestcontrol.PestControlNoviceBoatArea;
 import com.elvarg.game.model.areas.impl.pestcontrol.PestControlOutpostArea;
 import com.elvarg.game.model.dialogues.DialogueExpression;
-import com.elvarg.game.model.dialogues.entries.impl.NpcDialogue;
+import com.elvarg.game.model.dialogues.builders.DialogueChainBuilder;
+import com.elvarg.game.model.dialogues.entries.impl.*;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.util.Misc;
@@ -55,7 +57,7 @@ public class PestControl implements Minigame {
      */
     private final static int PLAYERS_REQUIRED = 1;
 
-    public int gameTimer;
+    public int ticksElapsed;
     public static final int DEFAULT_BOAT_WAITING_TICKS = 10;
 
     private List<NPC> spawned_npcs = Lists.newArrayList();
@@ -132,7 +134,7 @@ public class PestControl implements Minigame {
                         }
                     }
                     if (queue.size() > 0) {
-                        queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority for the next game!"));
+                        queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority level 1 over other players in joining the next game."));
                     }
                 }
 
@@ -174,7 +176,7 @@ public class PestControl implements Minigame {
                         }
                     }
                     if (queue.size() > 0) {
-                        queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority for the next game!"));
+                        queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority level 1 over other players in joining the next game."));
                     }
                 }
 
@@ -216,7 +218,7 @@ public class PestControl implements Minigame {
                         }
                     }
                     if (queue.size() > 0) {
-                        queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority for the next game!"));
+                        queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority level 1 over other players in joining the next game."));
                     }
                 }
 
@@ -339,9 +341,9 @@ public class PestControl implements Minigame {
                 return;
             }
 
-            gameTimer--;
+            ticksElapsed++;
 
-            System.err.println(gameTimer);
+            System.err.println(ticksElapsed);
 
             //if (playersInGame() < 1 || getKnightsHealth() == 0) {
            //     endGame(false);
@@ -386,32 +388,39 @@ public class PestControl implements Minigame {
             int reward_points = 2;
 
             if (!won) {
-                NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT, "You failed to kill all the portals in 3 minutes and have not been awarded points.", DialogueExpression.CALM);
+                NpcDialogue.send(player, boatType.squireId, "You failed to kill all the portals in 3 minutes and have not been awarded points.", DialogueExpression.CALM);
                 player.getPacketSender().sendMessage("You failed to kill all the portals in 3 minutes and have not been awarded points.");
                 return;
             }
             if (myDamage > 50) {
-                NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT, "Do not let the Void Knights health reach 0!" +
-                        "You can regain health by destroying more monsters,", DialogueExpression.SLIGHTLY_SAD);
-                reward_points = 4;
-                player.getPacketSender().sendMessage(
-                        "You have won the pest control game and have been awarded "
-                                + reward_points + " Pest Control points.");
-                player.pcPoints += reward_points;
+                sendWinnerDialogue(player,4, 1, boatType);
                 return;
             }
-            NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT, "The void knights notice your lack of zeal. You only gain " + reward_points + " points.", DialogueExpression.DISTRESSED);
+            StatementDialogue.send(player, new String[] {"The void knights notice your lack of zeal in that battle and have not", "presented you with any points."});
             player.pcPoints += reward_points;
         });
 
         cleanUp();
     }
 
+    public static void sendWinnerDialogue(Player p, int pointsToAdd, int coinReward, PestControlBoat boat) {
+        DialogueChainBuilder dialogueBuilder = new DialogueChainBuilder();
+            dialogueBuilder.add(
+                    new NpcDialogue(0, boat.squireId, "Congratulations! You managed to destroy all the portals!"+" We've awarded you "+pointsToAdd+" Void Knight Commendation"+" points. Please also accept these coins as a reward.", (player) -> {
+                        player.pcPoints += pointsToAdd;
+                        player.getInventory().add(new Item(995, coinReward));
+                        StatementDialogue.send(player, new String[] {"<col=00077a>You now have</col><col=b11717> "+player.pcPoints+"</col><col=00077a> Void Knight Commendation points!", "You can speak to a Void Knight to exchange your points for", "rewards."});
+                    }),
+                    new EndDialogue(1)
+            );
+        p.getDialogueManager().start(dialogueBuilder, 0);
+    }
+
     /**
      * Resets the game variables and map
      */
     private void cleanUp() {
-        gameTimer = -1;
+        ticksElapsed = -1;
         spawned_npcs.stream().filter(n -> n != null).forEach(n -> n.setDying(true));
         spawned_npcs.clear();
     }
