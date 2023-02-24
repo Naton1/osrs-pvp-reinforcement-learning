@@ -265,7 +265,7 @@ public class PestControl implements Minigame {
 
     private void moveToGame(PestControlBoat boat, Player player) {
         player.smartMove(PestControlArea.LAUNCHER_BOAT_BOUNDARY);
-        NpcDialogue.sendStatement(player, NpcIdentifiers.VOID_KNIGHT, new String[] {"You must defend the Void Knight while the portals are", "unsummoned. The ritual takes twenty minutes though,", "so you can help out by destroying them yourselves!", "Now GO GO GO!" }, DialogueExpression.DISTRESSED);
+        NpcDialogue.sendStatement(player, NpcIdentifiers.SQUIRE_12, new String[] {"You must defend the Void Knight while the portals are", "unsummoned. The ritual takes twenty minutes though,", "so you can help out by destroying them yourselves!", "Now GO GO GO!" }, DialogueExpression.DISTRESSED);
 
         /**
          * gameStarted = true;
