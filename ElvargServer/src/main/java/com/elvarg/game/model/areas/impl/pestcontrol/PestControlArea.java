@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.elvarg.game.content.minigames.impl.pestcontrol.PestControl.gameTimer;
 import static com.elvarg.util.ObjectIdentifiers.LADDER_174;
 
 public class PestControlArea extends Area {
@@ -76,33 +75,7 @@ public class PestControlArea extends Area {
 
         if (character.isPlayer()) {
             Player player = character.getAsPlayer();
-            // Handles player behaviour
-            if (gameTimer > 60) {
-                player.getPacketSender().sendString("Time remaining: " + gameTimer / 60 + " minutes", 21117);
-            } else if (gameTimer < 60) {
-                player.getPacketSender().sendString("Time remaining: " + gameTimer + " seconds", 21117);
-            }
-            //player.getPacketSender().sendMessage("The knights current health is " + KNIGHTS_HEALTH + ".");
-            //player.getPacketSender().sendMessage("Your current pc damage is " + player.pcDamage + ".");
 
-            /* TODO: Fix this interface
-            for (j = 0; j < Server.npcHandler.npcs.length; j++) {
-                if (Server.npcHandler.npcs[j] != null) {
-                    if (Server.npcHandler.npcs[j].npcType == 3777)
-                        c.getPA().sendFrame126("" + Server.npcHandler.npcs[j].HP + "", 21111);
-                    if (Server.npcHandler.npcs[j].npcType == 3778)
-                        c.getPA().sendFrame126("" + Server.npcHandler.npcs[j].HP + "", 21112);
-                    if (Server.npcHandler.npcs[j].npcType == 3779)
-                        c.getPA().sendFrame126("" + Server.npcHandler.npcs[j].HP + "", 21113);
-                    if (Server.npcHandler.npcs[j].npcType == 3780)
-                        c.getPA().sendFrame126("" + Server.npcHandler.npcs[j].HP + "", 21114);
-                    if (Server.npcHandler.npcs[j].npcType == 3782)
-                        c.getPA().sendFrame126("" + Server.npcHandler.npcs[j].HP + "", 21115);
-                }
-            }
-            c.getPA().sendFrame126("0", 21116);
-            c.getPA().sendFrame126("Time remaining: "+gameTimer+"", 21117);
- */
         }
     }
 
@@ -162,13 +135,7 @@ public class PestControlArea extends Area {
 
     @Override
     public boolean handleDeath(Player player, Optional<Player> killer) {
-        getMinigame().movePlayerToBoat(player);
-
-        if (killer.isPresent()) {
-            NPC npcKiller = killer.get().getAsNpc();
-            player.getPacketSender().sendMessage("Oh no, you were killed by " + npcKiller.getDefinition().getName());
-        }
-
+        player.smartMove(LAUNCHER_BOAT_BOUNDARY);
         // Returning true means default death behavior is avoided.
         return true;
     }
