@@ -33,6 +33,39 @@
     "description": "Pest Control (Veteran) Squire"
   },
   {
+    "facing": "WEST",
+    "radius": 2,
+    "id": 1765,
+    "position": {
+      "x": 2665,
+      "y": 2660,
+      "z": 0
+    },
+    "description": "Pest Control (Ranged Shop)"
+  },
+  {
+    "facing": "NORTH",
+    "radius": 2,
+    "id": 1767,
+    "position": {
+      "x": 2658,
+      "y": 2654,
+      "z": 0
+    },
+    "description": "Pest Control (agic Shop)"
+  },
+  {
+    "facing": "NORTH",
+    "radius": 2,
+    "id": 1757,
+    "position": {
+      "x": 2662,
+      "y": 2649,
+      "z": 0
+    },
+    "description": "Pest Control (Exchange Shop)"
+  },
+  {
     "facing": "SOUTH",
     "radius": 0,
     "id": 7677,
