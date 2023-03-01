@@ -1,18 +1,19 @@
 package com.elvarg.game.entity.impl.npc.impl.pestcontrol;
 
 import com.elvarg.game.content.combat.method.CombatMethod;
-import com.elvarg.game.content.combat.method.impl.npcs.pestcontrol.PestControlPortalCombatMethod;
 import com.elvarg.game.content.combat.method.impl.npcs.pestcontrol.SplatterCombatMethod;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Ids;
 import com.elvarg.game.model.Location;
 
+import static com.elvarg.util.NpcIdentifiers.*;
+
 /**
  * @author Ynneh | 27/02/2023 - 07:51
  * <https://github.com/drhenny>
  */
-@Ids({1689, 1690, 1691, 1692, 1693})
+@Ids({SPLATTER, SPLATTER_2, SPLATTER_3, SPLATTER_4, SPLATTER_5})
 public class SplatterNPC extends NPC {
 
     private static final CombatMethod COMBAT_METHOD = new SplatterCombatMethod();
