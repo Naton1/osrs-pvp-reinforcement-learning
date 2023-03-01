@@ -29,11 +29,6 @@ public class ShifterNPC extends NPC {
     }
 
     @Override
-    public boolean isAggressiveTo(Player player) {
-        return true;
-    }
-
-    @Override
     public CombatMethod getCombatMethod() {
         return COMBAT_METHOD;
     }
