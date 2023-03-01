@@ -29,15 +29,10 @@ import static com.elvarg.util.NpcIdentifiers.*;
 public class PestControl implements Minigame {
 
     /**
-     * Spawn all NPCS outside arena
-     * Make NPCs auto attack the gates, then void knight, defend portals
-     * Waiting boat interface
-     * Game area interface
-     * Instanced games and support for novice/med/advanced boats
-     * Gates need to open
-     * Fence damaging and repairing
-     * Handle gates
-     * Fix NPC ids for portal spawns
+     * - Splatters have no dest they roam until rng to explode or death. possible roaming 15 tiles?
+     * - locks player until continue option shows on dialogue? 2 ticks maybe 3?
+     * - Torchers rather path to a good spot for the knight or target closest player
+     * - Ravanger isnt aggressive and has random path tiles and destroys barriers/doors with X chance looks like 25 tile distance roaming
      **/
 
     private static PrivateArea area;
@@ -64,7 +59,7 @@ public class PestControl implements Minigame {
     public int ticksElapsed;
     public static final int DEFAULT_BOAT_WAITING_TICKS = 10;//50 secs default
 
-    private List<NPC> spawned_npcs = Lists.newArrayList();
+    private static List<NPC> spawned_npcs = Lists.newArrayList();
 
     private PestControlPortalData[] chosenPortalSpawnSequence;
 
@@ -89,11 +84,14 @@ public class PestControl implements Minigame {
             return;
         GAME_AREA.getPlayers().forEach(p -> p.getPacketSender().sendMessage("The <col="+data.colourCode+">"+data.name().toLowerCase().replaceAll("_", " ")+", "+data.name+"</col> portal shield has dropped!"));
         totalPortalsUnlocked++;
-        portal.get().setNpcTransformationId(data.unshieldId);
+        portal.get().setNpcTransformationId(data.shieldId - 4);
     }
 
-    public static void healKnight() {
-        Optional<NPC> knight = area.getNpcs().stream().filter(k -> k.getId() == boatType.void_knight_id).findFirst();
+    private static int portalsKilled;
+    public static void healKnight(NPC npc) {
+        portalsKilled++;
+        spawned_npcs.remove(npc);
+        Optional<NPC> knight = spawned_npcs.stream().filter(k -> k.getId() == boatType.void_knight_id).findFirst();
         if (!knight.isPresent())
             return;
         knight.get().heal(50);
@@ -228,8 +226,6 @@ public class PestControl implements Minigame {
         spawnNPC(SQUIRE_12, new Location(2655, 2607));
         /** Rando PestControlPortal Sequence **/
         chosenPortalSpawnSequence = PORTAL_SEQUENCE[Misc.random(PORTAL_SEQUENCE.length - 1)];
-        /** Portal list **/
-        portals = Lists.newCopyOnWriteArrayList();
         /** PestControlPortal spawns **/
         Arrays.stream(chosenPortalSpawnSequence).forEach(portal -> spawnPortal(portal.shieldId, new Location(portal.xPosition, portal.yPosition)));
 
@@ -277,33 +273,30 @@ public class PestControl implements Minigame {
     }
 
     public void spawnNPC(int id, Location pos) {
-        NPC npc = new NPC(id, pos);
+        NPC npc = NPC.create(id, pos);
         area.add(npc);
         spawned_npcs.add(npc);
         World.getAddNPCQueue().add(npc);
     }
-
-    public static List<PestControlPortalNPC> portals;
 
     public void spawnPortal(int id, Location pos) {
         PestControlPortalNPC npc = new PestControlPortalNPC(id, pos);
         int hitPoints = boatType == PestControlBoat.NOVICE ? 200 : 250;
         npc.setHitpoints(hitPoints);
         npc.getDefinition().setMaxHitpoints(hitPoints);
-        portals.add(npc);
         area.add(npc);
         spawned_npcs.add(npc);
         World.getAddNPCQueue().add(npc);
     }
 
     public static boolean isPortalsDead() {
-        return portals != null && portals.size() == 0;
+        return portalsKilled == 4;
     }
 
     public static boolean isPortal(int id, boolean shielded) {
         List<Integer> portalIds = Lists.newArrayList();
         for (PestControlPortalData d : PestControlPortalData.values())
-            portalIds.add(shielded ? d.shieldId : d.unshieldId);
+            portalIds.add(shielded ? d.shieldId : d.shieldId - 4);
         return portalIds.stream().anyMatch(s -> s.intValue() == id);
     }
 
@@ -415,7 +408,11 @@ public class PestControl implements Minigame {
             if (--last_spawn == 0) {
                 last_spawn = SPAWN_TICK_RATE;
                 int index = boatType.ordinal();
-                Arrays.stream(PestControlPortalData.values()).filter(p -> portalExists(p)).forEach(portal -> spawnNPC(PEST_CONTROL_MONSTERS[index][Misc.random(PEST_CONTROL_MONSTERS[index].length - 1)], new Location(portal.npcSpawnX, portal.npcSpawnY)));
+                for (PestControlPortalData portal : PestControlPortalData.values()) {
+                    if (portalExists(portal)) {
+                        spawnNPC(PEST_CONTROL_MONSTERS[index][Misc.random(PEST_CONTROL_MONSTERS[index].length - 1)], new Location(portal.npcSpawnX, portal.npcSpawnY));
+                    }
+                }
             }
 
 
@@ -425,7 +422,13 @@ public class PestControl implements Minigame {
     }
 
     private boolean portalExists(PestControlPortalData portal) {
-        return area.getNpcs().contains(portal);
+        for (NPC npc : spawned_npcs) {
+            if (portal == null || npc == null)
+                continue;
+            if (Objects.equals(npc.getLocation(), new Location(portal.xPosition, portal.yPosition, 0)) && !npc.isDying())
+                return true;
+        }
+        return false;
     }
 
     private boolean isKnightDead() {
@@ -472,7 +475,7 @@ public class PestControl implements Minigame {
             player.pcPoints += reward_points;
         });
 
-        cleanUp();
+        reset();
     }
 
     public static void sendWinnerDialogue(Player p, int pointsToAdd, int coinReward, PestControlBoat boat) {
@@ -491,11 +494,13 @@ public class PestControl implements Minigame {
     /**
      * Resets the game variables and map
      */
-    private void cleanUp() {
+    private void reset() {
         ticksElapsed = -1;
-        boatType = null;
+        boatType = PestControlBoat.NOVICE;
         chosenPortalSpawnSequence = null;
         totalPortalsUnlocked = 0;
+        portalsKilled = 0;
+        last_spawn = SPAWN_TICK_RATE;
         spawned_npcs.stream().filter(n -> n != null).forEach(n -> n.setDying(true));
         spawned_npcs.clear();
     }

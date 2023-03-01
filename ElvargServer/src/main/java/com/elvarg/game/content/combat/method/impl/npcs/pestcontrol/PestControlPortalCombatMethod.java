@@ -38,7 +38,7 @@ public class PestControlPortalCombatMethod extends CombatMethod {
 
     @Override
     public void onDeath(NPC npc, Optional<Player> killer) {
-        PestControl.healKnight();
+        PestControl.healKnight(npc);
     }
 
 
