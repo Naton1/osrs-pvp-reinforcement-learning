@@ -39,6 +39,14 @@ public abstract class Spell {
             return false;
         }
 
+        if (player.getArea() != null) {
+            if (player.getArea().isSpellDisabled(player, getSpellbook(), spellId())) {
+                player.getCombat().setCastSpell(null);
+                player.getCombat().reset();
+                return false;
+            }
+        }
+
         // Secondly we check if they have proper magic spellbook
         // If not, reset all magic attributes such as current spell
         // Aswell as autocast spell

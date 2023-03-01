@@ -12,7 +12,9 @@ import com.elvarg.game.entity.impl.object.ObjectManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Location;
+import com.elvarg.game.model.MagicSpellbook;
 import com.elvarg.game.model.areas.Area;
+import com.elvarg.game.model.areas.impl.PrivateArea;
 import com.elvarg.net.packet.impl.EquipPacketListener;
 
 import java.util.Arrays;
@@ -21,7 +23,7 @@ import java.util.Optional;
 
 import static com.elvarg.util.ObjectIdentifiers.LADDER_174;
 
-public class PestControlArea extends Area {
+public class PestControlArea extends PrivateArea {
 
     private PestControl minigame;
 
@@ -67,7 +69,15 @@ public class PestControlArea extends Area {
         return false;
     }
 
-
+    @Override
+    public boolean isSpellDisabled(Player player, MagicSpellbook spellbook, int spellId) {
+        boolean alch = spellbook == MagicSpellbook.NORMAL && Arrays.asList(1162, 1178).stream().anyMatch(a -> a.intValue() == spellId);
+        if (alch) {
+            player.getPacketSender().sendMessage("You cannot use this spell in Pest Control.");
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public void process(Mobile character) {

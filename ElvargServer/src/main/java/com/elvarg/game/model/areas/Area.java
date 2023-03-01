@@ -9,7 +9,7 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Item;
-import com.elvarg.game.model.Location;
+import com.elvarg.game.model.MagicSpellbook;
 
 import java.util.*;
 
@@ -166,5 +166,9 @@ public abstract class Area {
 
     public Collection<PlayerBot> getPlayerBots() {
         return this.playerBots.values();
+    }
+
+    public boolean isSpellDisabled(Player player, MagicSpellbook spellbook, int spellId) {
+        return false;
     }
 }
