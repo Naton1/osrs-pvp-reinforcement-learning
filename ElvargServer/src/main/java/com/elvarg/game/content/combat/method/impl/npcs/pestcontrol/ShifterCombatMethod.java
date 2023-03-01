@@ -44,7 +44,7 @@ public class ShifterCombatMethod extends MeleeCombatMethod {
             teleport(npc, target, true);
         }
 
-        if (distance > 2) {
+        if (distance > 1) {
             if (Math.random() <= .2) {
                 teleport(npc, target, false);
             }
