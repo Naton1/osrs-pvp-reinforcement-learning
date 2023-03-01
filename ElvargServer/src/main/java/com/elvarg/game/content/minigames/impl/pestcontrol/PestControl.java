@@ -245,9 +245,10 @@ public class PestControl implements Minigame {
         spawnNPC(SQUIRE_12, new Location(2655, 2607));
         /** Rando PestControlPortal Sequence **/
         chosenPortalSpawnSequence = PORTAL_SEQUENCE[Misc.random(PORTAL_SEQUENCE.length - 1)];
+        /** Portal list **/
+        portals = Lists.newCopyOnWriteArrayList();
         /** PestControlPortal spawns **/
         Arrays.stream(chosenPortalSpawnSequence).forEach(portal -> spawnPortal(portal.shieldId, new Location(portal.xPosition, portal.yPosition)));
-
 
         Task portalTask = new Task(1) {
 
@@ -299,14 +300,21 @@ public class PestControl implements Minigame {
         World.getAddNPCQueue().add(npc);
     }
 
+    public static List<PestControlPortalNPC> portals;
+
     public void spawnPortal(int id, Location pos) {
         PestControlPortalNPC npc = new PestControlPortalNPC(id, pos);
         int hitPoints = boatType == PestControlBoat.NOVICE ? 200 : 250;
         npc.setHitpoints(hitPoints);
         npc.getDefinition().setMaxHitpoints(hitPoints);
+        portals.add(npc);
         area.add(npc);
         spawned_npcs.add(npc);
         World.getAddNPCQueue().add(npc);
+    }
+
+    public static boolean isPortalsDead() {
+        return portals.size() == 0;
     }
 
     public static boolean isPortal(int id, boolean shielded) {
@@ -314,17 +322,6 @@ public class PestControl implements Minigame {
         for (PestControlPortalData d : PestControlPortalData.values())
             portalIds.add(shielded ? d.shieldId : d.unshieldId);
         return portalIds.stream().anyMatch(s -> s.intValue() == id);
-    }
-
-    public int totalPortalsDead() {
-        int count = 0;
-        for (NPC npc : spawned_npcs) {
-            if (npc == null)
-                continue;
-            if (isPortal(npc.getId(), false))
-                count++;
-        }
-        return count;
     }
 
     private static final int[][] PEST_CONTROL_MONSTERS = {
@@ -362,9 +359,12 @@ public class PestControl implements Minigame {
                 return;
             }
 
-            System.err.println(totalPortalsDead());
-
             ticksElapsed++;
+
+            if (isPortalsDead()) {
+                endGame(true);
+                return;
+            }
 
             if (playersInGame() < 1 || isKnightDead() || timeExpired()) {
                 endGame(false);
