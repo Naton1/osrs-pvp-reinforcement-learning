@@ -40381,7 +40381,7 @@
     "retreats": false,
     "aggressive": false,
     "poisonous": false,
-    "combatLevel": 36
+    "combatLevel": 36,
     "maxHit": 3,
     "hitpoints": 33,
     "attackSpeed": 4,
@@ -40421,7 +40421,7 @@
     "retreats": false,
     "aggressive": false,
     "poisonous": false,
-    "combatLevel": 55
+    "combatLevel": 55,
     "maxHit": 3,
     "hitpoints": 53,
     "attackSpeed": 4,
@@ -40461,7 +40461,7 @@
     "retreats": false,
     "aggressive": false,
     "poisonous": false,
-    "combatLevel": 74
+    "combatLevel": 74,
     "maxHit": 4,
     "hitpoints": 73,
     "attackSpeed": 4,
@@ -40501,7 +40501,7 @@
     "retreats": false,
     "aggressive": false,
     "poisonous": false,
-    "combatLevel": 92
+    "combatLevel": 92,
     "maxHit": 4,
     "hitpoints": 101,
     "attackSpeed": 4,
@@ -40541,7 +40541,7 @@
     "retreats": false,
     "aggressive": false,
     "poisonous": false,
-    "combatLevel": 88
+    "combatLevel": 88,
     "maxHit": 5,
     "hitpoints": 93,
     "attackSpeed": 4,
