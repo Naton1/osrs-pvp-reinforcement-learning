@@ -21,6 +21,10 @@ public abstract class CombatMethod {
     public void start(Mobile character, Mobile target) {
     }
 
+    public void onTick(NPC npc, Mobile target) {
+
+    }
+
     /**
      * Method which is called at the end of every hit.
      * @param character
