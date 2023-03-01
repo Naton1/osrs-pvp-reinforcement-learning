@@ -59,10 +59,10 @@ public class PestControl implements Minigame {
     /**
      * How many players we need to start a game
      */
-    private final static int PLAYERS_REQUIRED = 1;
+    private final static int PLAYERS_REQUIRED = 1;//5 default
 
     public int ticksElapsed;
-    public static final int DEFAULT_BOAT_WAITING_TICKS = 10;
+    public static final int DEFAULT_BOAT_WAITING_TICKS = 10;//50 secs default
 
     private List<NPC> spawned_npcs = Lists.newArrayList();
 
@@ -121,30 +121,15 @@ public class PestControl implements Minigame {
                     return;
                 }
 
+                if (playersReady >= 10 && Math.random() <= .15) {
+                    sendSquireMessage("We're about to lanch!", novice_boat);
+                }
+
                 noviceWaitTicks--;
 
-                if (noviceWaitTicks == 0) {
+                if (noviceWaitTicks == 0 || playersReady >= 25) {
                     noviceWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-
-                    Queue<Player> queue = novice_boat.getQueue();
-
-                    Iterator lobbyQueue = queue.iterator();
-                    PestControlArea area = new PestControlArea();
-                    setupEntities(novice_boat);
-                    int movedPlayers = 0;
-                    while (lobbyQueue.hasNext()) {
-                        if (movedPlayers >= 25) {
-                            break;
-                        }
-                        movedPlayers++;
-                        Player player = queue.poll();
-                        if (player != null) {
-                            moveToGame(novice_boat, player, area);
-                        }
-                    }
-                    if (queue.size() > 0) {
-                        queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority level 1 over other players in joining the next game."));
-                    }
+                    begin(novice_boat);
                 }
 
             }
@@ -164,30 +149,15 @@ public class PestControl implements Minigame {
                     return;
                 }
 
+                if (playersReady >= 10 && Math.random() <= .15) {
+                    sendSquireMessage("We're about to lanch!", novice_boat);
+                }
+
                 intermediateWaitTicks--;
 
-                if (intermediateWaitTicks == 0) {
+                if (intermediateWaitTicks == 0 || playersReady >= 25) {
                     intermediateWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-
-                    Queue<Player> queue = intermediate_boat.getQueue();
-
-                    Iterator lobbyQueue = queue.iterator();
-                    PestControlArea area = new PestControlArea();
-                    setupEntities(intermediate_boat);
-                    int movedPlayers = 0;
-                    while (lobbyQueue.hasNext()) {
-                        if (movedPlayers >= 25) {
-                            break;
-                        }
-                        movedPlayers++;
-                        Player player = queue.poll();
-                        if (player != null) {
-                            moveToGame(intermediate_boat, player, area);
-                        }
-                    }
-                    if (queue.size() > 0) {
-                        queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority level 1 over other players in joining the next game."));
-                    }
+                    begin(intermediate_boat);
                 }
 
             }
@@ -207,35 +177,48 @@ public class PestControl implements Minigame {
                     return;
                 }
 
+                if (playersReady >= 10 && Math.random() <= .15) {
+                    sendSquireMessage("We're about to lanch!", novice_boat);
+                }
+
                 veteranWaitTicks--;
 
-                if (veteranWaitTicks == 0) {
+                if (veteranWaitTicks == 0 || playersReady >= 25) {
                     veteranWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-
-                    Queue<Player> queue = veteran_boat.getQueue();
-
-                    Iterator lobbyQueue = queue.iterator();
-                    PestControlArea area = new PestControlArea();
-                    setupEntities(veteran_boat);
-                    int movedPlayers = 0;
-                    while (lobbyQueue.hasNext()) {
-                        if (movedPlayers >= 25) {
-                            break;
-                        }
-                        movedPlayers++;
-                        Player player = queue.poll();
-                        if (player != null) {
-                            moveToGame(veteran_boat, player, area);
-                        }
-                    }
-                    if (queue.size() > 0) {
-                        queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority level 1 over other players in joining the next game."));
-                    }
+                    begin(veteran_boat);
                 }
 
             }
         };
         TaskManager.submit(veteranLobbyTask);
+    }
+
+    private void begin(PestControlBoat boat) {
+        Queue<Player> queue = boat.getQueue();
+        Iterator lobbyQueue = queue.iterator();
+        PestControlArea area = new PestControlArea();
+        setupEntities(boat);
+        int movedPlayers = 0;
+        while (lobbyQueue.hasNext()) {
+            if (movedPlayers >= 25) {
+                break;
+            }
+            movedPlayers++;
+            Player player = queue.poll();
+            if (player != null) {
+                moveToGame(boat, player, area);
+            }
+        }
+        if (queue.size() > 0) {
+            queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority level 1 over other players in joining the next game."));
+        }
+    }
+
+    private void sendSquireMessage(String message, PestControlBoat boat) {
+        Optional<NPC> squire = World.getNpcs().stream().filter(n -> n.getId() == boat.squireId).findFirst();
+        if (!squire.isPresent() || message == null || message.isEmpty())
+            return;
+        squire.get().forceChat(message);
     }
 
     public void setupEntities(PestControlBoat boat) {
@@ -314,7 +297,7 @@ public class PestControl implements Minigame {
     }
 
     public static boolean isPortalsDead() {
-        return portals.size() == 0;
+        return portals != null && portals.size() == 0;
     }
 
     public static boolean isPortal(int id, boolean shielded) {
@@ -326,17 +309,69 @@ public class PestControl implements Minigame {
 
     private static final int[][] PEST_CONTROL_MONSTERS = {
             {
-                    1724,//Defiler - level 33
-                    1726,//Defiler - level 50
+                    BRAWLER,//Brawler - level 51
+                    BRAWLER_2,//Brawler - level 76
+                    BRAWLER_3,//Brawler - level 101
+                    DEFILER,//Defiler - level 33
+                    DEFILER_2,//Defiler - level 50
+                    RAVAGER, //Ravager - level 36
+                    RAVAGER_2, //Ravager - level 53
+                    RAVAGER_3,//Ravager - level 71
+                    SHIFTER,//Shifter - Level 38
+                    SHIFTER_3,//Shifter - Level 57
+                    SHIFTER,//Spinner - Level 36
+                    SHIFTER_3,//Spinner - Level 55
+                    SHIFTER_5,//Spinner - Level 74
+                    SPLATTER,//Splatter - Level 22
+                    SPLATTER_2,//Splatter - Level 33
+                    SPLATTER_3,//Splatter - Level 44
+                    TORCHER,//Torcher - Level 33
+                    TORCHER_3,//Torcher - Level 49
+
             },
             {
-                    1725,//Defiler - level 50
-                    1727,//Defiler - level 66
-                    1728,//Defiler - level 80
+                    BRAWLER_2,//Brawler - level 76
+                    BRAWLER_3,//Brawler - level 101
+                    BRAWLER_4,//Brawler - level 129
+                    DEFILER_2,//Defiler - level 50
+                    DEFILER_4,//Defiler - level 66
+                    DEFILER_5,//Defiler - level 80
+                    RAVAGER_2, //Ravager - level 53
+                    RAVAGER_3,//Ravager - level 71
+                    RAVAGER_4, //Ravager - level 89
+                    SHIFTER_3,//Shifter - Level 57
+                    SHIFTER_5,//Shifter - Level 76
+                    SHIFTER_7,//Shifter - Level 90
+                    SHIFTER_3,//Spinner - Level 55
+                    SHIFTER_5,//Spinner - Level 74
+                    SHIFTER_7,//Spinner - Level 88
+                    SHIFTER_9,//Spinner - Level 92
+                    SPLATTER_2,//Splatter - Level 33
+                    SPLATTER_3,//Splatter - Level 44
+                    SPLATTER_4,//Splatter - Level 54
+                    TORCHER_3,//Torcher - Level 49
+                    TORCHER_5,//Torcher - Level 66
+                    TORCHER_7,//Torcher - Level 79
             },
             {
-                    1730,//Defiler - level 80
-                    1732,//Defiler - level 97
+                    BRAWLER_3,//Brawler - level 101
+                    BRAWLER_4,//Brawler - level 129
+                    DEFILER_7,//Defiler - level 80
+                    DEFILER_9,//Defiler - level 97
+                    RAVAGER_3,//Ravager - level 71
+                    RAVAGER_4,//Ravager - level 89
+                    RAVAGER_5,//Ravager - level 106
+                    SHIFTER_7,//Shifter - Level 90
+                    SHIFTER_9,//Shifter - Level 104
+                    SHIFTER_5,//Spinner - Level 74
+                    SHIFTER_7,//Spinner - Level 88
+                    SHIFTER_9,//Spinner - Level 92
+                    SPLATTER_3,//Splatter - Level 44
+                    SPLATTER_4,//Splatter - Level 54
+                    SPLATTER_5,//Splatter - Level 65
+                    TORCHER_7,//Torcher - Level 79
+                    TORCHER_9,//Torcher - Level 91
+                    TORCHER_10,//Torcher - Level 92
             }
     };
 
@@ -350,6 +385,10 @@ public class PestControl implements Minigame {
     public boolean handleButtonClick(Player player, int button) {
         return false;
     }
+
+    private static final int SPAWN_TICK_RATE = 10;
+
+    private int last_spawn = SPAWN_TICK_RATE;
 
     @Override
     public void process() {
@@ -370,10 +409,23 @@ public class PestControl implements Minigame {
                 endGame(false);
             }
 
+            /**
+             * NPC spawning..
+             */
+            if (--last_spawn == 0) {
+                last_spawn = SPAWN_TICK_RATE;
+                int index = boatType.ordinal();
+                Arrays.stream(PestControlPortalData.values()).filter(p -> portalExists(p)).forEach(portal -> spawnNPC(PEST_CONTROL_MONSTERS[index][Misc.random(PEST_CONTROL_MONSTERS[index].length - 1)], new Location(portal.npcSpawnX, portal.npcSpawnY)));
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean portalExists(PestControlPortalData portal) {
+        return area.getNpcs().contains(portal);
     }
 
     private boolean isKnightDead() {
