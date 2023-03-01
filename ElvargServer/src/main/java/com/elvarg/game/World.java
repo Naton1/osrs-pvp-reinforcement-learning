@@ -15,6 +15,7 @@ import com.elvarg.game.entity.updating.PlayerUpdating;
 import com.elvarg.game.entity.updating.sync.GameSyncExecutor;
 import com.elvarg.game.entity.updating.sync.GameSyncTask;
 import com.elvarg.game.model.Graphic;
+import com.elvarg.game.model.GraphicHeight;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.commands.impl.Players;
 import com.elvarg.game.task.TaskManager;
@@ -314,7 +315,7 @@ public class World {
 	 * @param id
 	 * @param position
 	 */
-	public static void sendLocalGraphics(int id, Location position) {
-		players.stream().filter(Objects::nonNull).filter(p -> p.getLocation().isWithinDistance(position, 32)).forEach(p -> p.getPacketSender().sendGraphic(new Graphic(id), position));
+	public static void sendLocalGraphics(int id, Location position, GraphicHeight graphicHeight) {
+		players.stream().filter(Objects::nonNull).filter(p -> p.getLocation().isWithinDistance(position, 32)).forEach(p -> p.getPacketSender().sendGraphic(new Graphic(id, graphicHeight), position));
 	}
 }

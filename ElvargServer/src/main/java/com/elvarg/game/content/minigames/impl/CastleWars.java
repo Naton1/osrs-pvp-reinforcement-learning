@@ -1074,11 +1074,11 @@ public class CastleWars implements Minigame {
                 public void execute() {
                     ticks++;
                     if (ticks == 4) {
-                        World.sendLocalGraphics(303, destination);
+                        World.sendLocalGraphics(303, destination, GraphicHeight.MIDDLE);
                     }
                     if (ticks == 6) {
                         World.getPlayers().stream().filter(Objects::nonNull).filter(p -> p.getLocation().isWithinDistance(destination, 5)).forEach(p -> p.getCombat().getHitQueue().addPendingDamage(new HitDamage(Misc.random(5, 15), HitMask.RED)));
-                        World.sendLocalGraphics(305, destination);
+                        World.sendLocalGraphics(305, destination, GraphicHeight.MIDDLE);
                         stop();
                     }
                 }
