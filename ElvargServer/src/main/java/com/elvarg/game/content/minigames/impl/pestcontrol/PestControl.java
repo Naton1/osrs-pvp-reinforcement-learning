@@ -40,7 +40,7 @@ public class PestControl implements Minigame {
      * Fix NPC ids for portal spawns
      **/
 
-    private PrivateArea area;
+    private static PrivateArea area;
 
     public PestControl(PestControlBoat boatType) {
         this.boatType = boatType;
@@ -68,7 +68,7 @@ public class PestControl implements Minigame {
 
     private PestControlPortalData[] chosenPortalSpawnSequence;
 
-    public PestControlBoat boatType;
+    public static PestControlBoat boatType;
 
     private static final PestControlPortalData[][] PORTAL_SEQUENCE = {
             { PestControlPortalData.BLUE, PestControlPortalData.RED, PestControlPortalData.YELLOW, PestControlPortalData.PURPLE },
@@ -84,16 +84,19 @@ public class PestControl implements Minigame {
         if (chosenPortalSpawnSequence == null)
             return;
         PestControlPortalData data = chosenPortalSpawnSequence[totalPortalsUnlocked];
-        GAME_AREA.getPlayers().forEach(p -> p.getPacketSender().sendMessage("The <col="+data.colourCode+">"+data.name().toLowerCase().replaceAll("_", " ")+", "+data.name+"</col> portal shield has dropped!"));
-        totalPortalsUnlocked++;
         Optional<NPC> portal = spawned_npcs.stream().filter(n -> n != null && n.getId() == data.shieldId).findFirst();
         if (!portal.isPresent())
             return;
+        GAME_AREA.getPlayers().forEach(p -> p.getPacketSender().sendMessage("The <col="+data.colourCode+">"+data.name().toLowerCase().replaceAll("_", " ")+", "+data.name+"</col> portal shield has dropped!"));
+        totalPortalsUnlocked++;
         portal.get().setNpcTransformationId(data.unshieldId);
     }
 
-    public void healKnight() {
-
+    public static void healKnight() {
+        Optional<NPC> knight = area.getNpcs().stream().filter(k -> k.getId() == boatType.void_knight_id).findFirst();
+        if (!knight.isPresent())
+            return;
+        knight.get().heal(50);
     }
 
     public boolean timeExpired() {

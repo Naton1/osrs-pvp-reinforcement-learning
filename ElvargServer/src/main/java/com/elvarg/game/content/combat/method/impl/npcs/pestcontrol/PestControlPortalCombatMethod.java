@@ -5,6 +5,10 @@ import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.combat.method.CombatMethod;
 import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.entity.impl.player.Player;
+
+import java.util.Optional;
 
 /**
  * @author Ynneh | 24/02/2023 - 11:09
@@ -33,8 +37,8 @@ public class PestControlPortalCombatMethod extends CombatMethod {
     }
 
     @Override
-    public void finished(Mobile character, Mobile target) {
-
+    public void onDeath(NPC npc, Optional<Player> killer) {
+        PestControl.healKnight();
     }
 
 
