@@ -37,6 +37,8 @@ public class PestControl implements Minigame {
 
     private static PrivateArea area;
 
+    private static NPC knight;
+
     public PestControl(PestControlBoat boatType) {
         this.boatType = boatType;
         this.area = new PestControlArea();
@@ -61,7 +63,7 @@ public class PestControl implements Minigame {
 
     private static List<NPC> spawned_npcs = Lists.newArrayList();
 
-    private PestControlPortalData[] chosenPortalSpawnSequence;
+    private static PestControlPortalData[] chosenPortalSpawnSequence;
 
     public static PestControlBoat boatType;
 
@@ -74,8 +76,8 @@ public class PestControl implements Minigame {
             { PestControlPortalData.YELLOW, PestControlPortalData.PURPLE, PestControlPortalData.RED, PestControlPortalData.BLUE }
     };
 
-    private int totalPortalsUnlocked;
-    private void unshieldPortal() {
+    private static int totalPortalsUnlocked;
+    private static void unshieldPortal() {
         if (chosenPortalSpawnSequence == null)
             return;
         PestControlPortalData data = chosenPortalSpawnSequence[totalPortalsUnlocked];
@@ -91,107 +93,109 @@ public class PestControl implements Minigame {
     public static void healKnight(NPC npc) {
         portalsKilled++;
         spawned_npcs.remove(npc);
-        Optional<NPC> knight = spawned_npcs.stream().filter(k -> k.getId() == boatType.void_knight_id).findFirst();
-        if (!knight.isPresent())
+        if (knight == null || knight.isDying())
             return;
-        knight.get().heal(50);
+        knight.heal(50);
     }
 
     public boolean timeExpired() {
         return ticksElapsed >= (100 * 20);
     }
 
+    public static final Task NOVICE_LOBBY_TASK = new Task(1, PestControlBoat.NOVICE.name()) {
+
+        PestControlBoat novice_boat = PestControlBoat.NOVICE;
+        int noviceWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+        @Override
+        protected void execute() {
+
+            int playersReady = novice_boat.getQueue().size();
+
+            if (playersReady == 0) {
+                stop();
+                return;
+            }
+
+            if (playersReady < PLAYERS_REQUIRED)
+                return;
+
+            if (playersReady >= 10 && Math.random() <= .15) {
+                sendSquireMessage("We're about to lanch!", novice_boat);
+            }
+
+            noviceWaitTicks--;
+
+            if (noviceWaitTicks == 0 || playersReady >= 25) {
+                noviceWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+                begin(novice_boat);
+            }
+
+        }
+    };
+
+    public static final Task INTERMEDIATE_LOBBY_TASK = new Task(1, PestControlBoat.INTERMEDIATE.name()) {
+
+        PestControlBoat intermediate_boat = PestControlBoat.INTERMEDIATE;
+        int intermediateWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+        @Override
+        protected void execute() {
+
+            int playersReady = intermediate_boat.getQueue().size();
+
+            if (playersReady == 0) {
+                stop();
+                return;
+            }
+
+            if (playersReady >= 10 && Math.random() <= .15) {
+                sendSquireMessage("We're about to lanch!", intermediate_boat);
+            }
+
+            intermediateWaitTicks--;
+
+            if (intermediateWaitTicks == 0 || playersReady >= 25) {
+                intermediateWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+                begin(intermediate_boat);
+            }
+
+        }
+    };
+
+    public static final Task VETERAN_LOBBY_TASK = new Task(1, PestControlBoat.VETERAN.name()) {
+
+        int veteranWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+        @Override
+        protected void execute() {
+
+            PestControlBoat veteran_boat = PestControlBoat.VETERAN;
+
+            int playersReady = veteran_boat.getQueue().size();
+
+            if (playersReady == 0) {
+                stop();
+                return;
+            }
+
+            if (playersReady >= 10 && Math.random() <= .15) {
+                sendSquireMessage("We're about to lanch!", veteran_boat);
+            }
+
+            veteranWaitTicks--;
+
+            if (veteranWaitTicks == 0 || playersReady >= 25) {
+                veteranWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+                begin(veteran_boat);
+            }
+
+        }
+    };
+
     @Override
     public void init() {
-        PestControlBoat novice_boat = PestControlBoat.NOVICE;
-        PestControlBoat intermediate_boat = PestControlBoat.INTERMEDIATE;
-        PestControlBoat veteran_boat = PestControlBoat.VETERAN;
-        Task noviceLobbyTask = new Task(1, PestControlBoat.NOVICE.name()) {
 
-            int noviceWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-            @Override
-            protected void execute() {
-
-                int playersReady = novice_boat.getQueue().size();
-
-                if (playersReady == 0) {
-                    noviceWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-                    return;
-                }
-
-                if (playersReady >= 10 && Math.random() <= .15) {
-                    sendSquireMessage("We're about to lanch!", novice_boat);
-                }
-
-                noviceWaitTicks--;
-
-                if (noviceWaitTicks == 0 || playersReady >= 25) {
-                    noviceWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-                    begin(novice_boat);
-                }
-
-            }
-        };
-        TaskManager.submit(noviceLobbyTask);
-
-        Task intermediateLobbyTask = new Task(1, PestControlBoat.INTERMEDIATE.name()) {
-
-            int intermediateWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-            @Override
-            protected void execute() {
-
-                int playersReady = intermediate_boat.getQueue().size();
-
-                if (playersReady == 0) {
-                    intermediateWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-                    return;
-                }
-
-                if (playersReady >= 10 && Math.random() <= .15) {
-                    sendSquireMessage("We're about to lanch!", novice_boat);
-                }
-
-                intermediateWaitTicks--;
-
-                if (intermediateWaitTicks == 0 || playersReady >= 25) {
-                    intermediateWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-                    begin(intermediate_boat);
-                }
-
-            }
-        };
-        TaskManager.submit(intermediateLobbyTask);
-
-        Task veteranLobbyTask = new Task(1, PestControlBoat.VETERAN.name()) {
-
-            int veteranWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-            @Override
-            protected void execute() {
-
-                int playersReady = veteran_boat.getQueue().size();
-
-                if (playersReady == 0) {
-                    veteranWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-                    return;
-                }
-
-                if (playersReady >= 10 && Math.random() <= .15) {
-                    sendSquireMessage("We're about to lanch!", novice_boat);
-                }
-
-                veteranWaitTicks--;
-
-                if (veteranWaitTicks == 0 || playersReady >= 25) {
-                    veteranWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
-                    begin(veteran_boat);
-                }
-
-            }
-        };
-        TaskManager.submit(veteranLobbyTask);
     }
 
-    private void begin(PestControlBoat boat) {
+    private static void begin(PestControlBoat boat) {
         Queue<Player> queue = boat.getQueue();
         Iterator lobbyQueue = queue.iterator();
         PestControlArea area = new PestControlArea();
@@ -212,18 +216,18 @@ public class PestControl implements Minigame {
         }
     }
 
-    private void sendSquireMessage(String message, PestControlBoat boat) {
+    private static void sendSquireMessage(String message, PestControlBoat boat) {
         Optional<NPC> squire = World.getNpcs().stream().filter(n -> n.getId() == boat.squireId).findFirst();
         if (!squire.isPresent() || message == null || message.isEmpty())
             return;
         squire.get().forceChat(message);
     }
 
-    public void setupEntities(PestControlBoat boat) {
+    public static void setupEntities(PestControlBoat boat) {
         /** Knight in the middle **/
-        spawnNPC(boat.void_knight_id, new Location(2656, 2592));
+        spawnNPC(boat.void_knight_id, new Location(2656, 2592), true);
         /** Squire to leave next to boat **/
-        spawnNPC(SQUIRE_12, new Location(2655, 2607));
+        spawnNPC(SQUIRE_12, new Location(2655, 2607), false);
         /** Rando PestControlPortal Sequence **/
         chosenPortalSpawnSequence = PORTAL_SEQUENCE[Misc.random(PORTAL_SEQUENCE.length - 1)];
         /** PestControlPortal spawns **/
@@ -252,7 +256,7 @@ public class PestControl implements Minigame {
         TaskManager.submit(portalTask);
     }
 
-    private void moveToGame(PestControlBoat boat, Player player, PestControlArea area) {
+    private static void moveToGame(PestControlBoat boat, Player player, PestControlArea area) {
         area.add(player);
         player.smartMove(PestControlArea.LAUNCHER_BOAT_BOUNDARY);
         NpcDialogue.sendStatement(player, NpcIdentifiers.SQUIRE_12, new String[] {"You must defend the Void Knight while the portals are", "unsummoned. The ritual takes twenty minutes though,", "so you can help out by destroying them yourselves!", "Now GO GO GO!" }, DialogueExpression.DISTRESSED);
@@ -272,14 +276,17 @@ public class PestControl implements Minigame {
         return playersInGame() > 0 && boatType != null;
     }
 
-    public void spawnNPC(int id, Location pos) {
+    public static void spawnNPC(int id, Location pos, boolean isKnight) {
         NPC npc = NPC.create(id, pos);
+        if (isKnight) {
+            knight = npc;
+        }
         area.add(npc);
         spawned_npcs.add(npc);
         World.getAddNPCQueue().add(npc);
     }
 
-    public void spawnPortal(int id, Location pos) {
+    public static void spawnPortal(int id, Location pos) {
         PestControlPortalNPC npc = new PestControlPortalNPC(id, pos);
         int hitPoints = boatType == PestControlBoat.NOVICE ? 200 : 250;
         npc.setHitpoints(hitPoints);
@@ -410,7 +417,7 @@ public class PestControl implements Minigame {
                 int index = boatType.ordinal();
                 for (PestControlPortalData portal : PestControlPortalData.values()) {
                     if (portalExists(portal)) {
-                        spawnNPC(PEST_CONTROL_MONSTERS[index][Misc.random(PEST_CONTROL_MONSTERS[index].length - 1)], new Location(portal.npcSpawnX, portal.npcSpawnY));
+                        spawnNPC(PEST_CONTROL_MONSTERS[index][Misc.random(PEST_CONTROL_MONSTERS[index].length - 1)], new Location(portal.npcSpawnX, portal.npcSpawnY), false);
                     }
                 }
             }
@@ -431,17 +438,8 @@ public class PestControl implements Minigame {
         return false;
     }
 
-    private boolean isKnightDead() {
-        return getKnightsHealth() == 0;
-    }
-
-    public int getKnightsHealth() {
-        /** For loop due to calling every tick **/
-        for (NPC npc : spawned_npcs) {
-            if (npc != null && npc.getId() == boatType.void_knight_id)
-                return npc.getHitpoints();
-        }
-        return 0;
+    private static boolean isKnightDead() {
+        return knight == null || knight != null && knight.getHitpoints() == 0;
     }
 
     /**

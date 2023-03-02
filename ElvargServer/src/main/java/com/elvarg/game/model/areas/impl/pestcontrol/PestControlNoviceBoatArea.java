@@ -1,5 +1,6 @@
 package com.elvarg.game.model.areas.impl.pestcontrol;
 
+import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.object.GameObject;
@@ -7,9 +8,11 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
+import com.elvarg.game.task.TaskManager;
 
 import java.util.List;
 
+import static com.elvarg.game.content.minigames.impl.CastleWars.START_GAME_TASK;
 import static com.elvarg.game.content.minigames.impl.pestcontrol.PestControl.*;
 import static com.elvarg.util.ObjectIdentifiers.LADDER_175;
 
@@ -25,6 +28,10 @@ public class PestControlNoviceBoatArea extends Area {
     public void postEnter(Mobile character) {
         if (!character.isPlayer()) {
             return;
+        }
+
+        if (!NOVICE_LOBBY_TASK.isRunning() && getPlayers().size() > 0) {
+            TaskManager.submit(NOVICE_LOBBY_TASK);
         }
 
         character.getAsPlayer().setWalkableInterfaceId(21119);
