@@ -349,18 +349,13 @@ public class CombatFactory {
 		}
 
         // Make sure we the path is clear for projectiles..
-        if (attacker.useProjectileClipping() && !RegionManager.canProjectileAttack(attacker, target) && !overrideEntity(target)) {
+        if (attacker.useProjectileClipping() && !RegionManager.canProjectileAttack(attacker, target)) {
 			return false;
 		}
 
 		return true;
 	}
 
-	private static boolean overrideEntity(Mobile target) {
-		if (target.isPlayer())
-			return false;
-		return PestControl.isPortal(target.getAsNpc().getId(), false);
-	}
 
 	private static void stepOut(Mobile attacker, Mobile target) {
 		List<Location> tiles = Arrays.asList(
