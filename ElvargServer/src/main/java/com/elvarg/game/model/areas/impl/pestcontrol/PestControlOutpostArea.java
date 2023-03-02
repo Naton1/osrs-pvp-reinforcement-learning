@@ -2,8 +2,10 @@ package com.elvarg.game.model.areas.impl.pestcontrol;
 
 import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.content.minigames.impl.pestcontrol.PestControlBoat;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
+import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
 
 import java.util.List;
@@ -21,12 +23,12 @@ public class PestControlOutpostArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
-        switch (objectId) {
+    public boolean handleObjectClick(Player player, GameObject object, int type) {
+        switch (object.getId()) {
 
         }
 
-        Optional<PestControlBoat> boatdata = PestControlBoat.getBoat(objectId);
+        Optional<PestControlBoat> boatdata = PestControlBoat.getBoat(object.getId());
 
         if (boatdata == null || !boatdata.isPresent())
             return false;

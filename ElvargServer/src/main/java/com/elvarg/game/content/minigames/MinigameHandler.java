@@ -2,6 +2,7 @@ package com.elvarg.game.content.minigames;
 
 import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
+import com.elvarg.game.content.minigames.impl.pestcontrol.PestControlBoat;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 
@@ -12,12 +13,12 @@ public class MinigameHandler {
 
     public enum Minigames {
         CASTLEWARS("Castlewars", new CastleWars()),
-        PEST_CONTROL("Pest Control", new PestControl());
+        PEST_CONTROL("Pest Control", new PestControl(PestControlBoat.NOVICE));
 
         private final String name;
         private final Minigame minigame;
 
-        private Minigames(final String name, final Minigame minigame) {
+        Minigames(final String name, final Minigame minigame) {
             this.name = name;
             this.minigame = minigame;
         }

@@ -686,10 +686,14 @@ public final class MovementQueue {
             // Find the nearest tile surrounding the target
             destination = PathFinder.getClosestAttackableTile(character, following, attackDistance);
             if (destination == null) {
+                if (character.isPlayer()) {
+                    character.getAsPlayer().sendMessage("I can't reach that!");
+                    character.getAsPlayer().getCombat().reset();
+                }
+                this.reset();
                 return;
             }
         }
-
         PathFinder.calculateWalkRoute(character, destination.getX(), destination.getY());
     }
 

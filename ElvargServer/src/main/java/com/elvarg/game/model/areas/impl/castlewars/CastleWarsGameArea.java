@@ -3,6 +3,7 @@ package com.elvarg.game.model.areas.impl.castlewars;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.*;
@@ -174,8 +175,8 @@ public class CastleWarsGameArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
-        switch (objectId) {
+    public boolean handleObjectClick(Player player, GameObject object, int type) {
+        switch (object.getId()) {
             case PORTAL_10:// Portals in team respawn room
             case PORTAL_11:
                 player.moveTo(new Location(2440, 3089, 0));

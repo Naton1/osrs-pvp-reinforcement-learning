@@ -1,5 +1,7 @@
 package com.elvarg.game.entity.impl;
 
+import com.elvarg.game.content.combat.CombatFactory;
+import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.Combat;
@@ -289,7 +291,7 @@ public abstract class Mobile extends Entity {
 	}
 	
 	public boolean useProjectileClipping() {
-	    return true;
+	    return CombatFactory.getMethod(this) != CombatFactory.MELEE_COMBAT;
 	}
 
 	public abstract void appendDeath();
@@ -683,5 +685,14 @@ public abstract class Mobile extends Entity {
 		}
 
 		this.getAsPlayer().getPacketSender().sendMessage(message);
+	}
+
+	public boolean isImmuneToPoison() {
+		if (this.isNpc()) {
+			NPC npc = this.getAsNpc();
+			if (PestControl.isPortal(npc.getId(), false))
+				return true;
+		}
+		return false;
 	}
 }

@@ -3,41 +3,46 @@ package com.elvarg.game.content.minigames.impl.pestcontrol;
 import com.elvarg.game.World;
 import com.elvarg.game.content.minigames.Minigame;
 import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.entity.impl.npc.impl.pestcontrol.PestControlPortalNPC;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
+import com.elvarg.game.model.areas.impl.PrivateArea;
 import com.elvarg.game.model.areas.impl.pestcontrol.PestControlArea;
 import com.elvarg.game.model.areas.impl.pestcontrol.PestControlNoviceBoatArea;
 import com.elvarg.game.model.areas.impl.pestcontrol.PestControlOutpostArea;
 import com.elvarg.game.model.dialogues.DialogueExpression;
-import com.elvarg.game.model.dialogues.entries.impl.NpcDialogue;
+import com.elvarg.game.model.dialogues.builders.DialogueChainBuilder;
+import com.elvarg.game.model.dialogues.entries.impl.*;
+import com.elvarg.game.task.Task;
+import com.elvarg.game.task.TaskManager;
 import com.elvarg.util.Misc;
 import com.elvarg.util.NpcIdentifiers;
 import com.google.common.collect.Lists;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
-import static com.elvarg.game.World.getNpcs;
 import static com.elvarg.util.NpcIdentifiers.*;
 
 public class PestControl implements Minigame {
 
     /**
-     * TODO:
-     * Spawn all NPCS outside arena
-     * Make NPCs auto attack the gates, then void knight, defend portals
-     * Change player.pcDamage to an attribute
-     * Waiting boat interface
-     * Game area interface
-     * Instanced games and support for novice/med/advanced boats
-     * Gates need to open
-     * Fence damaging and repairing
-     * <p>
-     * Handle gates
-     * Fix NPC ids for portal spawns
-     */
+     * - Splatters have no dest they roam until rng to explode or death. possible roaming 15 tiles?
+     * - locks player until continue option shows on dialogue? 2 ticks maybe 3?
+     * - Torchers rather path to a good spot for the knight or target closest player
+     * - Ravanger isnt aggressive and has random path tiles and destroys barriers/doors with X chance looks like 25 tile distance roaming
+     **/
+
+    private static PrivateArea area;
+
+    private static NPC knight;
+
+    public PestControl(PestControlBoat boatType) {
+        this.boatType = boatType;
+        this.area = new PestControlArea();
+    }
     public static final Area GAME_AREA = new PestControlArea();
 
     public static final Area OUTPOST_AREA = new PestControlOutpostArea();
@@ -48,41 +53,219 @@ public class PestControl implements Minigame {
      * The tile which is right beside the gang plank.
      */
     public static final Location GANG_PLANK_START = new Location(2657, 2639, 0);
-
-    /**
-     * /** how long before were put into the game from lobby
-     */
-    private static final int WAIT_TIMER = 60;
     /**
      * How many players we need to start a game
      */
-    private final static int PLAYERS_REQUIRED = 1;
+    private final static int PLAYERS_REQUIRED = 1;//5 default
 
-    public static int gameTimer = -1;
-    public static int waitTimer = 60;
-    public static boolean gameStarted = false;
-    private int properTimer = 0;
-    public static int KNIGHTS_HEALTH = -1;
+    public int ticksElapsed;
+    public static final int DEFAULT_BOAT_WAITING_TICKS = 10;//50 secs default
 
-    /**
-     * Array used for storing the portals health
-     */
-    public static int[] portalHealth = {200, 200, 200, 200};
-    public static int[] portals = {3777, 3778, 3779, 3780};
+    private static List<NPC> spawned_npcs = Lists.newArrayList();
 
-    public int shifter = SHIFTER + Misc.random(9);
-    public int brawler = BRAWLER + Misc.random(4);
-    public int defiler = DEFILER + Misc.random(9);
-    public int ravager = RAVAGER + Misc.random(4);
-    public int torcher = TORCHER + Misc.random(7);
-    public int splater = SPLATTER + Misc.random(4);
+    private static PestControlPortalData[] chosenPortalSpawnSequence;
 
-    private final int[][] pcNPCData = {{portals[0], 2628, 2591}, // portal
-            {portals[1], 2680, 2588}, // portal
-            {portals[2], 2669, 2570}, // portal
-            {portals[3], 2645, 2569}, // portal
-            {VOID_KNIGHT_GAME, 2656, 2592},
+    public static PestControlBoat boatType;
+
+    private static final PestControlPortalData[][] PORTAL_SEQUENCE = {
+            { PestControlPortalData.BLUE, PestControlPortalData.RED, PestControlPortalData.YELLOW, PestControlPortalData.PURPLE },
+            { PestControlPortalData.BLUE, PestControlPortalData.PURPLE, PestControlPortalData.RED, PestControlPortalData.YELLOW },
+            { PestControlPortalData.PURPLE, PestControlPortalData.BLUE, PestControlPortalData.YELLOW, PestControlPortalData.RED },
+            { PestControlPortalData.PURPLE, PestControlPortalData.YELLOW, PestControlPortalData.BLUE, PestControlPortalData.RED },
+            { PestControlPortalData.YELLOW, PestControlPortalData.RED, PestControlPortalData.PURPLE, PestControlPortalData.BLUE },
+            { PestControlPortalData.YELLOW, PestControlPortalData.PURPLE, PestControlPortalData.RED, PestControlPortalData.BLUE }
     };
+
+    private static int totalPortalsUnlocked;
+    private static void unshieldPortal() {
+        if (chosenPortalSpawnSequence == null)
+            return;
+        PestControlPortalData data = chosenPortalSpawnSequence[totalPortalsUnlocked];
+        Optional<NPC> portal = spawned_npcs.stream().filter(n -> n != null && n.getId() == data.shieldId).findFirst();
+        if (!portal.isPresent())
+            return;
+        GAME_AREA.getPlayers().forEach(p -> p.getPacketSender().sendMessage("The <col="+data.colourCode+">"+data.name().toLowerCase().replaceAll("_", " ")+", "+data.name+"</col> portal shield has dropped!"));
+        totalPortalsUnlocked++;
+        portal.get().setNpcTransformationId(data.shieldId - 4);
+    }
+
+    private static int portalsKilled;
+    public static void healKnight(NPC npc) {
+        portalsKilled++;
+        spawned_npcs.remove(npc);
+        if (knight == null || knight.isDying())
+            return;
+        knight.heal(50);
+    }
+
+    public boolean timeExpired() {
+        return ticksElapsed >= (100 * 20);
+    }
+
+    public static final Task NOVICE_LOBBY_TASK = new Task(1, PestControlBoat.NOVICE.name()) {
+
+        PestControlBoat novice_boat = PestControlBoat.NOVICE;
+        int noviceWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+        @Override
+        protected void execute() {
+
+            int playersReady = novice_boat.getQueue().size();
+
+            if (playersReady == 0) {
+                stop();
+                return;
+            }
+
+            if (playersReady < PLAYERS_REQUIRED)
+                return;
+
+            if (playersReady >= 10 && Math.random() <= .15) {
+                sendSquireMessage("We're about to lanch!", novice_boat);
+            }
+
+            noviceWaitTicks--;
+
+            if (noviceWaitTicks == 0 || playersReady >= 25) {
+                noviceWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+                begin(novice_boat);
+            }
+
+        }
+    };
+
+    public static final Task INTERMEDIATE_LOBBY_TASK = new Task(1, PestControlBoat.INTERMEDIATE.name()) {
+
+        PestControlBoat intermediate_boat = PestControlBoat.INTERMEDIATE;
+        int intermediateWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+        @Override
+        protected void execute() {
+
+            int playersReady = intermediate_boat.getQueue().size();
+
+            if (playersReady == 0) {
+                stop();
+                return;
+            }
+
+            if (playersReady >= 10 && Math.random() <= .15) {
+                sendSquireMessage("We're about to lanch!", intermediate_boat);
+            }
+
+            intermediateWaitTicks--;
+
+            if (intermediateWaitTicks == 0 || playersReady >= 25) {
+                intermediateWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+                begin(intermediate_boat);
+            }
+
+        }
+    };
+
+    public static final Task VETERAN_LOBBY_TASK = new Task(1, PestControlBoat.VETERAN.name()) {
+
+        int veteranWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+        @Override
+        protected void execute() {
+
+            PestControlBoat veteran_boat = PestControlBoat.VETERAN;
+
+            int playersReady = veteran_boat.getQueue().size();
+
+            if (playersReady == 0) {
+                stop();
+                return;
+            }
+
+            if (playersReady >= 10 && Math.random() <= .15) {
+                sendSquireMessage("We're about to lanch!", veteran_boat);
+            }
+
+            veteranWaitTicks--;
+
+            if (veteranWaitTicks == 0 || playersReady >= 25) {
+                veteranWaitTicks = DEFAULT_BOAT_WAITING_TICKS;
+                begin(veteran_boat);
+            }
+
+        }
+    };
+
+    @Override
+    public void init() {
+
+    }
+
+    private static void begin(PestControlBoat boat) {
+        Queue<Player> queue = boat.getQueue();
+        Iterator lobbyQueue = queue.iterator();
+        PestControlArea area = new PestControlArea();
+        setupEntities(boat);
+        int movedPlayers = 0;
+        while (lobbyQueue.hasNext()) {
+            if (movedPlayers >= 25) {
+                break;
+            }
+            movedPlayers++;
+            Player player = queue.poll();
+            if (player != null) {
+                moveToGame(boat, player, area);
+            }
+        }
+        if (queue.size() > 0) {
+            queue.forEach(p -> p.getPacketSender().sendMessage("You have been given priority level 1 over other players in joining the next game."));
+        }
+    }
+
+    private static void sendSquireMessage(String message, PestControlBoat boat) {
+        Optional<NPC> squire = World.getNpcs().stream().filter(n -> n.getId() == boat.squireId).findFirst();
+        if (!squire.isPresent() || message == null || message.isEmpty())
+            return;
+        squire.get().forceChat(message);
+    }
+
+    public static void setupEntities(PestControlBoat boat) {
+        /** Knight in the middle **/
+        spawnNPC(boat.void_knight_id, new Location(2656, 2592), true);
+        /** Squire to leave next to boat **/
+        spawnNPC(SQUIRE_12, new Location(2655, 2607), false);
+        /** Rando PestControlPortal Sequence **/
+        chosenPortalSpawnSequence = PORTAL_SEQUENCE[Misc.random(PORTAL_SEQUENCE.length - 1)];
+        /** PestControlPortal spawns **/
+        Arrays.stream(chosenPortalSpawnSequence).forEach(portal -> spawnPortal(portal.shieldId, new Location(portal.xPosition, portal.yPosition)));
+
+        Task portalTask = new Task(1) {
+
+            int ticks = 50;
+            @Override
+            protected void execute() {
+
+                if (totalPortalsUnlocked == 4 || isKnightDead()) {
+                    stop();
+                    return;
+                }
+
+                ticks--;
+
+                if (ticks == 0 || totalPortalsUnlocked == 0 && ticks / 2 == 15) {
+                    unshieldPortal();
+                    ticks = 50;
+                }
+
+            }
+        };
+        TaskManager.submit(portalTask);
+    }
+
+    private static void moveToGame(PestControlBoat boat, Player player, PestControlArea area) {
+        area.add(player);
+        player.smartMove(PestControlArea.LAUNCHER_BOAT_BOUNDARY);
+        NpcDialogue.sendStatement(player, NpcIdentifiers.SQUIRE_12, new String[] {"You must defend the Void Knight while the portals are", "unsummoned. The ritual takes twenty minutes though,", "so you can help out by destroying them yourselves!", "Now GO GO GO!" }, DialogueExpression.DISTRESSED);
+
+        /**
+         * gameStarted = true;
+         * gameTimer = 400;
+         */
+    }
 
     /**
      * Determines whether the game is still active.
@@ -90,38 +273,107 @@ public class PestControl implements Minigame {
      * @return
      */
     public boolean isActive() {
-        return gameTimer > 0 && gameStarted;
+        return playersInGame() > 0 && boatType != null;
     }
 
-    /**
-     * Moves the player to a random spot within the launcher boat.
-     *
-     * @param player
-     */
-    public void movePlayerToBoat(Player player) {
-        player.smartMove(PestControlArea.LAUNCHER_BOAT_BOUNDARY);
+    public static void spawnNPC(int id, Location pos, boolean isKnight) {
+        NPC npc = NPC.create(id, pos);
+        if (isKnight) {
+            knight = npc;
+        }
+        area.add(npc);
+        spawned_npcs.add(npc);
+        World.getAddNPCQueue().add(npc);
     }
 
-    /**
-     * array used for storing the npcs used in the minigame
-     *
-     * @order npcId, xSpawn, ySpawn, health
-     */
-    private final int[][] voidMonsterData = {
-            {shifter, 2660 + Misc.random(4), 2592 + Misc.random(4)},
-            {brawler, 2663 + Misc.random(4), 2575 + Misc.random(4)},
-            {defiler, 2656 + Misc.random(4), 2572 + Misc.random(4)},
-            {ravager, 2664 + Misc.random(4), 2574 + Misc.random(4)},
-            {torcher, 2656 + Misc.random(4), 2595 + Misc.random(4)},
-            {ravager, 2634 + Misc.random(4), 2596 + Misc.random(4)},
-            {brawler, 2638 + Misc.random(4), 2588 + Misc.random(4)},
-            {shifter, 2637 + Misc.random(4), 2598 + Misc.random(4)},
-            {ravager, 2677 + Misc.random(4), 2579 + Misc.random(4)},
-            {defiler, 2673 + Misc.random(4), 2584 + Misc.random(4)},
-            {defiler, 2673 + Misc.random(4), 2584 + Misc.random(4)},
-            {defiler, 2675 + Misc.random(4), 2591 + Misc.random(4)},
-            {splater, 2644 + Misc.random(4), 2575 + Misc.random(4)},
-            {splater, 2633 + Misc.random(4), 2595 + Misc.random(4)}};
+    public static void spawnPortal(int id, Location pos) {
+        PestControlPortalNPC npc = new PestControlPortalNPC(id, pos);
+        int hitPoints = boatType == PestControlBoat.NOVICE ? 200 : 250;
+        npc.setHitpoints(hitPoints);
+        npc.getDefinition().setMaxHitpoints(hitPoints);
+        area.add(npc);
+        spawned_npcs.add(npc);
+        World.getAddNPCQueue().add(npc);
+    }
+
+    public static boolean isPortalsDead() {
+        return portalsKilled == 4;
+    }
+
+    public static boolean isPortal(int id, boolean shielded) {
+        List<Integer> portalIds = Lists.newArrayList();
+        for (PestControlPortalData d : PestControlPortalData.values())
+            portalIds.add(shielded ? d.shieldId : d.shieldId - 4);
+        return portalIds.stream().anyMatch(s -> s.intValue() == id);
+    }
+
+    private static final int[][] PEST_CONTROL_MONSTERS = {
+            {
+                    BRAWLER,//Brawler - level 51
+                    BRAWLER_2,//Brawler - level 76
+                    BRAWLER_3,//Brawler - level 101
+                    DEFILER,//Defiler - level 33
+                    DEFILER_2,//Defiler - level 50
+                    RAVAGER, //Ravager - level 36
+                    RAVAGER_2, //Ravager - level 53
+                    RAVAGER_3,//Ravager - level 71
+                    SHIFTER,//Shifter - Level 38
+                    SHIFTER_3,//Shifter - Level 57
+                    SHIFTER,//Spinner - Level 36
+                    SHIFTER_3,//Spinner - Level 55
+                    SHIFTER_5,//Spinner - Level 74
+                    SPLATTER,//Splatter - Level 22
+                    SPLATTER_2,//Splatter - Level 33
+                    SPLATTER_3,//Splatter - Level 44
+                    TORCHER,//Torcher - Level 33
+                    TORCHER_3,//Torcher - Level 49
+
+            },
+            {
+                    BRAWLER_2,//Brawler - level 76
+                    BRAWLER_3,//Brawler - level 101
+                    BRAWLER_4,//Brawler - level 129
+                    DEFILER_2,//Defiler - level 50
+                    DEFILER_4,//Defiler - level 66
+                    DEFILER_5,//Defiler - level 80
+                    RAVAGER_2, //Ravager - level 53
+                    RAVAGER_3,//Ravager - level 71
+                    RAVAGER_4, //Ravager - level 89
+                    SHIFTER_3,//Shifter - Level 57
+                    SHIFTER_5,//Shifter - Level 76
+                    SHIFTER_7,//Shifter - Level 90
+                    SHIFTER_3,//Spinner - Level 55
+                    SHIFTER_5,//Spinner - Level 74
+                    SHIFTER_7,//Spinner - Level 88
+                    SHIFTER_9,//Spinner - Level 92
+                    SPLATTER_2,//Splatter - Level 33
+                    SPLATTER_3,//Splatter - Level 44
+                    SPLATTER_4,//Splatter - Level 54
+                    TORCHER_3,//Torcher - Level 49
+                    TORCHER_5,//Torcher - Level 66
+                    TORCHER_7,//Torcher - Level 79
+            },
+            {
+                    BRAWLER_3,//Brawler - level 101
+                    BRAWLER_4,//Brawler - level 129
+                    DEFILER_7,//Defiler - level 80
+                    DEFILER_9,//Defiler - level 97
+                    RAVAGER_3,//Ravager - level 71
+                    RAVAGER_4,//Ravager - level 89
+                    RAVAGER_5,//Ravager - level 106
+                    SHIFTER_7,//Shifter - Level 90
+                    SHIFTER_9,//Shifter - Level 104
+                    SHIFTER_5,//Spinner - Level 74
+                    SHIFTER_7,//Spinner - Level 88
+                    SHIFTER_9,//Spinner - Level 92
+                    SPLATTER_3,//Splatter - Level 44
+                    SPLATTER_4,//Splatter - Level 54
+                    SPLATTER_5,//Splatter - Level 65
+                    TORCHER_7,//Torcher - Level 79
+                    TORCHER_9,//Torcher - Level 91
+                    TORCHER_10,//Torcher - Level 92
+            }
+    };
 
     @Override
     public boolean firstClickObject(Player player, GameObject object) {
@@ -134,85 +386,60 @@ public class PestControl implements Minigame {
         return false;
     }
 
+    private static final int SPAWN_TICK_RATE = 10;
+
+    private int last_spawn = SPAWN_TICK_RATE;
+
     @Override
     public void process() {
         try {
-            if (properTimer > 0) {
-                properTimer--;
+
+            if (!isActive()) {
                 return;
-            } else {
-                properTimer = 1;
             }
-            if (waitTimer > 0) {
-                waitTimer--;
-            } else if (waitTimer == 0) {
-                startGame();
+
+            ticksElapsed++;
+
+            if (isPortalsDead()) {
+                endGame(true);
+                return;
             }
-            if (KNIGHTS_HEALTH == 0) {
+
+            if (playersInGame() < 1 || isKnightDead() || timeExpired()) {
                 endGame(false);
             }
-            if (gameStarted && playersInGame() < 1) {
-                endGame(false);
-            }
-            if (isActive()) {
-                gameTimer--;
-                if (allPortalsDead() || allPortalsDead3()) {
-                    endGame(true);
+
+            /**
+             * NPC spawning..
+             */
+            if (--last_spawn == 0) {
+                last_spawn = SPAWN_TICK_RATE;
+                int index = boatType.ordinal();
+                for (PestControlPortalData portal : PestControlPortalData.values()) {
+                    if (portalExists(portal)) {
+                        spawnNPC(PEST_CONTROL_MONSTERS[index][Misc.random(PEST_CONTROL_MONSTERS[index].length - 1)], new Location(portal.npcSpawnX, portal.npcSpawnY), false);
+                    }
                 }
-            } else if (gameTimer <= 0 && gameStarted) {
-                endGame(false);
             }
-        } catch (RuntimeException e) {
-            System.out.println("Failed to set process");
+
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void init() {
-
-    }
-
-    /**
-     * Method we use for removing a player from the pc game
-     *
-     * @param player The Player.
-     */
-    public static void removePlayerGame(Player player) {
-        player.moveTo(new Location(2657, 2639, 0));
-    }
-
-    /***
-     * Moving players to arena if there's enough players
-     */
-    private void startGame() {
-        if (playersInBoat() < PLAYERS_REQUIRED) {
-            waitTimer = WAIT_TIMER;
-            return;
+    private boolean portalExists(PestControlPortalData portal) {
+        for (NPC npc : spawned_npcs) {
+            if (portal == null || npc == null)
+                continue;
+            if (Objects.equals(npc.getLocation(), new Location(portal.xPosition, portal.yPosition, 0)) && !npc.isDying())
+                return true;
         }
-        for (int i = 0; i < portalHealth.length; i++) {
-            portalHealth[i] = 200;
-        }
-        gameStarted = true;
-        gameTimer = 400;
-        KNIGHTS_HEALTH = 250;
-        waitTimer = -1;
-        spawnNPC();
-
-        // Send all the players into the minigame
-        NOVICE_BOAT_AREA.getPlayers().forEach((player) -> {
-            movePlayerToBoat(player);
-            NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT, "The Pest Control game has begun!", DialogueExpression.HAPPY);
-        });
+        return false;
     }
 
-    /**
-     * Checks how many players are in the waiting lobby
-     *
-     * @return players waiting
-     */
-    private static int playersInBoat() {
-        return NOVICE_BOAT_AREA.getPlayers().size();
+    private static boolean isKnightDead() {
+        return knight == null || knight != null && knight.getHitpoints() == 0;
     }
 
     /**
@@ -225,145 +452,86 @@ public class PestControl implements Minigame {
     }
 
     private void endGame(boolean won) {
-        for (Player player : GAME_AREA.getPlayers()) {
+        GAME_AREA.getPlayers().forEach(player -> {
+
             player.moveTo(new Location(2657, 2639, 0));
-            if (won && player.pcDamage > 50) {
-                NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT, "Do not let the Void Knights health reach 0!" +
-                        "You can regain health by destroying more monsters,", DialogueExpression.SLIGHTLY_SAD);
-                int POINT_REWARD = 4;
-                player.getPacketSender().sendMessage(
-                        "You have won the pest control game and have been awarded "
-                                + POINT_REWARD + " Pest Control points.");
-                player.pcPoints += POINT_REWARD;
-                //gp reward removed
-            } else if (won) {
-                int POINT_REWARD2 = 2;
-                NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT, "The void knights notice your lack of zeal. You only gain "
-                        + POINT_REWARD2 + " points.", DialogueExpression.DISTRESSED);
-                player.pcPoints += POINT_REWARD2;
-            } else {
-                NpcDialogue.send(player, NpcIdentifiers.VOID_KNIGHT,
-                        "You failed to kill all the portals in 3 minutes and have not been awarded points.", DialogueExpression.CALM);
-                player.getPacketSender()
-                        .sendMessage(
-                                "You failed to kill all the portals in 3 minutes and have not been awarded points.");
+
+            Integer damage = (Integer) player.getAttribute("pcDamage");
+            int myDamage = damage == null ? 0 : damage;
+
+            int reward_points = 2;
+
+            if (!won) {
+                NpcDialogue.send(player, boatType.squireId, "The Void Knight was killed, another of our Order has"+"fallen and that Island is lost.", DialogueExpression.DISTRESSED);
+                return;
             }
-        }
-        cleanUp();
+            if (myDamage > 50) {
+                sendWinnerDialogue(player,4, 1, boatType);
+                return;
+            }
+            StatementDialogue.send(player, new String[] {"The void knights notice your lack of zeal in that battle and have not", "presented you with any points."});
+            player.pcPoints += reward_points;
+        });
+
+        reset();
+    }
+
+    public static void sendWinnerDialogue(Player p, int pointsToAdd, int coinReward, PestControlBoat boat) {
+        DialogueChainBuilder dialogueBuilder = new DialogueChainBuilder();
+            dialogueBuilder.add(
+                    new NpcDialogue(0, boat.squireId, "Congratulations! You managed to destroy all the portals!"+" We've awarded you "+pointsToAdd+" Void Knight Commendation"+" points. Please also accept these coins as a reward.", (player) -> {
+                        player.pcPoints += pointsToAdd;
+                        player.getInventory().add(new Item(995, coinReward));
+                        StatementDialogue.send(player, new String[] {"<col=00077a>You now have</col><col=b11717> "+player.pcPoints+"</col><col=00077a> Void Knight Commendation points!", "You can speak to a Void Knight to exchange your points for", "rewards."});
+                    }),
+                    new EndDialogue(1)
+            );
+        p.getDialogueManager().start(dialogueBuilder, 0);
     }
 
     /**
      * Resets the game variables and map
      */
-    private void cleanUp() {
-        gameTimer = -1;
-        KNIGHTS_HEALTH = -1;
-        waitTimer = WAIT_TIMER;
-        gameStarted = false;
-
-        /*
-         * Removes the npcs from the game if any left over for whatever reason
-         */
-        for (int[] aPcNPCData : pcNPCData) {
-            for (int j = 0; j < NPC.npcs.length; j++) {
-                if (NPC.npcs[j] != null) {
-                    if (NPC.npcs[j].getId() == aPcNPCData[0]) {
-                        NPC.npcs[j] = null;
-                    }
-                }
-            }
-        }
-        for (int[] aPcNPCData : voidMonsterData) {
-            for (int j = 0; j < NPC.npcs.length; j++) {
-                if (NPC.npcs[j] != null) {
-                    if (NPC.npcs[j].getId() == aPcNPCData[0]) {
-                        NPC.npcs[j] = null;
-                    }
-                }
-            }
-        }
+    private void reset() {
+        ticksElapsed = -1;
+        boatType = PestControlBoat.NOVICE;
+        chosenPortalSpawnSequence = null;
+        totalPortalsUnlocked = 0;
+        portalsKilled = 0;
+        last_spawn = SPAWN_TICK_RATE;
+        spawned_npcs.stream().filter(n -> n != null).forEach(n -> n.setDying(true));
+        spawned_npcs.clear();
     }
 
-    /**
-     * Checks if the portals are dead
-     *
-     * @return players dead
-     */
-    private static boolean allPortalsDead() {
-        int count = 0;
-        for (int aPortalHealth : portalHealth) {
-            if (aPortalHealth <= 0) {
-                count++;
-                // System.out.println("Portal Health++" + count);
-            }
-        }
-        return count >= 4;
+    private static boolean isQueued(Player player, PestControlBoat boat) {
+        return boat.getQueue().contains(player);
     }
 
-    public boolean allPortalsDead3() {
-        int count = 0;
-        for (NPC npc : getNpcs()) {
-            if (npc != null) {
-                if (npc.getId() > 3777 && npc.getId() < 3780) {
-                    if (npc.needRespawn) {
-                        count++;
-                    }
-                }
-            }
-        }
-        return count >= 4;
-    }
 
-    private static Queue<Player> novice_boat = Lists.newLinkedList(), intermediate_boat = Lists.newLinkedList(), veteran_boat = Lists.newLinkedList();
 
-    private static boolean onList(Player player) {
-        return novice_boat.contains(player) || intermediate_boat.contains(player) || veteran_boat.contains(player);
-    }
     private static void addToQueue(Player player, PestControlBoat boat) {
-        if (onList(player)) {
-            System.err.println("Error.. adding "+player.getUsername()+" to "+boat.name()+" list.. already on the list.");
+        if (isQueued(player, boat)) {
+            System.err.println("Error.. adding " + player.getUsername() + " to " + boat.name() + " list.. already on the list.");
             return;
         }
         /**
          * TODO.. might be a good idea to get the players in the area then add all to the list.. however.. pest control uses a queue system not list!
          */
-        switch (boat) {
-            case VETERAN -> veteran_boat.add(player);
-            case INTERMEDIATE -> intermediate_boat.add(player);
-            case NOVICE -> novice_boat.add(player);
-        }
+        boat.getQueue().add(player);
     }
+
     /**
      * Moves a player into the hash and into the lobby
      *
      * @param player The player
      */
     public static void addToWaitingRoom(Player player, PestControlBoat boat) {
-
         player.getPacketSender().sendMessage("You have joined the Pest Control boat.");
         player.getPacketSender().sendMessage("You currently have " + player.pcPoints + " Pest Control Points.");
-        player.getPacketSender().sendMessage("There are currently " + playersInBoat() + " players ready in the boat.");
         player.getPacketSender().sendMessage("Players needed: " + PLAYERS_REQUIRED + " to 25 players.");
         addToQueue(player, boat);
         player.moveTo(boat.enterBoatLocation);
     }
 
 
-    public static boolean npcIsPCMonster(int npcType) {
-        return (npcType >= 3727 && npcType <= 3776);
-    }
-
-    public static boolean isPCPortal(int npcType) {
-        return (npcType >= 3777 && npcType <= 3780);
-    }
-
-    private void spawnNPC() {
-        //npcid, npcx, npcy, heightlevel, walking type, hp, att, def
-        for (int[] aPcNPCData : pcNPCData) {
-            World.getAddNPCQueue().add(new NPC(aPcNPCData[0], new Location(aPcNPCData[1], aPcNPCData[2])));
-        }
-        for (int[] voidMonsters : voidMonsterData) {
-            World.getAddNPCQueue().add(new NPC(voidMonsters[0], new Location(voidMonsters[1], voidMonsters[2])));
-        }
-    }
 }

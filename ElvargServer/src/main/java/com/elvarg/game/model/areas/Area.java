@@ -4,10 +4,12 @@ import com.elvarg.game.content.combat.CombatFactory.CanAttackResponse;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
 import com.elvarg.game.model.Item;
+import com.elvarg.game.model.MagicSpellbook;
 
 import java.util.*;
 
@@ -24,6 +26,14 @@ public abstract class Area {
         this.npcs = new HashMap<>();
         this.players = new HashMap<>();
         this.playerBots = new HashMap<>();
+    }
+
+    public boolean allowSummonPet(Player player) {
+        return true;
+    }
+
+    public boolean allowDwarfCannon(Player player) {
+        return true;
     }
 
     public final void enter(Mobile character) {
@@ -118,7 +128,7 @@ public abstract class Area {
         // By default, do not do any extra processing for when players deal damage in an area.
     }
 
-    public boolean handleObjectClick(Player player, int objectId, int type) {
+    public boolean handleObjectClick(Player player, GameObject object, int type) {
         // By default, Areas don't need to handle any specific object clicking.
         return false;
     }
@@ -156,5 +166,9 @@ public abstract class Area {
 
     public Collection<PlayerBot> getPlayerBots() {
         return this.playerBots.values();
+    }
+
+    public boolean isSpellDisabled(Player player, MagicSpellbook spellbook, int spellId) {
+        return false;
     }
 }

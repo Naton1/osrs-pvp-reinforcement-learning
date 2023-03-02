@@ -128,9 +128,15 @@ public class PathFinder {
             final Location current = attacker.getLocation();
 
             List<Location> tiles = new ArrayList<>();
-            for (Location tile : defender.outterTiles()) {
-                if (!RegionManager.canMove(attacker.getLocation(), tile, size, size, privateArea)
-                        || RegionManager.blocked(tile, privateArea)) {
+            List<Location> outerTiles = Arrays.stream(defender.outterTiles()).toList();
+
+            if (DEBUG_ATTACK_DISTANCE && attacker.isPlayer() && attacker.getAsPlayer().getRights() == PlayerRights.DEVELOPER) {
+                // If we're debugging attack range
+                outerTiles.forEach(t -> attacker.getAsPlayer().getPacketSender().sendGraphic(AttackRange.PURPLE_GLOW, t));
+            }
+
+            for (Location tile : outerTiles) {
+                if (!RegionManager.canMove(attacker.getLocation(), tile, size, size, privateArea) || RegionManager.blocked(tile, privateArea)) {
                     continue;
                 }
                 // Projectile attack
@@ -139,6 +145,7 @@ public class PathFinder {
                 }
                 tiles.add(tile);
             }
+
             if (!tiles.isEmpty()) {
                 tiles.sort((l1, l2) -> {
                     int distance1 = l1.getDistance(current);

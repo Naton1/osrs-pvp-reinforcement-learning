@@ -208,6 +208,10 @@ public class NPC extends Mobile {
 		// Process areas..
 		AreaManager.process(this);
 
+		if (getCombatMethod() != null) {
+			getCombatMethod().onTick(this, this.getCombat().getTarget());
+		}
+
 		// Regenerating health if needed, but only after 20 seconds of last attack.
 		if (getCombat().getLastAttack().elapsed(20000)
 				|| movementCoordinator.getCoordinateState() == CoordinateState.RETREATING) {

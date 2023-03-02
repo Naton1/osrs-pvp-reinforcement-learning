@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.collision.RegionManager;
@@ -354,6 +355,7 @@ public class CombatFactory {
 
 		return true;
 	}
+
 
 	private static void stepOut(Mobile attacker, Mobile target) {
 		List<Location> tiles = Arrays.asList(
