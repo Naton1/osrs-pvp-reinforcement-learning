@@ -21,6 +21,11 @@ public abstract class CombatMethod {
     public void start(Mobile character, Mobile target) {
     }
 
+    /**
+     * Method is used to process an event which is on the GAME tick cycle which has a rate of 600ms
+     * @param npc
+     * @param target
+     */
     public void onTick(NPC npc, Mobile target) {
 
     }
