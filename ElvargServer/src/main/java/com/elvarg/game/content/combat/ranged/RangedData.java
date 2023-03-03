@@ -451,29 +451,29 @@ public class RangedData {
 		}
     }
 
-	/**
-	 * Gets the hit delay for the {@link PendingHit} which is generated.
-	 *
-	 */
-	public static int hitDelay(int distance, RangedWeaponType type) {
-		switch (type) {
-		case KNIFE:
-		case DART:
-		case TOKTZ_XIL_UL:
-		case BLOWPIPE:
-			return 1 + (distance / 6);
+    /**
+     * Gets the hit delay for the {@link PendingHit} which is generated.
+     *
+     */
+    public static int hitDelay(int distance, RangedWeaponType type) {
+        switch (type) {
+        case KNIFE:
+        case DART:
+        case TOKTZ_XIL_UL:
+        case BLOWPIPE:
+            return 1 + (distance / 6);
 
-		case SHORTBOW:
-		case LONGBOW:
-		case CROSSBOW:
-		default:
-			return 1 + ((3 + distance) / 6);
-		case BALLISTA:
-			return 2 + ((1 + distance) / 6);
-		}
-	}
+        case SHORTBOW:
+        case LONGBOW:
+        case CROSSBOW:
+        default:
+            return 1 + ((3 + distance) / 6);
+        case BALLISTA:
+            return 2 + ((1 + distance) / 6);
+        }
+    }
 
-	public static int dbowArrowDelay(int distance) {
-		return 1 + ((2 + distance) / 3);
-	}
+    public static int dbowArrowDelay(int distance) {
+        return 1 + ((2 + distance) / 3);
+    }
 }

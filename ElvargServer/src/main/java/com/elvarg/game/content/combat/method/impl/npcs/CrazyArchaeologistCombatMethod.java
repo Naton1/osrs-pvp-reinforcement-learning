@@ -35,7 +35,7 @@ public class CrazyArchaeologistCombatMethod extends CombatMethod {
 	private static final Graphic MAKE_IT_RAIN_START_GFX = new Graphic(157, GraphicHeight.MIDDLE);
 	private static final Animation MELEE_ATTACK_ANIM = new Animation(423);
 	private static final Animation RANGED_ATTACK_ANIM = new Animation(3353);
-    private static final Projectile SPECIAL_PROJECTILE = new Projectile(1260, 31, 43, 40, 80);
+	private static final Projectile SPECIAL_PROJECTILE = new Projectile(1260, 31, 43, 40, 80);
 	private static final Projectile RANGED_PROJECILE = new Projectile(1259, 31, 43, 40, 65);
 
 	@Override

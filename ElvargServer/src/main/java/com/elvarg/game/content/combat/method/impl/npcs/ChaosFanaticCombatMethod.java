@@ -35,7 +35,7 @@ public class ChaosFanaticCombatMethod extends CombatMethod {
     private static final Graphic EXPLOSION_END_GFX = new Graphic(157, GraphicHeight.MIDDLE);
     private static final Animation MAGIC_ATTACK_ANIM = new Animation(811);
     private static final Projectile EXPLOSION_PROJECTILE = new Projectile(551, 31, 43, 40, 80);
-	private static final Projectile MAGIC_PROJECTILE = new Projectile(554, 31, 43, 62, 80);
+    private static final Projectile MAGIC_PROJECTILE = new Projectile(554, 31, 43, 62, 80);
     
     @Override
     public PendingHit[] hits(Mobile character, Mobile target) {

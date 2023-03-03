@@ -282,7 +282,7 @@ public class CastleWars implements Minigame {
 
     public static final int TEAM_GUTHIX = 3;
 
-	private static final Projectile CATAPULT_PROJECTILE = new Projectile(304, 75, 75, 30, 100);
+    private static final Projectile CATAPULT_PROJECTILE = new Projectile(304, 75, 75, 30, 100);
 
     public static boolean isGameActive() {
         return GAME_END_TASK.isRunning();

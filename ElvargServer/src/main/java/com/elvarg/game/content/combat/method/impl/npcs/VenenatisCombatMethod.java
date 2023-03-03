@@ -36,7 +36,7 @@ public class VenenatisCombatMethod extends CombatMethod {
 	public void start(Mobile character, Mobile target) {
 		if (currentAttackType == CombatType.MAGIC) {
 		    character.performAnimation(MAGIC_ATTACK_ANIMATION);
-			Projectile.sendProjectile(character, target, MAGIC_PROJECTILE);
+		    Projectile.sendProjectile(character, target, MAGIC_PROJECTILE);
 		} else if (currentAttackType == CombatType.MELEE) {
 		    character.performAnimation(MELEE_ATTACK_ANIMATION);
 		}
