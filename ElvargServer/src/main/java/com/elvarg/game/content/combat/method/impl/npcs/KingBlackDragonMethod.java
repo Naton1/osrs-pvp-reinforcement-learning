@@ -22,22 +22,7 @@ public class KingBlackDragonMethod extends CombatMethod {
     public void start(Mobile character, Mobile target) {
         if (currentAttackType == CombatType.MAGIC) {
             character.performAnimation(new Animation(84));
-            switch (currentBreath) {
-                case DRAGON:
-                    new Projectile(character, target, 393, 40, 55, 31, 43).sendProjectile();
-                    break;
-                case ICE:
-                    new Projectile(character, target, 396, 40, 55, 31, 43).sendProjectile();
-                    break;
-                case POISON:
-                    new Projectile(character, target, 394, 40, 55, 31, 43).sendProjectile();
-                    break;
-                case SHOCK:
-                    new Projectile(character, target, 395, 40, 55, 31, 43).sendProjectile();
-                    break;
-                default:
-                    break;
-            }
+            Projectile.sendProjectile(character, target, currentBreath.projectile);
         } else if (currentAttackType == CombatType.MELEE) {
             character.performAnimation(new Animation(91));
         }
@@ -84,7 +69,7 @@ public class KingBlackDragonMethod extends CombatMethod {
             if (currentAttackType == CombatType.MAGIC) {
                 switch (currentBreath) {
                     case ICE:
-                        CombatFactory.freeze(hit.getTarget().getAsPlayer(), 5);
+                        CombatFactory.freeze(hit.getTarget().getAsPlayer(), 10);
                         break;
                     case POISON:
                         CombatFactory.poisonEntity(hit.getTarget().getAsPlayer(), PoisonType.SUPER);
@@ -125,6 +110,15 @@ public class KingBlackDragonMethod extends CombatMethod {
     }
 
     private enum Breath {
-        ICE, POISON, SHOCK, DRAGON;
+        ICE(new Projectile(396, 31, 43, 40, 55)),
+        POISON(new Projectile(394, 31, 43, 40, 55)),
+        SHOCK(new Projectile(395, 31, 43, 40, 55)),
+        DRAGON(new Projectile(393, 31, 43, 40, 55));
+
+        private Projectile projectile;
+
+        private Breath(Projectile projectile) {
+            this.projectile = projectile;
+        }
     }
 }

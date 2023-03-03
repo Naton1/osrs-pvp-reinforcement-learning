@@ -41,6 +41,32 @@ public class PendingHit {
         this.handleAfterHitEffects = true;
     }
 
+    private PendingHit(CombatMethod method, Mobile attacker, Mobile target) {
+        this.attacker = attacker;
+        this.target = target;
+        this.method = method;
+        this.combatType = method.type();   	
+    }
+    
+    /**
+     * New method added to allow the adding of pending damage of a pre-determined value at a specific delay.
+     * @param attacker Attacking mobile entity.
+     * @param target Recipient mobile entity of the damage.
+     * @param method The combat method used.
+     * @param damage The calculated damage amount.
+     * @param delay 
+     */
+    public static PendingHit create(Mobile attacker, Mobile target, CombatMethod method, int damage, boolean accurate) {
+    	PendingHit hit = new PendingHit(method, attacker, target);
+    	
+    	hit.hits = new HitDamage[] {new HitDamage(damage, damage == 0 ? HitMask.BLUE : HitMask.RED)};
+        hit.delay = 0; //The delay before the hit (0 in most cases with current combat system design).
+        hit.handleAfterHitEffects = true;
+        hit.accurate = true;
+    	hit.totalDamage += damage;
+    	return hit;
+    }
+        
     public Mobile getAttacker() {
         return attacker;
     }

@@ -282,6 +282,8 @@ public class CastleWars implements Minigame {
 
     public static final int TEAM_GUTHIX = 3;
 
+	private static final Projectile CATAPULT_PROJECTILE = new Projectile(304, 75, 75, 30, 100);
+
     public static boolean isGameActive() {
         return GAME_END_TASK.isRunning();
     }
@@ -1064,8 +1066,7 @@ public class CastleWars implements Minigame {
             if (catapult != null) {
                 catapult.performAnimation(new Animation(443));
             }
-            new Projectile(saradomin ? saradomin_catapult_location : zamorak_catapult_location, destination, null, 304, 30, 100, 75, 75, player.getPrivateArea())
-                    .sendProjectile();
+            Projectile.sendProjectile(saradomin ? saradomin_catapult_location : zamorak_catapult_location, destination, CATAPULT_PROJECTILE);
             TaskManager.submit(new Task() {
 
                 int ticks = 0;
