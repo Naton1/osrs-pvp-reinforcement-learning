@@ -6,8 +6,8 @@ import com.elvarg.game.content.combat.method.CombatMethod;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Graphic;
-import com.elvarg.game.model.Priority;
 import com.elvarg.game.model.Projectile;
+import com.elvarg.game.model.Priority;
 import com.elvarg.util.Misc;
 
 /**
@@ -20,7 +20,7 @@ public class JadCombatMethod extends CombatMethod {
 	private static final Animation MAGIC_ATTACK_ANIM = new Animation(2656, Priority.MEDIUM);
 	private static final Animation RANGED_ATTACK_ANIM = new Animation(2652, Priority.MEDIUM);
 	private static final Animation MELEE_ATTACK_ANIM = new Animation(2655, Priority.MEDIUM);
-	private static final int MAGIC_ATTACK_PROJECTILE = 448;
+	private static final Projectile MAGIC_ATTACK_PROJECTILE = new Projectile(448, 110, 33, 25, 100);
 	private static final Graphic RANGED_ATTACK_GRAPHIC = new Graphic(451, Priority.MEDIUM);
 	private CombatType combatType;
 
@@ -40,7 +40,7 @@ public class JadCombatMethod extends CombatMethod {
             break;
         case MAGIC:
             character.performAnimation(MAGIC_ATTACK_ANIM);
-            new Projectile(character, target, MAGIC_ATTACK_PROJECTILE, 25, 100, 110, 33).sendProjectile();
+            Projectile.sendProjectile(character, target, MAGIC_ATTACK_PROJECTILE);
             break;
         default:
             break;

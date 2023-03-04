@@ -4,14 +4,17 @@ import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
+import com.elvarg.game.content.combat.FightType;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.combat.method.CombatMethod;
+import com.elvarg.game.content.combat.ranged.RangedData;
 import com.elvarg.game.content.combat.ranged.RangedData.Ammunition;
 import com.elvarg.game.content.combat.ranged.RangedData.RangedWeapon;
 import com.elvarg.game.content.combat.ranged.RangedData.RangedWeaponType;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
+import com.elvarg.game.model.Location;
 import com.elvarg.game.model.Projectile;
 
 public class RangedCombatMethod extends CombatMethod {
@@ -23,14 +26,15 @@ public class RangedCombatMethod extends CombatMethod {
 
     @Override
     public PendingHit[] hits(Mobile character, Mobile target) {
+        int distance = character.getLocation().getChebyshevDistance(target.getLocation());
+        RangedWeaponType type = character.getCombat().getRangedWeapon().getType();
+        int delay = RangedData.hitDelay(distance, type);
+        
         if (character.getCombat().getRangedWeapon() == RangedWeapon.DARK_BOW) {
-            return new PendingHit[] { new PendingHit(character, target, this, 1), new PendingHit(character, target, this, 2) };
-        }
-        if (character.getCombat().getRangedWeapon() == RangedWeapon.BALLISTA) {
-            return new PendingHit[] { new PendingHit(character, target, this, 2) };
+            return new PendingHit[] { new PendingHit(character, target, this, delay), new PendingHit(character, target, this, RangedData.dbowArrowDelay(distance)) };
         }
 
-        return new PendingHit[]{new PendingHit(character, target, this, 1)};
+        return new PendingHit[]{new PendingHit(character, target, this, delay)};
     }
 
     @Override
@@ -102,7 +106,7 @@ public class RangedCombatMethod extends CombatMethod {
         }
 
         // Fire projectile
-        new Projectile(character, target, projectileId, delay, speed, heightStart, heightEnd).sendProjectile();
+        Projectile.sendProjectile(character, target, new Projectile(projectileId, heightStart, heightEnd, delay, speed));
 
         // Send sound
         SoundManager.sendSound(character.getAsPlayer(), Sound.SHOOT_ARROW);
@@ -110,7 +114,7 @@ public class RangedCombatMethod extends CombatMethod {
         // Dark bow sends two arrows, so send another projectile and delete another
         // arrow.
         if (rangedWeapon == RangedWeapon.DARK_BOW) {
-            new Projectile(character, target, ammo.getProjectileId(), delay - 7, speed + 4, heightStart + 5, heightEnd).sendProjectile();
+            Projectile.sendProjectile(character, target, new Projectile(ammo.getProjectileId(), heightStart + 5, heightEnd, delay - 7, speed + 4));
 
             // Decrement 2 ammo if d bow
             if (character.isPlayer()) {

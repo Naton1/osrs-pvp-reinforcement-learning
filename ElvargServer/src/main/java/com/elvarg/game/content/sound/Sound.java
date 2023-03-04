@@ -71,6 +71,8 @@ public enum Sound {
     // Special attack
 
     DRAGON_DAGGER_SPECIAL(385, 1, 25),
+    
+    DRAGON_SPEAR_SPECIAL(2544),
 
     // Spell sounds
 

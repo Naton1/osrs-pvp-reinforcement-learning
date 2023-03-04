@@ -32,7 +32,7 @@ public class AbyssalTentacleCombatMethod extends MeleeCombatMethod {
         }
         
         target.performGraphic(GRAPHIC);
-        CombatFactory.freeze(target, 10);
+        CombatFactory.freeze(target, 8);
         if (Misc.getRandom(100) < 50) {
             CombatFactory.poisonEntity(target, PoisonType.EXTRA);
         }

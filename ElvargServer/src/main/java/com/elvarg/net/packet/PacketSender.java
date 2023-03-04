@@ -1018,7 +1018,7 @@ public class PacketSender {
 	}
 
 	public PacketSender sendProjectile(Location start, Location end, int offset, int speed, int projectileId,
-			int startHeight, int endHeight, Mobile lockon, int delay) {
+			int startHeight, int endHeight, Mobile lockon, int delay, int angle, int distanceOffset) {
 		sendPosition(start);
 		PacketBuilder out = new PacketBuilder(117);
 		out.put(offset);
@@ -1034,8 +1034,8 @@ public class PacketSender {
 		out.put(endHeight);
 		out.putShort(delay);
 		out.putShort(speed);
-		out.put(16); // Angle
-		out.put(64);
+		out.put(angle);
+		out.put(distanceOffset);
 		player.getSession().write(out);
 		return this;
 	}

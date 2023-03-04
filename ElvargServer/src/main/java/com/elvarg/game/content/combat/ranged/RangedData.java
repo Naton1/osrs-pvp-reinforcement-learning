@@ -6,6 +6,8 @@ import java.util.Map;
 import com.elvarg.game.content.combat.CombatEquipment;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.FightType;
+import com.elvarg.game.content.combat.hit.PendingHit;
+import com.elvarg.game.content.combat.ranged.RangedData.RangedWeaponType;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Graphic;
@@ -449,4 +451,29 @@ public class RangedData {
 		}
     }
 
+    /**
+     * Gets the hit delay for the {@link PendingHit} which is generated.
+     *
+     */
+    public static int hitDelay(int distance, RangedWeaponType type) {
+        switch (type) {
+        case KNIFE:
+        case DART:
+        case TOKTZ_XIL_UL:
+        case BLOWPIPE:
+            return 1 + (distance / 6);
+
+        case SHORTBOW:
+        case LONGBOW:
+        case CROSSBOW:
+        default:
+            return 1 + ((3 + distance) / 6);
+        case BALLISTA:
+            return 2 + ((1 + distance) / 6);
+        }
+    }
+
+    public static int dbowArrowDelay(int distance) {
+        return 1 + ((2 + distance) / 3);
+    }
 }

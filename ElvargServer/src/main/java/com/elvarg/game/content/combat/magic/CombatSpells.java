@@ -15,6 +15,7 @@ import com.elvarg.game.model.GraphicHeight;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.MagicSpellbook;
 import com.elvarg.game.model.Projectile;
+import com.elvarg.game.model.Projectile.ProjectileBuilder;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.task.impl.CombatPoisonEffect.PoisonType;
 
@@ -26,8 +27,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 91, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(91).create();
         }
 
         @Override
@@ -77,8 +78,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 103, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(103).setStart(36).setDelay(61).setDuration(-15).create();
         }
 
         @Override
@@ -151,8 +152,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 94, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(94).create();
         }
 
         @Override
@@ -202,8 +203,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 97, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(97).create();
         }
 
         @Override
@@ -253,8 +254,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 106, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(106).setStart(36).setDelay(44).setDuration(2).create();
         }
 
         @Override
@@ -332,8 +333,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 100, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(100).create();
         }
 
         @Override
@@ -383,8 +384,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 118, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(118).create();
         }
 
         @Override
@@ -434,8 +435,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 109, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(109).create();
         }
 
         @Override
@@ -509,13 +510,13 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 178, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(178).setStart(45).setEnd(0).setDelay(75).setDuration(-29).create();
         }
 
         @Override
         public void spellEffect(Mobile cast, Mobile castOn) {
-			CombatFactory.freeze(castOn, 5);
+			CombatFactory.freeze(castOn, 8);
         }
 
         @Override
@@ -555,8 +556,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 121, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(121).create();
         }
 
         @Override
@@ -606,8 +607,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 124, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(124).create();
         }
 
         @Override
@@ -657,8 +658,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 127, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(127).create();
         }
 
         @Override
@@ -708,8 +709,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 146, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(146).setStart(31).setDelay(46).setDuration(0).setSpan(5).create();
         }
 
         @Override
@@ -759,8 +760,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 133, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(133).create();
         }
 
         @Override
@@ -810,8 +811,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 136, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(136).create();
         }
 
         @Override
@@ -861,8 +862,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 88, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(88).setStart(36).setDelay(60).setDuration(-14).create();
         }
 
         @Override
@@ -912,13 +913,13 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 178, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(178).setStart(45).setEnd(0).setDelay(75).setDuration(-29).create();
         }
 
         @Override
         public void spellEffect(Mobile cast, Mobile castOn) {
-			CombatFactory.freeze(castOn, 10);
+			CombatFactory.freeze(castOn, 16);
         }
 
         @Override
@@ -926,6 +927,11 @@ public enum CombatSpells {
             return Optional.of(new Graphic(180, GraphicHeight.HIGH));
         }
 
+        @Override
+        public int maximumHit() {
+            return 3;
+        }
+        
         @Override
         public Optional<Graphic> startGraphic() {
             return Optional.of(new Graphic(177, GraphicHeight.HIGH));
@@ -958,8 +964,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 328, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(328).setDuration(20).setSpan(5).create();
         }
 
         @Override
@@ -1009,8 +1015,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 139, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(139).create();
         }
 
         @Override
@@ -1060,8 +1066,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 130, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(130).create();
         }
 
         @Override
@@ -1111,8 +1117,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().setDuration(20).setSpan(5).create();
         }
 
         @Override
@@ -1127,7 +1133,7 @@ public enum CombatSpells {
 
         @Override
         public Optional<Graphic> startGraphic() {
-            return Optional.empty();
+        	return Optional.empty();
         }
 
         @Override
@@ -1162,8 +1168,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().setDuration(20).setSpan(5).create();
         }
 
         @Override
@@ -1213,8 +1219,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().setDuration(20).setSpan(5).create();
         }
 
         @Override
@@ -1264,8 +1270,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 159, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(159).create();
         }
 
         @Override
@@ -1315,8 +1321,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 162, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(162).create();
         }
 
         @Override
@@ -1366,8 +1372,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 168, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(168).setStart(36).setDelay(34).setDuration(12).create();
         }
 
         @Override
@@ -1440,8 +1446,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 165, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(165).create();
         }
 
         @Override
@@ -1491,8 +1497,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 171, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(171).setStart(36).setDelay(48).setDuration(-2).create();
         }
 
         @Override
@@ -1566,8 +1572,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 156, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(156).create();
         }
 
         @Override
@@ -1617,13 +1623,13 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 178, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(178).setStart(45).setEnd(0).setDelay(75).setDuration(-29).create();
         }
 
         @Override
         public void spellEffect(Mobile cast, Mobile castOn) {
-        	CombatFactory.freeze(castOn, 15);
+        	CombatFactory.freeze(castOn, 24);
         }
 
         @Override
@@ -1631,6 +1637,11 @@ public enum CombatSpells {
             return Optional.of(new Graphic(179, GraphicHeight.HIGH));
         }
 
+        @Override
+        public int maximumHit() {
+            return 5;
+        }
+        
         @Override
         public Optional<Graphic> startGraphic() {
             return Optional.of(new Graphic(177, GraphicHeight.HIGH));
@@ -1663,8 +1674,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 174, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(174).setStart(36).setDelay(52).setDuration(-6).create();
         }
 
         @Override
@@ -1737,8 +1748,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 344, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(344).create();
         }
 
         @Override
@@ -1816,8 +1827,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 384, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(384).create();
         }
 
         @Override
@@ -1882,8 +1893,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 378, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(378).setEnd(0).create();
         }
 
         @Override
@@ -1938,8 +1949,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 372, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(372).create();
         }
 
         @Override
@@ -1980,7 +1991,7 @@ public enum CombatSpells {
     ICE_RUSH(new CombatAncientSpell() {
         @Override
         public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
-        	CombatFactory.freeze(castOn, 5);
+        	CombatFactory.freeze(castOn, 8);
         }
 
         @Override
@@ -1994,8 +2005,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 360, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(360).setEnd(0).create();
         }
 
         @Override
@@ -2050,8 +2061,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().create();
         }
 
         @Override
@@ -2116,8 +2127,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().setDuration(25).setSpan(5).create();
         }
 
         @Override
@@ -2172,8 +2183,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().setDuration(25).setSpan(5).create();
         }
 
         @Override
@@ -2214,7 +2225,7 @@ public enum CombatSpells {
     ICE_BURST(new CombatAncientSpell() {
         @Override
         public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
-        	CombatFactory.freeze(castOn, 10);
+        	CombatFactory.freeze(castOn, 16);
         }
 
         @Override
@@ -2228,8 +2239,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().create();
         }
 
         @Override
@@ -2284,8 +2295,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 386, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(386).create();
         }
 
         @Override
@@ -2350,8 +2361,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 380, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(380).setEnd(0).create();
         }
 
         @Override
@@ -2406,8 +2417,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 374, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(374).setEnd(0).create();
         }
 
         @Override
@@ -2448,7 +2459,7 @@ public enum CombatSpells {
     ICE_BLITZ(new CombatAncientSpell() {
         @Override
         public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
-        	CombatFactory.freeze(castOn, 15);
+        	CombatFactory.freeze(castOn, 24);
         }
 
         @Override
@@ -2462,8 +2473,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().create();
         }
 
         @Override
@@ -2518,8 +2529,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().create();
         }
 
         @Override
@@ -2584,8 +2595,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().setDelay(21).setDuration(25).setSpan(5).create();
         }
 
         @Override
@@ -2640,8 +2651,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().setDelay(21).setDuration(25).setSpan(5).create();
         }
 
         @Override
@@ -2682,7 +2693,7 @@ public enum CombatSpells {
     ICE_BARRAGE(new CombatAncientSpell() {
         @Override
         public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
-        	CombatFactory.freeze(castOn, 20);
+        	CombatFactory.freeze(castOn, 32);
         }
 
         @Override
@@ -2696,8 +2707,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.empty();
+        public Projectile projectile() {
+            return new ProjectileBuilder().create();
         }
 
         @Override
@@ -2747,8 +2758,8 @@ public enum CombatSpells {
          }
 
          @Override
-         public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-             return Optional.of(new Projectile(cast, castOn, 1252, 0, 20, 43, 31));
+         public Projectile projectile() {
+             return new ProjectileBuilder().setId(1252).setStart(23).setEnd(15).setDuration(10).setSpan(5).create();
          }
 
          @Override
@@ -2798,8 +2809,8 @@ public enum CombatSpells {
         }
 
         @Override
-        public Optional<Projectile> castProjectile(Mobile cast, Mobile castOn) {
-            return Optional.of(new Projectile(cast, castOn, 1040, 0, 20, 43, 31));
+        public Projectile projectile() {
+            return new ProjectileBuilder().setId(1040).setStart(23).setEnd(15).setDuration(25).setSpan(5).create();
         }
 
         @Override
@@ -2884,5 +2895,23 @@ public enum CombatSpells {
 			return spell.get().getSpell();
 		}
 		return null;
+	}
+	
+	//end radius is 10 for sound
+	public int getHitSoundDelay() {
+		switch (this) {
+			case CLAWS_OF_GUTHIX:
+			case FLAMES_OF_ZAMORAK:
+			case MAGIC_DART:
+				return 0;
+			case BIND:
+				return 2;
+			case CURSE:
+				return 76;
+			case WATER_WAVE:
+				return 86;
+			default:
+				return -1;
+		}
 	}
 }

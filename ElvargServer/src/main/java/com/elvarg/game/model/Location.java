@@ -261,6 +261,20 @@ public class Location {
         return (int) Math.ceil(Math.sqrt(deltaX * deltaX + deltaY * deltaY));
     }
     
+    /**
+     * Gets the distance between this and another location.
+     * <br>
+     * https://en.wikipedia.org/wiki/Chebyshev_distance
+     * <br>
+     * @param other The other position.
+     * @return The chebyshev distance.
+     */
+	public int getChebyshevDistance(Location other) {
+        int deltaX = x - other.x;
+        int deltaY = y - other.y;
+		return Math.max(Math.abs(deltaX), Math.abs(deltaY));
+	}
+	
 	/**
 	 * Increments the {@code X}, {@code Y}, and {@code Z} coordinate values
 	 * within this container by {@code amountX}, {@code amountY}, and

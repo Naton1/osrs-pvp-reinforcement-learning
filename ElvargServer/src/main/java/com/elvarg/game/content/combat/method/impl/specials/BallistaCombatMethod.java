@@ -8,12 +8,13 @@ import com.elvarg.game.content.combat.ranged.RangedData.RangedWeapon;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
-import com.elvarg.game.model.Priority;
 import com.elvarg.game.model.Projectile;
+import com.elvarg.game.model.Priority;
 
 public class BallistaCombatMethod extends RangedCombatMethod {
 
     private static final Animation ANIMATION = new Animation(7222, Priority.HIGH);
+    private static final Projectile PROJECTILE = new Projectile(1301, 43, 31, 70, 30);
 
     @Override
     public PendingHit[] hits(Mobile character, Mobile target) {
@@ -40,7 +41,7 @@ public class BallistaCombatMethod extends RangedCombatMethod {
         final Player player = character.getAsPlayer();
         CombatSpecial.drain(player, CombatSpecial.BALLISTA.getDrainAmount());
         character.performAnimation(ANIMATION);
-        new Projectile(player, target, 1301, 70, 30, 43, 31).sendProjectile();
+        Projectile.sendProjectile(player, target, PROJECTILE);
         CombatFactory.decrementAmmo(player, target.getLocation(), 1);
     }
 }
