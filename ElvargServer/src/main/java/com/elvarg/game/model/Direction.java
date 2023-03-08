@@ -12,45 +12,45 @@ public enum Direction {
 	/**
 	 * North west movement.
 	 */
-	NORTH_WEST(0, -1, 1, 7, 768),
+	NORTH_WEST(0, -1, 1),
 	/**
 	 * North movement.
 	 */
-	NORTH(1, 0, 1, 6, 1024),
+	NORTH(1, 0, 1),
 	
 	/**
 	 * North east movement.
 	 */
-	NORTH_EAST(2, 1, 1, 5, 1280),
+	NORTH_EAST(2, 1, 1),
 
 	/**
 	 * West movement.
 	 */
-	WEST(3, -1, 0, 4, 512),
+	WEST(3, -1, 0),
 
 	/**
 	 * East movement.
 	 */
-	EAST(4, 1, 0, 3, 1536),
+	EAST(4, 1, 0),
 
 	/**
 	 * South west movement.
 	 */
-	SOUTH_WEST(5, -1, -1, 2, 256),
+	SOUTH_WEST(5, -1, -1),
 
 	/**
 	 * South movement.
 	 */
-	SOUTH(6, 0, -1, 1, 0),
+	SOUTH(6, 0, -1),
 
 	/**
 	 * South east movement.
 	 */
-	SOUTH_EAST(7, 1, -1, 0, 1792),
+	SOUTH_EAST(7, 1, -1),
 	/**
 	 * No movement.
 	 */
-	NONE(-1, 0, 0, -1, 0);
+	NONE(-1, 0, 0);
 	
 	/**
 	 * The identification of this direction.
@@ -68,31 +68,15 @@ public enum Direction {
 	private final int y;
 	
 	/**
-	 * The opposite {@link #id} direction of the current direction.
-	 */
-	private final int opposite;
-	
-	/**
-	 * Flag if this direction is diagonal.
-	 */
-	private final boolean diagonal;
-
-	private final int clientValue;
-	
-	/**
 	 * Creates a new {@link Direction}.
 	 * @param id       the identification of this direction.
 	 * @param x        the {@code x} movement of this direction.
 	 * @param y        the {@code y} movement of this direction.
-	 * @param opposite the opposite {@link #id} direction.
 	 */
-	Direction(int id, int x, int y, int opposite, int clientValue) {
+	Direction(int id, int x, int y) {
 		this.id = id;
 		this.x = x;
 		this.y = y;
-		this.opposite = opposite;
-		this.diagonal = name().contains("_");
-		this.clientValue = clientValue;
 	}
 	
 	/**
@@ -117,15 +101,6 @@ public enum Direction {
 	 */
 	public final int getY() {
 		return y;
-	}
-
-
-	/**
-	 * Used for the purpose of NPC updating
-	 * @return
-	 */
-	public final int getClientValue() {
-		return clientValue;
 	}
 	
 	/**
