@@ -37,7 +37,7 @@ public class PestControl implements Minigame {
 
     private static PrivateArea area;
 
-    private static NPC knight;
+    public static NPC knight;
 
     public PestControl(PestControlBoat boatType) {
         this.boatType = boatType;
