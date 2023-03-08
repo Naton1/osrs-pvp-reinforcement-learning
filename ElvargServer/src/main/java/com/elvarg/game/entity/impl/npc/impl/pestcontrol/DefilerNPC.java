@@ -7,7 +7,6 @@ import com.elvarg.game.model.Ids;
 import com.elvarg.game.model.Location;
 
 import static com.elvarg.util.NpcIdentifiers.*;
-import static com.elvarg.util.NpcIdentifiers.PORTAL_12;
 
 /**
  * @author Ynneh | 08/03/2023 - 12:54
