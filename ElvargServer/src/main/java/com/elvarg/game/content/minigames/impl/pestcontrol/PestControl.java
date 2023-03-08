@@ -313,7 +313,7 @@ public class PestControl implements Minigame {
                     BRAWLER_2,//Brawler - level 76
                     BRAWLER_3,//Brawler - level 101
                     DEFILER,//Defiler - level 33
-                    DEFILER_2,//Defiler - level 50
+                    DEFILER_3,//Defiler - level 50
                     RAVAGER, //Ravager - level 36
                     RAVAGER_2, //Ravager - level 53
                     RAVAGER_3,//Ravager - level 71
@@ -333,9 +333,9 @@ public class PestControl implements Minigame {
                     BRAWLER_2,//Brawler - level 76
                     BRAWLER_3,//Brawler - level 101
                     BRAWLER_4,//Brawler - level 129
-                    DEFILER_2,//Defiler - level 50
-                    DEFILER_4,//Defiler - level 66
-                    DEFILER_5,//Defiler - level 80
+                    DEFILER_3,//Defiler - level 50
+                    DEFILER_5,//Defiler - level 66
+                    DEFILER_7,//Defiler - level 80
                     RAVAGER_2, //Ravager - level 53
                     RAVAGER_3,//Ravager - level 71
                     RAVAGER_4, //Ravager - level 89
