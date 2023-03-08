@@ -18,7 +18,6 @@ import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPCMovementCoordinator.CoordinateState;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Direction;
-import com.elvarg.game.model.FacingDirection;
 import com.elvarg.game.model.Ids;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.AreaManager;

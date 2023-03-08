@@ -7,7 +7,6 @@ import com.elvarg.game.definition.NpcSpawnDefinition;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Direction;
-import com.elvarg.game.model.FacingDirection;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.commands.Command;
 import com.elvarg.game.model.rights.PlayerRights;

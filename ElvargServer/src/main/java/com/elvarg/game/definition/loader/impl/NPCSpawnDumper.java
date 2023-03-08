@@ -11,7 +11,6 @@ import com.elvarg.game.GameConstants;
 import com.elvarg.game.definition.NpcSpawnDefinition;
 import com.elvarg.game.definition.loader.DefinitionLoader;
 import com.elvarg.game.model.Direction;
-import com.elvarg.game.model.FacingDirection;
 import com.elvarg.game.model.Location;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

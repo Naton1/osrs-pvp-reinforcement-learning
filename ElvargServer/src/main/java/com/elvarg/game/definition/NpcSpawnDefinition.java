@@ -1,7 +1,6 @@
 package com.elvarg.game.definition;
 
 import com.elvarg.game.model.Direction;
-import com.elvarg.game.model.FacingDirection;
 import com.elvarg.game.model.Location;
 
 public class NpcSpawnDefinition extends DefaultSpawnDefinition {
