@@ -1,28 +1,28 @@
 package com.elvarg.game.definition;
 
-import com.elvarg.game.model.FacingDirection;
+import com.elvarg.game.model.Direction;
 import com.elvarg.game.model.Location;
 
 public class NpcSpawnDefinition extends DefaultSpawnDefinition {
 
-    public NpcSpawnDefinition(int id, Location position, FacingDirection facing, int radius) {
+    public NpcSpawnDefinition(int id, Location position, Direction facing, int radius) {
 		super(id, position);
 		this.facing = facing;
 		this.radius = radius;
 	}
 
-    public NpcSpawnDefinition(int id, Location position, FacingDirection facing, int radius, String descripton) {
+    public NpcSpawnDefinition(int id, Location position, Direction facing, int radius, String descripton) {
         super(id, position);
         this.facing = facing;
         this.radius = radius;
         this.description = descripton;
     }
 
-	private FacingDirection facing;
+	private Direction facing;
     private int radius;
     private String description;
 
-    public FacingDirection getFacing() {
+    public Direction getFacing() {
         return facing;
     }
 

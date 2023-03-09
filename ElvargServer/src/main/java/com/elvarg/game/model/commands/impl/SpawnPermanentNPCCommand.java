@@ -6,7 +6,7 @@ import com.elvarg.game.definition.NpcDefinition;
 import com.elvarg.game.definition.NpcSpawnDefinition;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.model.FacingDirection;
+import com.elvarg.game.model.Direction;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.commands.Command;
 import com.elvarg.game.model.rights.PlayerRights;
@@ -66,7 +66,7 @@ public class SpawnPermanentNPCCommand implements Command {
 
         ArrayList<NpcSpawnDefinition> list = new ArrayList(Arrays.asList(definitionArray));
 
-        list.add(new NpcSpawnDefinition(npcId, npcLocation, FacingDirection.SOUTH, 2, description));
+        list.add(new NpcSpawnDefinition(npcId, npcLocation, Direction.SOUTH, 2, description));
 
         NpcSpawnDefinition[] finalArray = new NpcSpawnDefinition[list.size()];
         finalArray = list.toArray(finalArray);

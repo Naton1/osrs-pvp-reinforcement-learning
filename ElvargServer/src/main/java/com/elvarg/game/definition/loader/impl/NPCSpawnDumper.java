@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.definition.NpcSpawnDefinition;
 import com.elvarg.game.definition.loader.DefinitionLoader;
-import com.elvarg.game.model.FacingDirection;
+import com.elvarg.game.model.Direction;
 import com.elvarg.game.model.Location;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,7 +37,7 @@ public class NPCSpawnDumper extends DefinitionLoader {
 			int y = Integer.parseInt(data[3]);
 			int z = Integer.parseInt(data[4]);
 			
-			w.write(builder.toJson(builder.toJsonTree(new NpcSpawnDefinition(id, new Location(x, y, z), FacingDirection.SOUTH, 2))));
+			w.write(builder.toJson(builder.toJsonTree(new NpcSpawnDefinition(id, new Location(x, y, z), Direction.SOUTH, 2))));
 			w.write(",");
 			w.write("\n");
 		}

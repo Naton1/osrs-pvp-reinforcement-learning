@@ -198,6 +198,8 @@ public class Mob extends Renderable {
         orientation = nextStepOrientation;
     }
 
+
+
     public void nextStep() {
         movementAnimation = idleAnimation;
 
