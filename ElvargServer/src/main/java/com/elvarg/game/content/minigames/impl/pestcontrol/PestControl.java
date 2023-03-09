@@ -31,7 +31,6 @@ public class PestControl implements Minigame {
     /**
      * - Splatters have no dest they roam until rng to explode or death. possible roaming 15 tiles?
      * - locks player until continue option shows on dialogue? 2 ticks maybe 3?
-     * - Torchers rather path to a good spot for the knight or target closest player
      * - Ravanger isnt aggressive and has random path tiles and destroys barriers/doors with X chance looks like 25 tile distance roaming
      **/
 
@@ -260,18 +259,8 @@ public class PestControl implements Minigame {
         area.add(player);
         player.smartMove(PestControlArea.LAUNCHER_BOAT_BOUNDARY);
         NpcDialogue.sendStatement(player, NpcIdentifiers.SQUIRE_12, new String[] {"You must defend the Void Knight while the portals are", "unsummoned. The ritual takes twenty minutes though,", "so you can help out by destroying them yourselves!", "Now GO GO GO!" }, DialogueExpression.DISTRESSED);
-
-        /**
-         * gameStarted = true;
-         * gameTimer = 400;
-         */
     }
 
-    /**
-     * Determines whether the game is still active.
-     *
-     * @return
-     */
     public boolean isActive() {
         return playersInGame() > 0 && boatType != null;
     }
@@ -506,8 +495,6 @@ public class PestControl implements Minigame {
     private static boolean isQueued(Player player, PestControlBoat boat) {
         return boat.getQueue().contains(player);
     }
-
-
 
     private static void addToQueue(Player player, PestControlBoat boat) {
         if (isQueued(player, boat)) {
