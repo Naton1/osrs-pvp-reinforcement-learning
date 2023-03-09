@@ -23,6 +23,7 @@ public class VetionCombatMethod extends CombatMethod {
 
 	private CombatType attack = CombatType.MELEE;
 	private static final Graphic MAGIC_END_GFX = new Graphic(281);
+	private static final Projectile MAGIC_PROJECTILE = new Projectile(280, 31, 43, 40, 80);
 
 	@Override
 	public boolean canAttack(Mobile character, Mobile target) {
@@ -58,7 +59,7 @@ public class VetionCombatMethod extends CombatMethod {
 						(targetPos.getY() - 1) + Misc.getRandom(3)));
 			}
 			for (Location pos : attackPositions) {
-				new Projectile(character.getLocation(), pos, null, 280, 40, 80, 31, 43, character.getPrivateArea()).sendProjectile();
+				Projectile.sendProjectile(character, pos, MAGIC_PROJECTILE);
 			}
 			TaskManager.submit(new Task(4) {
 				@Override

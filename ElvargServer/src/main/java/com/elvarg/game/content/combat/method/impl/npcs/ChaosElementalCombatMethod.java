@@ -36,7 +36,7 @@ public class ChaosElementalCombatMethod extends CombatMethod {
     @Override
     public void start(Mobile character, Mobile target) {
         character.performAnimation(new Animation(character.getAttackAnim()));
-        new Projectile(character, target, currentAttack.projectileId, 40, 70, 31, 43).sendProjectile();
+        Projectile.sendProjectile(character, target, currentAttack.projectile);
     }
 
     @Override
@@ -119,10 +119,10 @@ public class ChaosElementalCombatMethod extends CombatMethod {
         DISARM(551),
         TELEPORT(554);
 
-        private final int projectileId;
+        private final Projectile projectile;
 
         ChaosElementalAttackType(final int projectileId) {
-            this.projectileId = projectileId;
+            this.projectile = new Projectile(projectileId, 31, 43, 40, 70);
         }
     }
 }

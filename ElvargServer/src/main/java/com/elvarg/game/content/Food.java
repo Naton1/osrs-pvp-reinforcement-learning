@@ -68,7 +68,7 @@ public class Food {
 		player.getTimers().extendOrRegister(TimerKey.COMBAT_ATTACK, 5);
 
 		if (food == Edible.KARAMBWAN) {
-			player.getTimers().register(TimerKey.KARAMBWAN, 3); // Register karambwan timer too
+			player.getTimers().register(TimerKey.KARAMBWAN, 2); // Register karambwan timer too
 			player.getTimers().register(TimerKey.POTION, 3); // Register the potion timer (karambwan blocks pots)
 		}
 

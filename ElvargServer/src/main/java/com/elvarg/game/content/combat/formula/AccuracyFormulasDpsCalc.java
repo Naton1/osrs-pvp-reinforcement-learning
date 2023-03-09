@@ -16,11 +16,13 @@ import java.security.SecureRandom;
 public class AccuracyFormulasDpsCalc {
     public static final SecureRandom srand = new SecureRandom();
 
+    public static boolean rollMeleeAccuracy(Mobile entity, Mobile enemy, int attRoll) {
+    	int defRoll = defenseMeleeRoll(entity, enemy);
+    	float hitChance = hitChance(attRoll, defRoll);
+    	return hitChance > srand.nextFloat();
+    }
+    
     public static boolean rollAccuracy(Mobile entity, Mobile enemy, CombatType style) {
-        if (style == CombatType.MELEE && CombatFactory.fullVeracs(entity) && Misc.getRandom(4) == 1) {
-            return true;
-        }
-
         if (style == CombatType.MELEE) {
             int attRoll = attackMeleeRoll(entity);
             int defRoll = defenseMeleeRoll(entity, enemy);

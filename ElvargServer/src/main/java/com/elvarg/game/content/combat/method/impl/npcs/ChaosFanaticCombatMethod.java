@@ -34,7 +34,9 @@ public class ChaosFanaticCombatMethod extends CombatMethod {
     private static final Graphic ATTACK_END_GFX = new Graphic(305, GraphicHeight.HIGH);
     private static final Graphic EXPLOSION_END_GFX = new Graphic(157, GraphicHeight.MIDDLE);
     private static final Animation MAGIC_ATTACK_ANIM = new Animation(811);
-
+    private static final Projectile EXPLOSION_PROJECTILE = new Projectile(551, 31, 43, 40, 80);
+    private static final Projectile MAGIC_PROJECTILE = new Projectile(554, 31, 43, 62, 80);
+    
     @Override
     public PendingHit[] hits(Mobile character, Mobile target) {
         if (attack == Attack.SPECIAL_ATTACK) {
@@ -59,7 +61,7 @@ public class ChaosFanaticCombatMethod extends CombatMethod {
         character.forceChat(QUOTES[Misc.getRandom(QUOTES.length - 1)]);
 
         if (attack == Attack.DEFAULT_MAGIC_ATTACK) {
-            new Projectile(character, target, 554, 62, 80, 31, 43).sendProjectile();
+            Projectile.sendProjectile(character, target, MAGIC_PROJECTILE);
             if (Misc.getRandom(1) == 0) {
                 TaskManager.submit(new Task(3, target, false) {
                     @Override
@@ -78,8 +80,7 @@ public class ChaosFanaticCombatMethod extends CombatMethod {
                         (targetPos.getY() - 1) + Misc.getRandom(3)));
             }
             for (Location pos : attackPositions) {
-                new Projectile(character.getLocation(), pos, null, 551, 40, 80, 31, 43, character.getPrivateArea())
-                        .sendProjectile();
+                Projectile.sendProjectile(character, pos, EXPLOSION_PROJECTILE);
             }
             TaskManager.submit(new Task(4) {
                 @Override

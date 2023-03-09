@@ -21,7 +21,8 @@ public class CallistoCombatMethod extends CombatMethod {
 
 	private static final Animation MELEE_ATTACK_ANIMATION = new Animation(4925);
 	private static final Graphic END_PROJECTILE_GRAPHIC = new Graphic(359, GraphicHeight.HIGH);
-
+	private static final Projectile MAGIC_PROJECILE = new Projectile(395, 31, 43, 40, 60);
+	
 	private SecondsTimer comboTimer = new SecondsTimer();
 	private CombatType currentAttackType = CombatType.MELEE;
 
@@ -39,7 +40,7 @@ public class CallistoCombatMethod extends CombatMethod {
 	public void start(Mobile character, Mobile target) {
 	    character.performAnimation(MELEE_ATTACK_ANIMATION);
 		if (currentAttackType == CombatType.MAGIC) {
-			new Projectile(character, target, 395, 40, 60, 31, 43).sendProjectile();
+			Projectile.sendProjectile(character, target, MAGIC_PROJECILE);
 		}
 	}
 
