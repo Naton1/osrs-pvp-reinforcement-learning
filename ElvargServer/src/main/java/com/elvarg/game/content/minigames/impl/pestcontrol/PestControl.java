@@ -275,15 +275,26 @@ public class PestControl implements Minigame {
         World.getAddNPCQueue().add(npc);
     }
 
+    public static void spawnPestMonster(int id, PestControlPortalData portal) {
+        NPC npc = NPC.create(id, new Location(portal.npcSpawnX, portal.npcSpawnY));
+        npc.setAttribute("PEST_PORTAL", portal);
+        area.add(npc);
+        spawned_npcs.add(npc);
+        World.getAddNPCQueue().add(npc);
+    }
+
     public static void spawnPortal(int id, Location pos) {
         PestControlPortalNPC npc = new PestControlPortalNPC(id, pos);
         int hitPoints = boatType == PestControlBoat.NOVICE ? 200 : 250;
         npc.setHitpoints(hitPoints);
         npc.getDefinition().setMaxHitpoints(hitPoints);
         area.add(npc);
+        portals.add(npc);
         spawned_npcs.add(npc);
         World.getAddNPCQueue().add(npc);
     }
+
+    public static List<NPC> portals = Lists.newArrayList();
 
     public static boolean isPortalsDead() {
         return portalsKilled == 4;
@@ -306,6 +317,9 @@ public class PestControl implements Minigame {
                     RAVAGER, //Ravager - level 36
                     RAVAGER_2, //Ravager - level 53
                     RAVAGER_3,//Ravager - level 71
+                    SPINNER,
+                    SPINNER_2,
+                    SPINNER_3,
                     SHIFTER,//Shifter - Level 38
                     SHIFTER_3,//Shifter - Level 57
                     SHIFTER,//Spinner - Level 36
@@ -325,6 +339,7 @@ public class PestControl implements Minigame {
                     DEFILER_3,//Defiler - level 50
                     DEFILER_5,//Defiler - level 66
                     DEFILER_7,//Defiler - level 80
+                    SPINNER_2, SPINNER_3, SPINNER_4, SPINNER_5,
                     RAVAGER_2, //Ravager - level 53
                     RAVAGER_3,//Ravager - level 71
                     RAVAGER_4, //Ravager - level 89
@@ -350,6 +365,7 @@ public class PestControl implements Minigame {
                     RAVAGER_3,//Ravager - level 71
                     RAVAGER_4,//Ravager - level 89
                     RAVAGER_5,//Ravager - level 106
+                    SPINNER_3, SPINNER_4, SPINNER_5,
                     SHIFTER_7,//Shifter - Level 90
                     SHIFTER_9,//Shifter - Level 104
                     SHIFTER_5,//Spinner - Level 74
@@ -406,7 +422,7 @@ public class PestControl implements Minigame {
                 int index = boatType.ordinal();
                 for (PestControlPortalData portal : PestControlPortalData.values()) {
                     if (portalExists(portal)) {
-                        spawnNPC(PEST_CONTROL_MONSTERS[index][Misc.random(PEST_CONTROL_MONSTERS[index].length - 1)], new Location(portal.npcSpawnX, portal.npcSpawnY), false);
+                        spawnPestMonster(PEST_CONTROL_MONSTERS[index][Misc.random(PEST_CONTROL_MONSTERS[index].length - 1)], portal);
                     }
                 }
             }
@@ -487,8 +503,10 @@ public class PestControl implements Minigame {
         chosenPortalSpawnSequence = null;
         totalPortalsUnlocked = 0;
         portalsKilled = 0;
+        portals.stream().filter(p -> p != null).forEach(portal -> portal.remove());
+        portals.clear();
         last_spawn = SPAWN_TICK_RATE;
-        spawned_npcs.stream().filter(n -> n != null).forEach(n -> n.setDying(true));
+        spawned_npcs.stream().filter(n -> n != null).forEach(n -> n.remove());
         spawned_npcs.clear();
     }
 
