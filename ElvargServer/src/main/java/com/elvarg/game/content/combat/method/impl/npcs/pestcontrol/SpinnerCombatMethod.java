@@ -11,11 +11,10 @@ import com.elvarg.game.entity.impl.npc.NPC;
  */
 public class SpinnerCombatMethod extends MeleeCombatMethod {
 
-
     @Override
     public void onTick(NPC npc, Mobile target) {
 
-        System.err.println(target == null);
+
     }
 
 }
