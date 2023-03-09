@@ -174,6 +174,10 @@ public class ItemDefinition {
         return equipmentType;
     }
 
+    public boolean isBarrows() {
+        return id != 4740 && (id >= 4708 && id <= 4759 || id >= 4856 && id <= 4999);
+    }
+
     /**
      * Attempts to get the unnoted version of the given item.
      *
