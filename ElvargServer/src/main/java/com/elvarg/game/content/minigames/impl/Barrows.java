@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.elvarg.game.World;
 import com.elvarg.game.content.combat.CombatFactory;
+import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
@@ -229,6 +230,140 @@ public class Barrows {
         return Brother.values()[Misc.getRandom(Brother.values().length - 1)].getCoffinId();
     }
 
+    public static int getBrokenId(Item item) {
+        if(item.getDefinition().isNoted())
+            return item.getId();
+        String name = item.getDefinition().getName();
+        if(name.endsWith(" 100"))
+            return item.getId() + 4;
+        if(name.endsWith(" 75"))
+            return item.getId() + 3;
+        if(name.endsWith(" 50"))
+            return item.getId() + 2;
+        if(name.endsWith(" 25"))
+            return item.getId() + 1;
+        if(name.endsWith(" 0"))
+            return item.getId();
+        return getFirstBrokenId(item.getId()) + 4;
+    }
+
+    public static short getFirstBrokenId(int id) {
+        switch(id) {
+            case 4708:
+                return 4856;
+            case 4710:
+                return 4862;
+            case 4712:
+                return 4868;
+            case 4714:
+                return 4874;
+            case 4716:
+                return 4880;
+            case 4718:
+                return 4886;
+            case 4720:
+                return 4892;
+            case 4722:
+                return 4898;
+            case 4724:
+                return 4904;
+            case 4726:
+                return 4910;
+            case 4728:
+                return 4916;
+            case 4730:
+                return 4922;
+            case 4732:
+                return 4928;
+            case 4734:
+                return 4934;
+            case 4736:
+                return 4940;
+            case 4738:
+                return 4946;
+            case 4745:
+                return 4952;
+            case 4747:
+                return 4958;
+            case 4749:
+                return 4964;
+            case 4751:
+                return 4970;
+            case 4753:
+                return 4976;
+            case 4755:
+                return 4982;
+            case 4757:
+                return 4988;
+            case 4759:
+                return 4994;
+        }
+        return -1;
+    }
+
+    public static short getRepairedId(int id) {
+        String name = ItemDefinition.forId(id).getName();
+        if(name.endsWith(" 75"))
+            id--;
+        else if(name.endsWith(" 50"))
+            id -= 2;
+        else if(name.endsWith(" 25"))
+            id -= 3;
+        else if(name.endsWith(" 0"))
+            id -= 4;
+        switch(id) {
+            case 4856:
+                return 4708;
+            case 4862:
+                return 4710;
+            case 4868:
+                return 4712;
+            case 4874:
+                return 4714;
+            case 4880:
+                return 4716;
+            case 4886:
+                return 4718;
+            case 4892:
+                return 4720;
+            case 4898:
+                return 4722;
+            case 4904:
+                return 4724;
+            case 4910:
+                return 4726;
+            case 4916:
+                return 4728;
+            case 4922:
+                return 4730;
+            case 4928:
+                return 4732;
+            case 4934:
+                return 4734;
+            case 4940:
+                return 4736;
+            case 4946:
+                return 4738;
+            case 4952:
+                return 4745;
+            case 4958:
+                return 4747;
+            case 4964:
+                return 4749;
+            case 4970:
+                return 4751;
+            case 4976:
+                return 4753;
+            case 4982:
+                return 4755;
+            case 4988:
+                return 4757;
+            case 4994:
+                return 4759;
+        }
+        return -1;
+    }
+
     public enum Brother {
         AHRIM_THE_BLIGHTED(1672, 20770, new Location(3557, 9701, 3), new Boundary(3562, 3568, 3285, 3292),
                 new Location(3557, 9703, 3), 20667, new Location(3565, 3288, 0)), DHAROK_THE_WRETCHED(1673, 20720,
@@ -252,7 +387,7 @@ public class Barrows {
         private Location spawn, digSpawn, stairSpawn;
         private Boundary boundary;
 
-        private Brother(final int npcId, final int coffin, final Location brotherSpawn, final Boundary boundary,
+        Brother(final int npcId, final int coffin, final Location brotherSpawn, final Boundary boundary,
                         final Location digSpawn, final int stairs, final Location stairSpawn) {
             this.npcId = npcId;
             this.coffinId = coffin;
