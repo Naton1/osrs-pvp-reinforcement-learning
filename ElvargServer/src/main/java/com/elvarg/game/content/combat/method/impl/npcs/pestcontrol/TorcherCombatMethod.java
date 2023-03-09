@@ -42,7 +42,7 @@ public class TorcherCombatMethod extends MagicCombatMethod {
 
     @Override
     public void start(Mobile character, Mobile target) {
-        new Projectile(character, target, 647, 62, 80, 50, 43).sendProjectile();
+        Projectile.sendProjectile(character, target, new Projectile(647, 62, 80, 50, 43));
     }
 
     private void setKnightTarget(NPC npc, NPC knight) {
