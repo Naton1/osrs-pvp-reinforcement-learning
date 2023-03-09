@@ -31,7 +31,8 @@ public class DefilerCombatMethod extends RangedCombatMethod {
 
     @Override
     public void start(Mobile character, Mobile target) {
-        new Projectile(character, target, 656, 62, 80, 35, 43).sendProjectile();
+        Projectile.sendProjectile(character, target, new Projectile(656, 62, 80, 35, 43));
+
     }
 
     private void setKnightTarget(NPC npc, NPC knight) {
