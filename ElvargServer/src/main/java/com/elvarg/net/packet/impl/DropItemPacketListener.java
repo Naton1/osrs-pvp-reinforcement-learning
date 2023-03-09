@@ -80,12 +80,14 @@ public class DropItemPacketListener implements PacketExecutor {
         }
 
         if (item.getDefinition().isDropable()) {
-        	
+        	/** Overrideables for untradables ect **/
+            Item toFloor = new Item(item.getIdOnDropOrDeath(), item.getAmount());
+
         	// Items dropped in the Wilderness should go global immediately.
             if (player.getArea() instanceof WildernessArea) {
-            	ItemOnGroundManager.registerGlobal(player, item);
+            	ItemOnGroundManager.registerGlobal(player, toFloor);
             } else {
-            	ItemOnGroundManager.register(player, item);
+            	ItemOnGroundManager.register(player, toFloor);
             }
             
             player.getInventory().setItem(itemSlot, new Item(-1, 0)).refreshItems();
