@@ -111,6 +111,10 @@ public class NPC extends Mobile {
 
 		return new NPC(id, location);
 	}
+
+	public void remove() {
+		World.getRemoveNPCQueue().add(this);
+	}
 	
 	/**
 	 * Can this npc walk through other NPCs?
