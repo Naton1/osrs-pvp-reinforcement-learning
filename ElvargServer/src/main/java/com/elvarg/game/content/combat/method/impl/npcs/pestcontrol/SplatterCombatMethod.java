@@ -29,8 +29,36 @@ public class SplatterCombatMethod extends MeleeCombatMethod {
         return CombatType.MELEE;
     }
 
+    private boolean finish;
+
+    @Override
+    public void onTick(NPC npc, Mobile target) {
+
+        if (finish)
+            return;
+
+        boolean suicide = npc.getAttribute("SPLATTER_SUICIDE") != null;
+
+        if (!suicide) {
+            if (Math.random() <= 0.05) {
+                npc.setAttribute("SPLATTER_SUICIDE", true);
+            }
+            return;
+        }
+
+        if (suicide) {
+            deathAction(npc);
+        }
+
+    }
+
     @Override
     public void onDeath(NPC npc, Optional<Player> killer) {
+        deathAction(npc);
+    }
+
+    private void deathAction(NPC npc) {
+        finish = true;
         npc.performGraphic(new Graphic(650));
         List<Mobile> inDistance = Lists.newArrayList();
         World.getPlayers().stream().filter(p -> p != null && !p.isDying() && p.getLocation().isWithinDistance(npc.getLocation(), 1)).forEach(e -> inDistance.add(e));
@@ -43,6 +71,5 @@ public class SplatterCombatMethod extends MeleeCombatMethod {
                 }
             }
         }
-
     }
 }

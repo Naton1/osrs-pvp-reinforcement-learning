@@ -31,13 +31,12 @@ public class PestControl implements Minigame {
     /**
      * - Splatters have no dest they roam until rng to explode or death. possible roaming 15 tiles?
      * - locks player until continue option shows on dialogue? 2 ticks maybe 3?
-     * - Torchers rather path to a good spot for the knight or target closest player
      * - Ravanger isnt aggressive and has random path tiles and destroys barriers/doors with X chance looks like 25 tile distance roaming
      **/
 
     private static PrivateArea area;
 
-    private static NPC knight;
+    public static NPC knight;
 
     public PestControl(PestControlBoat boatType) {
         this.boatType = boatType;
@@ -260,18 +259,8 @@ public class PestControl implements Minigame {
         area.add(player);
         player.smartMove(PestControlArea.LAUNCHER_BOAT_BOUNDARY);
         NpcDialogue.sendStatement(player, NpcIdentifiers.SQUIRE_12, new String[] {"You must defend the Void Knight while the portals are", "unsummoned. The ritual takes twenty minutes though,", "so you can help out by destroying them yourselves!", "Now GO GO GO!" }, DialogueExpression.DISTRESSED);
-
-        /**
-         * gameStarted = true;
-         * gameTimer = 400;
-         */
     }
 
-    /**
-     * Determines whether the game is still active.
-     *
-     * @return
-     */
     public boolean isActive() {
         return playersInGame() > 0 && boatType != null;
     }
@@ -286,15 +275,26 @@ public class PestControl implements Minigame {
         World.getAddNPCQueue().add(npc);
     }
 
+    public static void spawnPestMonster(int id, PestControlPortalData portal) {
+        NPC npc = NPC.create(id, new Location(portal.npcSpawnX, portal.npcSpawnY));
+        npc.setAttribute("PEST_PORTAL", portal);
+        area.add(npc);
+        spawned_npcs.add(npc);
+        World.getAddNPCQueue().add(npc);
+    }
+
     public static void spawnPortal(int id, Location pos) {
         PestControlPortalNPC npc = new PestControlPortalNPC(id, pos);
         int hitPoints = boatType == PestControlBoat.NOVICE ? 200 : 250;
         npc.setHitpoints(hitPoints);
         npc.getDefinition().setMaxHitpoints(hitPoints);
         area.add(npc);
+        portals.add(npc);
         spawned_npcs.add(npc);
         World.getAddNPCQueue().add(npc);
     }
+
+    public static List<NPC> portals = Lists.newArrayList();
 
     public static boolean isPortalsDead() {
         return portalsKilled == 4;
@@ -313,10 +313,13 @@ public class PestControl implements Minigame {
                     BRAWLER_2,//Brawler - level 76
                     BRAWLER_3,//Brawler - level 101
                     DEFILER,//Defiler - level 33
-                    DEFILER_2,//Defiler - level 50
+                    DEFILER_3,//Defiler - level 50
                     RAVAGER, //Ravager - level 36
                     RAVAGER_2, //Ravager - level 53
                     RAVAGER_3,//Ravager - level 71
+                    SPINNER,
+                    SPINNER_2,
+                    SPINNER_3,
                     SHIFTER,//Shifter - Level 38
                     SHIFTER_3,//Shifter - Level 57
                     SHIFTER,//Spinner - Level 36
@@ -333,9 +336,10 @@ public class PestControl implements Minigame {
                     BRAWLER_2,//Brawler - level 76
                     BRAWLER_3,//Brawler - level 101
                     BRAWLER_4,//Brawler - level 129
-                    DEFILER_2,//Defiler - level 50
-                    DEFILER_4,//Defiler - level 66
-                    DEFILER_5,//Defiler - level 80
+                    DEFILER_3,//Defiler - level 50
+                    DEFILER_5,//Defiler - level 66
+                    DEFILER_7,//Defiler - level 80
+                    SPINNER_2, SPINNER_3, SPINNER_4, SPINNER_5,
                     RAVAGER_2, //Ravager - level 53
                     RAVAGER_3,//Ravager - level 71
                     RAVAGER_4, //Ravager - level 89
@@ -361,6 +365,7 @@ public class PestControl implements Minigame {
                     RAVAGER_3,//Ravager - level 71
                     RAVAGER_4,//Ravager - level 89
                     RAVAGER_5,//Ravager - level 106
+                    SPINNER_3, SPINNER_4, SPINNER_5,
                     SHIFTER_7,//Shifter - Level 90
                     SHIFTER_9,//Shifter - Level 104
                     SHIFTER_5,//Spinner - Level 74
@@ -417,7 +422,7 @@ public class PestControl implements Minigame {
                 int index = boatType.ordinal();
                 for (PestControlPortalData portal : PestControlPortalData.values()) {
                     if (portalExists(portal)) {
-                        spawnNPC(PEST_CONTROL_MONSTERS[index][Misc.random(PEST_CONTROL_MONSTERS[index].length - 1)], new Location(portal.npcSpawnX, portal.npcSpawnY), false);
+                        spawnPestMonster(PEST_CONTROL_MONSTERS[index][Misc.random(PEST_CONTROL_MONSTERS[index].length - 1)], portal);
                     }
                 }
             }
@@ -498,16 +503,16 @@ public class PestControl implements Minigame {
         chosenPortalSpawnSequence = null;
         totalPortalsUnlocked = 0;
         portalsKilled = 0;
+        portals.stream().filter(p -> p != null).forEach(portal -> portal.remove());
+        portals.clear();
         last_spawn = SPAWN_TICK_RATE;
-        spawned_npcs.stream().filter(n -> n != null).forEach(n -> n.setDying(true));
+        spawned_npcs.stream().filter(n -> n != null).forEach(n -> n.remove());
         spawned_npcs.clear();
     }
 
     private static boolean isQueued(Player player, PestControlBoat boat) {
         return boat.getQueue().contains(player);
     }
-
-
 
     private static void addToQueue(Player player, PestControlBoat boat) {
         if (isQueued(player, boat)) {
