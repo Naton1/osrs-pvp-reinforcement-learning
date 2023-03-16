@@ -4,8 +4,6 @@ import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Location;
-import com.elvarg.game.model.areas.impl.DuelArenaArea;
-import com.elvarg.game.model.movement.MovementQueue;
 import com.elvarg.game.model.teleportation.TeleportHandler;
 import com.elvarg.game.model.teleportation.TeleportType;
 import com.elvarg.util.Misc;
@@ -34,15 +32,7 @@ public class MovementInteraction {
                     return;
                 }
 
-                // Player bot is idle, let it walk somewhere random
-                if (!playerBot.getMovementQueue().isMoving()) {
-                    if (Misc.getRandom(9) <= 1) {
-                        Location pos = generateLocalPosition();
-                        if (pos != null) {
-                            MovementQueue.randomClippedStep(playerBot, 1);
-                        }
-                    }
-                }
+                this.randomWalk(Misc.random(1,6));
 
                 if (playerBot.getArea() != null && playerBot.getArea().canPlayerBotIdle(playerBot)) {
                     break;
@@ -56,74 +46,30 @@ public class MovementInteraction {
         }
     }
 
-    private Location generateLocalPosition() {
-        int dir = -1;
-        int x = 0, y = 0;
-        if (!RegionManager.blockedNorth(playerBot.getLocation(), playerBot.getPrivateArea())) {
-            dir = 0;
-        } else if (!RegionManager.blockedEast(playerBot.getLocation(), playerBot.getPrivateArea())) {
-            dir = 4;
-        } else if (!RegionManager.blockedSouth(playerBot.getLocation(), playerBot.getPrivateArea())) {
-            dir = 8;
-        } else if (!RegionManager.blockedWest(playerBot.getLocation(), playerBot.getPrivateArea())) {
-            dir = 12;
+    /**
+     * Moves randomly within {radius} of the PlayerBots original spawn location.
+     *
+     * @param radius
+     */
+    public void randomWalk(int radius) {
+        if (this.playerBot.getMovementQueue().isMoving() || !this.playerBot.getMovementQueue().getMobility().canMove() || this.playerBot.busy()) {
+            return;
         }
-        int random = Misc.getRandom(3);
 
-        boolean found = false;
+        if (CombatFactory.inCombat(this.playerBot) || this.playerBot.getDueling().inDuel()) {
+            return;
+        }
 
-        if (random == 0) {
-            if (!RegionManager.blockedNorth(playerBot.getLocation(), playerBot.getPrivateArea())) {
-                y = 1;
-                found = true;
-            }
-        } else if (random == 1) {
-            if (!RegionManager.blockedEast(playerBot.getLocation(), playerBot.getPrivateArea())) {
-                x = 1;
-                found = true;
-            }
-        } else if (random == 2) {
-            if (!RegionManager.blockedSouth(playerBot.getLocation(), playerBot.getPrivateArea())) {
-                y = -1;
-                found = true;
-            }
-        } else if (random == 3) {
-            if (!RegionManager.blockedWest(playerBot.getLocation(), playerBot.getPrivateArea())) {
-                x = -1;
-                found = true;
-            }
+        if (Misc.getRandom(Misc.random(40,80)) > 1) {
+            return;
         }
-        if (!found) {
-            if (dir == 0) {
-                y = 1;
-            } else if (dir == 4) {
-                x = 1;
-            } else if (dir == 8) {
-                y = -1;
-            } else if (dir == 12) {
-                x = -1;
-            }
-        }
-        if (x == 0 && y == 0)
-            return null;
-        int spawnX = playerBot.getSpawnPosition().getX();
-        int spawnY = playerBot.getSpawnPosition().getY();
-        if (x == 1) {
-            if (playerBot.getLocation().getX() + x > spawnX + 1)
-                return null;
-        }
-        if (x == -1) {
-            if (playerBot.getLocation().getX() - x < spawnX - 1)
-                return null;
-        }
-        if (y == 1) {
-            if (playerBot.getLocation().getY() + y > spawnY + 1)
-                return null;
-        }
-        if (y == -1) {
-            if (playerBot.getLocation().getY() - y < spawnY - 1)
-                return null;
-        }
-        return new Location(x, y);
+
+        Location destination;
+        do {
+            // Generate a location within radius of the original spawn location
+            destination = this.playerBot.getDefinition().getSpawnLocation().clone().transform(Misc.random(-radius, radius), Misc.random(-radius, radius));
+        } while (!RegionManager.canMove(this.playerBot.getLocation(), destination, this.playerBot.size(), this.playerBot.size(), this.playerBot.getPrivateArea()));
+
+        this.playerBot.getMovementQueue().addStep(destination);
     }
 }
