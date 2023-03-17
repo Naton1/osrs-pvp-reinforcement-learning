@@ -14,7 +14,6 @@ import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Graphic;
 import com.elvarg.game.model.GraphicHeight;
-import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.AreaManager;
 import com.google.common.collect.Streams;
 
@@ -39,7 +38,7 @@ public class MagicCombatMethod extends CombatMethod {
 
 	@Override
 	public PendingHit[] hits(Mobile character, Mobile target) {
-		int delay =  1 + ((1 + character.getLocation().getChebyshevDistance(target.getLocation())) / 3);
+		int delay =  1 + ((1 + character.getLocation().getDistance(target.getLocation())) / 3);
 
 		PendingHit[] hits = new PendingHit[]{new PendingHit(character, target, this, delay)};
 

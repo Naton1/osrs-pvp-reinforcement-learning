@@ -24,7 +24,7 @@ public class MagicShortbowCombatMethod extends RangedCombatMethod {
 
     @Override
     public PendingHit[] hits(Mobile character, Mobile target) {
-        int distance = character.getLocation().getChebyshevDistance(target.getLocation());
+        int distance = character.getLocation().getDistance(target.getLocation());
         int delay = RangedData.hitDelay(distance, RangedWeaponType.SHORTBOW);
         return new PendingHit[]{new PendingHit(character, target, this, true, delay), new PendingHit(character, target, this, true, delay)};
     }
