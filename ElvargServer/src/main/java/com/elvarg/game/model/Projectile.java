@@ -122,7 +122,7 @@ public class Projectile {
 	private int getSpeed(Location source, Location dest) {
 		if(speed != Integer.MIN_VALUE)
 			return speed;
-		return delay + duration + (source.getChebyshevDistance(dest) * span);
+		return delay + duration + (source.getDistance(dest) * span);
 	}
 	
 	/**

@@ -19,7 +19,7 @@ public class DarkBowCombatMethod extends RangedCombatMethod {
 
 	@Override
 	public PendingHit[] hits(Mobile character, Mobile target) {
-		int distance = character.getLocation().getChebyshevDistance(target.getLocation());
+		int distance = character.getLocation().getDistance(target.getLocation());
 		int delay = RangedData.hitDelay(distance, RangedWeaponType.LONGBOW);
 
 		return new PendingHit[] { new PendingHit(character, target, this, false, delay),

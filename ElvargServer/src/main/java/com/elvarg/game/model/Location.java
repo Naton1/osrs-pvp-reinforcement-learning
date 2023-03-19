@@ -247,19 +247,6 @@ public class Location {
         int deltaX = other.x - x, deltaY = other.y - y;
         return deltaX <= 2 && deltaX >= -3 && deltaY <= 2 && deltaY >= -3;
     }
-
-    /**
-     * Gets the distance between this position and another position. Only X and
-     * Y are considered (i.e. 2 dimensions).
-     *
-     * @param other The other position.
-     * @return The distance.
-     */
-    public int getDistance(Location other) {
-        int deltaX = x - other.x;
-        int deltaY = y - other.y;
-        return (int) Math.ceil(Math.sqrt(deltaX * deltaX + deltaY * deltaY));
-    }
     
     /**
      * Gets the distance between this and another location.
@@ -269,7 +256,7 @@ public class Location {
      * @param other The other position.
      * @return The chebyshev distance.
      */
-	public int getChebyshevDistance(Location other) {
+	public int getDistance(Location other) {
         int deltaX = x - other.x;
         int deltaY = y - other.y;
 		return Math.max(Math.abs(deltaX), Math.abs(deltaY));

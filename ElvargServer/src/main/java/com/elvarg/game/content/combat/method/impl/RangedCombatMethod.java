@@ -4,7 +4,6 @@ import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.CombatType;
-import com.elvarg.game.content.combat.FightType;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.combat.method.CombatMethod;
 import com.elvarg.game.content.combat.ranged.RangedData;
@@ -14,7 +13,6 @@ import com.elvarg.game.content.combat.ranged.RangedData.RangedWeaponType;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Animation;
-import com.elvarg.game.model.Location;
 import com.elvarg.game.model.Projectile;
 
 public class RangedCombatMethod extends CombatMethod {
@@ -26,7 +24,7 @@ public class RangedCombatMethod extends CombatMethod {
 
     @Override
     public PendingHit[] hits(Mobile character, Mobile target) {
-        int distance = character.getLocation().getChebyshevDistance(target.getLocation());
+        int distance = character.getLocation().getDistance(target.getLocation());
         RangedWeaponType type = character.getCombat().getRangedWeapon().getType();
         int delay = RangedData.hitDelay(distance, type);
         
