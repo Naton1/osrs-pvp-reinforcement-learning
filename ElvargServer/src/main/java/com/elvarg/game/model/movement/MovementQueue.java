@@ -41,7 +41,7 @@ public final class MovementQueue {
     /**
      * NPC interactions can begin when the player is within this radius of the NPC.
      */
-    public static final int NPC_INTERACT_RADIUS = 2;
+    public static final int NPC_INTERACT_RADIUS = 3;
 
     /**
      * An enum to represent a Player's Mobility
@@ -268,6 +268,55 @@ public final class MovementQueue {
                 deltaY--;
             addStep(x - deltaX, y - deltaY, step.getZ());
         }
+    }
+
+    public void walkToLocation(Location location, int distance, Runnable calculatePath, Runnable onReach) {
+        Mobility mobility = this.getMobility();
+        if (!mobility.canMove()) {
+            mobility.sendMessage(this.player);
+            this.reset();
+            return;
+        }
+
+        if (!this.checkDestination(location)) {
+            this.reset();
+            return;
+        }
+
+        this.reset();
+
+        this.walkToReset();
+
+        if (calculatePath != null) {
+            calculatePath.run();
+        }
+
+        final int finalDestinationX = player.getMovementQueue().pathX;
+
+        final int finalDestinationY = player.getMovementQueue().pathY;
+
+        TaskManager.submit(new Task(0, player.getIndex(), true) {
+
+            int reachStage = 0;
+
+            @Override
+            protected void execute() {
+                if (!player.getMovementQueue().hasRoute()) {
+                    reachStage = -1;
+                    return;
+                }
+
+                if (player.getLocation().getX() != finalDestinationX || player.getLocation().getY() != finalDestinationY) {
+                    return;
+                }
+
+                if (onReach != null) {
+                    onReach.run();
+                }
+
+                reachStage = 1;
+            }
+        });
     }
 
     /**
@@ -747,7 +796,7 @@ public final class MovementQueue {
 
     public void walkToGroundItem(Location pos, Runnable action) {
         if (player.getLocation().getDistance(pos) == 0) {
-            // If player is already at the ground item, run the action now
+            // If player is already standing on top of the ground item, run the action now
             action.run();
             return;
         }
@@ -779,26 +828,22 @@ public final class MovementQueue {
 
             @Override
             protected void execute() {
+                if (!points.isEmpty()) {
+                    // Movement queue hasn't completed yet, skip for this cycle
+                    return;
+                }
 
-                if (stage != 0) {
+                if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != destX || player.getLocation().getY() != destY) {
                     player.getMovementQueue().reset();
                     stop();
                     player.getPacketSender().sendMessage("You can't reach that!");
                     return;
                 }
 
-                if (!player.getMovementQueue().points.isEmpty()) {
-                    return;
-                }
-
-                if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != destX || player.getLocation().getY() != destY) {
-                    stage = -1;
-                    return;
-                }
-
                 if (action != null) {
                     action.run();
                 }
+
                 player.getMovementQueue().reset();
                 stop();
             }
@@ -849,21 +894,18 @@ public final class MovementQueue {
         }
 
         final int finalDestinationX = player.getMovementQueue().pathX;
-
         final int finalDestinationY = player.getMovementQueue().pathY;
 
         TaskManager.submit(new Task(0, player.getIndex(), true) {
 
             int currentX = entity.getLocation().getX();
-
             int currentY = entity.getLocation().getY();
-
-            byte reachStage = 0;
 
             @Override
             protected void execute() {
                 player.setMobileInteraction(entity);
                 if (currentX != entity.getLocation().getX() || currentY != entity.getLocation().getY()) {
+                    // NPC has moved, update the entity path to the updated location
                     reset();
                     currentX = entity.getLocation().getX();
                     currentY = entity.getLocation().getY();
@@ -877,30 +919,21 @@ public final class MovementQueue {
                     return;
                 }
 
-                if (reachStage != 0) {
-                    if (reachStage == 1) {
-                        player.getMovementQueue().reset();
-                        stop();
-                        return;
-                    }
+                if (!points.isEmpty()) {
+                    // Movement queue hasn't completed yet, skip for this cycle
+                    return;
+                }
+
+                if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != finalDestinationX || player.getLocation().getY() != finalDestinationY) {
+                    // Player hasn't got a route or they're not already at destination
                     player.getMovementQueue().reset();
                     stop();
                     player.getPacketSender().sendMessage("I can't reach that!");
                     return;
                 }
 
-                if (!player.getMovementQueue().points.isEmpty()) {
-                    return;
-                }
-
-                if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != finalDestinationX || player.getLocation().getY() != finalDestinationY) {
-                    // Player hasn't got a route or they're not already at destination
-                    reachStage = -1;
-                    return;
-                }
-
-                reachStage = 1;
-                return;
+                player.getMovementQueue().reset();
+                stop();
             }
         });
     }
@@ -963,46 +996,32 @@ public final class MovementQueue {
 
         player.setPositionToFace(new Location(objectX, objectY));
         TaskManager.submit(new Task(1, player.getIndex(), true) {
-
-            int walkStage = 0;
-
             @Override
             protected void execute() {
+                if (!points.isEmpty()) {
+                    // Movement queue hasn't completed yet, skip for this cycle
+                    return;
+                }
 
-                if (walkStage != 0) {
+                pathX = player.getLocation().getX();
+                pathY = player.getLocation().getY();
 
-                    if (objectX == player.getLocation().getX() && finalObjectY == player.getLocation().getY()) {
-                        if (direction == 0)
-                            player.setDirection(Direction.WEST);
-                        else if (direction == 1)
-                            player.setDirection(Direction.NORTH);
-                        else if (direction == 2)
-                            player.setDirection(Direction.EAST);
-                        else if (direction == 3)
-                            player.setDirection(Direction.SOUTH);
-                    }
-                    pathX = player.getLocation().getX();
-                    pathY = player.getLocation().getY();
-                    if (walkStage == 1) {
-                        if (action != null)
-                            action.execute();
-                        stop();
-                        return;
-                    }
+                if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != finalDestinationX || player.getLocation().getY() != finalDestinationY) {
+                    // No route is possible or queue is empty and not at destination
+                    player.getPacketSender().sendMessage("You can't reach that!");
                     stop();
                     return;
                 }
-                if (!points.isEmpty()) {
-                    return;
+
+                if (action != null) {
+                    action.execute();
                 }
 
-                if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != finalDestinationX || player.getLocation().getY() != finalDestinationY) {
-                    walkStage = -1;
-                    /** When no destination is set = no possible route to requested tiles **/
-                    player.getPacketSender().sendMessage("You can't reach that!");
-                    return;
+                if (objectX == player.getLocation().getX() && objectY == player.getLocation().getY()) {
+                    player.setPositionToFace(new Location(objectX, objectY));
                 }
-                walkStage = 1;
+
+                stop();
             }
         });
     }

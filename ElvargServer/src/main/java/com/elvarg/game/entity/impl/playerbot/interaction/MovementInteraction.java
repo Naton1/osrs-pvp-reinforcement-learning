@@ -64,11 +64,7 @@ public class MovementInteraction {
             return;
         }
 
-        Location destination;
-        do {
-            // Generate a location within radius of the original spawn location
-            destination = this.playerBot.getDefinition().getSpawnLocation().clone().transform(Misc.random(-radius, radius), Misc.random(-radius, radius));
-        } while (!RegionManager.canMove(this.playerBot.getLocation(), destination, this.playerBot.size(), this.playerBot.size(), this.playerBot.getPrivateArea()));
+        Location destination = this.playerBot.getDefinition().getSpawnLocation().clone().transform(Misc.random(-radius, radius), Misc.random(-radius, radius));
 
         this.playerBot.getMovementQueue().addStep(destination);
     }
