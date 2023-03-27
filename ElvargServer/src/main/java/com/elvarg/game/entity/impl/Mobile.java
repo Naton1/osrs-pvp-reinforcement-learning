@@ -201,7 +201,6 @@ public abstract class Mobile extends Entity {
 		return this;
 	}
 
-	@Override
 	public void performAnimation(Animation animation) {
 		if (this.animation != null && animation != null) {
 			if (this.animation.getPriority().ordinal() > animation.getPriority().ordinal()) {
@@ -213,7 +212,6 @@ public abstract class Mobile extends Entity {
 		getUpdateFlag().flag(Flag.ANIMATION);
 	}
 
-	@Override
 	public void performGraphic(Graphic graphic) {
 		if (this.graphic != null && graphic != null) {
 			if (this.graphic.getPriority().ordinal() > graphic.getPriority().ordinal()) {
@@ -507,7 +505,7 @@ public abstract class Mobile extends Entity {
 	}
 
 	/**
-	 * Sets the value for {@link CharacterNode#resetMovementQueue}.
+	 * Sets the value for resetMovementQueue.
 	 *
 	 * @param resetMovementQueue
 	 *            the new value to set.
@@ -528,8 +526,7 @@ public abstract class Mobile extends Entity {
 	/**
 	 * Sets if this entity is registered,
 	 *
-	 * @param unregistered
-	 *            the unregistered to set.
+	 * @param registered
 	 */
 	public void setRegistered(boolean registered) {
 		this.registered = registered;

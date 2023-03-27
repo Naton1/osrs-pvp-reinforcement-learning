@@ -131,7 +131,7 @@ public class Firemaking extends DefaultSkillable {
 
         //Face logs if present.
         if (groundLog.isPresent()) {
-            player.setPositionToFace(groundLog.get().getPosition());
+            player.setPositionToFace(groundLog.get().getLocation());
         }
 
         //Start parent execution task..
@@ -178,7 +178,7 @@ public class Firemaking extends DefaultSkillable {
             //If we aren't adding to a bonfire..
             if (!bonfire.isPresent()) {
                 //The position to create the fire at..
-                final Location pos = groundLog.get().getPosition().clone();
+                final Location pos = groundLog.get().getLocation().clone();
 
                 //Delete logs from ground ..
                 ItemOnGroundManager.deregister(groundLog.get());

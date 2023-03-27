@@ -951,7 +951,7 @@ public class PacketSender {
 	}
 
 	public PacketSender alterGroundItem(ItemOnGround item) {
-		sendPosition(item.getPosition());
+		sendPosition(item.getLocation());
 		PacketBuilder out = new PacketBuilder(84);
 		out.put(0);
 		out.putShort(item.getItem().getId()).putInt(item.getOldAmount()).putInt(item.getItem().getAmount());
@@ -960,7 +960,7 @@ public class PacketSender {
 	}
 
 	public PacketSender createGroundItem(ItemOnGround item) {
-		sendPosition(item.getPosition());
+		sendPosition(item.getLocation());
 		PacketBuilder out = new PacketBuilder(44);
 		out.putShort(item.getItem().getId(), ValueType.A, ByteOrder.LITTLE);
 		out.putInt(item.getItem().getAmount()).put(0);
@@ -969,7 +969,7 @@ public class PacketSender {
 	}
 
 	public PacketSender deleteGroundItem(ItemOnGround item) {
-		sendPosition(item.getPosition());
+		sendPosition(item.getLocation());
 		PacketBuilder out = new PacketBuilder(156);
 		out.put(0, ValueType.A);
 		out.putShort(item.getItem().getId());

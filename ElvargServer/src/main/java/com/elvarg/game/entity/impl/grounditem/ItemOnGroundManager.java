@@ -1,7 +1,7 @@
 package com.elvarg.game.entity.impl.grounditem;
 
 import java.util.*;
-import com.elvarg.game.GameConstants;
+
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGround.State;
 import com.elvarg.game.entity.impl.player.Player;
@@ -99,12 +99,12 @@ public class ItemOnGroundManager {
 		if (item.isPendingRemoval()) {
 			type = OperationType.DELETE;
 		}
-		if (item.getPosition().getZ() != player.getLocation().getZ())
+		if (item.getLocation().getZ() != player.getLocation().getZ())
 			return;
 		if (player.getPrivateArea() != item.getPrivateArea()) {
             return;
         }
-		if (item.getPosition().getDistance(player.getLocation()) > 64)
+		if (item.getLocation().getDistance(player.getLocation()) > 64)
 			return;
 		switch (type) {
 		case ALTER:
@@ -134,12 +134,6 @@ public class ItemOnGroundManager {
 	 * @param item
 	 */
 	public static void register(ItemOnGround item) {
-		// No point spamming with spawned items...
-
-		if (!Objects.equals("ground_items_spawns", item.getOwner().get())) {
-			return;
-		}
-
 		// Check for merge with existing stackables..
 		if (item.getItem().getDefinition().isStackable()) {
 			if (merge(item)) {
@@ -168,7 +162,7 @@ public class ItemOnGroundManager {
 			if (item_ == null || item_.isPendingRemoval() || item_.equals(item)) {
 				continue;
 			}
-			if (!item_.getPosition().equals(item.getPosition())) {
+			if (!item_.getLocation().equals(item.getLocation())) {
 				continue;
 			}
 
@@ -300,7 +294,7 @@ public class ItemOnGroundManager {
 			if (id != item.getItem().getId()) {
 				continue;
 			}
-			if (!item.getPosition().equals(position)) {
+			if (!item.getLocation().equals(position)) {
 				continue;
 			}
 			return Optional.of(item);
@@ -315,7 +309,7 @@ public class ItemOnGroundManager {
 	 * @return
 	 */
 	public static boolean exists(ItemOnGround i) {
-		return getGroundItem(i.getOwner(), i.getItem().getId(), i.getPosition()).isPresent();
+		return getGroundItem(i.getOwner(), i.getItem().getId(), i.getLocation()).isPresent();
 	}
 
 	/**

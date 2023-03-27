@@ -3,6 +3,7 @@ package com.elvarg.net.packet.impl;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.PlayerStatus;
+import com.elvarg.game.task.impl.WalkToTask;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketExecutor;
 
@@ -31,7 +32,7 @@ public class TradeRequestPacketListener implements PacketExecutor {
             return;
         }
 
-        player.getMovementQueue().walkToEntity(target, () -> sendRequest(player, target));
+        WalkToTask.submit(player, target, () -> sendRequest(player, target));
     }
 
     public static void sendRequest(Player player, Player target) {
