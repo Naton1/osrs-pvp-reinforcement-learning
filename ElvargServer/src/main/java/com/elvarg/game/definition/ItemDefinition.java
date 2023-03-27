@@ -6,6 +6,8 @@ import com.elvarg.game.model.EquipmentType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.elvarg.util.ItemIdentifiers.*;
+
 /**
  * Represents the definition of an item.
  *
@@ -175,7 +177,7 @@ public class ItemDefinition {
     }
 
     public boolean isBarrows() {
-        return id != 4740 && (id >= 4708 && id <= 4759 || id >= 4856 && id <= 4999);
+        return id != BOLT_RACK && (id >= AHRIMS_HOOD && id <= VERACS_PLATESKIRT || id >= AHRIMS_HOOD_100 && id <= VERACS_PLATESKIRT_0_2);
     }
 
     /**
