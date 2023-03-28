@@ -10,19 +10,15 @@ import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.Dueling;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.method.CombatMethod;
-import com.elvarg.game.definition.ObjectDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
-import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.model.Action;
 import com.elvarg.game.model.Direction;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.movement.path.PathFinder;
 import com.elvarg.game.model.movement.path.RS317PathFinder;
 import com.elvarg.game.model.rights.PlayerRights;
-import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.util.Misc;
 import com.elvarg.util.NpcIdentifiers;
@@ -165,18 +161,6 @@ public final class MovementQueue {
         else if (character.getMovementQueue().canWalk(0, -size))
             character.getMovementQueue().walkStep(0, -size);
         else if (character.getMovementQueue().canWalk(0, size))
-            character.getMovementQueue().walkStep(0, size);
-    }
-
-    public static void randomClippedStep(Mobile character, int size) {
-        var rng = RANDOM.inclusive(1, 4);
-        if (rng == 1 && character.getMovementQueue().canWalk(-size, 0))
-            character.getMovementQueue().walkStep(-size, 0);
-        else if (rng == 2 && character.getMovementQueue().canWalk(size, 0))
-            character.getMovementQueue().walkStep(size, 0);
-        else if (rng == 3 && character.getMovementQueue().canWalk(0, -size))
-            character.getMovementQueue().walkStep(0, -size);
-        else if (rng == 4 && character.getMovementQueue().canWalk(0, size))
             character.getMovementQueue().walkStep(0, size);
     }
 
@@ -745,66 +729,6 @@ public final class MovementQueue {
         return points;
     }
 
-    public void walkToGroundItem(Location pos, Runnable action) {
-        if (player.getLocation().getDistance(pos) == 0) {
-            // If player is already at the ground item, run the action now
-            action.run();
-            return;
-        }
-
-        Mobility mobility = this.getMobility();
-        if (!mobility.canMove()) {
-            mobility.sendMessage(this.player);
-            this.reset();
-            return;
-        }
-
-        if (!this.checkDestination(pos)) {
-            this.reset();
-            return;
-        }
-
-        int destX = pos.getX();
-        int destY = pos.getY();
-
-        this.reset();
-
-        this.walkToReset();
-
-        PathFinder.calculateWalkRoute(player, destX, destY);
-
-        TaskManager.submit(new Task(0, player.getIndex(), true) {
-
-            int stage = 0;
-
-            @Override
-            protected void execute() {
-
-                if (stage != 0) {
-                    player.getMovementQueue().reset();
-                    stop();
-                    player.getPacketSender().sendMessage("You can't reach that!");
-                    return;
-                }
-
-                if (!player.getMovementQueue().points.isEmpty()) {
-                    return;
-                }
-
-                if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != destX || player.getLocation().getY() != destY) {
-                    stage = -1;
-                    return;
-                }
-
-                if (action != null) {
-                    action.run();
-                }
-                player.getMovementQueue().reset();
-                stop();
-            }
-        });
-    }
-
     /**
      * This function is called to reset everything when a player walks to an entity/tile.
      */
@@ -820,214 +744,9 @@ public final class MovementQueue {
         this.resetFollow();
     }
 
-    public void walkToEntity(Mobile entity, Runnable runnable) {
-        int destX = entity.getLocation().getX();
-        int destY = entity.getLocation().getY();
-
-        Mobility mobility = this.getMobility();
-        if (!mobility.canMove()) {
-            mobility.sendMessage(this.player);
-            this.reset();
-            return;
-        }
-
-        if (!this.checkDestination(entity.getLocation())) {
-            this.reset();
-            return;
-        }
-
-        this.reset();
-
-        this.walkToReset();
-
-        PathFinder.calculateEntityRoute(player, destX, destY);
-
-        if (!player.getMovementQueue().foundRoute) {
-            // If the path finder couldn't find a route, you can't reach the entity
-            player.getPacketSender().sendMessage("I can't reach that!");
-            return;
-        }
-
-        final int finalDestinationX = player.getMovementQueue().pathX;
-
-        final int finalDestinationY = player.getMovementQueue().pathY;
-
-        TaskManager.submit(new Task(0, player.getIndex(), true) {
-
-            int currentX = entity.getLocation().getX();
-
-            int currentY = entity.getLocation().getY();
-
-            byte reachStage = 0;
-
-            @Override
-            protected void execute() {
-                player.setMobileInteraction(entity);
-                if (currentX != entity.getLocation().getX() || currentY != entity.getLocation().getY()) {
-                    reset();
-                    currentX = entity.getLocation().getX();
-                    currentY = entity.getLocation().getY();
-                    PathFinder.calculateEntityRoute(player, currentX, currentY);
-                }
-
-                if (runnable != null && player.getMovementQueue().isWithinEntityInteractionDistance(entity.getLocation())) {
-                    // Executes the runnable and stops the task. However, It will still path to the destination.
-                    stop();
-                    runnable.run();
-                    return;
-                }
-
-                if (reachStage != 0) {
-                    if (reachStage == 1) {
-                        player.getMovementQueue().reset();
-                        stop();
-                        return;
-                    }
-                    player.getMovementQueue().reset();
-                    stop();
-                    player.getPacketSender().sendMessage("I can't reach that!");
-                    return;
-                }
-
-                if (!player.getMovementQueue().points.isEmpty()) {
-                    return;
-                }
-
-                if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != finalDestinationX || player.getLocation().getY() != finalDestinationY) {
-                    // Player hasn't got a route or they're not already at destination
-                    reachStage = -1;
-                    return;
-                }
-
-                reachStage = 1;
-                return;
-            }
-        });
+    public Player getPlayer() {
+        return this.player;
     }
-
-    public void walkToObject(final GameObject object, final Action action) {
-        Mobility mobility = this.getMobility();
-        if (!mobility.canMove()) {
-            mobility.sendMessage(this.player);
-            this.reset();
-            return;
-        }
-
-        if (!this.checkDestination(object.getLocation())) {
-            this.reset();
-            return;
-        }
-
-        this.reset();
-
-        this.walkToReset();
-
-        int objectX = object.getLocation().getX();
-
-        int objectY = object.getLocation().getY();
-
-        int type = object.getType();
-
-        int id = object.getId();
-
-        int direction = object.getFace();
-
-        if (type == 10 || type == 11 || type == 22) {
-            int xLength, yLength;
-            ObjectDefinition def = ObjectDefinition.forId(id);
-            if (direction == 0 || direction == 2) {
-                yLength = def.objectSizeX;
-                xLength = def.objectSizeY;
-            } else {
-                yLength = def.objectSizeY;
-                xLength = def.objectSizeX;
-            }
-            int blockingMask = def.blockingMask;
-
-            if (direction != 0) {
-                blockingMask = (blockingMask << direction & 0xf) + (blockingMask >> 4 - direction);
-            }
-
-            PathFinder.calculateObjectRoute(player, 0, objectX, objectY, xLength, yLength, 0, blockingMask);
-        } else {
-            PathFinder.calculateObjectRoute(player, type + 1, objectX, objectY, 0, 0, direction, 0);
-        }
-
-        final int finalDestinationX = player.getMovementQueue().pathX;
-
-        final int finalDestinationY = player.getMovementQueue().pathY;
-
-        //System.err.println("RequestedX=" + objectX + " requestedY=" + objectY + " givenX=" + finalDestinationX + " givenY=" + finalDestinationY);
-
-        int finalObjectY = objectY;
-
-        player.setPositionToFace(new Location(objectX, objectY));
-        TaskManager.submit(new Task(1, player.getIndex(), true) {
-
-            int walkStage = 0;
-
-            @Override
-            protected void execute() {
-
-                if (walkStage != 0) {
-
-                    if (objectX == player.getLocation().getX() && finalObjectY == player.getLocation().getY()) {
-                        if (direction == 0)
-                            player.setDirection(Direction.WEST);
-                        else if (direction == 1)
-                            player.setDirection(Direction.NORTH);
-                        else if (direction == 2)
-                            player.setDirection(Direction.EAST);
-                        else if (direction == 3)
-                            player.setDirection(Direction.SOUTH);
-                    }
-                    pathX = player.getLocation().getX();
-                    pathY = player.getLocation().getY();
-                    if (walkStage == 1) {
-                        if (action != null)
-                            action.execute();
-                        stop();
-                        return;
-                    }
-                    stop();
-                    return;
-                }
-                if (!points.isEmpty()) {
-                    return;
-                }
-
-                if (!player.getMovementQueue().hasRoute() || player.getLocation().getX() != finalDestinationX || player.getLocation().getY() != finalDestinationY) {
-                    walkStage = -1;
-                    /** When no destination is set = no possible route to requested tiles **/
-                    player.getPacketSender().sendMessage("You can't reach that!");
-                    return;
-                }
-                walkStage = 1;
-            }
-        });
-    }
-
-    private boolean isAtPointOfFocus(int destX, int destY) {
-        return character.getLocation().getX() == destX && character.getLocation().getY() == destY;
-    }
-
-    public boolean isAtDestination() {
-        return points.isEmpty();
-    }
-
-    /**
-     * Whether the player is close enough to interact with the given entity.
-     * This also takes into account the player's movement path, so if you're standing 2
-     * squares away from an NPC but separated by a wall or fence, this will still be accurate.
-     *
-     * @return {boolean}
-     */
-    private boolean isWithinEntityInteractionDistance(Location entityLocation) {
-        return this.points.size() <= NPC_INTERACT_RADIUS
-        // We need to ensure we are physically close enough. (e.g. the movementQueue is empty because path is blocked)
-                && player.getLocation().getDistance(entityLocation) <= NPC_INTERACT_RADIUS;
-    }
-
 
     /**
      * Represents a single point in the queue.

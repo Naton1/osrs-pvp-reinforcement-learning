@@ -507,7 +507,7 @@ public abstract class Mobile extends Entity {
 	}
 
 	/**
-	 * Sets the value for {@link CharacterNode#resetMovementQueue}.
+	 * Sets the value for resetMovementQueue.
 	 *
 	 * @param resetMovementQueue
 	 *            the new value to set.
@@ -528,8 +528,7 @@ public abstract class Mobile extends Entity {
 	/**
 	 * Sets if this entity is registered,
 	 *
-	 * @param unregistered
-	 *            the unregistered to set.
+	 * @param registered
 	 */
 	public void setRegistered(boolean registered) {
 		this.registered = registered;

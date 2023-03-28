@@ -18,6 +18,7 @@ import com.elvarg.game.model.dialogues.builders.impl.NieveDialogue;
 import com.elvarg.game.model.dialogues.builders.impl.ParduDialogue;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.entity.impl.npc.NPCInteractionSystem;
+import com.elvarg.game.task.impl.WalkToTask;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
@@ -83,8 +84,7 @@ public class NPCOptionPacketListener extends NpcIdentifiers implements PacketExe
             return;
         }
 
-        player.getMovementQueue().walkToEntity(npc, () -> handleInteraction(player, npc, packet));
-
+        WalkToTask.submit(player, npc, () -> handleInteraction(player, npc, packet));
     }
 
     private void handleInteraction(Player player, NPC npc, Packet packet) {

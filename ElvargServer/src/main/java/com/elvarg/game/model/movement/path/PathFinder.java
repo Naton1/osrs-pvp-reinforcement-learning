@@ -3,7 +3,9 @@ package com.elvarg.game.model.movement.path;
 import com.elvarg.Server;
 import com.elvarg.game.collision.RegionManager;
 import com.elvarg.game.content.combat.CombatConstants;
+import com.elvarg.game.definition.ObjectDefinition;
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.impl.PrivateArea;
 import com.elvarg.game.model.commands.impl.AttackRange;
@@ -130,8 +132,38 @@ public class PathFinder {
         calculateRoute(player, 0, destX, destY, 0, 0, 0, 0, true);
     }
 
-    public static void calculateObjectRoute(Mobile entity, int size, int destX, int destY, int xLength, int yLength, int direction, int blockingMask) {
-        calculateRoute(entity, size, destX, destY, xLength, yLength, direction, blockingMask, false);
+    public static void calculateObjectRoute(Mobile entity, GameObject object) {
+        int objectX = object.getLocation().getX();
+
+        int objectY = object.getLocation().getY();
+
+        int type = object.getType();
+
+        int id = object.getId();
+
+        int direction = object.getFace();
+
+        if (type == 10 || type == 11 || type == 22) {
+            int xLength, yLength;
+            ObjectDefinition def = ObjectDefinition.forId(id);
+            if (direction == 0 || direction == 2) {
+                yLength = def.objectSizeX;
+                xLength = def.objectSizeY;
+            } else {
+                yLength = def.objectSizeY;
+                xLength = def.objectSizeX;
+            }
+            int blockingMask = def.blockingMask;
+
+            if (direction != 0) {
+                blockingMask = (blockingMask << direction & 0xf) + (blockingMask >> 4 - direction);
+            }
+
+            calculateRoute(entity, 0, objectX, objectY, xLength, yLength, 0, blockingMask, false);
+            return;
+        }
+
+        calculateRoute(entity, type + 1, objectX, objectY, 0, 0, direction, 0, false);
     }
 
     /**
