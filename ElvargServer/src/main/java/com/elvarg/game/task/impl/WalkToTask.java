@@ -36,6 +36,9 @@ public class WalkToTask extends Task {
     // The destination calculated by the PathFinder
     int finalDestinationX, finalDestinationY;
 
+    // Whether the player has reached their destination
+    boolean reachedDestination = false;
+
     public static void submit(Player player, Entity entity, Runnable action) {
         TaskManager.submit(new WalkToTask(player, entity, action));
     }
@@ -85,9 +88,11 @@ public class WalkToTask extends Task {
             player.setMobileInteraction((Mobile) entity);
         }
 
-        if (action != null && withinInteractionDistance()) {
+        if (reachedDestination || withinInteractionDistance()) {
             // Executes the runnable and stops the task. Player will still path to the destination.
-            action.run();
+            if (action != null) {
+                action.run();
+            }
             stop();
             return;
         }
@@ -108,14 +113,8 @@ public class WalkToTask extends Task {
             return;
         }
 
-        // Player has reached destination
-
-        if (action != null) {
-            action.run();
-        }
-
-        movement.reset();
-        stop();
+        // Execute the runnable on the next game tick as per OSRS
+        reachedDestination = true;
     }
 
     /**
@@ -124,41 +123,10 @@ public class WalkToTask extends Task {
      * @param entity The entity to walk to
      */
     private void calculateWalkRoute(Entity entity) {
-        if (entity instanceof Mobile) {
-            // For players and NPCs
+        if (entity instanceof Mobile /* Players and NPCs */) {
             PathFinder.calculateEntityRoute(player, destX, destY);
         } else if (entity instanceof GameObject) {
-            GameObject object = (GameObject) entity;
-            int objectX = object.getLocation().getX();
-
-            int objectY = object.getLocation().getY();
-
-            int type = object.getType();
-
-            int id = object.getId();
-
-            int direction = object.getFace();
-
-            if (type == 10 || type == 11 || type == 22) {
-                int xLength, yLength;
-                ObjectDefinition def = ObjectDefinition.forId(id);
-                if (direction == 0 || direction == 2) {
-                    yLength = def.objectSizeX;
-                    xLength = def.objectSizeY;
-                } else {
-                    yLength = def.objectSizeY;
-                    xLength = def.objectSizeX;
-                }
-                int blockingMask = def.blockingMask;
-
-                if (direction != 0) {
-                    blockingMask = (blockingMask << direction & 0xf) + (blockingMask >> 4 - direction);
-                }
-
-                PathFinder.calculateObjectRoute(player, 0, objectX, objectY, xLength, yLength, 0, blockingMask);
-            } else {
-                PathFinder.calculateObjectRoute(player, type + 1, objectX, objectY, 0, 0, direction, 0);
-            }
+            PathFinder.calculateObjectRoute(player, (GameObject) entity);
         } else if (entity instanceof ItemOnGround) {
             PathFinder.calculateWalkRoute(player, destX, destY);
         }
