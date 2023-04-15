@@ -21,93 +21,100 @@ public class AccuracyFormulasDpsCalc {
     	float hitChance = hitChance(attRoll, defRoll);
     	return hitChance > srand.nextFloat();
     }
-    
+
     public static boolean rollAccuracy(Mobile entity, Mobile enemy, CombatType style) {
+        int attRoll;
+        int defRoll;
         if (style == CombatType.MELEE) {
-            int attRoll = attackMeleeRoll(entity);
-            int defRoll = defenseMeleeRoll(entity, enemy);
-
-            float hitChance = hitChance(attRoll, defRoll);
-            return hitChance > srand.nextFloat();
-
-        } else if (style == CombatType.RANGED) {
-            int attRoll = attackRangedRoll(entity);
-            int defRoll = defenseRangedRoll(enemy);
-
-            float hitChance = hitChance(attRoll, defRoll);
-            return hitChance > srand.nextFloat();
-        } else if (style == CombatType.MAGIC) {
-            int attRoll = attackMagicRoll(entity);
-            int defRoll = defenseMagicRoll(enemy);
-
-            float hitChance = hitChance(attRoll, defRoll);
-            return hitChance > srand.nextFloat();
+            attRoll = attackMeleeRoll(entity);
+            defRoll = defenseMeleeRoll(entity, enemy);
         }
-        return false;
+        else if (style == CombatType.RANGED) {
+            attRoll = attackRangedRoll(entity);
+            defRoll = defenseRangedRoll(enemy);
+        }
+        else if (style == CombatType.MAGIC) {
+            attRoll = attackMagicRoll(entity);
+            defRoll = defenseMagicRoll(enemy);
+        }
+        else {
+            return false;
+        }
+        float hitChance = hitChance(attRoll, defRoll);
+        return hitChance > srand.nextFloat();
     }
 
     public static float hitChance(int attRoll, int defRoll) {
 
         if (attRoll > defRoll) {
-            return 1f - ((defRoll + 2f) / (2f * attRoll + 1f));
-        } else {
-            return attRoll / (2f * defRoll + 1f);
+            return 1f - ((defRoll + 2f) / (2f * (attRoll + 1f)));
+        }
+        else {
+            return attRoll / (2f * (defRoll + 1f));
         }
     }
 
-    private static float effectiveAttackLevel(Mobile entity) {
-        float att = 8;
+    private static int effectiveAttackLevel(Mobile entity) {
 
         if (entity.isNpc()) {
-            att += entity.getAsNpc().getCurrentDefinition().getStats()[0];
-            return att;
+            return entity.getAsNpc().getCurrentDefinition().getStats()[0] + 8;
         }
 
         Player player = entity.getAsPlayer();
 
-        att += player.getSkillManager().getCurrentLevel(Skill.ATTACK);
+        float att = player.getSkillManager().getCurrentLevel(Skill.ATTACK);
 
-        double prayerBonus = 1;
+        float prayerBonus = 1;
 
         // Prayer additions
         if (PrayerHandler.isActivated(player, PrayerHandler.CLARITY_OF_THOUGHT)) {
-            prayerBonus = 1.05;
-        } else if (PrayerHandler.isActivated(player, PrayerHandler.IMPROVED_REFLEXES)) {
-            prayerBonus = 1.10;
-        } else if (PrayerHandler.isActivated(player, PrayerHandler.INCREDIBLE_REFLEXES)) {
-            prayerBonus = 1.15;
-        } else if (PrayerHandler.isActivated(player, PrayerHandler.CHIVALRY)) {
-            prayerBonus = 1.15;
-        } else if (PrayerHandler.isActivated(player, PrayerHandler.PIETY)) {
-            prayerBonus = 1.20;
+            prayerBonus = 1.05f;
+        }
+        else if (PrayerHandler.isActivated(player, PrayerHandler.IMPROVED_REFLEXES)) {
+            prayerBonus = 1.10f;
+        }
+        else if (PrayerHandler.isActivated(player, PrayerHandler.INCREDIBLE_REFLEXES)) {
+            prayerBonus = 1.15f;
+        }
+        else if (PrayerHandler.isActivated(player, PrayerHandler.CHIVALRY)) {
+            prayerBonus = 1.15f;
+        }
+        else if (PrayerHandler.isActivated(player, PrayerHandler.PIETY)) {
+            prayerBonus = 1.20f;
         }
 
         att *= prayerBonus;
+        att = (float) Math.floor(att);
 
         FightStyle fightStyle = player.getFightType().getStyle();
-        if (fightStyle == FightStyle.ACCURATE)
+        if (fightStyle == FightStyle.ACCURATE) {
             att += 3;
-        else if (fightStyle == FightStyle.CONTROLLED)
+        }
+        else if (fightStyle == FightStyle.CONTROLLED) {
             att += 1;
+        }
 
-        if (CombatEquipment.wearingVoid(player, CombatType.MELEE))
-            att = (att * 1.1f);
+        att += 8;
+
+        if (CombatEquipment.wearingVoid(player, CombatType.MELEE)) {
+            att *= 1.1;
+        }
 
         // Special attack
         if (player.isSpecialActivated()) {
             att *= player.getCombatSpecial().getAccuracyMultiplier();
         }
 
-        return att;
+        return (int) Math.floor(att);
     }
 
     public static int attackMeleeRoll(Mobile entity) {
-        float attRoll = effectiveAttackLevel(entity);
+        int attRoll = effectiveAttackLevel(entity);
 
         if (entity.isNpc()) {
             // NPC's don't currently have stab/slash/crush bonuses
             attRoll *= 64;
-            return (int) attRoll;
+            return attRoll;
         }
 
         Player player = entity.getAsPlayer();
@@ -127,56 +134,63 @@ public class AccuracyFormulasDpsCalc {
                 attRoll *= attCrush + 64;
                 break;
             default:
+                // Should throw exception? this shouldn't happen
                 int maxAtt = Math.max(attStab, Math.max(attCrush, attSlash));
                 attRoll *= maxAtt + 64;
         }
 
-        return (int) attRoll;
+        // Include any target specific gear here if/when supported (ex. salve amulet)
+
+        return attRoll;
     }
 
-    private static float effectiveDefenseLevel(Mobile enemy) {
-        float def = 1;
+    private static int effectiveDefenseLevel(Mobile enemy) {
 
-        if(enemy.isNpc()) {
-            return enemy.getAsNpc().getCurrentDefinition().getStats()[2];
+        if (enemy.isNpc()) {
+            return enemy.getAsNpc().getCurrentDefinition().getStats()[2] + 9;
         }
 
         Player player = enemy.getAsPlayer();
-        def = player.getSkillManager().getCurrentLevel(Skill.DEFENCE);
+        float def = player.getSkillManager().getCurrentLevel(Skill.DEFENCE);
 
-
-        double prayerBonus = 1;
+        float prayerBonus = 1;
 
         // Prayer additions
         if (PrayerHandler.isActivated(enemy, PrayerHandler.THICK_SKIN)) {
-            prayerBonus = 1.05;
-        } else if (PrayerHandler.isActivated(enemy, PrayerHandler.ROCK_SKIN)) {
-            prayerBonus = 1.10;
-        } else if (PrayerHandler.isActivated(enemy, PrayerHandler.STEEL_SKIN)) {
-            prayerBonus = 1.15;
-        } else if (PrayerHandler.isActivated(enemy, PrayerHandler.CHIVALRY)) {
-            prayerBonus = 1.20;
-        } else if (PrayerHandler.isActivated(enemy, PrayerHandler.PIETY)) {
-            prayerBonus = 1.25;
-        } else if (PrayerHandler.isActivated(enemy, PrayerHandler.RIGOUR)) {
-            prayerBonus = 1.25;
-        } else if (PrayerHandler.isActivated(enemy, PrayerHandler.AUGURY)) {
-            prayerBonus = 1.25;
+            prayerBonus = 1.05f;
+        }
+        else if (PrayerHandler.isActivated(enemy, PrayerHandler.ROCK_SKIN)) {
+            prayerBonus = 1.10f;
+        }
+        else if (PrayerHandler.isActivated(enemy, PrayerHandler.STEEL_SKIN)) {
+            prayerBonus = 1.15f;
+        }
+        else if (PrayerHandler.isActivated(enemy, PrayerHandler.CHIVALRY)) {
+            prayerBonus = 1.20f;
+        }
+        else if (PrayerHandler.isActivated(enemy, PrayerHandler.PIETY)) {
+            prayerBonus = 1.25f;
+        }
+        else if (PrayerHandler.isActivated(enemy, PrayerHandler.RIGOUR)) {
+            prayerBonus = 1.25f;
+        }
+        else if (PrayerHandler.isActivated(enemy, PrayerHandler.AUGURY)) {
+            prayerBonus = 1.25f;
         }
 
         def *= prayerBonus;
+        def = (float) Math.floor(def);
 
         FightStyle fightStyle = player.getFightType().getStyle();
-        if (fightStyle == FightStyle.DEFENSIVE)
+        if (fightStyle == FightStyle.DEFENSIVE) {
             def += 3;
-        else if (fightStyle == FightStyle.CONTROLLED)
+        }
+        else if (fightStyle == FightStyle.CONTROLLED) {
             def += 1;
+        }
         def += 8;
 
-        if (CombatEquipment.wearingVoid(player, CombatType.MELEE))
-            def = (int) (def * 1.1f);
-
-        return def;
+        return (int) Math.floor(def);
     }
 
     private static int defenseMeleeRoll(Mobile entity, Mobile enemy) {
@@ -186,7 +200,7 @@ public class AccuracyFormulasDpsCalc {
     }
 
     public static int defenseMeleeRoll(Mobile enemy, int bonusType) {
-        float defLevel = effectiveDefenseLevel(enemy);
+        int defLevel = effectiveDefenseLevel(enemy);
 
         Player enemyPlayer = enemy.getAsPlayer();
 
@@ -210,129 +224,149 @@ public class AccuracyFormulasDpsCalc {
                 defLevel *= maxDef + 64;
         }
 
-        return (int) defLevel;
+        return defLevel;
     }
 
     // Ranged
 
     public static int defenseRangedRoll(Mobile enemy) {
-        float defLevel = effectiveDefenseLevel(enemy);
+        int defLevel = effectiveDefenseLevel(enemy);
 
-        int defRange = (enemy.isPlayer() ?
+        int defRange = enemy.isPlayer() ?
                 enemy.getAsPlayer().getBonusManager().getDefenceBonus()[BonusManager.DEFENCE_RANGE]
-                : 0);
+                : 0;
 
         defLevel *= defRange + 64;
 
-        return (int) defLevel;
+        return defLevel;
     }
 
 
-    private static float effectiveRangedAttack(Mobile entity) {
-        float rngStrength = 8;
+    private static int effectiveRangedAttack(Mobile entity) {
 
         if (entity.isNpc()) {
             // Prayer bonuses don't apply to NPCs (yet)
-            return rngStrength + entity.getAsNpc().getCurrentDefinition().getStats()[3];
+            return entity.getAsNpc().getCurrentDefinition().getStats()[3] + 8;
         }
 
         Player player = entity.getAsPlayer();
-        rngStrength += player.getSkillManager().getCurrentLevel(Skill.RANGED);
+        float rangeAccuracy = player.getSkillManager().getCurrentLevel(Skill.RANGED);
 
         // Prayers
         float prayerMod = 1.0f;
         if (PrayerHandler.isActivated(player, PrayerHandler.SHARP_EYE)) {
             prayerMod = 1.05f;
-        } else if (PrayerHandler.isActivated(player, PrayerHandler.HAWK_EYE)) {
-            prayerMod = 1.10f;
-        } else if (PrayerHandler.isActivated(player, PrayerHandler.EAGLE_EYE)) {
-            prayerMod = 1.15f;
-        } else if (PrayerHandler.isActivated(player, PrayerHandler.RIGOUR)) {
-            prayerMod = 1.23f;
         }
-        rngStrength = (rngStrength * prayerMod);
+        else if (PrayerHandler.isActivated(player, PrayerHandler.HAWK_EYE)) {
+            prayerMod = 1.10f;
+        }
+        else if (PrayerHandler.isActivated(player, PrayerHandler.EAGLE_EYE)) {
+            prayerMod = 1.15f;
+        }
+        else if (PrayerHandler.isActivated(player, PrayerHandler.RIGOUR)) {
+            prayerMod = 1.2f;
+        }
+
+        rangeAccuracy *= prayerMod;
+        rangeAccuracy = (float) Math.floor(rangeAccuracy);
 
         FightStyle fightStyle = player.getFightType().getStyle();
-        if (fightStyle == FightStyle.ACCURATE)
-            rngStrength += 3;
-
-        if (CombatEquipment.wearingVoid(player, CombatType.RANGED)) {
-            rngStrength = (rngStrength * 1.125f);
+        if (fightStyle == FightStyle.ACCURATE) {
+            rangeAccuracy += 3;
         }
 
-//        if (dragonHunter(input))
-//            rngStrength = (int) (rngStrength * 1.3f);
+        rangeAccuracy += 8;
 
-        return rngStrength;
+        if (CombatEquipment.wearingVoid(player, CombatType.RANGED)) {
+            rangeAccuracy *= 1.1;
+        }
+
+        return (int) Math.floor(rangeAccuracy);
     }
 
     public static int attackRangedRoll(Mobile entity) {
-        var accuracyBonus = (entity.isNpc() ? 0 : entity.getAsPlayer().getBonusManager().getAttackBonus()[BonusManager.ATTACK_RANGE]);
+        int accuracyBonus =
+                entity.isNpc() ? 0 : entity.getAsPlayer().getBonusManager().getAttackBonus()[BonusManager.ATTACK_RANGE];
 
-        float attRoll = effectiveRangedAttack(entity);
+        int attLevel = effectiveRangedAttack(entity);
+        int attRoll = attLevel * (accuracyBonus + 64);
 
-        attRoll *= (accuracyBonus + 64);
+        // Salve amulet/twisted bow bonus if/when added
 
-        return (int) attRoll;
+        return attRoll;
     }
 
     // Magic
 
-    private static float effectiveMagicLevel(Mobile entity) {
-        float mag = 8;
+    private static int effectiveMagicLevel(Mobile entity, boolean defensive) {
 
         if (entity.isNpc()) {
             // Prayer bonuses don't apply to NPCs (yet)
-            mag += entity.getAsNpc().getCurrentDefinition().getStats()[4];
-            return mag;
+            return entity.getAsNpc().getCurrentDefinition().getStats()[4] + 9;
         }
 
         Player player = entity.getAsPlayer();
-        mag += player.getSkillManager().getCurrentLevel(Skill.MAGIC);
+        float mag = player.getSkillManager().getCurrentLevel(Skill.MAGIC);
 
-        double prayerBonus = 1;
+        float prayerBonus = 1;
 
         // Prayer additions
         if (PrayerHandler.isActivated(player, PrayerHandler.MYSTIC_WILL)) {
-            prayerBonus = 1.05;
-        } else if (PrayerHandler.isActivated(player, PrayerHandler.MYSTIC_LORE)) {
-            prayerBonus = 1.10;
-        } else if (PrayerHandler.isActivated(player, PrayerHandler.MYSTIC_MIGHT)) {
-            prayerBonus = 1.15;
-        } else if (PrayerHandler.isActivated(player, PrayerHandler.AUGURY)) {
-            prayerBonus = 1.25;
+            prayerBonus = 1.05f;
+        }
+        else if (PrayerHandler.isActivated(player, PrayerHandler.MYSTIC_LORE)) {
+            prayerBonus = 1.10f;
+        }
+        else if (PrayerHandler.isActivated(player, PrayerHandler.MYSTIC_MIGHT)) {
+            prayerBonus = 1.15f;
+        }
+        else if (PrayerHandler.isActivated(player, PrayerHandler.AUGURY)) {
+            prayerBonus = 1.25f;
         }
 
         mag *= prayerBonus;
+        mag = (float) Math.floor(mag);
 
-        FightStyle fightStyle = player.getFightType().getStyle();
-        if (fightStyle == FightStyle.ACCURATE)
-            mag += 3;
-        else if (fightStyle == FightStyle.DEFENSIVE)
-            mag += 1;
+        // Offensive magic level checks a few extra things
+        if (!defensive) {
+            if (CombatEquipment.wearingVoid(player, CombatType.MAGIC)) {
+                mag = (int) (mag * 1.45f);
+            }
 
-        if (CombatEquipment.wearingVoid(player, CombatType.MAGIC))
-            mag = (int) (mag * 1.45f);
+            // Accurate trident should add +2 when supported
 
-        return mag;
+            mag += 9;
+        }
+
+        return (int) Math.floor(mag);
     }
 
     public static int defenseMagicRoll(Mobile enemy) {
-        float defLevel = effectiveMagicLevel(enemy);
+        // Logic is different depending on npc vs player
+        if (enemy.isNpc()) {
+            int npcMagicLevel = enemy.getAsNpc().getCurrentDefinition().getStats()[4];
+            int npcMagicDefence = 0; // always 0 right now
+            return (9 + npcMagicLevel) * (npcMagicDefence + 64);
+        }
+        int magicLevelPart = (int) Math.floor(effectiveMagicLevel(enemy, true) * 0.3);
+        int defLevelPart = (int) Math.floor(effectiveDefenseLevel(enemy) * 0.7);
 
-        int defRange = (enemy.isNpc() ? 0 : enemy.getAsPlayer().getBonusManager().getDefenceBonus()[BonusManager.DEFENCE_MAGIC]);
+        int defLevel = magicLevelPart + defLevelPart;
+        int defBonus = enemy.getAsPlayer().getBonusManager().getDefenceBonus()[BonusManager.DEFENCE_MAGIC];
 
-        defLevel *= defRange + 64;
-
-        return (int) defLevel;
+        return defLevel * (defBonus + 64);
     }
 
     public static int attackMagicRoll(Mobile entity) {
-        var accuracyBonus = (entity.isNpc() ? 0 : entity.getAsPlayer().getBonusManager().getAttackBonus()[BonusManager.ATTACK_MAGIC]);
+        int accuracyBonus = (entity.isNpc() ? 0 :
+                           entity.getAsPlayer().getBonusManager().getAttackBonus()[BonusManager.ATTACK_MAGIC]);
 
-        float attRoll = effectiveMagicLevel(entity);
-        attRoll *= (accuracyBonus + 64);
+        int attLevel = effectiveMagicLevel(entity, false);
+        int attRoll = attLevel * (accuracyBonus + 64);
 
-        return (int) attRoll;
+        // If/when supported: multiply by 1.15 if wearing a slayer helm on task or killing undead monsters with an
+        // imbued salve amulet.
+
+        return attRoll;
     }
 }
