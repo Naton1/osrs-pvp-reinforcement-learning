@@ -115,6 +115,9 @@ public class DamageFormulas {
             if (spell.maximumHit() > 0) {
                 maxHit = spell.maximumHit();
             }
+            else if (c.isNpc()) {
+                maxHit = c.getAsNpc().getDefinition().getMaxHit();
+            }
             else {
                 maxHit = 1;
             }
@@ -129,13 +132,13 @@ public class DamageFormulas {
             // There's some missing gear here, check the wiki
             switch (c.getAsPlayer().getEquipment().getItems()[Equipment.WEAPON_SLOT].getId()) {
                 case ItemIdentifiers.AHRIMS_STAFF:
-                    equipmentBonus += 1.05;
+                    equipmentBonus += 0.05f;
                     break;
                 case ItemIdentifiers.KODAI_WAND:
                 case ItemIdentifiers.STAFF_OF_THE_DEAD:
                 case ItemIdentifiers.STAFF_OF_LIGHT:
                 case ItemIdentifiers.TOXIC_STAFF_OF_THE_DEAD:
-                    equipmentBonus += 1.15;
+                    equipmentBonus += 0.15f;
                     break;
             }
             switch (c.getAsPlayer().getEquipment().getItems()[Equipment.AMULET_SLOT].getId()) {
