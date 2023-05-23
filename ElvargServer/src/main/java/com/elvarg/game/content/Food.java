@@ -106,7 +106,7 @@ public class Food {
 			if (currentHp >= 93) {
 				c = 13;
 			}
-			healAmount = (int) Math.floor((currentHp/10) + c);
+			healAmount = (int) Math.floor((maxHp / 10) + c);
 			if (healAmount > 22) {
 				healAmount = 22;
 			}
