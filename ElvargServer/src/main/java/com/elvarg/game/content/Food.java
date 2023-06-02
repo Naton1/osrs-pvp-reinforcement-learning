@@ -94,19 +94,19 @@ public class Food {
 		
 		if (food == Edible.ANGLERFISH) {
 			int c = 2;
-			if (currentHp >= 25) {
+			if (maxHp >= 25) {
 				c = 4;
 			}
-			if (currentHp >= 50) {
+			if (maxHp >= 50) {
 				c = 6;
 			}
-			if (currentHp >= 75) {
+			if (maxHp >= 75) {
 				c = 8;
 			}
-			if (currentHp >= 93) {
+			if (maxHp >= 93) {
 				c = 13;
 			}
-			healAmount = (int) Math.floor((currentHp/10) + c);
+			healAmount = (int) Math.floor((maxHp / 10) + c);
 			if (healAmount > 22) {
 				healAmount = 22;
 			}

@@ -348,8 +348,8 @@ public class AccuracyFormulasDpsCalc {
             int npcMagicDefence = 0; // always 0 right now
             return (9 + npcMagicLevel) * (npcMagicDefence + 64);
         }
-        int magicLevelPart = (int) Math.floor(effectiveMagicLevel(enemy, true) * 0.3);
-        int defLevelPart = (int) Math.floor(effectiveDefenseLevel(enemy) * 0.7);
+        int magicLevelPart = (int) Math.floor(effectiveMagicLevel(enemy, true) * 0.7);
+        int defLevelPart = (int) Math.floor(effectiveDefenseLevel(enemy) * 0.3);
 
         int defLevel = magicLevelPart + defLevelPart;
         int defBonus = enemy.getAsPlayer().getBonusManager().getDefenceBonus()[BonusManager.DEFENCE_MAGIC];
