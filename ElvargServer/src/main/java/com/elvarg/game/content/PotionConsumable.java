@@ -34,76 +34,76 @@ public enum PotionConsumable {
 	COMBAT_POTIONS(9739, 9741, 9743, 9745) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.ATTACK, BoostType.LOW);
-			PotionConsumable.onBasicEffect(player, Skill.STRENGTH, BoostType.LOW);
+			PotionConsumable.onBasicEffect(player, Skill.ATTACK, 3, 0.1);
+			PotionConsumable.onBasicEffect(player, Skill.STRENGTH, 3, 0.1);
 		}
 	},
 	SUPER_COMBAT_POTIONS(12695, 12697, 12699, 12701) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.ATTACK, BoostType.SUPER);
-			PotionConsumable.onBasicEffect(player, Skill.STRENGTH, BoostType.SUPER);
-			PotionConsumable.onBasicEffect(player, Skill.DEFENCE, BoostType.SUPER);
+			PotionConsumable.onBasicEffect(player, Skill.ATTACK, 5, 0.15);
+			PotionConsumable.onBasicEffect(player, Skill.STRENGTH, 5, 0.15);
+			PotionConsumable.onBasicEffect(player, Skill.DEFENCE, 5, 0.15);
 		}
 	},
 	MAGIC_POTIONS(3040, 3042, 3044, 3046) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.MAGIC, BoostType.NORMAL);
+			PotionConsumable.onBasicEffect(player, Skill.MAGIC, 4, 0);
 		}
 	},
 	SUPER_MAGIC_POTIONS(11726, 11727, 11728, 11729) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.MAGIC, BoostType.SUPER);
+			PotionConsumable.onBasicEffect(player, Skill.MAGIC, 5, 0.15);
 		}
 	},
 	DEFENCE_POTIONS(2432, 133, 135, 137) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.DEFENCE, BoostType.NORMAL);
+			PotionConsumable.onBasicEffect(player, Skill.DEFENCE, 3, 0.1);
 		}
 	},
 	STRENGTH_POTIONS(113, 115, 117, 119) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.STRENGTH, BoostType.NORMAL);
+			PotionConsumable.onBasicEffect(player, Skill.STRENGTH, 3, 0.1);
 		}
 	},
 	ATTACK_POTIONS(2428, 121, 123, 125) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.ATTACK, BoostType.NORMAL);
+			PotionConsumable.onBasicEffect(player, Skill.ATTACK, 3, 0.1);
 		}
 	},
 	SUPER_DEFENCE_POTIONS(2442, 163, 165, 167) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.DEFENCE, BoostType.SUPER);
+			PotionConsumable.onBasicEffect(player, Skill.DEFENCE, 5, 0.15);
 		}
 	},
 	SUPER_ATTACK_POTIONS(2436, 145, 147, 149) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.ATTACK, BoostType.SUPER);
+			PotionConsumable.onBasicEffect(player, Skill.ATTACK, 5, 0.15);
 		}
 	},
 	SUPER_STRENGTH_POTIONS(2440, 157, 159, 161) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.STRENGTH, BoostType.SUPER);
+			PotionConsumable.onBasicEffect(player, Skill.STRENGTH, 5, 0.15);
 		}
 	},
 	RANGE_POTIONS(2444, 169, 171, 173) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.RANGED, BoostType.NORMAL);
+			PotionConsumable.onBasicEffect(player, Skill.RANGED, 4, 0.1);
 		}
 	},
 	SUPER_RANGE_POTIONS(11722, 11723, 11724, 11725) {
 		@Override
 		public void onEffect(Player player) {
-			PotionConsumable.onBasicEffect(player, Skill.RANGED, BoostType.SUPER);
+			PotionConsumable.onBasicEffect(player, Skill.RANGED, 5, 0.15);
 		}
 	},
 	ZAMORAK_BREW(2450, 189, 191, 193) {
@@ -260,22 +260,22 @@ public enum PotionConsumable {
 	private static void onSaradominEffect(Player player) {
 
 		player.getSkillManager().increaseCurrentLevelMax(Skill.DEFENCE,
-				(int) Math.floor(2 + (0.120 * player.getSkillManager().getMaxLevel(Skill.DEFENCE))));
+				(int) Math.floor(2 + (0.20 * player.getSkillManager().getMaxLevel(Skill.DEFENCE))));
 
 		player.getSkillManager().increaseCurrentLevelMax(Skill.HITPOINTS,
 				(int) Math.floor(2 + (0.15 * player.getSkillManager().getMaxLevel(Skill.HITPOINTS))));
 
 		player.getSkillManager().decreaseCurrentLevel(Skill.ATTACK,
-				(int) Math.floor(0.10 * player.getSkillManager().getMaxLevel(Skill.ATTACK)), -1);
+				(int) Math.floor(0.10 * player.getSkillManager().getMaxLevel(Skill.ATTACK)) + 2, 0);
 
 		player.getSkillManager().decreaseCurrentLevel(Skill.STRENGTH,
-				(int) Math.floor(0.10 * player.getSkillManager().getCurrentLevel(Skill.STRENGTH)), -1);
+				(int) Math.floor(0.10 * player.getSkillManager().getCurrentLevel(Skill.STRENGTH)) + 2, 0);
 
 		player.getSkillManager().decreaseCurrentLevel(Skill.MAGIC,
-				(int) Math.floor(0.10 * player.getSkillManager().getCurrentLevel(Skill.MAGIC)), -1);
+				(int) Math.floor(0.10 * player.getSkillManager().getCurrentLevel(Skill.MAGIC)) + 2, 0);
 
 		player.getSkillManager().decreaseCurrentLevel(Skill.RANGED,
-				(int) Math.floor(0.10 * player.getSkillManager().getCurrentLevel(Skill.RANGED)), -1);
+				(int) Math.floor(0.10 * player.getSkillManager().getCurrentLevel(Skill.RANGED)) + 2, 0);
 	}
 
 	/**
@@ -346,15 +346,12 @@ public enum PotionConsumable {
 	 * @param player
 	 *            the player to do this action for.
 	 */
-	private static void onBasicEffect(Player player, Skill skill, BoostType type) {
+	private static void onBasicEffect(Player player, Skill skill, int base, double scale) {
 		int maxLevel = player.getSkillManager().getMaxLevel(skill);
-		int boostLevel = Math.round(maxLevel * type.getAmount());
-		if (type == BoostType.LOW) {
-			boostLevel += 3;
-		}
-		int cap = maxLevel + boostLevel;
-		if (maxLevel + boostLevel > player.getSkillManager().getCurrentLevel(skill)) {
-			player.getSkillManager().increaseCurrentLevel(skill, boostLevel, cap);
+		int boostAmount = (int) (Math.floor(maxLevel * scale) + base);
+		int cap = maxLevel + boostAmount;
+		if (maxLevel + boostAmount > player.getSkillManager().getCurrentLevel(skill)) {
+			player.getSkillManager().increaseCurrentLevel(skill, boostAmount, cap);
 		}
 	}
 
@@ -397,37 +394,4 @@ public enum PotionConsumable {
 		return ids;
 	}
 
-	/**
-	 * The enumerated type whose elements represent the boost types for potions.
-	 *
-	 * @author Ryley Kimmel <ryley.kimmel@live.com>
-	 * @author lare96 <http://github.com/lare96>
-	 */
-	private enum BoostType {
-		LOW(.10F), NORMAL(.13F), SUPER(.19F);
-
-		/**
-		 * The amount this type will boost by.
-		 */
-		private final float amount;
-
-		/**
-		 * Creates a new {@link BoostType}.
-		 *
-		 * @param boostAmount
-		 *            the amount this type will boost by.
-		 */
-		private BoostType(float boostAmount) {
-			this.amount = boostAmount;
-		}
-
-		/**
-		 * Gets the amount this type will boost by.
-		 *
-		 * @return the boost amount.
-		 */
-		public final float getAmount() {
-			return amount;
-		}
-	}
 }
