@@ -7,14 +7,20 @@ public class Timer {
 
 	private TimerKey key;
 	private int ticks;
+	private int uncappedTicks;
 
 	public Timer(TimerKey key, int ticks) {
 		this.key = key;
 		this.ticks = ticks;
+		this.uncappedTicks = ticks;
 	}
 
 	public int ticks() {
 		return ticks;
+	}
+
+	public int uncappedTicks() {
+		return uncappedTicks;
 	}
 
 	public TimerKey key() {
@@ -22,6 +28,7 @@ public class Timer {
 	}
 
 	public void tick() {
+		uncappedTicks--;
 		if (ticks > 0)
 			ticks--;
 	}

@@ -41,6 +41,14 @@ public class TimerRepository {
 		return timer.ticks();
 	}
 
+	public int getUncappedTicks(TimerKey key, int defaultValue) {
+		Timer timer = timers.get(key);
+		if (timer == null) {
+			return defaultValue;
+		}
+		return timer.uncappedTicks();
+	}
+
 	public void register(TimerKey key, int ticks) {
 		timers.put(key, new Timer(key, ticks));
 	}

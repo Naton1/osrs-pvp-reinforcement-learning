@@ -65,11 +65,22 @@ public class Food {
 		}
 
 		player.getTimers().extendOrRegister(TimerKey.FOOD, 3);
-		player.getTimers().extendOrRegister(TimerKey.COMBAT_ATTACK, 5);
 
+		final int combatTicks = player.getTimers().getUncappedTicks(TimerKey.COMBAT_ATTACK, Integer.MIN_VALUE);
+		final int addAttackDelay;
 		if (food == Edible.KARAMBWAN) {
-			player.getTimers().register(TimerKey.KARAMBWAN, 2); // Register karambwan timer too
+			player.getTimers().register(TimerKey.KARAMBWAN, 3); // Register karambwan timer too
 			player.getTimers().register(TimerKey.POTION, 3); // Register the potion timer (karambwan blocks pots)
+			addAttackDelay = 2;
+		}
+		else {
+			addAttackDelay = 3;
+		}
+
+		// Attack delays are special in that the 'timer' can go negative, and the delay is added to the timer
+		final int combatTicksAfterEat = combatTicks + addAttackDelay;
+		if (combatTicksAfterEat > 0) {
+			player.getTimers().register(TimerKey.COMBAT_ATTACK, combatTicksAfterEat);
 		}
 
 		// Close interfaces..
