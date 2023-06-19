@@ -552,7 +552,12 @@ public class SkillManager {
 	 *            the amount to increase this level by.
 	 */
 	public void increaseCurrentLevelMax(Skill skill, int amount) {
-		increaseCurrentLevel(skill, amount, getMaxLevel(skill) + amount);
+		final int max = getMaxLevel(skill) + amount;
+		if (getCurrentLevel(skill) > max) {
+			// Skill is already boosted, nothing to increase, don't lower it
+			return;
+		}
+		increaseCurrentLevel(skill, amount, max);
 	}
 
 	/**

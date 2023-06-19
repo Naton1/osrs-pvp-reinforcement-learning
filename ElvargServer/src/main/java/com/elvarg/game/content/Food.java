@@ -172,7 +172,7 @@ public class Food {
 		 */
 		POTATO(new Item(1942), 1), BAKED_POTATO(new Item(6701), 4), POTATO_WITH_BUTTER(new Item(6703),
 				14), CHILLI_POTATO(new Item(7054), 14), EGG_POTATO(new Item(7056), 16), POTATO_WITH_CHEESE(
-						new Item(6705), 16), MUSHROOM_POTATO(new Item(7058), 20), TUNA_POTATO(new Item(7060), 20),
+						new Item(6705), 16), MUSHROOM_POTATO(new Item(7058), 20), TUNA_POTATO(new Item(7060), 22),
 
 		/*
 		 * Fruit food types which a player can get by picking from certain trees or
