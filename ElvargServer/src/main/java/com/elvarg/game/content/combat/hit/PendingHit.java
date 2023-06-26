@@ -22,15 +22,15 @@ public class PendingHit {
     public PendingHit(Mobile attacker, Mobile target, CombatMethod method) {
         this(attacker, target, method, true, 0);
     }
-    
+
     public PendingHit(Mobile attacker, Mobile target, CombatMethod method, int delay) {
         this(attacker, target, method, true, delay);
     }
-    
+
     public PendingHit(Mobile attacker, Mobile target, CombatMethod method, boolean rollAccuracy, int delay) {
     	this(attacker, target, method, rollAccuracy, 1, delay);
     }
-    
+
     public PendingHit(Mobile attacker, Mobile target, CombatMethod method, boolean rollAccuracy, int hitAmount, int delay) {
         this.attacker = attacker;
         this.target = target;
@@ -45,20 +45,20 @@ public class PendingHit {
         this.attacker = attacker;
         this.target = target;
         this.method = method;
-        this.combatType = method.type();   	
+        this.combatType = method.type();
     }
-    
+
     /**
      * New method added to allow the adding of pending damage of a pre-determined value at a specific delay.
      * @param attacker Attacking mobile entity.
      * @param target Recipient mobile entity of the damage.
      * @param method The combat method used.
      * @param damage The calculated damage amount.
-     * @param delay 
+     * @param delay
      */
     public static PendingHit create(Mobile attacker, Mobile target, CombatMethod method, int damage, boolean accurate) {
     	PendingHit hit = new PendingHit(method, attacker, target);
-    	
+
     	hit.hits = new HitDamage[] {new HitDamage(damage, damage == 0 ? HitMask.BLUE : HitMask.RED)};
         hit.delay = 0; //The delay before the hit (0 in most cases with current combat system design).
         hit.handleAfterHitEffects = true;
@@ -66,7 +66,7 @@ public class PendingHit {
     	hit.totalDamage += damage;
     	return hit;
     }
-        
+
     public Mobile getAttacker() {
         return attacker;
     }
@@ -133,6 +133,7 @@ public class PendingHit {
         for (int i = 0; i < hits.length; i++) {
             accurate = !rollAccuracy || AccuracyFormulasDpsCalc.rollAccuracy(attacker, target, combatType);
             HitDamage damage = accurate ? CombatFactory.getHitDamage(attacker, target, combatType) : new HitDamage(0, HitMask.BLUE);
+            CombatFactory.applyExtraHitRolls(attacker, target, combatType, damage, accurate, method);
             totalDamage += damage.getDamage();
             hits[i] = damage;
         }

@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.collision.RegionManager;
@@ -187,12 +186,6 @@ public class CombatFactory {
 						damage = 48;
 					}
 				}
-
-				// Handle bolt special effects for a player whose using crossbow
-				if (player.getWeapon() == WeaponInterface.CROSSBOW && Misc.getRandom(10) == 1) {
-					double multiplier = RangedData.getSpecialEffectsMultiplier(player, victim, damage);
-					damage *= multiplier;
-				}
 			}
 		} else if (type == CombatType.MAGIC) {
 			damage = Misc.inclusive(0, DamageFormulas.getMagicMaxhit(entity));
@@ -217,6 +210,20 @@ public class CombatFactory {
 
 		// Return our hitDamage that may have been modified slightly.
 		return hitDamage;
+	}
+
+	public static void applyExtraHitRolls(Mobile attacker, Mobile target, CombatType combatType, HitDamage damage,
+	                                     boolean accurate, CombatMethod combatMethod) {
+		if (combatType == CombatType.RANGED) {
+			// Handle bolt special effects for a player whose using crossbow
+			if (attacker.isPlayer() && attacker.getAsPlayer().getWeapon() == WeaponInterface.CROSSBOW) {
+				final int updatedDamage = RangedData.applySpecialEffects(attacker.getAsPlayer(), target,
+				                                                         damage.getDamage(), accurate, combatMethod);
+				if (updatedDamage != damage.getDamage()) {
+					damage.setDamage(updatedDamage);
+				}
+			}
+		}
 	}
 
 	/**

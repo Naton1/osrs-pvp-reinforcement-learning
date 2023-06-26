@@ -30,6 +30,7 @@ import com.elvarg.game.content.combat.method.impl.specials.SaradominGodswordComb
 import com.elvarg.game.content.combat.method.impl.specials.SaradominSwordCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.ShoveCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.ZamorakGodswordCombatMethod;
+import com.elvarg.game.content.combat.method.impl.specials.ZaryteCrossbowCombatMethod;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.container.impl.Equipment;
@@ -99,6 +100,8 @@ public enum CombatSpecial {
             WeaponInterface.DARK_BOW),
     ARMADYL_CROSSBOW(new int[]{11785}, 40, 1, 2.0,
             new ArmadylCrossbowCombatMethod(), WeaponInterface.CROSSBOW),
+    ZARYTE_CROSSBOW(new int[]{26374}, 75, 1, 2.0,
+                    new ZaryteCrossbowCombatMethod(), WeaponInterface.CROSSBOW),
     BALLISTA(new int[]{19481},
             65, 1.25, 1.45, new BallistaCombatMethod(), WeaponInterface.BALLISTA),
     ;
