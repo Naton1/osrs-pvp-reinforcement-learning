@@ -72,7 +72,7 @@ public final class PacketDecoder extends ByteToMessageDecoder {
 
     private final static int[] PACKET_SIZES = {
             0, 0, 6, 1, -1, -1, 2, 4, 4, 4, // 0
-            4, -1, -1, -1, 8, 0, 6, 2, 2, 0, // 10
+            4, 13, -1, -1, 8, 0, 6, 2, 2, 0, // 10
             0, 2, 0, 6, 0, 12, 0, 0, 0, 0, // 20
             9, 0, 0, 0, 0, 8, 4, 0, 0, 2, // 30
             2, 6, 0, 8, 0, -1, 0, 0, 0, 1, // 40
