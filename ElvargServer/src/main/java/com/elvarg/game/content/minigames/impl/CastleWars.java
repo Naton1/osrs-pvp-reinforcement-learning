@@ -17,11 +17,7 @@ import com.elvarg.game.model.areas.impl.castlewars.CastleWarsLobbyArea;
 import com.elvarg.game.model.areas.impl.castlewars.CastleWarsSaradominWaitingArea;
 import com.elvarg.game.model.areas.impl.castlewars.CastleWarsZamorakWaitingArea;
 import com.elvarg.game.model.container.impl.Equipment;
-import com.elvarg.game.model.dialogues.DialogueExpression;
-import com.elvarg.game.model.dialogues.builders.DialogueChainBuilder;
 import com.elvarg.game.model.dialogues.entries.impl.ItemStatementDialogue;
-import com.elvarg.game.model.dialogues.entries.impl.NpcDialogue;
-import com.elvarg.game.model.dialogues.entries.impl.OptionsDialogue;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
@@ -29,11 +25,12 @@ import com.elvarg.game.task.impl.CountdownTask;
 import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
 import com.elvarg.util.timers.TimerKey;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 
-import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static com.elvarg.game.model.container.impl.Equipment.CAPE_SLOT;
 import static com.elvarg.game.model.container.impl.Equipment.NO_ITEM;
@@ -55,6 +52,16 @@ public class CastleWars implements Minigame {
     public static final CastleWarsGameArea GAME_AREA = new CastleWarsGameArea();
 
     public static final CastleWarsLobbyArea LOBBY_AREA = new CastleWarsLobbyArea();
+
+    private static List<GameObject> spawned_objects = Lists.newCopyOnWriteArrayList();
+
+    @Override
+    public void init() {
+        /** Saradomin Altar **/
+        ObjectManager.register(new GameObject(411, new Location(2431, 3076, 1), 10, 1, null), true);
+        /** Zamorak Altar **/
+        ObjectManager.register(new GameObject(411, new Location(2373, 3135, 1), 10, 0, null), true);
+    }
 
     public static boolean handleItemOnPlayer(Player player, Player target, Item item) {
         if (item.getId() != BANDAGES)
@@ -78,6 +85,10 @@ public class CastleWars implements Minigame {
         int hp = (int) Math.floor(maxHP * (bracelet ? 1.60 : 1.1));
         /** Heals the target **/
         player.heal(hp);
+    }
+
+    private static boolean isSteppingStones(Location loc) {
+        return loc.getX() >= 2418 && loc.getX() <= 2420 && loc.getY() >= 3122 && loc.getY() <= 3125 || loc.getX() >= 2377 && loc.getX() <= 2378 && loc.getY() >= 3084 && loc.getY() <= 3088;
     }
 
     /**
@@ -271,6 +282,8 @@ public class CastleWars implements Minigame {
 
     public static final int TEAM_GUTHIX = 3;
 
+    private static final Projectile CATAPULT_PROJECTILE = new Projectile(304, 75, 75, 30, 100);
+
     public static boolean isGameActive() {
         return GAME_END_TASK.isRunning();
     }
@@ -461,22 +474,24 @@ public class CastleWars implements Minigame {
             case SARADOMIN:
                 setSaraFlag(2);
                 object = 4900;
-                createFlagHintIcon(player.getLocation());
                 break;
             case ZAMORAK:
                 setZammyFlag(2);
                 object = 4901;
-                createFlagHintIcon(player.getLocation());
                 break;
         }
-
         player.getEquipment().setItem(Equipment.WEAPON_SLOT, NO_ITEM);
         player.getEquipment().refreshItems();
         player.getUpdateFlag().flag(Flag.APPEARANCE);
-
-        int finalObject = object;
+        if (isSteppingStones(player.getLocation()) && object != -1) {
+            returnFlag(player, Team.getTeamForPlayer(player) == Team.SARADOMIN ? SARA_BANNER : ZAMMY_BANNER);
+            return;
+        }
+        createFlagHintIcon(player.getLocation());
+        GameObject obj = new GameObject(object, player.getLocation(), 10, 0, null);
         // Spawn the flag object for all players
-        GAME_AREA.getPlayers().forEach((teamPlayer) -> teamPlayer.getPacketSender().sendObject(new GameObject(finalObject, player.getLocation(), 10, 0, null)));
+        spawned_objects.add(obj);
+        GAME_AREA.getPlayers().forEach((teamPlayer) -> teamPlayer.getPacketSender().sendObject(obj));
     }
 
     /**
@@ -510,9 +525,13 @@ public class CastleWars implements Minigame {
                 break;
         }
         createHintIcon(player, Team.getTeamForPlayer(player) == Team.SARADOMIN ? Team.SARADOMIN : Team.ZAMORAK);
+
         GAME_AREA.getPlayers().forEach((teamPlayer) -> {
+            GameObject flag = new GameObject(object.getId(), object.getLocation(), 10, 0, teamPlayer.getPrivateArea());
+            if (spawned_objects.contains(flag))
+                spawned_objects.remove(flag);
             teamPlayer.getPacketSender().sendPositionalHint(object.getLocation(), -1);
-            teamPlayer.getPacketSender().sendObjectRemoval(new GameObject(-1, object.getLocation(), 10, 0, teamPlayer.getPrivateArea()));
+            teamPlayer.getPacketSender().sendObjectRemoval(flag);
         });
     }
 
@@ -565,6 +584,7 @@ public class CastleWars implements Minigame {
      */
     public static void startGame() {
         SARADOMIN_WAITING_AREA.getPlayers().forEach((player) -> {
+            player.resetCastlewarsIdleTime();
             Team.SARADOMIN.addPlayer(player);
             player.getPacketSender().sendWalkableInterface(-1);
             player.moveTo(new Location(
@@ -573,6 +593,7 @@ public class CastleWars implements Minigame {
         });
 
         ZAMORAK_WAITING_AREA.getPlayers().forEach((player) -> {
+            player.resetCastlewarsIdleTime();
             Team.ZAMORAK.addPlayer(player);
             player.getPacketSender().sendWalkableInterface(-1);
             player.moveTo(new Location(
@@ -608,7 +629,8 @@ public class CastleWars implements Minigame {
             // Teleport player after checking scores and adding tickets.
             player.moveTo(new Location(2440 + Misc.random(3), 3089 - Misc.random(3), 0));
         });
-
+        spawned_objects.forEach(o -> { if (o != null)  ObjectManager.deregister(o, true);});
+        spawned_objects.clear();
         // Reset game after processing players.
         resetGame();
     }
@@ -687,6 +709,7 @@ public class CastleWars implements Minigame {
     public static void changeFlagObject(int objectId, int team) {
         GameObject gameObject = new GameObject(objectId, new Location(FLAG_STANDS[team][0], FLAG_STANDS[team][1], 3), 10, 2, null);
         ObjectManager.register(gameObject, true);
+        spawned_objects.add(gameObject);
     }
 
     @Override
@@ -724,6 +747,7 @@ public class CastleWars implements Minigame {
                     player.getPacketSender().sendMessage("You are not allowed in the other teams spawn point.");
                     return true;
                 }
+                player.resetCastlewarsIdleTime();
                 if (x == 2426) {
                     if (playerY == 3080) {
                         player.moveTo(new Location(2426, 3081, playerZ));
@@ -743,6 +767,7 @@ public class CastleWars implements Minigame {
                     player.getPacketSender().sendMessage("You are not allowed in the other teams spawn point.");
                     return true;
                 }
+                player.resetCastlewarsIdleTime();
                 if (x == 2373 && y == 3126) {
                     if (playerY == 3126) {
                         player.moveTo(new Location(2373, 3127, 1));
@@ -970,9 +995,8 @@ public class CastleWars implements Minigame {
      * Processes all actions to keep the minigame running smoothly.
      */
     public void process() {
-    }
 
-    private static Map<Integer, Integer> catapults = Maps.newConcurrentMap();
+    }
 
     public static void handleCatapult(Player player) {
         if (!player.getInventory().contains(4043)) {
@@ -989,7 +1013,6 @@ public class CastleWars implements Minigame {
             // If player is not currently viewing the catapult interface, return early.
             return false;
         }
-
         int x = (Integer) player.getAttribute("catapultX", 0);
         int y = (Integer) player.getAttribute("catapultY", 0);
         boolean saradomin = Team.getTeamForPlayer(player) == Team.SARADOMIN;
@@ -998,7 +1021,7 @@ public class CastleWars implements Minigame {
             if (saradomin && y < 30) {
                 player.setAttribute("catapultY", y + 1);
             } else if (y > 0) {
-                player.setAttribute("catapultY", y + 1);
+                player.setAttribute("catapultY", y - 1);
             }
         }
         if (button == 11322) {
@@ -1028,20 +1051,22 @@ public class CastleWars implements Minigame {
         player.getPacketSender().sendWidgetModel(11318, 4863 + (y > 29 ? y - 30 : y > 19 ? y - 20 : y > 9 ? y - 10 : y));
         player.getPacketSender().sendWidgetModel(11319, 4863 + (x < 10 ? 0 : x > 9 ? (x / 10) : x));
         player.getPacketSender().sendWidgetModel(11320, 4863 + (x > 29 ? x - 30 : x > 19 ? x - 20 : x > 9 ? x - 10 : x));
-        player.getPacketSender().sendInterfaceComponentMoval(x * 2, y * 2, 11332);
+        player.getPacketSender().sendInterfaceComponentMoval(saradomin ? 90 - (x * 2) : x * 2, saradomin ? 90 - (y * 2) : y * 2, 11332);
         /** Fire button **/
         if (button == 11329) {
+            if (x > 1)
+                x /= 2;
+            if (y > 1)
+                y /= 2;
             player.getPacketSender().sendInterfaceRemoval();
             int startX = saradomin ? saradomin_catapult_start.getX() : zamorak_catapult_start.getX();
             int startY = saradomin ? saradomin_catapult_start.getY() : zamorak_catapult_start.getY();
-            x *= 2;
-            Location destination = new Location((x >= 0 ? startX - x : startX + x), (y >= 0 ? startY + y : startY - y));
+            Location destination = new Location(saradomin ? (x >= 0 ? startX - x : startX + x) : (x >= 0 ? startX + x : startX - x), saradomin ? (y >= 0 ? startY + y : startY - y) : (y >= 0 ? startY - y : startY + y));
             GameObject catapult = World.findCacheObject(player, saradomin ? 4382 : 4381, saradomin ? saradomin_catapult_location : zamorak_catapult_location);
             if (catapult != null) {
                 catapult.performAnimation(new Animation(443));
             }
-            new Projectile(saradomin ? saradomin_catapult_location : zamorak_catapult_location, destination, null, 304, 30, 100, 75, 75, player.getPrivateArea())
-                    .sendProjectile();
+            Projectile.sendProjectile(saradomin ? saradomin_catapult_location : zamorak_catapult_location, destination, CATAPULT_PROJECTILE);
             TaskManager.submit(new Task() {
 
                 int ticks = 0;
@@ -1050,11 +1075,11 @@ public class CastleWars implements Minigame {
                 public void execute() {
                     ticks++;
                     if (ticks == 4) {
-                        World.sendLocalGraphics(303, destination);
+                        World.sendLocalGraphics(303, destination, GraphicHeight.MIDDLE);
                     }
                     if (ticks == 6) {
-                        World.getPlayers().stream().filter(Objects::nonNull).filter(p -> p.getLocation().isWithinDistance(destination, 3)).forEach(p -> p.getCombat().getHitQueue().addPendingDamage(new HitDamage(p.getHitpoints(), HitMask.RED)));
-                        World.sendLocalGraphics(305, destination);
+                        World.getPlayers().stream().filter(Objects::nonNull).filter(p -> p.getLocation().isWithinDistance(destination, 5)).forEach(p -> p.getCombat().getHitQueue().addPendingDamage(new HitDamage(Misc.random(5, 15), HitMask.RED)));
+                        World.sendLocalGraphics(305, destination, GraphicHeight.MIDDLE);
                         stop();
                     }
                 }
@@ -1063,85 +1088,18 @@ public class CastleWars implements Minigame {
         return true;
     }
 
-    public static void handleCatapultControls(Player player, int buttonId) {
-        int x = (Integer) player.getAttribute("catapultX", 0);
-        int y = (Integer) player.getAttribute("catapultY", 0);
-        boolean saradomin = Team.getTeamForPlayer(player) == Team.SARADOMIN;
-        player.getPacketSender().sendInterfaceComponentMoval(1, 0, 11332);
-        if (buttonId == 11321) {//Up Y
-            if (saradomin && y < 30) {
-                player.setAttribute("catapultY", y + 1);
-            } else if (y > 0) {
-                player.setAttribute("catapultY", y + 1);
-            }
-        }
-        if (buttonId == 11322) {
-            if (saradomin && y > 0) {//down Y
-                player.setAttribute("catapultY", y - 1);
-            } else if (y < 30) {
-                player.setAttribute("catapultY", y + 1);
-            }
-        }
-        if (buttonId == 11323) {
-            if (saradomin && x > 0) {//right X
-                player.setAttribute("catapultX", x - 1);
-            } else if (x < 30) {
-                player.setAttribute("catapultX", x + 1);
-            }
-        }
-        if (buttonId == 11324) {//left X
-            if (saradomin && x < 30) {
-                player.setAttribute("catapultX", x + 1);
-            } else if (x > 0) {
-                player.setAttribute("catapultX", x - 1);
-            }
-        }
-        x = (Integer) player.getAttribute("catapultX");
-        y = (Integer) player.getAttribute("catapultY");
-        player.getPacketSender().sendWidgetModel(11317, 4863 + (y < 10 ? 0 : y > 9 ? (y / 10) : y));
-        player.getPacketSender().sendWidgetModel(11318, 4863 + (y > 29 ? y - 30 : y > 19 ? y - 20 : y > 9 ? y - 10 : y));
-        player.getPacketSender().sendWidgetModel(11319, 4863 + (x < 10 ? 0 : x > 9 ? (x / 10) : x));
-        player.getPacketSender().sendWidgetModel(11320, 4863 + (x > 29 ? x - 30 : x > 19 ? x - 20 : x > 9 ? x - 10 : x));
-        player.getPacketSender().sendInterfaceComponentMoval(x * 2, 0, 11332);
-        /** Fire button **/
-        if (buttonId == 11329) {
-            player.getPacketSender().sendInterfaceRemoval();
-            int startX = saradomin ? saradomin_catapult_start.getX() : zamorak_catapult_start.getX();
-            int startY = saradomin ? saradomin_catapult_start.getY() : zamorak_catapult_start.getY();
-            x *= 2;
-            Location destination = new Location((x >= 0 ? startX - x : startX + x), (y >= 0 ? startY + y : startY - y));
-            GameObject catapult = World.findCacheObject(player, saradomin ? 4382 : 4381, saradomin ? saradomin_catapult_location : zamorak_catapult_location);
-            if (catapult != null) {
-                catapult.performAnimation(new Animation(443));
-            }
-            new Projectile(saradomin ? saradomin_catapult_location : zamorak_catapult_location, destination, null, 304, 30, 100, 75, 75, player.getPrivateArea())
-                    .sendProjectile();
-            TaskManager.submit(new Task() {
-
-                int ticks = 0;
-
-                @Override
-                public void execute() {
-                    ticks++;
-                    if (ticks == 4) {
-                        World.sendLocalGraphics(303, destination);
-                    }
-                    if (ticks == 6) {
-                        World.getPlayers().stream().filter(Objects::nonNull).filter(p -> p.getLocation().isWithinDistance(destination, 3)).forEach(p -> p.getCombat().getHitQueue().addPendingDamage(new HitDamage(p.getHitpoints(), HitMask.RED)));
-                        World.sendLocalGraphics(305, destination);
-                        stop();
-                    }
-                }
-            });
-        }
-
-    }
-
     private static void resetCatapult(Player player) {
         for (int i = 11317; i < 11321; i++)
             player.getPacketSender().sendWidgetModel(i, 4863);
         player.setAttribute("catapultX", 0);
         player.setAttribute("catapultY", 0);
+        Team team = Team.getTeamForPlayer(player);
+        if (team == null) {
+            System.err.println("error setting red cross for "+player.getUsername()+" they aren't on a team!");
+            return;
+        }
+        boolean sara = team == Team.SARADOMIN;
+        player.getPacketSender().sendInterfaceComponentMoval(sara ? 90 : 0, sara ? 90 : 0, 11332);
     }
 
 
@@ -1150,7 +1108,7 @@ public class CastleWars implements Minigame {
     /**
      * Used for firing off-set for the catapult
      **/
-    private static Location saradomin_catapult_start = new Location(2412, 3091, 0), zamorak_catapult_start = new Location(2387, 3116, 0);
+    private static Location saradomin_catapult_start = new Location(2411, 3092, 0), zamorak_catapult_start = new Location(2388, 3115, 0);
 
     /**
      * Used for starting location for the catapult projectile
@@ -1246,19 +1204,19 @@ public class CastleWars implements Minigame {
 
                         if (saradomin) {
                             if (saradominCatapult != CatapultState.BURNING) {
-                                changeCatapultState(this, fixed, CatapultState.FIXED, saradomin);
+                                changeCatapultState(this, fixed, CatapultState.FIXED, true);
                                 return;
                             }
                             if (ticks == 16) {//4385, 4386
-                                changeCatapultState(this, burnt, CatapultState.REPAIR, saradomin);
+                                changeCatapultState(this, burnt, CatapultState.REPAIR, true);
                             }
                         } else {
                             if (zamorakCatapult != CatapultState.BURNING) {
-                                changeCatapultState(this, fixed, CatapultState.FIXED, saradomin);
+                                changeCatapultState(this, fixed, CatapultState.FIXED, false);
                                 return;
                             }
                             if (ticks == 16) {//4385, 4386
-                                changeCatapultState(this, burnt, CatapultState.REPAIR, saradomin);
+                                changeCatapultState(this, burnt, CatapultState.REPAIR, false);
                             }
                         }
 

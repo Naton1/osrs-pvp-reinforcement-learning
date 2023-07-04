@@ -17,7 +17,7 @@ import com.elvarg.game.definition.NpcDefinition;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPCMovementCoordinator.CoordinateState;
 import com.elvarg.game.entity.impl.player.Player;
-import com.elvarg.game.model.FacingDirection;
+import com.elvarg.game.model.Direction;
 import com.elvarg.game.model.Ids;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.AreaManager;
@@ -81,7 +81,7 @@ public class NPC extends Mobile {
 	/**
 	 * The npc's facing.
 	 */
-	private FacingDirection face = FacingDirection.NORTH;
+	private Direction face = Direction.SOUTH;
 	/**
 	 * Is this {@link NPC} a pet?
 	 */
@@ -110,6 +110,10 @@ public class NPC extends Mobile {
 		}
 
 		return new NPC(id, location);
+	}
+
+	public void remove() {
+		World.getRemoveNPCQueue().add(this);
 	}
 	
 	/**
@@ -207,6 +211,10 @@ public class NPC extends Mobile {
 
 		// Process areas..
 		AreaManager.process(this);
+
+		if (getCombatMethod() != null) {
+			getCombatMethod().onTick(this, this.getCombat().getTarget());
+		}
 
 		// Regenerating health if needed, but only after 20 seconds of last attack.
 		if (getCombat().getLastAttack().elapsed(20000)
@@ -436,11 +444,11 @@ public class NPC extends Mobile {
 		return create(getId(), getSpawnPosition());
 	}
 
-	public FacingDirection getFace() {
+	public Direction getFace() {
 		return face;
 	}
 
-	public void setFace(FacingDirection face) {
+	public void setFace(Direction face) {
 		this.face = face;
 	}
 

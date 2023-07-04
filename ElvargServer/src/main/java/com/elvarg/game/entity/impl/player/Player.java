@@ -73,6 +73,7 @@ import com.elvarg.game.model.movement.MovementQueue;
 import com.elvarg.game.model.rights.DonatorRights;
 import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.model.teleportation.TeleportButton;
+import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.CombatPoisonEffect;
 import com.elvarg.game.task.impl.PlayerDeathTask;
@@ -117,6 +118,7 @@ public class Player extends Mobile {
 	private final SecondsTimer targetSearchTimer = new SecondsTimer();
 	private final List<String> recentKills = new ArrayList<String>(); // Contains ip addresses of recent kills
 	private final Queue<ChatMessage> chatMessageQueue = new ConcurrentLinkedQueue<>();
+	public boolean choosingMusic;
 	private ChatMessage currentChatMessage;
 	// Logout
 	private final SecondsTimer forcedLogoutTimer = new SecondsTimer();
@@ -201,9 +203,7 @@ public class Player extends Mobile {
 	private int highestKillstreak;
 	private int deaths;
 	private int safeTimer = 180;
-	//Pest Control
-	public int pcDamage = 0;
-	public int pcPoints = 0;
+	public int pcPoints;
 	// Barrows
 	private int barrowsCrypt;
 	private int barrowsChestsLooted;
@@ -449,55 +449,71 @@ public class Player extends Mobile {
 		 * Decrease boosted stats Increase lowered stats
 		 */
 		if (getHitpoints() > 0) {
-			if (increaseStats.finished() || decreaseStats
-					.secondsElapsed() >= (PrayerHandler.isActivated(this, PrayerHandler.PRESERVE) ? 72 : 60)) {
-				for (Skill skill : Skill.values()) {
-					int current = getSkillManager().getCurrentLevel(skill);
-					int max = getSkillManager().getMaxLevel(skill);
-
-					// Should lowered stats be increased?
-					if (current < max) {
-						if (increaseStats.finished()) {
-							int restoreRate = 1;
-
-							// Rapid restore effect - 2x restore rate for all stats except hp/prayer
-							// Rapid heal - 2x restore rate for hitpoints
-							if (skill != Skill.HITPOINTS && skill != Skill.PRAYER) {
-								if (PrayerHandler.isActivated(this, PrayerHandler.RAPID_RESTORE)) {
-									restoreRate = 2;
-								}
-							} else if (skill == Skill.HITPOINTS) {
-								if (PrayerHandler.isActivated(this, PrayerHandler.RAPID_HEAL)) {
-									restoreRate = 2;
-								}
+			if (getTimers().getTicks(TimerKey.STAT_CHANGE) == 0) {
+				getTimers().register(TimerKey.STAT_CHANGE, 100);
+				restoreStatsTick();
+				if (!PrayerHandler.isActivated(this, PrayerHandler.PRESERVE)) {
+					// Not using preserve, drain now
+					drainStatBoostsTick();
+				}
+				else {
+					// If using preserve, then delay drain for 50 extra ticks
+					TaskManager.submit(new Task(50) {
+						@Override
+						protected void execute() {
+							if (getHitpoints() > 0) {
+								drainStatBoostsTick();
 							}
-
-							getSkillManager().increaseCurrentLevel(skill, restoreRate, max);
+							stop();
 						}
-					} else if (current > max) {
-
-						// Should boosted stats be decreased?
-						if (decreaseStats
-								.secondsElapsed() >= (PrayerHandler.isActivated(this, PrayerHandler.PRESERVE) ? 72
-										: 60)) {
-
-							// Never decrease Hitpoints / Prayer
-							if (skill != Skill.HITPOINTS && skill != Skill.PRAYER) {
-								getSkillManager().decreaseCurrentLevel(skill, 1, 1);
+						@Override
+						public void onTick() {
+							if (getHitpoints() == 0 || isDying()) {
+								stop();
 							}
-
 						}
+					});
+				}
+			}
+		}
+	}
+
+	private void drainStatBoostsTick() {
+		for (Skill skill : Skill.values()) {
+			int current = getSkillManager().getCurrentLevel(skill);
+			int max = getSkillManager().getMaxLevel(skill);
+			if (current > max) {
+				getSkillManager().decreaseCurrentLevel(skill, 1, 1);
+			}
+		}
+	}
+
+	private void restoreStatsTick() {
+		for (Skill skill : Skill.values()) {
+			if (skill == Skill.PRAYER) {
+				// Prayer does not restore over time
+				continue;
+			}
+			int current = getSkillManager().getCurrentLevel(skill);
+			int max = getSkillManager().getMaxLevel(skill);
+
+			if (current < max) {
+				int restoreRate = 1;
+
+				// Rapid restore effect - 2x restore rate for all stats except hp/prayer
+				// Rapid heal - 2x restore rate for hitpoints
+				if (skill != Skill.HITPOINTS) {
+					if (PrayerHandler.isActivated(this, PrayerHandler.RAPID_RESTORE)) {
+						restoreRate = 2;
+					}
+				}
+				else {
+					if (PrayerHandler.isActivated(this, PrayerHandler.RAPID_HEAL)) {
+						restoreRate = 2;
 					}
 				}
 
-				// Reset timers
-				if (increaseStats.finished()) {
-					increaseStats.start(60);
-				}
-				if (decreaseStats
-						.secondsElapsed() >= (PrayerHandler.isActivated(this, PrayerHandler.PRESERVE) ? 72 : 60)) {
-					decreaseStats.start((PrayerHandler.isActivated(this, PrayerHandler.PRESERVE) ? 72 : 60));
-				}
+				getSkillManager().increaseCurrentLevel(skill, restoreRate, max);
 			}
 		}
 	}
@@ -1677,5 +1693,35 @@ public class Player extends Mobile {
 		this.questProgress = questProgress;
 	}
 
-	public int castlewarsKills, castlewarsDeaths;
+	public int castlewarsKills, castlewarsDeaths, castlewarsIdleTime;
+
+	public void resetCastlewarsIdleTime() {
+		this.castlewarsIdleTime = 200;
+	}
+
+	public void climb(boolean down, Location location) {
+		this.performAnimation(new Animation(down ? 827 : 828));
+		Task task = new Task(1, this.getIndex(), true) {
+			int ticks = 0;
+
+			@Override
+			protected void execute() {
+				ticks++;
+				if (ticks == 2) {
+					moveTo(location);
+					stop();
+				}
+			}
+		};
+		TaskManager.submit(task);
+	}
+
+	public int currentInterfaceTabId;
+
+	public int getCurrentInterfaceTabId() {
+		return currentInterfaceTabId;
+	}
+    public void setCurrentInterfaceTab(int currentInterfaceTabId) {
+		this.currentInterfaceTabId = currentInterfaceTabId;
+    }
 }

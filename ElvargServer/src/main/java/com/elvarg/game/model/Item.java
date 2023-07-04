@@ -1,5 +1,6 @@
 package com.elvarg.game.model;
 
+import com.elvarg.game.content.minigames.impl.Barrows;
 import com.elvarg.game.definition.ItemDefinition;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 
@@ -122,6 +123,12 @@ public class Item {
         } else {
             this.amount -= amount;
         }
+    }
+
+    public int getIdOnDropOrDeath() {
+        if (getDefinition().isBarrows())
+            return Barrows.getBrokenId(this);
+        return id;
     }
 
     public ItemDefinition getDefinition() {

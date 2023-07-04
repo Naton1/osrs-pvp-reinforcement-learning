@@ -59,6 +59,11 @@ public class CombatPoisonEffect extends Task {
 			return;
 		}
 
+		if (entity.isImmuneToPoison()) {
+			this.stop();
+			return;
+		}
+
 		// Deal the damage, then try and decrement the damage count.
 		int poisonDamage = (this.tick % 5 == 0) ? entity.getPoisonDamage() - 1 : entity.getPoisonDamage();
 		entity.setPoisonDamage(poisonDamage);
@@ -340,6 +345,24 @@ public class CombatPoisonEffect extends Task {
 
 			types.put(ItemIdentifiers.TOXIC_BLOWPIPE, PoisonType.VENOM);
 			types.put(ItemIdentifiers.ABYSSAL_TENTACLE, PoisonType.VENOM);
+			
+			types.put(ItemIdentifiers.BRONZE_HASTA_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.IRON_HASTA_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.STEEL_HASTA_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.MITHRIL_HASTA_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.ADAMANT_HASTA_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.RUNE_HASTA_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.BRONZE_SPEAR_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.IRON_SPEAR_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.STEEL_SPEAR_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.MITHRIL_SPEAR_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.ADAMANT_SPEAR_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.RUNE_SPEAR_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.DRAGON_SPEAR_KP_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.DRAGON_HASTA_P_, PoisonType.MILD);
+			types.put(ItemIdentifiers.DRAGON_HASTA_P_PLUS_, PoisonType.EXTRA);
+			types.put(ItemIdentifiers.DRAGON_HASTA_P_PLUS_PLUS_, PoisonType.SUPER);
+			types.put(ItemIdentifiers.DRAGON_HASTA_KP_, PoisonType.SUPER);
 		}
 
 		/**

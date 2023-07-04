@@ -35,6 +35,8 @@ public class CrazyArchaeologistCombatMethod extends CombatMethod {
 	private static final Graphic MAKE_IT_RAIN_START_GFX = new Graphic(157, GraphicHeight.MIDDLE);
 	private static final Animation MELEE_ATTACK_ANIM = new Animation(423);
 	private static final Animation RANGED_ATTACK_ANIM = new Animation(3353);
+	private static final Projectile SPECIAL_PROJECTILE = new Projectile(1260, 31, 43, 40, 80);
+	private static final Projectile RANGED_PROJECILE = new Projectile(1259, 31, 43, 40, 65);
 
 	@Override
 	public PendingHit[] hits(Mobile character, Mobile target) {
@@ -67,7 +69,7 @@ public class CrazyArchaeologistCombatMethod extends CombatMethod {
 
 		if (attack == Attack.DEFAULT_RANGED_ATTACK) {
 			character.performAnimation(RANGED_ATTACK_ANIM);
-			new Projectile(character, target, 1259, 40, 65, 31, 43).sendProjectile();
+			Projectile.sendProjectile(character, target, RANGED_PROJECILE);
 			TaskManager.submit(new Task(3, target, false) {
 				@Override
 				public void execute() {
@@ -86,7 +88,7 @@ public class CrazyArchaeologistCombatMethod extends CombatMethod {
 						(targetPos.getY() - 1) + Misc.getRandom(3)));
 			}
 			for (Location pos : attackPositions) {
-				new Projectile(character.getLocation(), pos, null, 1260, 40, 80, 31, 43, character.getPrivateArea()).sendProjectile();
+				Projectile.sendProjectile(character, pos, SPECIAL_PROJECTILE);
 			}
 			TaskManager.submit(new Task(4) {
 				@Override

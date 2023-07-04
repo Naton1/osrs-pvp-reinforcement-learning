@@ -436,7 +436,7 @@ public class Fishing extends DefaultSkillable {
          * The projectile which will be fired towards
          * the player from the fishing spot.
          */
-        private static final int PROJECTILE_ID = 94;
+        private static final Projectile PROJECTILE = new Projectile(94, 31, 33, 40, 70);
 
         /**
          * The player being attacked by a fish.
@@ -485,7 +485,7 @@ public class Fishing extends DefaultSkillable {
             switch (tick) {
                 case 0:
                     //Fire projectile at player.
-                    new Projectile(fishSpot, player, PROJECTILE_ID, 40, 70, 31, 33).sendProjectile();
+                    Projectile.sendProjectile(fishSpot, player, PROJECTILE);
                     break;
                 case 2:
                     //Defence animation..

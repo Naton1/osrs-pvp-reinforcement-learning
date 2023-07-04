@@ -121,9 +121,8 @@ public class SettingsWidget extends Widget {
         hoverButton(42535, "Previous", 399, 399);
         hoverButton(42536, "Next", 400, 400);
         addSpriteLoader(42537, 402);
-        hoverButton(42538, "", 401, 401, "Adventure", Widget.newFonts[0], 0xff981f, 0xffffff, true);
+        hoverButton(42538, "Click here to select Music", 401, 401, "Adventure", Widget.newFonts[0], 0xff981f, 0xffffff, true);
         addText(42539, "Now Playing:", fonts, 1, 0xfe971e, false, true);
-
         audio.totalChildren(9);
         int childNum = 0;
 
@@ -136,7 +135,6 @@ public class SettingsWidget extends Widget {
         setBounds(42538, 32, 177, childNum++, audio);
         setBounds(42535, 13, 181, childNum++, audio);
         setBounds(42536, 165, 181, childNum++, audio);
-
     }
 
     public static void chatSettings(Widget chat) {

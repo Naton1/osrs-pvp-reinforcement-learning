@@ -66,6 +66,12 @@ public class PetHandler {
             // Check if we already have a pet..
             if (player.getCurrentPet() == null) {
 
+                if (player.getArea() != null) {
+                    if (!player.getArea().allowSummonPet(player) && !reward) {
+                        return false;
+                    }
+                }
+
                 // Spawn the pet..
                 List<Location> tiles = new ArrayList<>();
                 for (Location tile : player.outterTiles()) {

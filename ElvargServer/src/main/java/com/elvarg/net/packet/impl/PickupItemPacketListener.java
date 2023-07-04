@@ -11,6 +11,7 @@ import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager.OperationType;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.rights.PlayerRights;
+import com.elvarg.game.task.impl.WalkToTask;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketExecutor;
 
@@ -34,12 +35,17 @@ public class PickupItemPacketListener implements PacketExecutor {
 					.sendMessage("Pick up item: " + itemId + ". " + position.toString());
 		}
 
+		Optional<ItemOnGround> item = ItemOnGroundManager.getGroundItem(Optional.of(player.getUsername()), itemId, position);
+		if (!item.isPresent()) {
+			return;
+		}
+
 		if (player.busy() || !player.getLastItemPickup().elapsed(300)) {
 			// If player is busy or last item was picked up less than 0.3 seconds ago
 			return;
 		}
 
-		player.getMovementQueue().walkToGroundItem(position, () -> takeItem(player, itemId, position));
+		WalkToTask.submit(player, item.get(), () -> takeItem(player, itemId, position));
 	}
 
 	private void takeItem(Player player, int itemId, Location position) {
@@ -67,7 +73,7 @@ public class PickupItemPacketListener implements PacketExecutor {
 				int playerCanHold = Integer.MAX_VALUE
 						- player.getInventory().getAmount(item.get().getItem().getId());
 				if (playerCanHold <= 0) {
-					player.getPacketSender().sendMessage("You cannot hold that more of that item.");
+					player.getPacketSender().sendMessage("You cannot hold more of that item.");
 					return;
 				} else {
 					int currentAmount = item.get().getItem().getAmount();

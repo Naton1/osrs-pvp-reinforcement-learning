@@ -15,6 +15,7 @@ import com.elvarg.game.model.rights.PlayerRights;
 import com.elvarg.game.task.Task;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,16 +114,7 @@ public class PlayerDeathTask extends Task {
 						}
 
 						// Drop emblems but downgrade them a tier.
-						if (item.getId() == Emblem.MYSTERIOUS_EMBLEM_1.id
-								|| item.getId() == Emblem.MYSTERIOUS_EMBLEM_2.id
-								|| item.getId() == Emblem.MYSTERIOUS_EMBLEM_3.id
-								|| item.getId() == Emblem.MYSTERIOUS_EMBLEM_4.id
-								|| item.getId() == Emblem.MYSTERIOUS_EMBLEM_5.id
-								|| item.getId() == Emblem.MYSTERIOUS_EMBLEM_6.id
-								|| item.getId() == Emblem.MYSTERIOUS_EMBLEM_7.id
-								|| item.getId() == Emblem.MYSTERIOUS_EMBLEM_8.id
-								|| item.getId() == Emblem.MYSTERIOUS_EMBLEM_9.id
-								|| item.getId() == Emblem.MYSTERIOUS_EMBLEM_10.id) {
+						if (Arrays.stream(Emblem.values()).anyMatch(i -> i.id == item.getId())) {
 
 							// Tier 1 shouldnt be dropped cause it cant be downgraded
 							if (item.getId() == Emblem.MYSTERIOUS_EMBLEM_1.id) {
@@ -144,7 +136,7 @@ public class PlayerDeathTask extends Task {
 						droppedItems.add(item);
 
 						// Drop item
-						ItemOnGroundManager.register(killer.isPresent() ? killer.get() : player, item, position);
+						ItemOnGroundManager.register(killer.isPresent() ? killer.get() : player, new Item(item.getIdOnDropOrDeath(), item.getAmount()), position);
 						dropped = true;
 					}
 

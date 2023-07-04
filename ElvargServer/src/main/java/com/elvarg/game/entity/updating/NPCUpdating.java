@@ -89,6 +89,7 @@ public class NPCUpdating {
         builder.putBits(5, npc.getLocation().getY() - player.getLocation().getY());
         builder.putBits(5, npc.getLocation().getX() - player.getLocation().getX());
         builder.putBits(1, 0);
+        builder.putBits(3, npc.getFace().ordinal());
         builder.putBits(14, npc.getId());
         builder.putBits(1, npc.getUpdateFlag().isUpdateRequired() ? 1 : 0);
     }

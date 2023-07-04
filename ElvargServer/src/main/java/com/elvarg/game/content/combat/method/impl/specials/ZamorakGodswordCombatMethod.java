@@ -24,7 +24,7 @@ public class ZamorakGodswordCombatMethod extends MeleeCombatMethod {
     public void handleAfterHitEffects(PendingHit hit) {
         if (hit.isAccurate()) {
             hit.getTarget().performGraphic(GRAPHIC);
-            CombatFactory.freeze(hit.getTarget(), 15);
+            CombatFactory.freeze(hit.getTarget(), 32);
         }
     }
 }

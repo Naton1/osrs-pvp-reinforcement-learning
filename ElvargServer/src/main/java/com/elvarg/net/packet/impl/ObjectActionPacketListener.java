@@ -25,6 +25,7 @@ import com.elvarg.game.model.teleportation.TeleportType;
 import com.elvarg.game.task.Task;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.ForceMovementTask;
+import com.elvarg.game.task.impl.WalkToTask;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
@@ -272,13 +273,10 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
             return;
         }
 
-        player.getMovementQueue().walkToObject(object, () -> {
-            // Face object..
-            player.setPositionToFace(location);
-
+        WalkToTask.submit(player, object, () -> {
             // Areas
             if (player.getArea() != null) {
-                if (player.getArea().handleObjectClick(player, id, clickType)) {
+                if (player.getArea().handleObjectClick(player, object, clickType)) {
                     return;
                 }
             }

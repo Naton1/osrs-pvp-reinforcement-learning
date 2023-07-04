@@ -1,5 +1,71 @@
 [
   {
+    "facing": "NORTH",
+    "radius": 0,
+    "id": 1771,
+    "position": {
+      "x": 2657,
+      "y": 2637,
+      "z": 0
+    },
+    "description": "Pest Control (Novice) Squire"
+  },
+  {
+    "facing": "NORTH",
+    "radius": 0,
+    "id": 1772,
+    "position": {
+      "x": 2644,
+      "y": 2641,
+      "z": 0
+    },
+    "description": "Pest Control (Intermediate) Squire"
+  },
+  {
+    "facing": "SOUTH",
+    "radius": 0,
+    "id": 1773,
+    "position": {
+      "x": 2638,
+      "y": 2656,
+      "z": 0
+    },
+    "description": "Pest Control (Veteran) Squire"
+  },
+  {
+    "facing": "WEST",
+    "radius": 2,
+    "id": 1765,
+    "position": {
+      "x": 2665,
+      "y": 2660,
+      "z": 0
+    },
+    "description": "Pest Control (Ranged Shop)"
+  },
+  {
+    "facing": "NORTH",
+    "radius": 2,
+    "id": 1767,
+    "position": {
+      "x": 2658,
+      "y": 2654,
+      "z": 0
+    },
+    "description": "Pest Control (agic Shop)"
+  },
+  {
+    "facing": "NORTH",
+    "radius": 2,
+    "id": 1757,
+    "position": {
+      "x": 2662,
+      "y": 2649,
+      "z": 0
+    },
+    "description": "Pest Control (Exchange Shop)"
+  },
+  {
     "facing": "SOUTH",
     "radius": 0,
     "id": 7677,

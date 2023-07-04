@@ -10,12 +10,16 @@ public class DebugCommand implements Command {
 
     @Override
     public void execute(Player player, String command, String[] parts) {
-        System.out.println(RegionManager.wallsExist(player.getLocation().clone(), player.getPrivateArea()));
+       // System.out.println(RegionManager.wallsExist(player.getLocation().clone(), player.getPrivateArea()));
+        player.getPacketSender().sendTabInterface(Integer.valueOf(parts[1]), Integer.valueOf(parts[2]));//962 42500 - green = unlocked - 5449
+        player.choosingMusic = true;
+        player.getPacketSender().sendTabInterface(11, player.choosingMusic  ? 962 : 42500);
+        player.getPacketSender().sendMessage("sending inter..");
     }
 
     @Override
     public boolean canUse(Player player) {
-        return (player.getRights() == PlayerRights.DEVELOPER);
+        return true;
     }
 
 }

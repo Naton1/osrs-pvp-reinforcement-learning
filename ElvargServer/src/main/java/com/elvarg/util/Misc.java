@@ -32,6 +32,18 @@ public class Misc {
 	public static int getTicks(int seconds) {
 		return (int) (seconds / 0.6);
 	}
+
+    public static String ticksToTime(int ticks) {
+        ticks *= 600;
+        if (ticks >= 600000)
+            return String.format("%02d:%02d:%02d",
+                    TimeUnit.MILLISECONDS.toHours(ticks),
+                    TimeUnit.MILLISECONDS.toMinutes(ticks) -
+                            TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(ticks)), // The change is in this line
+                    TimeUnit.MILLISECONDS.toSeconds(ticks) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ticks)));
+        return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(ticks) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(ticks)), TimeUnit.MILLISECONDS.toSeconds(ticks) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ticks)));
+    }
 	
 	public static int getSeconds(int ticks) {
 		return (int) (ticks * 0.6);

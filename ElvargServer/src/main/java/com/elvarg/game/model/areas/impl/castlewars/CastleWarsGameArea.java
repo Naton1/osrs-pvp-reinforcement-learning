@@ -3,11 +3,11 @@ package com.elvarg.game.model.areas.impl.castlewars;
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.*;
 import com.elvarg.game.model.areas.Area;
-import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.model.dialogues.entries.impl.StatementDialogue;
 import com.elvarg.util.Misc;
@@ -55,15 +55,33 @@ public class CastleWarsGameArea extends Area {
             return;
         }
 
+        CastleWars.Team team = CastleWars.Team.getTeamForPlayer(player);
+
+        if (team == null)
+            return;
+
         int config;
         player.getPacketSender().sendWalkableInterface(11146);
         player.getPacketSender().sendString("Zamorak = " + CastleWars.Team.ZAMORAK.getScore(), 11147);
         player.getPacketSender().sendString(CastleWars.Team.SARADOMIN.getScore() + " = Saradomin", 11148);
-        player.getPacketSender().sendString(CastleWars.START_GAME_TASK.getRemainingTicks() + " ticks", 11155);
+        player.getPacketSender().sendString(CastleWars.START_GAME_TASK.getRemainingTicks() + " mins", 11155);
         config = 2097152 * CastleWars.saraFlag;
         player.getPacketSender().sendToggle(378, config);
         config = 2097152 * CastleWars.zammyFlag; // flags 0 = safe 1 = taken 2 = dropped
         player.getPacketSender().sendToggle(377, config);
+
+        boolean inSpawn = team.respawn_area_bounds.inside(player.getLocation());
+
+        player.getPacketSender().sendString(inSpawn ? "You have "+Misc.ticksToTime(player.castlewarsIdleTime)+" to leave the respawn room." : "", 12837);
+
+        if (inSpawn && !player.isPlayerBot()) {
+            if (player.castlewarsIdleTime > 0) {
+                player.castlewarsIdleTime--;
+                if (player.castlewarsIdleTime == 0) {
+                    postLeave(player, false);
+                }
+            }
+        }
     }
 
     @Override
@@ -157,8 +175,8 @@ public class CastleWarsGameArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
-        switch (objectId) {
+    public boolean handleObjectClick(Player player, GameObject object, int type) {
+        switch (object.getId()) {
             case PORTAL_10:// Portals in team respawn room
             case PORTAL_11:
                 player.moveTo(new Location(2440, 3089, 0));

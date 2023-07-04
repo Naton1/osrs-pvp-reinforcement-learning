@@ -7,8 +7,6 @@ import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Graphic;
 import com.elvarg.game.model.Projectile;
-import com.elvarg.game.task.Task;
-import com.elvarg.game.task.TaskManager;
 
 import java.util.Optional;
 
@@ -46,33 +44,14 @@ public abstract class CombatSpell extends Spell {
             startGraphic().ifPresent(cast::performGraphic);
         }
 
-        // Finally send the projectile after two ticks.
-        castProjectile(cast, castOn).ifPresent(g -> {
-            //g.sendProjectile();
-            TaskManager.submit(new Task(2, cast, false) {
-                @Override
-                public void execute() {
-                    g.sendProjectile();
-                    this.stop();
-                }
-            });
-        });
+        // Finally send the projectile
+        if(projectile().getProjectileId() != -1) {
+        	Projectile.sendProjectile(cast, castOn, projectile());
+        }
     }
 
     public int getAttackSpeed() {
-        int speed = 5;
-        final CombatSpell spell = this;
-        if (spell instanceof CombatAncientSpell) {
-
-            if (spell == CombatSpells.SMOKE_RUSH.getSpell() || spell == CombatSpells.SHADOW_RUSH.getSpell()
-                    || spell == CombatSpells.BLOOD_RUSH.getSpell() || spell == CombatSpells.ICE_RUSH.getSpell()
-                    || spell == CombatSpells.SMOKE_BLITZ.getSpell() || spell == CombatSpells.SHADOW_BLITZ.getSpell()
-                    || spell == CombatSpells.BLOOD_BLITZ.getSpell() || spell == CombatSpells.ICE_BLITZ.getSpell()) {
-                speed = 4;
-            }
-
-        }
-        return speed;
+        return 5;
     }
 
     /**
@@ -107,12 +86,9 @@ public abstract class CombatSpell extends Spell {
     /**
      * The projectile played when this spell is cast.
      *
-     * @param cast   the entity casting the spell.
-     * @param castOn the entity targeted by the spell.
      * @return the projectile played when this spell is cast.
      */
-    public abstract Optional<Projectile> castProjectile(Mobile cast,
-                                                        Mobile castOn);
+    public abstract Projectile projectile();
 
     /**
      * The ending graphic played when the spell hits the victim.

@@ -5,10 +5,9 @@ import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.SkullType;
 import com.elvarg.util.Misc;
+import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * Handles items kept on death.
@@ -37,7 +36,7 @@ public class ItemsKeptOnDeath {
 
         player.getPacketSender().sendString(17107, "" + getAmountToKeep(player));
 
-        ArrayList<Item> toKeep = getItemsToKeep(player);
+        List<Item> toKeep = getItemsToKeep(player);
         for (int i = 0; i < toKeep.size(); i++) {
             player.getPacketSender().sendItemOnInterface(17108 + i, toKeep.get(i).getId(), 0, 1);
         }
@@ -67,44 +66,31 @@ public class ItemsKeptOnDeath {
      *
      * @param player Player to set items for.
      */
-    public static ArrayList<Item> getItemsToKeep(Player player) {
-        ArrayList<Item> items = new ArrayList<Item>();
+    public static List<Item> getItemsToKeep(Player player) {
+        List<Item> items = Lists.newArrayList();
         for (Item item : Misc.concat(player.getInventory().getItems(), player.getEquipment().getItems())) {
             if (item == null || item.getId() <= 0 || item.getAmount() <= 0 || !item.getDefinition().isTradeable()) {
                 continue;
             }
 
             //Dont keep emblems
-            if (item.getId() == Emblem.MYSTERIOUS_EMBLEM_1.id ||
-                    item.getId() == Emblem.MYSTERIOUS_EMBLEM_2.id ||
-                    item.getId() == Emblem.MYSTERIOUS_EMBLEM_3.id ||
-                    item.getId() == Emblem.MYSTERIOUS_EMBLEM_4.id ||
-                    item.getId() == Emblem.MYSTERIOUS_EMBLEM_5.id ||
-                    item.getId() == Emblem.MYSTERIOUS_EMBLEM_6.id ||
-                    item.getId() == Emblem.MYSTERIOUS_EMBLEM_7.id ||
-                    item.getId() == Emblem.MYSTERIOUS_EMBLEM_8.id ||
-                    item.getId() == Emblem.MYSTERIOUS_EMBLEM_9.id ||
-                    item.getId() == Emblem.MYSTERIOUS_EMBLEM_10.id) {
+            if (Arrays.stream(Emblem.values()).anyMatch(i -> i.id == item.getId()))
                 continue;
-            }
 
             items.add(item);
         }
-        Collections.sort(items, new Comparator<Item>() {
-            @Override
-            public int compare(Item item, Item item2) {
-                int value1 = item.getDefinition().getValue();
-                int value2 = item2.getDefinition().getValue();
-                if (value1 == value2) {
-                    return 0;
-                } else if (value1 > value2) {
-                    return -1;
-                } else {
-                    return 1;
-                }
+        Collections.sort(items, (item, item2) -> {
+            int value1 = item.getDefinition().getValue();
+            int value2 = item2.getDefinition().getValue();
+            if (value1 == value2) {
+                return 0;
+            } else if (value1 > value2) {
+                return -1;
+            } else {
+                return 1;
             }
         });
-        ArrayList<Item> toKeep = new ArrayList<Item>();
+        List<Item> toKeep = Lists.newArrayList();
         int amountToKeep = getAmountToKeep(player);
         for (int i = 0; i < amountToKeep && i < items.size(); i++) {
             toKeep.add(items.get(i));

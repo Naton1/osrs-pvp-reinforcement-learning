@@ -1,9 +1,11 @@
 package com.runescape.graphics;
 
 import com.runescape.Client;
+import com.runescape.Configuration;
 import com.runescape.graphics.sprite.Sprite;
 import com.runescape.graphics.widget.Widget;
 import com.runescape.draw.Rasterizer3D;
+import jdk.nashorn.internal.runtime.regexp.joni.Config;
 
 public class Slider {
 
@@ -107,7 +109,18 @@ public class Slider {
                 Rasterizer3D.setBrightness(minValue + maxValue - value);
                 break;
             case MUSIC:
-                Client.instance.changeMusicVolume((int) value);
+                int id = (int) (value * 25.5);
+
+                if (id > 255)
+                    id = 255;
+
+                if (!Configuration.enableMusic && id > 0)
+                    Configuration.enableMusic = true;
+                if (Configuration.enableMusic && id <= 0) {
+                    Configuration.enableMusic = false;
+                }
+
+                Client.instance.setMusicVolume(id);
                 break;
             case SOUND:
                 Client.instance.changeSoundVolume((int) (minValue + maxValue - value));

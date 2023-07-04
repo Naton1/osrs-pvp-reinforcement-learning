@@ -10,10 +10,12 @@ public enum TimerKey {
 	FREEZE,
 	FREEZE_IMMUNITY,
 	STUN,
+	STUN_IMMUNITY,
 	ATTACK_IMMUNITY,
 	CASTLEWARS_TAKE_ITEM,
 	STEPPING_OUT,
-	BOT_WAIT_FOR_PLAYERS(Misc.getTicks(180 /* 3 minutes */));
+	BOT_WAIT_FOR_PLAYERS(Misc.getTicks(180 /* 3 minutes */)),
+	STAT_CHANGE;
 
 	private int ticks;
 

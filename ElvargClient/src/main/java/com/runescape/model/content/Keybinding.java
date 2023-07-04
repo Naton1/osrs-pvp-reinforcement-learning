@@ -70,7 +70,7 @@ public class Keybinding {
     public static boolean isBound(int key) {
         for (int i = 0; i < KEYBINDINGS.length; i++) {
             if (key == KEYBINDINGS[i]) {
-                Client.setTab(i);
+                Client.instance.setInterfaceTab(i);
                 return true;
             }
         }

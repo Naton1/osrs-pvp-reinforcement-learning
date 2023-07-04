@@ -2,9 +2,11 @@ package com.elvarg.game.model.areas.impl.castlewars;
 
 import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.entity.impl.npc.impl.Lanthus;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
+import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.Area;
 
 import java.util.Arrays;
@@ -25,8 +27,8 @@ public class CastleWarsLobbyArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
-        switch (objectId) {
+    public boolean handleObjectClick(Player player, GameObject object, int type) {
+        switch (object.getId()) {
             case ZAMORAK_PORTAL:
                 CastleWars.addToWaitingRoom(player, CastleWars.Team.ZAMORAK);
                 return true;

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.elvarg.game.World;
 import com.elvarg.game.content.combat.CombatFactory;
+import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Boundary;
@@ -16,6 +17,8 @@ import com.elvarg.util.ItemIdentifiers;
 import com.elvarg.util.Misc;
 import com.elvarg.util.timers.TimerKey;
 import com.google.common.collect.ImmutableList;
+
+import static com.elvarg.util.ItemIdentifiers.*;
 
 public class Barrows {
 
@@ -229,6 +232,140 @@ public class Barrows {
         return Brother.values()[Misc.getRandom(Brother.values().length - 1)].getCoffinId();
     }
 
+    public static int getBrokenId(Item item) {
+        if(item.getDefinition().isNoted())
+            return item.getId();
+        String name = item.getDefinition().getName();
+        if(name.endsWith(" 100"))
+            return item.getId() + 4;
+        if(name.endsWith(" 75"))
+            return item.getId() + 3;
+        if(name.endsWith(" 50"))
+            return item.getId() + 2;
+        if(name.endsWith(" 25"))
+            return item.getId() + 1;
+        if(name.endsWith(" 0"))
+            return item.getId();
+        return getFirstBrokenId(item.getId()) + 4;
+    }
+
+    public static short getFirstBrokenId(int id) {
+        switch(id) {
+            case AHRIMS_HOOD:
+                return AHRIMS_HOOD_100;
+            case AHRIMS_STAFF:
+                return AHRIMS_STAFF_100;
+            case AHRIMS_ROBETOP:
+                return AHRIMS_ROBETOP_100;
+            case AHRIMS_ROBESKIRT:
+                return AHRIMS_ROBESKIRT_100;
+            case DHAROKS_HELM:
+                return DHAROKS_HELM_100;
+            case DHAROKS_GREATAXE:
+                return DHAROKS_GREATAXE_100;
+            case DHAROKS_PLATEBODY:
+                return DHAROKS_PLATEBODY_100;
+            case DHAROKS_PLATELEGS:
+                return DHAROKS_PLATELEGS_100;
+            case GUTHANS_HELM:
+                return GUTHANS_HELM_100;
+            case GUTHANS_WARSPEAR:
+                return GUTHANS_WARSPEAR_100;
+            case GUTHANS_PLATEBODY:
+                return GUTHANS_PLATEBODY_100;
+            case GUTHANS_CHAINSKIRT:
+                return GUTHANS_CHAINSKIRT_100;
+            case KARILS_COIF:
+                return KARILS_COIF_100;
+            case KARILS_CROSSBOW:
+                return KARILS_CROSSBOW_100;
+            case KARILS_LEATHERTOP:
+                return KARILS_LEATHERTOP_100;
+            case KARILS_LEATHERSKIRT:
+                return KARILS_LEATHERSKIRT_100;
+            case TORAGS_HELM:
+                return TORAGS_HELM_100;
+            case TORAGS_HAMMERS:
+                return TORAGS_HAMMERS_100;
+            case TORAGS_PLATEBODY:
+                return TORAGS_PLATEBODY_100;
+            case TORAGS_PLATELEGS:
+                return TORAGS_PLATELEGS_100;
+            case VERACS_HELM:
+                return VERACS_HELM_100;
+            case VERACS_FLAIL:
+                return VERACS_FLAIL_100;
+            case VERACS_BRASSARD:
+                return VERACS_BRASSARD_100;
+            case VERACS_PLATESKIRT:
+                return VERACS_PLATESKIRT_100;
+        }
+        return -1;
+    }
+
+    public static short getRepairedId(int id) {
+        String name = ItemDefinition.forId(id).getName();
+        if(name.endsWith(" 75"))
+            id--;
+        else if(name.endsWith(" 50"))
+            id -= 2;
+        else if(name.endsWith(" 25"))
+            id -= 3;
+        else if(name.endsWith(" 0"))
+            id -= 4;
+        switch(id) {
+            case AHRIMS_HOOD_100:
+                return AHRIMS_HOOD;
+            case AHRIMS_STAFF_100:
+                return AHRIMS_STAFF;
+            case AHRIMS_ROBETOP_100:
+                return AHRIMS_ROBETOP;
+            case AHRIMS_ROBESKIRT_100:
+                return AHRIMS_ROBESKIRT;
+            case DHAROKS_HELM_100:
+                return DHAROKS_HELM;
+            case DHAROKS_GREATAXE_100:
+                return DHAROKS_GREATAXE;
+            case DHAROKS_PLATEBODY_100:
+                return DHAROKS_PLATEBODY;
+            case DHAROKS_PLATELEGS_100:
+                return DHAROKS_PLATELEGS;
+            case GUTHANS_HELM_100:
+                return GUTHANS_HELM;
+            case GUTHANS_WARSPEAR_100:
+                return GUTHANS_WARSPEAR;
+            case GUTHANS_PLATEBODY_100:
+                return GUTHANS_PLATEBODY;
+            case GUTHANS_CHAINSKIRT_100:
+                return GUTHANS_CHAINSKIRT;
+            case KARILS_COIF_100:
+                return KARILS_COIF;
+            case KARILS_CROSSBOW_100:
+                return KARILS_CROSSBOW;
+            case KARILS_LEATHERTOP_100:
+                return KARILS_LEATHERTOP;
+            case KARILS_LEATHERSKIRT_100:
+                return KARILS_LEATHERSKIRT;
+            case TORAGS_HELM_100:
+                return TORAGS_HELM;
+            case TORAGS_HAMMERS_100:
+                return TORAGS_HAMMERS;
+            case TORAGS_PLATEBODY_100:
+                return TORAGS_PLATEBODY;
+            case TORAGS_PLATELEGS_100:
+                return TORAGS_PLATELEGS;
+            case VERACS_HELM_100:
+                return VERACS_HELM;
+            case VERACS_FLAIL_100:
+                return VERACS_FLAIL;
+            case VERACS_BRASSARD_100:
+                return VERACS_BRASSARD;
+            case VERACS_PLATESKIRT_100:
+                return VERACS_PLATESKIRT;
+        }
+        return -1;
+    }
+
     public enum Brother {
         AHRIM_THE_BLIGHTED(1672, 20770, new Location(3557, 9701, 3), new Boundary(3562, 3568, 3285, 3292),
                 new Location(3557, 9703, 3), 20667, new Location(3565, 3288, 0)), DHAROK_THE_WRETCHED(1673, 20720,
@@ -252,7 +389,7 @@ public class Barrows {
         private Location spawn, digSpawn, stairSpawn;
         private Boundary boundary;
 
-        private Brother(final int npcId, final int coffin, final Location brotherSpawn, final Boundary boundary,
+        Brother(final int npcId, final int coffin, final Location brotherSpawn, final Boundary boundary,
                         final Location digSpawn, final int stairs, final Location stairSpawn) {
             this.npcId = npcId;
             this.coffinId = coffin;

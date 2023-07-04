@@ -12,7 +12,6 @@ import com.elvarg.game.entity.impl.grounditem.ItemOnGround;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NPCInteractionSystem;
-import com.elvarg.game.entity.impl.npc.impl.Barricades;
 import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.object.MapObjects;
 import com.elvarg.game.entity.impl.object.impl.WebHandler;
@@ -21,6 +20,7 @@ import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.container.impl.Bank;
 import com.elvarg.game.model.menu.CreationMenu;
+import com.elvarg.game.task.impl.WalkToTask;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
@@ -133,8 +133,7 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
             return;
         }
 
-        player.getMovementQueue().walkToEntity(npc, () -> {
-
+        WalkToTask.submit(player, npc, () -> {
             if (NPCInteractionSystem.handleUseItem(player, npc, id, slot)) {
                 // Player is using an item on a defined NPC
                 return;
@@ -174,12 +173,9 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
             return;
         }
 
-        //Update facing..
         player.setPositionToFace(position);
 
-        //Handle object..
-
-        player.getMovementQueue().walkToObject(object, () -> {
+        WalkToTask.submit(player, object, () -> {
             switch (object.getId()) {
                 case ObjectIdentifiers.STOVE_4: //Edgeville Stove
                 case ObjectIdentifiers.FIRE_5: //Player-made Fire
@@ -250,21 +246,9 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
             return;
         }
 
-        player.getMovementQueue().walkToEntity(target, () -> {
-
-            if (CastleWars.handleItemOnPlayer(player, target, item)) {
-                return;
-            }
-            switch (itemId) {
-                /** For future actions.. **/
-                case 995: {
-                    player.getPacketSender().sendMessage("Perhaps I should trade this item instead..");
-                    break;
-                }
-            }
-
+        WalkToTask.submit(player, target, () -> {
+            CastleWars.handleItemOnPlayer(player, target, item);
         });
-
     }
 
     @SuppressWarnings("unused")
@@ -282,19 +266,17 @@ public class UseItemPacketListener extends ItemIdentifiers implements PacketExec
 
         //Verify ground item..
         Optional<ItemOnGround> groundItem = ItemOnGroundManager.getGroundItem(Optional.of(player.getUsername()), ground_item_id, new Location(x, y));
-
         if (!groundItem.isPresent()) {
             return;
         }
 
-        Location item_position = groundItem.get().getPosition();
+        Location item_position = groundItem.get().getLocation();
 
-        player.getMovementQueue().walkToGroundItem(item_position, () -> {
+        WalkToTask.submit(player, groundItem.get(), () -> {
+            player.setPositionToFace(item_position);
 
-            player.setPositionToFace(groundItem.get().getPosition());
-            //Handle used item..
             switch (inventory_item) {
-                case TINDERBOX: //Lighting a fire..
+                case TINDERBOX:
                     Optional<LightableLog> log = LightableLog.getForItem(ground_item_id);
                     if (log.isPresent()) {
                         player.getSkillManager().startSkillable(new Firemaking(log.get(), groundItem.get()));

@@ -38,14 +38,16 @@ public class MagicCombatMethod extends CombatMethod {
 
 	@Override
 	public PendingHit[] hits(Mobile character, Mobile target) {
-		PendingHit[] hits = new PendingHit[]{new PendingHit(character, target, this, 3)};
+		int delay =  1 + ((1 + character.getLocation().getDistance(target.getLocation())) / 3);
+
+		PendingHit[] hits = new PendingHit[]{new PendingHit(character, target, this, delay)};
 
 		CombatSpell spell = character.getCombat().getSelectedSpell();
 
 		if (spell == null) {
 			return hits;
 		}
-
+		
 		List<PendingHit> multiCombatHits = new ArrayList<>();
 
 		for (PendingHit hit : hits) {
@@ -91,7 +93,7 @@ public class MagicCombatMethod extends CombatMethod {
 							&& !next.equals(character)
 							&& !next.equals(target)
 							&& next.getHitpoints() > 0)
-			.map((next) -> new PendingHit(character, next, this, false, 3)).toList();
+			.map((next) -> new PendingHit(character, next, this, false, delay)).toList();
 
 			for (PendingHit pendingHit : pendingHits) {
 				multiCombatHits.add(pendingHit);

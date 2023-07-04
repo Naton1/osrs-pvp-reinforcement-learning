@@ -3,6 +3,7 @@ package com.elvarg.net.packet.impl;
 import com.elvarg.game.World;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.rights.PlayerRights;
+import com.elvarg.game.task.impl.WalkToTask;
 import com.elvarg.net.packet.Packet;
 import com.elvarg.net.packet.PacketConstants;
 import com.elvarg.net.packet.PacketExecutor;
@@ -49,7 +50,8 @@ public class PlayerOptionPacketListener implements PacketExecutor {
         Player player2 = World.getPlayers().get(id);
         if (player2 == null)
             return;
-        player.getMovementQueue().walkToEntity(player2, () -> {
+
+        WalkToTask.submit(player, player2, () -> {
             if (player.getArea() != null) {
                 player.getArea().onPlayerRightClick(player, player2, 1);
             }
@@ -69,10 +71,10 @@ public class PlayerOptionPacketListener implements PacketExecutor {
         Player player2 = World.getPlayers().get(id);
         if (player2 == null)
             return;
-        player.getMovementQueue().walkToEntity(player2, () -> {
-                if (player.getArea() != null) {
-                    player.getArea().onPlayerRightClick(player, player2, 2);
-                }
+        WalkToTask.submit(player, player2, () -> {
+            if (player.getArea() != null) {
+                player.getArea().onPlayerRightClick(player, player2, 2);
+            }
         });
     }
 
@@ -89,10 +91,10 @@ public class PlayerOptionPacketListener implements PacketExecutor {
         Player player2 = World.getPlayers().get(id);
         if (player2 == null)
             return;
-        player.getMovementQueue().walkToEntity(player2, () -> {
-                if (player.getArea() != null) {
-                    player.getArea().onPlayerRightClick(player, player2, 3);
-                }
+        WalkToTask.submit(player, player2, () -> {
+            if (player.getArea() != null) {
+                player.getArea().onPlayerRightClick(player, player2, 3);
+            }
         });
     }
 

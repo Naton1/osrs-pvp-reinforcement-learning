@@ -99,7 +99,7 @@ public class Client extends GameApplet {
     public static byte[] music_payload;
     public static int anInt155 = 0;
     public static int anInt2200 = 0;
-    public static int anInt1478;
+    public static int jmp_volume;
     public static boolean aBoolean475;
     public static int fadeDuration;
     public static boolean repeatMusic;
@@ -123,12 +123,12 @@ public class Client extends GameApplet {
                 } else
                     anInt720 = 1;
                 music_payload = is;
-                anInt1478 = volume;
+                jmp_volume = volume;
                 aBoolean475 = bool;
             } else if (anInt720 == 0)
                 method853(volume, is, bool);
             else {
-                anInt1478 = volume;
+                jmp_volume = volume;
                 aBoolean475 = bool;
                 music_payload = is;
             }
@@ -151,11 +151,11 @@ public class Client extends GameApplet {
                 }
                 aBoolean475 = bool;
                 music_payload = payload;
-                anInt1478 = i_30_;
+                jmp_volume = i_30_;
             } else if (anInt720 != 0) {
                 aBoolean475 = bool;
                 music_payload = payload;
-                anInt1478 = i_30_;
+                jmp_volume = i_30_;
             } else
                 method853(i_30_, payload, bool);
         }
@@ -189,9 +189,9 @@ public class Client extends GameApplet {
                         if (music_payload == null)
                             midi_player.method831(256);
                         else {
-                            midi_player.method831(anInt1478);
-                            anInt478 = anInt1478;
-                            midi_player.method827(anInt1478, music_payload, 0, aBoolean475);
+                            midi_player.method831(jmp_volume);
+                            anInt478 = jmp_volume;
+                            midi_player.method827(jmp_volume, music_payload, 0, aBoolean475);
                             music_payload = null;
                         }
                         anInt155 = 0;
@@ -1172,9 +1172,10 @@ public class Client extends GameApplet {
         MapRegion.lowMem = false;
     }
 
-    public static void setTab(int id) {
+    public void setInterfaceTab(int id) {
         tabId = id;
         tabAreaAltered = true;
+        packetSender.sendInterfaceTab(id);
     }
 
     private static String combatDiffColor(int i, int j) {
@@ -3192,7 +3193,7 @@ public class Client extends GameApplet {
         removedMobCount = 0;
         mobsAwaitingUpdateCount = 0;
         updateDirection(stream);
-        updateNPCMovement(i, stream);
+        addLocalNPC(i, stream);
         npcUpdateMask(stream);
         for (int k = 0; k < removedMobCount; k++) {
             int l = removedMobs[k];
@@ -3386,46 +3387,18 @@ public class Client extends GameApplet {
         }
     }
 
-    public void changeMusicVolume(int newVolume) {//used
-
-        if (newVolume == musicVolume)
-            return;
-
-        if (newVolume == 0) {
-            setVolume(0);
-            return;
-        }
-
-        newVolume *= 20;
-
-        if (musicVolume != 0 || currentSong == -1) {
-            setVolume(newVolume);
-        } else {
-            requestMusic(currentSong);//TODO look into
-            prevSong = 0;
-        }
-        musicVolume = newVolume;
-    }
-
-    public static final void setVolume(int i) {
-        if (musicIsntNull()) {
-            if (fetchMusic)
-                music_volume = i;
-            else
-                method900(i);
-        }
-    }
-
-    public static final void method900(int i) {
+    public static final void setMusicVolume(int volume) {
         if (midi_player != null) {
             if (anInt720 == 0) {
                 if (anInt478 >= 0) {
-                    anInt478 = i;
-                    midi_player.method830(i, 0);
+                    anInt478 = volume;
+                    midi_player.method830(volume, 0);
                 }
-            } else if (music_payload != null)
-                anInt1478 = i;
+            } else if (music_payload != null) {
+                jmp_volume = volume;
+            }
         }
+        music_volume = musicVolume = volume;
     }
 
     public void changeSoundVolume(int newVolume) {
@@ -3537,7 +3510,6 @@ public class Client extends GameApplet {
         if (parameter == 9) {
             anInt913 = state;
         }
-        System.err.println("Para=" + parameter + " " + state);
 
     }
 
@@ -4428,6 +4400,8 @@ public class Client extends GameApplet {
     }
 
     final synchronized void requestMusic(int musicId) {
+        if (!Configuration.enableMusic)
+            setMusicVolume(0);
         if (musicIsntNull()) {
             nextSong = musicId;
             resourceProvider.provide(2, nextSong);
@@ -4452,27 +4426,35 @@ public class Client extends GameApplet {
         }
     }
 
-    private void updateNPCMovement(int i, Buffer stream) {
-        while (stream.bitPosition + 21 < i * 8) {
-            int k = stream.readBits(14);
-            if (k == 16383)
+    private void addLocalNPC(int packetLength, Buffer buffer) {
+        while (buffer.bitPosition + 21 < packetLength * 8) {
+            int npcIndex = buffer.readBits(14);
+            if (npcIndex == 16383)
                 break;
-            if (npcs[k] == null)
-                npcs[k] = new Npc();
-            Npc npc = npcs[k];
-            npcIndices[npcCount++] = k;
+            boolean added = false;
+            if (npcs[npcIndex] == null) {
+                npcs[npcIndex] = new Npc();
+                added = true;
+            }
+            Npc npc = npcs[npcIndex];
+            npcIndices[npcCount++] = npcIndex;
             npc.time = tick;
-            int l = stream.readBits(5);
-            if (l > 15)
-                l -= 32;
-            int i1 = stream.readBits(5);
-            if (i1 > 15)
-                i1 -= 32;
-            int j1 = stream.readBits(1);
-            npc.desc = NpcDefinition.lookup(stream.readBits(Configuration.npcBits));
-            int updateRequired = stream.readBits(1);
+            int yLocation = buffer.readBits(5);
+            if (yLocation > 15)
+                yLocation -= 32;
+            int xLocation = buffer.readBits(5);
+            if (xLocation > 15)
+                xLocation -= 32;
+            int updateFlag = buffer.readBits(1);
+            int direction = buffer.readBits(3);
+            if (added) {
+                npc.nextStepOrientation = directions[direction];
+            }
+            int npcId = buffer.readBits(14);
+            npc.desc = NpcDefinition.lookup(npcId);
+            int updateRequired = buffer.readBits(1);
             if (updateRequired == 1)
-                mobsAwaitingUpdate[mobsAwaitingUpdateCount++] = k;
+                mobsAwaitingUpdate[mobsAwaitingUpdateCount++] = npcIndex;
             npc.size = npc.desc.size;
             npc.degreesToTurn = npc.desc.degreesToTurn;
             npc.walkAnimIndex = npc.desc.walkAnim;
@@ -4480,10 +4462,22 @@ public class Client extends GameApplet {
             npc.turn90CWAnimIndex = npc.desc.turn90CWAnimIndex;
             npc.turn90CCWAnimIndex = npc.desc.turn90CCWAnimIndex;
             npc.idleAnimation = npc.desc.standAnim;
-            npc.setPos(localPlayer.pathX[0] + i1, localPlayer.pathY[0] + l, j1 == 1);
+            npc.setPos(localPlayer.pathX[0] + xLocation, localPlayer.pathY[0] + yLocation, updateFlag == 1);
         }
-        stream.disableBitAccess();
+        buffer.disableBitAccess();
     }
+
+    //starts north-west
+    private static int[] directions = {
+            768, //north west
+            1024, //north
+            1280, //north-east
+            512, //west
+            1536,//east
+            256,//south-west
+            0,//south
+            1792//south-east
+    };
 
     public void processGameLoop() {
         if (rsAlreadyLoaded || loadingError || genericLoadingError)
@@ -4548,8 +4542,6 @@ public class Client extends GameApplet {
 
             resourceProvider = new ResourceProvider();
             resourceProvider.initialize(streamLoader_6, this);
-
-            requestMusic(SoundConstants.SCAPE_RUNE);
 
             tileFlags = new byte[4][104][104];
             tileHeights = new int[4][105][105];
@@ -4694,8 +4686,8 @@ public class Client extends GameApplet {
             SceneObject.clientInstance = this;
             ObjectDefinition.clientInstance = this;
             NpcDefinition.clientInstance = this;
-
             loadPlayerData();
+            requestMusic(SoundConstants.SCAPE_RUNE);
             //resourceProvider.writeAll();
             
             /*repackCacheIndex(1);
@@ -5825,7 +5817,6 @@ public class Client extends GameApplet {
             return false;
         int type = mask & 0x1f;
         int direction = mask >> 6 & 3;
-        System.err.println("Mask=" + mask + " type=" + type + " orientation=" + direction);
         if (type == 10 || type == 11 || type == 22) {
             ObjectDefinition class46 = ObjectDefinition.lookup(id);
             int yLength;
@@ -6007,8 +5998,7 @@ public class Client extends GameApplet {
                 } else {
                     showTabComponents = true;
                 }
-                tabId = 10;
-                tabAreaAltered = true;
+                setInterfaceTab(10);
             }
         }
 
@@ -6505,8 +6495,7 @@ public class Client extends GameApplet {
             //		"spellId: " + spellId + " - spellSelected: " + spellSelected);
             //	System.out.println(button + " " + widget.selectedActionName + " " + anInt1137);
             if (spellUsableOn == 16) {
-                tabId = 3;
-                tabAreaAltered = true;
+                setInterfaceTab(3);
             }
             return;
         }
@@ -6575,8 +6564,7 @@ public class Client extends GameApplet {
 
         if (action == 1004) {
             if (tabInterfaceIDs[10] != -1) {
-                tabId = 10;
-                tabAreaAltered = true;
+                setInterfaceTab(10);
             }
         }
         if (action == 1003) {
@@ -8625,8 +8613,7 @@ public class Client extends GameApplet {
                             && super.mouseY >= tabClickY[i] + yOffset
                             && super.mouseY < tabClickY[i] + 37 + yOffset
                             && tabInterfaceIDs[i] != -1) {
-                        tabId = i;
-                        tabAreaAltered = true;
+                        setInterfaceTab(i);
 
                         //Spawn tab
                         searchingSpawnTab = tabId == 2;
@@ -8645,8 +8632,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 0;
-                    tabAreaAltered = true;
+                    setInterfaceTab(0);
 
                 }
                 if (super.saveClickX >= frameWidth - 194
@@ -8659,8 +8645,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 1;
-                    tabAreaAltered = true;
+                    setInterfaceTab(1);
 
                 }
                 if (super.saveClickX >= frameWidth - 162
@@ -8673,8 +8658,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 2;
-                    tabAreaAltered = true;
+                    setInterfaceTab(2);
 
                 }
                 if (super.saveClickX >= frameWidth - 129
@@ -8687,8 +8671,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 3;
-                    tabAreaAltered = true;
+                    setInterfaceTab(3);
 
                 }
                 if (super.saveClickX >= frameWidth - 97
@@ -8701,8 +8684,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 4;
-                    tabAreaAltered = true;
+                    setInterfaceTab(4);
 
                 }
                 if (super.saveClickX >= frameWidth - 65
@@ -8715,8 +8697,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 5;
-                    tabAreaAltered = true;
+                    setInterfaceTab(5);
 
                 }
                 if (super.saveClickX >= frameWidth - 33 && super.saveClickX <= frameWidth
@@ -8728,8 +8709,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 6;
-                    tabAreaAltered = true;
+                    setInterfaceTab(6);
 
                 }
 
@@ -8743,8 +8723,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 8;
-                    tabAreaAltered = true;
+                    setInterfaceTab(8);
 
                 }
                 if (super.saveClickX >= frameWidth - 162
@@ -8757,8 +8736,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 9;
-                    tabAreaAltered = true;
+                    setInterfaceTab(9);
 
                 }
                 if (super.saveClickX >= frameWidth - 129
@@ -8771,8 +8749,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 7;
-                    tabAreaAltered = true;
+                    setInterfaceTab(7);
 
                 }
                 if (super.saveClickX >= frameWidth - 97
@@ -8785,8 +8762,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 11;
-                    tabAreaAltered = true;
+                    setInterfaceTab(11);
 
                 }
                 if (super.saveClickX >= frameWidth - 65
@@ -8799,8 +8775,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 12;
-                    tabAreaAltered = true;
+                    setInterfaceTab(12);
 
                 }
                 if (super.saveClickX >= frameWidth - 33 && super.saveClickX <= frameWidth
@@ -8812,8 +8787,7 @@ public class Client extends GameApplet {
                     } else {
                         showTabComponents = true;
                     }
-                    tabId = 13;
-                    tabAreaAltered = true;
+                    setInterfaceTab(13);
 
                 }
             } else if (stackSideStones && frameWidth >= 1000) {
@@ -8825,8 +8799,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 0;
-                        tabAreaAltered = true;
+                        setInterfaceTab(0);
                     }
                     if (super.mouseX >= frameWidth - 385
                             && super.mouseX <= frameWidth - 354) {
@@ -8835,8 +8808,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 1;
-                        tabAreaAltered = true;
+                        setInterfaceTab(1);
                     }
                     if (super.mouseX >= frameWidth - 353
                             && super.mouseX <= frameWidth - 322) {
@@ -8845,8 +8817,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 2;
-                        tabAreaAltered = true;
+                        setInterfaceTab(2);
                     }
                     if (super.mouseX >= frameWidth - 321
                             && super.mouseX <= frameWidth - 290) {
@@ -8855,8 +8826,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 3;
-                        tabAreaAltered = true;
+                        setInterfaceTab(3);
                     }
                     if (super.mouseX >= frameWidth - 289
                             && super.mouseX <= frameWidth - 258) {
@@ -8865,8 +8835,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 4;
-                        tabAreaAltered = true;
+                        setInterfaceTab(4);
                     }
                     if (super.mouseX >= frameWidth - 257
                             && super.mouseX <= frameWidth - 226) {
@@ -8875,8 +8844,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 5;
-                        tabAreaAltered = true;
+                        setInterfaceTab(5);
                     }
                     if (super.mouseX >= frameWidth - 225
                             && super.mouseX <= frameWidth - 194) {
@@ -8885,8 +8853,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 6;
-                        tabAreaAltered = true;
+                        setInterfaceTab(6);
                     }
                     if (super.mouseX >= frameWidth - 193
                             && super.mouseX <= frameWidth - 163) {
@@ -8895,8 +8862,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 8;
-                        tabAreaAltered = true;
+                        setInterfaceTab(8);
                     }
                     if (super.mouseX >= frameWidth - 162
                             && super.mouseX <= frameWidth - 131) {
@@ -8905,8 +8871,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 9;
-                        tabAreaAltered = true;
+                        setInterfaceTab(9);
                     }
                     if (super.mouseX >= frameWidth - 130
                             && super.mouseX <= frameWidth - 99) {
@@ -8915,8 +8880,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 7;
-                        tabAreaAltered = true;
+                        setInterfaceTab(7);
                     }
                     if (super.mouseX >= frameWidth - 98
                             && super.mouseX <= frameWidth - 67) {
@@ -8925,8 +8889,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 11;
-                        tabAreaAltered = true;
+                        setInterfaceTab(11);
                     }
                     if (super.mouseX >= frameWidth - 66
                             && super.mouseX <= frameWidth - 45) {
@@ -8935,8 +8898,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 12;
-                        tabAreaAltered = true;
+                        setInterfaceTab(12);
                     }
                     if (super.mouseX >= frameWidth - 31 && super.mouseX <= frameWidth) {
                         if (tabId == 13) {
@@ -8944,8 +8906,7 @@ public class Client extends GameApplet {
                         } else {
                             showTabComponents = true;
                         }
-                        tabId = 13;
-                        tabAreaAltered = true;
+                        setInterfaceTab(13);
                     }
                 }
             }
@@ -13302,11 +13263,7 @@ public class Client extends GameApplet {
 
         loginMusicImageProducer.drawGraphics(265, super.graphics, 562);
         loginMusicImageProducer.initDrawingArea();
-        if (Configuration.enableMusic) {
-            spriteCache.draw(58, 158, 196);
-        } else {
-            spriteCache.draw(59, 158, 196);
-        }
+        spriteCache.draw(Configuration.enableMusic ? 58 : 59, 158, 196);
 
     }
 
@@ -13778,10 +13735,6 @@ public class Client extends GameApplet {
         if (loading)
             return;
         if (loginScreenState == 0) {
-            if (super.clickMode3 == 1 && super.saveClickX >= 722 && super.saveClickX <= 751 && super.saveClickY >= 463 && super.saveClickY <= 493) {
-                Configuration.enableMusic = !Configuration.enableMusic;
-            }
-
             if (super.clickMode3 == 1) {
                 if (mouseInRegion(394, 530, 275, 307)) {
                     firstLoginMessage = "";
@@ -13791,7 +13744,8 @@ public class Client extends GameApplet {
                         loginScreenCursorPos = 0;
                     }
                 } else if (mouseInRegion(229, 375, 271, 312)) {
-                    if (!Configuration.DiscordConfiguration.ENABLE_DISCORD_OAUTH_LOGIN) return;
+                    if (!Configuration.DiscordConfiguration.ENABLE_DISCORD_OAUTH_LOGIN)
+                        return;
 
                     canUseCachedToken = true;
                     loginScreenState = 1;
@@ -13810,6 +13764,8 @@ public class Client extends GameApplet {
                     MiscUtils.launchURL(DiscordOAuth.getOAuthUrl());
                     firstLoginMessage = "Waiting for OAuth...";
                     secondLoginMessage = "";
+                } else if (mouseInRegion(720, 754, 460, 492)) {
+                    handleMuteMusic();
                 }
             }
         } else if (loginScreenState == 1) {
@@ -13825,10 +13781,7 @@ public class Client extends GameApplet {
             }
         } else if (loginScreenState == 2) {
             if (super.clickMode3 == 1) {
-                if (super.saveClickX >= 722 && super.saveClickX <= 753 && super.saveClickY >= 463 && super.saveClickY <= 493) {
-                    Configuration.enableMusic = !Configuration.enableMusic;
-                    savePlayerData();
-                } else if (rememberUsernameHover) {
+                if (rememberUsernameHover) {
                     rememberUsername = !rememberUsername;
                     savePlayerData();
                 } else if (rememberPasswordHover) {
@@ -13836,6 +13789,9 @@ public class Client extends GameApplet {
                     savePlayerData();
                 } else if (forgottenPasswordHover) {
                     MiscUtils.launchURL("www.aqp.io");
+                } else if (mouseInRegion(720, 754, 460, 492)) {
+                    /** Handles clicking once typing login info **/
+                    handleMuteMusic();
                 }
             }
             int j = super.myHeight / 2 - 45;
@@ -13908,6 +13864,12 @@ public class Client extends GameApplet {
             } while (true);
             return;
         }
+    }
+
+    private void handleMuteMusic() {
+        Configuration.enableMusic = !Configuration.enableMusic;
+        savePlayerData();
+        setMusicVolume(Configuration.enableMusic ? 255 : 0);
     }
 
     private void removeObject(int y, int z, int k, int l, int x, int group, int previousId) {

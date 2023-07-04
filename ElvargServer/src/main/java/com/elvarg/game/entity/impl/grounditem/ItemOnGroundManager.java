@@ -1,25 +1,14 @@
 package com.elvarg.game.entity.impl.grounditem;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
-import com.elvarg.game.GameConstants;
 import com.elvarg.game.World;
-import com.elvarg.game.definition.GroundItemsDef;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGround.State;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.game.task.impl.GroundItemRespawnTask;
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 
 /**
  * Manages all {@link ItemOnGround}s.
@@ -110,12 +99,12 @@ public class ItemOnGroundManager {
 		if (item.isPendingRemoval()) {
 			type = OperationType.DELETE;
 		}
-		if (item.getPosition().getZ() != player.getLocation().getZ())
+		if (item.getLocation().getZ() != player.getLocation().getZ())
 			return;
 		if (player.getPrivateArea() != item.getPrivateArea()) {
             return;
         }
-		if (item.getPosition().getDistance(player.getLocation()) > 64)
+		if (item.getLocation().getDistance(player.getLocation()) > 64)
 			return;
 		switch (type) {
 		case ALTER:
@@ -145,12 +134,6 @@ public class ItemOnGroundManager {
 	 * @param item
 	 */
 	public static void register(ItemOnGround item) {
-		// No point spamming with spawned items...
-		boolean spawnable = GameConstants.ALLOWED_SPAWNS.contains(item.getItem().getId());
-		if (spawnable && !Objects.equals("ground_items_spawns", item.getOwner().get())) {
-			return;
-		}
-
 		// Check for merge with existing stackables..
 		if (item.getItem().getDefinition().isStackable()) {
 			if (merge(item)) {
@@ -179,7 +162,7 @@ public class ItemOnGroundManager {
 			if (item_ == null || item_.isPendingRemoval() || item_.equals(item)) {
 				continue;
 			}
-			if (!item_.getPosition().equals(item.getPosition())) {
+			if (!item_.getLocation().equals(item.getLocation())) {
 				continue;
 			}
 
@@ -250,12 +233,6 @@ public class ItemOnGroundManager {
 		return i;
 	}
 
-	public static ItemOnGround loadFromJson(Item item, Location position, int respawnTime) {
-		ItemOnGround i = new ItemOnGround(State.SEEN_BY_EVERYONE, Optional.of("ground_items_spawns"), position, item, true, respawnTime, null);
-		register(i);
-		return i;
-	}
-
 	/**
 	 * A utility method which quickly registers a default {@link ItemOnGround} which
 	 * does not go global once the item's counter hits {@code STATE_UPDATE_DELAY}.
@@ -317,7 +294,7 @@ public class ItemOnGroundManager {
 			if (id != item.getItem().getId()) {
 				continue;
 			}
-			if (!item.getPosition().equals(position)) {
+			if (!item.getLocation().equals(position)) {
 				continue;
 			}
 			return Optional.of(item);
@@ -332,7 +309,7 @@ public class ItemOnGroundManager {
 	 * @return
 	 */
 	public static boolean exists(ItemOnGround i) {
-		return getGroundItem(i.getOwner(), i.getItem().getId(), i.getPosition()).isPresent();
+		return getGroundItem(i.getOwner(), i.getItem().getId(), i.getLocation()).isPresent();
 	}
 
 	/**
@@ -360,22 +337,4 @@ public class ItemOnGroundManager {
 		CREATE, DELETE, ALTER;
 	}
 
-	public static void load() {
-
-		for (File file : new File("data/definitions/ground_items").listFiles()) {
-			if (file.getName().endsWith(".json")) {
-				try {
-					GroundItemsDef[] spawnedGroundItems = new Gson().fromJson(new FileReader(file), GroundItemsDef[].class);
-					Arrays.stream(spawnedGroundItems).forEach(g -> loadFromJson(new Item(g.itemId, g.itemAmount), new Location(g.x, g.y, g.plane), g.respawnTicks));
-
-				} catch (JsonParseException e) {
-					throw new RuntimeException("Failed to load ground item spawn: " + file.getAbsolutePath() + " (" + e + ")");
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-			} else if (file.isDirectory()) {
-				load();
-			}
-		}
-	}
 }

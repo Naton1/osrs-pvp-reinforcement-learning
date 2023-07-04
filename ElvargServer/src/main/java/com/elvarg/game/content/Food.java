@@ -65,11 +65,22 @@ public class Food {
 		}
 
 		player.getTimers().extendOrRegister(TimerKey.FOOD, 3);
-		player.getTimers().extendOrRegister(TimerKey.COMBAT_ATTACK, 5);
 
+		final int combatTicks = player.getTimers().getUncappedTicks(TimerKey.COMBAT_ATTACK, Integer.MIN_VALUE);
+		final int addAttackDelay;
 		if (food == Edible.KARAMBWAN) {
 			player.getTimers().register(TimerKey.KARAMBWAN, 3); // Register karambwan timer too
 			player.getTimers().register(TimerKey.POTION, 3); // Register the potion timer (karambwan blocks pots)
+			addAttackDelay = 2;
+		}
+		else {
+			addAttackDelay = 3;
+		}
+
+		// Attack delays are special in that the 'timer' can go negative, and the delay is added to the timer
+		final int combatTicksAfterEat = combatTicks + addAttackDelay;
+		if (combatTicksAfterEat > 0) {
+			player.getTimers().register(TimerKey.COMBAT_ATTACK, combatTicksAfterEat);
 		}
 
 		// Close interfaces..
@@ -94,19 +105,19 @@ public class Food {
 		
 		if (food == Edible.ANGLERFISH) {
 			int c = 2;
-			if (currentHp >= 25) {
+			if (maxHp >= 25) {
 				c = 4;
 			}
-			if (currentHp >= 50) {
+			if (maxHp >= 50) {
 				c = 6;
 			}
-			if (currentHp >= 75) {
+			if (maxHp >= 75) {
 				c = 8;
 			}
-			if (currentHp >= 93) {
+			if (maxHp >= 93) {
 				c = 13;
 			}
-			healAmount = (int) Math.floor((currentHp/10) + c);
+			healAmount = (int) Math.floor((maxHp / 10) + c);
 			if (healAmount > 22) {
 				healAmount = 22;
 			}
@@ -161,7 +172,7 @@ public class Food {
 		 */
 		POTATO(new Item(1942), 1), BAKED_POTATO(new Item(6701), 4), POTATO_WITH_BUTTER(new Item(6703),
 				14), CHILLI_POTATO(new Item(7054), 14), EGG_POTATO(new Item(7056), 16), POTATO_WITH_CHEESE(
-						new Item(6705), 16), MUSHROOM_POTATO(new Item(7058), 20), TUNA_POTATO(new Item(7060), 20),
+						new Item(6705), 16), MUSHROOM_POTATO(new Item(7058), 20), TUNA_POTATO(new Item(7060), 22),
 
 		/*
 		 * Fruit food types which a player can get by picking from certain trees or

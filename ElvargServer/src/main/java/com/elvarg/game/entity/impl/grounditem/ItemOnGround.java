@@ -3,8 +3,11 @@ package com.elvarg.game.entity.impl.grounditem;
 import java.util.Optional;
 
 import com.elvarg.game.World;
+import com.elvarg.game.entity.Entity;
 import com.elvarg.game.entity.impl.grounditem.ItemOnGroundManager.OperationType;
 import com.elvarg.game.entity.impl.player.Player;
+import com.elvarg.game.model.Animation;
+import com.elvarg.game.model.Graphic;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
 import com.elvarg.game.model.areas.impl.PrivateArea;
@@ -14,12 +17,7 @@ import com.elvarg.game.model.areas.impl.PrivateArea;
  *
  * @author Professor Oak
  */
-public class ItemOnGround {
-
-    /**
-     * The {@link Location} of this {@link ItemOnGround}.
-     */
-    private final Location position;
+public class ItemOnGround extends Entity {
     
     /**
      * The current {@link State} of this {@link ItemOnGround}.
@@ -73,13 +71,13 @@ public class ItemOnGround {
      *
      * @param state
      * @param owner
-     * @param position
+     * @param location
      * @param item
      * @param goesGlobal
      * @param respawnTimer
      */
-    public ItemOnGround(State state, Optional<String> owner, Location position, Item item, boolean goesGlobal, int respawnTimer, PrivateArea area) {
-        this.position = position;
+    public ItemOnGround(State state, Optional<String> owner, Location location, Item item, boolean goesGlobal, int respawnTimer, PrivateArea area) {
+        super(location);
         this.state = state;
         this.owner = owner;
         this.item = item;
@@ -139,10 +137,6 @@ public class ItemOnGround {
                 break;
         }
     }
-    
-    public Location getPosition() {
-        return position;
-    }
 
     public Optional<String> getOwner() {
         return owner;
@@ -185,7 +179,20 @@ public class ItemOnGround {
     public boolean respawns() {
         return respawnTimer > 0;
     }
-    
+
+    @Override
+    public void performAnimation(Animation animation) {
+    }
+
+    @Override
+    public void performGraphic(Graphic graphic) {
+    }
+
+    @Override
+    public int size() {
+        return 1;
+    }
+
     public PrivateArea getPrivateArea() {
         return privateArea;
     }
@@ -208,7 +215,7 @@ public class ItemOnGround {
 
     @Override
     public ItemOnGround clone() {
-        return new ItemOnGround(state, owner, getPosition(), item, goesGlobal, respawnTimer, privateArea);
+        return new ItemOnGround(state, owner, getLocation(), item, goesGlobal, respawnTimer, privateArea);
     }
 
     @Override
@@ -223,7 +230,7 @@ public class ItemOnGround {
             }
         }
         return item.getItem().equals(this.getItem())
-                && item.getPosition().equals(this.getPosition())
+                && item.getLocation().equals(this.getLocation())
                 && item.getState() == this.getState()
                 && item.getTick() == this.getTick()
                 && item.getPrivateArea() == this.getPrivateArea();

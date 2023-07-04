@@ -247,20 +247,21 @@ public class Location {
         int deltaX = other.x - x, deltaY = other.y - y;
         return deltaX <= 2 && deltaX >= -3 && deltaY <= 2 && deltaY >= -3;
     }
-
+    
     /**
-     * Gets the distance between this position and another position. Only X and
-     * Y are considered (i.e. 2 dimensions).
-     *
+     * Gets the distance between this and another location.
+     * <br>
+     * https://en.wikipedia.org/wiki/Chebyshev_distance
+     * <br>
      * @param other The other position.
-     * @return The distance.
+     * @return The chebyshev distance.
      */
-    public int getDistance(Location other) {
+	public int getDistance(Location other) {
         int deltaX = x - other.x;
         int deltaY = y - other.y;
-        return (int) Math.ceil(Math.sqrt(deltaX * deltaX + deltaY * deltaY));
-    }
-    
+		return Math.max(Math.abs(deltaX), Math.abs(deltaY));
+	}
+	
 	/**
 	 * Increments the {@code X}, {@code Y}, and {@code Z} coordinate values
 	 * within this container by {@code amountX}, {@code amountY}, and

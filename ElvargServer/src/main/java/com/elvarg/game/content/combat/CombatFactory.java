@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import com.elvarg.game.content.minigames.impl.pestcontrol.PestControl;
 import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.content.sound.SoundManager;
 import com.elvarg.game.collision.RegionManager;
@@ -150,7 +151,10 @@ public class CombatFactory {
 	 * @return the HitDamage.
 	 */
 	public static HitDamage getHitDamage(Mobile entity, Mobile victim, CombatType type) {
-
+		
+		//calculate the multiplier that will be used when calculating protection prayers.
+		double damageMultiplier = entity.isNpc() ? CombatConstants.PRAYER_DAMAGE_REDUCTION_AGAINST_NPCS : CombatConstants.PRAYER_DAMAGE_REDUCTION_AGAINST_PLAYERS;
+		
 		int damage = 0;
 
 		if (type == CombatType.MELEE) {
@@ -158,14 +162,14 @@ public class CombatFactory {
 
 			// Do melee effects with the calculated damage..
 			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MELEE]) {
-				damage *= 0.6;
+				damage *= damageMultiplier;
 			}
 
 		} else if (type == CombatType.RANGED) {
 			damage = Misc.inclusive(0, DamageFormulas.calculateMaxRangedHit(entity));
 
 			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MISSILES]) {
-				damage *= 0.6;
+				damage *= damageMultiplier;
 			}
 
 			// Do ranged effects with the calculated damage..
@@ -193,7 +197,7 @@ public class CombatFactory {
 		} else if (type == CombatType.MAGIC) {
 			damage = Misc.inclusive(0, DamageFormulas.getMagicMaxhit(entity));
 			if (victim.getPrayerActive()[PrayerHandler.PROTECT_FROM_MAGIC]) {
-				damage *= 0.6;
+				damage *= damageMultiplier;
 			}
 
 			// Do magic effects with the calculated damage..
@@ -202,25 +206,6 @@ public class CombatFactory {
 		// We've got our damage. We can now create a HitDamage
 		// instance.
 		HitDamage hitDamage = new HitDamage(damage, damage == 0 ? HitMask.BLUE : HitMask.RED);
-
-		/**
-		 * Prayers decreasing damage.
-		 */
-
-		// Decrease damage if victim is a player and has prayers active..
-		if ((!CombatFactory.fullVeracs(entity) || Misc.getRandom(4) == 1)) {
-
-			// Check if victim is is using correct protection prayer
-			if (PrayerHandler.isActivated(victim, PrayerHandler.getProtectingPrayer(type))) {
-
-				// Apply the damage reduction mod
-				if (entity.isNpc()) {
-					hitDamage.multiplyDamage(CombatConstants.PRAYER_DAMAGE_REDUCTION_AGAINST_NPCS);
-				} else {
-					hitDamage.multiplyDamage(CombatConstants.PRAYER_DAMAGE_REDUCTION_AGAINST_PLAYERS);
-				}
-			}
-		}
 
 		// Check elysian spirit shield damage reduction
 		if (victim.isPlayer() && Misc.getRandom(100) <= 70) {
@@ -354,6 +339,7 @@ public class CombatFactory {
 
 		return true;
 	}
+
 
 	private static void stepOut(Mobile attacker, Mobile target) {
 		List<Location> tiles = Arrays.asList(
@@ -935,9 +921,9 @@ public class CombatFactory {
 	 * Freezes a character.
 	 *
 	 * @param character
-	 * @param seconds
+	 * @param ticks The number of ticks to freeze.
 	 */
-	public static void freeze(Mobile character, int seconds) {
+	public static void freeze(Mobile character, int ticks) {
 		if (character.getTimers().has(TimerKey.FREEZE) || character.getTimers().has(TimerKey.FREEZE_IMMUNITY)) {
 			return;
 		}
@@ -947,16 +933,14 @@ public class CombatFactory {
 			return;
 		}
 
-		// Make us frozen for the amount of seconds
-		int ticks = Misc.getTicks(seconds);
 		character.getTimers().register(TimerKey.FREEZE, ticks);
-		character.getTimers().register(TimerKey.FREEZE_IMMUNITY, ticks + Misc.getTicks(3));
+		character.getTimers().register(TimerKey.FREEZE_IMMUNITY, ticks + 5);
 		character.getMovementQueue().reset();
 
 		if (character.isPlayer()) {
 
 			// Send message and effect timer to client
-			character.getAsPlayer().getPacketSender().sendMessage("You have been frozen!").sendEffectTimer(seconds,
+			character.getAsPlayer().getPacketSender().sendMessage("You have been frozen!").sendEffectTimer(Misc.getSeconds(ticks),
 					EffectTimer.FREEZE);
 		}
 	}

@@ -2,6 +2,7 @@ package com.elvarg.game.model.areas.impl.castlewars;
 
 import com.elvarg.game.content.minigames.impl.CastleWars;
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.entity.impl.object.GameObject;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.model.Boundary;
@@ -86,8 +87,8 @@ public class CastleWarsZamorakWaitingArea extends Area {
     }
 
     @Override
-    public boolean handleObjectClick(Player player, int objectId, int type) {
-        switch (objectId) {
+    public boolean handleObjectClick(Player player, GameObject object, int type) {
+        switch (object.getId()) {
             case PORTAL_9:
                 player.moveTo(new Location(2439 + Misc.random(4),
                         3085 + Misc.random(5), 0));
