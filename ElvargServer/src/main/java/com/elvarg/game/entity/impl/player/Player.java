@@ -326,12 +326,10 @@ public class Player extends Mobile {
 
 	@Override
 	public void heal(int amount) {
-		int level = skillManager.getMaxLevel(Skill.HITPOINTS);
-		if ((skillManager.getCurrentLevel(Skill.HITPOINTS) + amount) >= level) {
-			setHitpoints(level);
-		} else {
-			setHitpoints(skillManager.getCurrentLevel(Skill.HITPOINTS) + amount);
-		}
+		final int cap = Math.max(skillManager.getMaxLevel(Skill.HITPOINTS),
+		                         skillManager.getCurrentLevel(Skill.HITPOINTS));
+		final int healedHp = skillManager.getCurrentLevel(Skill.HITPOINTS) + amount;
+		setHitpoints(Math.min(healedHp, cap));
 	}
 
 	@Override
