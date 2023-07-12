@@ -72,8 +72,7 @@ public class DamageFormulas {
         if (CombatFactory.fullDharoks(player)) {
             float hp = player.getHitpoints();
             float max = player.getSkillManager().getMaxLevel(Skill.HITPOINTS);
-            float mult = Math.max(0, ((max - hp) / max) * 100f) + 100f;
-            maxHit *= (mult / 100);
+            maxHit *= 1 + ((max - hp) / 100f) * (max / 100f);
         }
 
         if (player.isSpecialActivated()) {
