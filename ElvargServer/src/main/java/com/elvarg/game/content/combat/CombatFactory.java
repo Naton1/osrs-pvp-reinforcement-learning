@@ -55,6 +55,8 @@ import com.elvarg.util.NpcIdentifiers;
 import com.elvarg.util.RandomGen;
 import com.elvarg.util.timers.TimerKey;
 
+import static com.elvarg.util.ItemIdentifiers.AMULET_OF_BLOOD_FURY;
+
 /**
  * Acts as a utility class for combat.
  *
@@ -577,6 +579,11 @@ public class CombatFactory {
 
 					// Other barrows effects here..
 				}
+				// Check for amulet of blood fury healing
+				if (qHit.getCombatType() == CombatType.MELEE && p_.getEquipment().hasAt(Equipment.AMULET_SLOT,
+				                                                                        AMULET_OF_BLOOD_FURY)) {
+					handleAmuletOfBloodFury(p_, target, qHit.getTotalDamage());
+				}
 			}
 		} else if (attacker.isNpc()) {
 			NPC npc = attacker.getAsNpc();
@@ -808,6 +815,14 @@ public class CombatFactory {
 	public static void handleGuthans(Player player, Mobile target, int damage) {
 		target.performGraphic(new Graphic(398));
 		player.heal(damage);
+	}
+
+	private static void handleAmuletOfBloodFury(Player player, Mobile target, int damage) {
+		// 20% chance to heal 30% of any melee damage
+		if (Misc.getRandom(100) < 20) {
+			player.heal((int) Math.floor(damage * 0.30));
+			target.performGraphic(new Graphic(398));
+		}
 	}
 
 	/**

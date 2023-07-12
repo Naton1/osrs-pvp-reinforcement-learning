@@ -2637,7 +2637,7 @@ public enum CombatSpells {
     BLOOD_BARRAGE(new CombatAncientSpell() {
         @Override
         public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
-			cast.heal((int) (damage * 0.20));
+			cast.heal((int) (damage * 0.25));
         }
 
         @Override
