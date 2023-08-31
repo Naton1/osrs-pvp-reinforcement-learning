@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.collision.RegionManager;
+import com.elvarg.game.content.cannon.DwarfCannon;
 import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.World;
 import com.elvarg.game.content.*;
@@ -1144,6 +1145,13 @@ public class Player extends Mobile {
 	public Player setBank(int index, Bank bank) {
 		this.banks[index] = bank;
 		return this;
+	}
+
+	private DwarfCannon dwarfCannon;
+	public DwarfCannon getDwarfCannon() {
+		if (dwarfCannon == null)
+			dwarfCannon = new DwarfCannon(this);
+		return dwarfCannon;
 	}
 
 	public boolean isNewPlayer() {
