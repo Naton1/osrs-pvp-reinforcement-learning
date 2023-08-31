@@ -12,9 +12,7 @@ public class TabInterfaceIdListener implements PacketExecutor {
 
     @Override
     public void execute(Player player, Packet packet) {
-        System.err.println("here reading packet..?");
         int tabId = packet.readByte();
-        System.err.println("setting players tab to Id="+tabId);
         /** Sets current tab ID mainly used for music **/
         player.setCurrentInterfaceTab(tabId);
 
