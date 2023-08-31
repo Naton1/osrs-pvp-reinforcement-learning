@@ -192,10 +192,6 @@ public class DwarfCannon {
     }
 
     public void pickup(GameObject object) {
-        if (object.getOwner() != null && !Objects.equals(object.getOwner(), player.getUsername())) {
-            player.getPacketSender().sendMessage("This isn't your cannon.");
-            return;
-        }
         int index = getIndex(object);
         if (index == -1)
             return;
