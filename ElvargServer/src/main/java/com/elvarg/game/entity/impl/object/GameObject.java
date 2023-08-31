@@ -32,6 +32,12 @@ public class GameObject extends Entity {
      */
     private int face;
 
+    private String owner;
+
+    public String getOwner() {
+        return owner;
+    }
+
     /**
      * GameObject constructor to call upon a new game object.
      *
@@ -40,6 +46,17 @@ public class GameObject extends Entity {
      * @param type     The new object's type.
      * @param face     The new object's facing position.
      */
+    public GameObject(int id, Location position, int type, int face, String owner, PrivateArea privateArea) {
+        super(position);
+        this.id = id;
+        this.type = type;
+        this.face = face;
+        this.owner = owner;
+        if (privateArea != null) {
+            privateArea.add(this);
+        }
+    }
+
     public GameObject(int id, Location position, int type, int face, PrivateArea privateArea) {
         super(position);
         this.id = id;
