@@ -42,6 +42,7 @@ public class BonusManager {
      */
     public static void open(Player player) {
         player.getPacketSender().sendInterface(INTERFACE_ID);
+        player.getPacketSender().sendTab(3);
         BonusManager.update(player);
     }
 
