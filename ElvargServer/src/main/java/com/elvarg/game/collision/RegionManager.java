@@ -608,10 +608,27 @@ public class RegionManager {
         return false;
     }
 
+    public static boolean isBlockedTileSize(Location position, int size) {
+        boolean isBlocked = false;
+        int x = position.getX();
+        int y = position.getY();
+        int z = position.getZ();
+        for (int i = 0; i < size; i++) {
+            if (blocked(x + i, y, z) || blocked(x - i, y, z) || blocked(x, y + i, z) || blocked(x, y, z)) {
+                isBlocked = true;
+                break;
+            }
+        }
+        return isBlocked;
+    }
+
     public static boolean blockedProjectile(Location position, PrivateArea privateArea) {
         return (getClipping(position.getX(), position.getY(), position.getZ(), privateArea) & 0x20000) == 0;
     }
 
+    public static boolean blocked(int x, int y, int z) {
+        return (getClipping(x, y, z, null) & 0x1280120) != 0;
+    }
     public static boolean blocked(Location pos, PrivateArea privateArea) {
         return (getClipping(pos.getX(), pos.getY(), pos.getZ(), privateArea) & 0x1280120) != 0;
     }
