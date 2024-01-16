@@ -1,0 +1,25 @@
+name: Server Pull Request Tests
+
+on:
+  pull_request:
+    branches: [master]
+    paths: ["ElvargServer/**"]
+
+jobs:
+  build:
+    name: Run server tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 18
+        cache: 'gradle'
+
+    - name: Build server
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: build
+        build-root-directory: ElvargServer

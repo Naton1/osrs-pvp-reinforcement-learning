@@ -1,0 +1,11 @@
+/target/
+/build/
+.gradle/
+.classpath
+.settings/org.eclipse.jdt.core.prefs
+.settings/org.eclipse.m2e.core.prefs
+.project
+/bin/
+*.class
+.idea/
+Cache/settings.dat
