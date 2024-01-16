@@ -210,4 +210,44 @@ public class EquipPacketListener implements PacketExecutor {
 				break;
 		}
 	}
+
+	public static void unequip(Player player, int slot, int id) {
+		Item item = player.getEquipment().getItems()[slot];
+		if (item == null || item.getId() != id)
+			return;
+
+		// Handle area unequipping behaviour
+		if (player.getArea() != null && !player.getArea().canUnequipItem(player, slot, item)) {
+			return;
+		}
+
+		boolean stackItem = item.getDefinition().isStackable() && player.getInventory().getAmount(item.getId()) > 0;
+		int inventorySlot = player.getInventory().getEmptySlot();
+		if (inventorySlot != -1) {
+
+			player.getEquipment().setItem(slot, new Item(-1, 0));
+
+			if (stackItem) {
+				player.getInventory().add(item.getId(), item.getAmount());
+			} else {
+				player.getInventory().setItem(inventorySlot, item);
+			}
+
+			BonusManager.update(player);
+			if (item.getDefinition().getEquipmentType().getSlot() == Equipment.WEAPON_SLOT) {
+				WeaponInterfaces.assign(player);
+				player.setSpecialActivated(false);
+				CombatSpecial.updateBar(player);
+				if (player.getCombat().getAutocastSpell() != null) {
+					Autocasting.setAutocast(player, null);
+					player.getPacketSender().sendMessage("Autocast spell cleared.");
+				}
+			}
+			player.getEquipment().refreshItems();
+			player.getInventory().refreshItems();
+			player.getUpdateFlag().flag(Flag.APPEARANCE);
+		} else {
+			player.getInventory().full();
+		}
+	}
 }

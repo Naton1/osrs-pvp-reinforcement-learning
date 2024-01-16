@@ -14,8 +14,8 @@ import com.elvarg.util.Misc;
 
 public class DragonClawCombatMethod extends MeleeCombatMethod {
 
-    private static final Animation ANIMATION = new Animation(7527, Priority.HIGH);
-    private static final Graphic GRAPHIC = new Graphic(1171, Priority.HIGH);
+	private static final Animation ANIMATION = new Animation(7527, Priority.HIGH);
+	private static final Graphic GRAPHIC = new Graphic(1171, Priority.HIGH);
 
     @Override
     public PendingHit[] hits(Mobile character, Mobile target) {

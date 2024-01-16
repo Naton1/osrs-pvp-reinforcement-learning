@@ -33,7 +33,7 @@ public class CombatInteraction {
     }
 
     // The PlayerBot this interaction belongs to
-    PlayerBot playerBot;
+    protected PlayerBot playerBot;
     private Mobile attackTarget;
 
     public void process() {

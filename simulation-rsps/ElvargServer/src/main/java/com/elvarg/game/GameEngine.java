@@ -20,12 +20,15 @@ public final class GameEngine implements Runnable {
      */
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("GameThread").build());
 
+    private static final int TICK_RATE = System.getenv().containsKey("TICK_RATE")
+                                         ? Integer.parseInt(System.getenv("TICK_RATE"))
+                                         : GameConstants.GAME_ENGINE_PROCESSING_CYCLE_RATE;
+
     /**
      * Initializes this {@link GameEngine}.
      */
     public void init() {
-        executorService.scheduleAtFixedRate(this, 0, GameConstants.GAME_ENGINE_PROCESSING_CYCLE_RATE,
-                TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(this, 0, TICK_RATE, TimeUnit.MILLISECONDS);
     }
 
     @Override

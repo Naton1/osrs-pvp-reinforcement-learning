@@ -1,0 +1,9 @@
+pvp_ml.egg-info/*
+env/*
+.idea/*
+**/__pycache__/**
+tensorboard/*
+experiments/*
+logs/*
+train_jobs.json
+.train_init.lock

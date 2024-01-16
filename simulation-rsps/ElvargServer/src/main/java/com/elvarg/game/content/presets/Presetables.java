@@ -16,10 +16,16 @@ import com.elvarg.game.content.combat.magic.Autocasting;
 import com.elvarg.game.content.skill.SkillManager;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
-import com.elvarg.game.entity.impl.playerbot.fightstyle.impl.F2PMeleeFighterPreset;
+import com.github.naton1.rl.env.nh.NhLmsMedLoadout;
+import com.github.naton1.rl.env.nh.NhLmsPureLoadout;
+import com.github.naton1.rl.env.nh.NhLmsZerkLoadout;
+import com.github.naton1.rl.env.dharok.DharokLoadout;
+import com.github.naton1.rl.env.nh.NhMaxLoadout;
+import com.github.naton1.rl.env.nh.NhMedLoadout;
+import com.github.naton1.rl.env.nh.NhPureLoadout;
+import com.github.naton1.rl.env.nh.NhZerkLoadout;
 import com.elvarg.game.model.Flag;
 import com.elvarg.game.model.Item;
-import com.elvarg.game.model.MagicSpellbook;
 import com.elvarg.game.model.Skill;
 import com.elvarg.game.model.areas.impl.WildernessArea;
 import com.elvarg.game.model.container.impl.Bank;
@@ -28,17 +34,12 @@ import com.elvarg.util.Misc;
 
 /**
  * A class for handling {@code Presetable} sets.
- * 
+ *
  * Holy, this became messy quickly. Sorry about that.
- * 
+ *
  * @author Professor Oak
  */
 public class Presetables {
-
-	/**
-	 * The max amount of premade/custom presets.
-	 */
-	public static final int MAX_PRESETS = 10;
 
 	/**
 	 * The presets interface id.
@@ -49,21 +50,25 @@ public class Presetables {
 	 * Pre-made sets by the server which everyone can use.
 	 */
 	public static final Presetable[] GLOBAL_PRESETS = new Presetable[] {
-			PredefinedPresets.OBBY_MAULER_57,
-			PredefinedPresets.G_MAULER_70,
-			PredefinedPresets.DDS_PURE_M_73,
-			PredefinedPresets.DDS_PURE_R_73,
-			PredefinedPresets.NH_PURE_83,
-			F2PMeleeFighterPreset.PRESETABLE,
-			PredefinedPresets.ATT_70_ZERKER_97,
-			PredefinedPresets.MAIN_RUNE_126,
-			PredefinedPresets.MAIN_HYBRID_126,
-			PredefinedPresets.MAIN_TRIBRID_126,
+			new NhMedLoadout().asPreset(),
+			new NhPureLoadout().asPreset(),
+			new NhMaxLoadout().asPreset(),
+			new NhZerkLoadout().asPreset(),
+			new NhLmsMedLoadout().asPreset(),
+			new NhLmsPureLoadout().asPreset(),
+			new NhLmsZerkLoadout().asPreset(),
+			new DharokLoadout().asPreset()
 	};
 
 	/**
+	 * The max amount of premade/custom presets.
+	 */
+	public static final int MAX_PRESETS = GLOBAL_PRESETS.length;
+
+
+	/**
 	 * Opens the presets interface for a player.
-	 * 
+	 *
 	 * @param player
 	 */
 	public static void open(Player player) {
@@ -72,7 +77,7 @@ public class Presetables {
 
 	/**
 	 * Opens the specified preset for a player.
-	 * 
+	 *
 	 * @param player
 	 * @param preset
 	 */
@@ -180,7 +185,7 @@ public class Presetables {
 
 	/**
 	 * Edits a preset.
-	 * 
+	 *
 	 * @param player
 	 *            The player.
 	 * @param index
@@ -213,23 +218,23 @@ public class Presetables {
 				case 1: // Change name
 					player.setEnteredSyntaxAction((input) -> {
 					    player.getPacketSender().sendInterfaceRemoval();
-				        
+
 				        input = Misc.formatText(input);
-				        
+
 				        if(!Misc.isValidName(input)) {
 				            player.getPacketSender().sendMessage("Invalid name for preset. Please enter characters only.");
 				            player.setCurrentPreset(null);
 				            Presetables.open(player);
 				            return;
 				        }
-				        
+
 				        if(player.getPresets()[index] != null) {
-				            
+
 				            player.getPresets()[index].setName(input);
 				            player.getPacketSender().sendMessage("The preset's name has been updated.");
-				            
+
 				            Presetables.open(player);
-				        } 
+				        }
 					});
 					player.getPacketSender().sendEnterInputPrompt("Enter a new name for your preset below.");
 
@@ -291,7 +296,7 @@ public class Presetables {
 
 	/**
 	 * Loads a preset.
-	 * 
+	 *
 	 * @param player
 	 *            The player.
 	 * @param preset
@@ -433,7 +438,7 @@ public class Presetables {
 
 	/**
 	 * Handles a clicked button on the interface.
-	 * 
+	 *
 	 * @param player
 	 * @param button
 	 * @return
@@ -536,7 +541,7 @@ public class Presetables {
 						            for(int i = 0; i < stats.length; i++) {
 						                stats[i] = player.getSkillManager().getMaxLevel(Skill.values()[i]);
 						            }
-						            
+
 						            Item[] inventory = player.getInventory().copyValidItemsArray();
 						            Item[] equipment = player.getEquipment().copyValidItemsArray();
 						            for(Item t : Misc.concat(inventory, equipment)) {

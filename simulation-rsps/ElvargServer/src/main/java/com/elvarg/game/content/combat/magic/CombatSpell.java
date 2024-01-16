@@ -28,7 +28,7 @@ public abstract class CombatSpell extends Spell {
 				castAnimation = npc.getDefinition().getAttackAnim();
 			}
 		}*/
-        
+
         if (castAnimation().isPresent() && castAnimation == -1) {
             castAnimation().ifPresent(cast::performAnimation);
         } else {
@@ -135,5 +135,15 @@ public abstract class CombatSpell extends Spell {
      */
     public Sound impactSound() {
         return null;
+    }
+
+    /**
+     * Gets the accuracy multiplier for this spell for the caster
+     *
+     * @param cast the entity casting this spell
+     * @return the accuracy multiplier
+     */
+    public double getAccuracyMultiplier(Mobile cast) {
+        return 1.0;
     }
 }

@@ -12,6 +12,8 @@ import com.elvarg.util.Misc;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static com.elvarg.util.ItemIdentifiers.RUNE_POUCH;
+
 /**
  * A parent class represented by any generic spell able to be cast by an
  * {@link Entity}.
@@ -65,8 +67,8 @@ public abstract class Spell {
             Item[] items = PlayerMagicStaff.suppressRunes(player,
                     itemsRequired(player).get());
 
-            // Now check if we have all of the runes.
-            if (!player.getInventory().containsAll(items)) {
+            // Now check if we have all of the runes. (let's say rune pouch allows all for now)
+            if (!player.getInventory().containsAll(items) && !player.getInventory().contains(RUNE_POUCH)) {
 
                 // We don't, so we can't cast.
                 player.getPacketSender().sendMessage(

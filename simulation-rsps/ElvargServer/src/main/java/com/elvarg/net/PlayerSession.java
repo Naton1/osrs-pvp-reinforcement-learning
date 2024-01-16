@@ -105,7 +105,7 @@ public class PlayerSession {
         if (PacketConstants.PACKETS[msg.getOpcode()] == null) {
             return;
         }
-        
+
         // Make sure packets aren't being flooded.
         int total_size = (packetsQueue.size());
         if (total_size >= NetworkConstants.PACKET_PROCESS_LIMIT) {
@@ -118,7 +118,7 @@ public class PlayerSession {
             packetsQueue.addFirst(msg);
             return;
         }
-        
+
         packetsQueue.add(msg);
     }
 

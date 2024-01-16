@@ -2,6 +2,9 @@ package com.elvarg;
 
 import com.elvarg.game.GameBuilder;
 import com.elvarg.game.GameConstants;
+import com.elvarg.game.event.EventDispatcher;
+import com.elvarg.game.event.events.ServerStartedEvent;
+import com.elvarg.game.plugin.PluginLoader;
 import com.elvarg.net.NetworkBuilder;
 import com.elvarg.net.NetworkConstants;
 import com.elvarg.util.ShutdownHook;
@@ -47,8 +50,12 @@ public class Server {
      * The main method that will put the server online.
      */
     public static void main(String[] args) {
+        System.setProperty("org.slf4j.simpleLogger.showDateTime", "true");
+        System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "[yyyy-MM-dd'T'HH:mm:ss.SSSZ]");
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "info");
         try {
             Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+            new PluginLoader().load();
 
             if (args.length == 1) {
                 PRODUCTION = Integer.parseInt(args[0]) == 1;
@@ -57,8 +64,8 @@ public class Server {
             logger.info("Initializing " + GameConstants.NAME + " in " + (PRODUCTION ? "production" : "non-production") + " mode..");
             new GameBuilder().initialize();
             new NetworkBuilder().initialize(NetworkConstants.GAME_PORT);
+            EventDispatcher.getGlobal().dispatch(new ServerStartedEvent());
             logger.info(GameConstants.NAME + " is now online!");
-
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred while binding the Bootstrap!", e);
 

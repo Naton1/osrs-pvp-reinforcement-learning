@@ -13,6 +13,7 @@ import com.elvarg.game.model.SkullType;
 import com.elvarg.game.model.container.impl.Bank;
 import com.elvarg.game.model.rights.DonatorRights;
 import com.elvarg.game.model.rights.PlayerRights;
+import com.elvarg.util.timers.TimerKey;
 
 import java.util.HashMap;
 import java.util.List;
@@ -535,7 +536,7 @@ public class PlayerSave {
         player.setRigourUnlocked(this.rigourUnlocked);
         player.setAuguryUnlocked(this.auguryUnlocked);
         player.setHasVengeance(this.hasVengeance);
-        player.getVengeanceTimer().start(this.lastVengeanceTimer);
+        player.getTimers().register(TimerKey.VENGEANCE_COOLDOWN, this.lastVengeanceTimer);
         player.setRunning(this.running);
         player.setRunEnergy(this.runEnergy);
         player.setSpecialPercentage(this.specPercentage);
@@ -621,7 +622,7 @@ public class PlayerSave {
         playerSave.rigourUnlocked = player.isRigourUnlocked();
         playerSave.auguryUnlocked = player.isAuguryUnlocked();
         playerSave.hasVengeance = player.hasVengeance();
-        playerSave.lastVengeanceTimer = player.getVengeanceTimer().secondsRemaining();
+        playerSave.lastVengeanceTimer = player.getTimers().getTicks(TimerKey.VENGEANCE_COOLDOWN);
         playerSave.running = player.isRunning();
         playerSave.runEnergy = player.getRunEnergy();
         playerSave.specPercentage = player.getSpecialPercentage();

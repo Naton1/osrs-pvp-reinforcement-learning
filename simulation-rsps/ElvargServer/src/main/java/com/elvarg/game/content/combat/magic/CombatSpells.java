@@ -17,7 +17,9 @@ import com.elvarg.game.model.MagicSpellbook;
 import com.elvarg.game.model.Projectile;
 import com.elvarg.game.model.Projectile.ProjectileBuilder;
 import com.elvarg.game.model.Skill;
+import com.elvarg.game.model.container.impl.Equipment;
 import com.elvarg.game.task.impl.CombatPoisonEffect.PoisonType;
+import com.elvarg.util.ItemIdentifiers;
 
 public enum CombatSpells {
     WIND_STRIKE(new CombatNormalSpell() {
@@ -931,7 +933,7 @@ public enum CombatSpells {
         public int maximumHit() {
             return 3;
         }
-        
+
         @Override
         public Optional<Graphic> startGraphic() {
             return Optional.of(new Graphic(177, GraphicHeight.HIGH));
@@ -1641,7 +1643,7 @@ public enum CombatSpells {
         public int maximumHit() {
             return 5;
         }
-        
+
         @Override
         public Optional<Graphic> startGraphic() {
             return Optional.of(new Graphic(177, GraphicHeight.HIGH));
@@ -1766,11 +1768,11 @@ public enum CombatSpells {
 				}
 
 				final int seconds = player.getPrayerActive()[PrayerHandler.PROTECT_FROM_MAGIC] ? 300 : 600;
-				
+
 				player.getCombat().getTeleBlockTimer().start(seconds);
 				player.getPacketSender().sendEffectTimer(seconds, EffectTimer.TELE_BLOCK)
 				.sendMessage("You have just been teleblocked!");
-				
+
 			} else if (castOn.isNpc()) {
 				if (cast.isPlayer()) {
 					((Player) cast).getPacketSender().sendMessage(
@@ -1810,7 +1812,7 @@ public enum CombatSpells {
         }
     }),
     SMOKE_RUSH(new CombatAncientSpell() {
-    	
+
         @Override
         public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
             CombatFactory.poisonEntity(castOn, PoisonType.MILD);
@@ -1935,7 +1937,12 @@ public enum CombatSpells {
     BLOOD_RUSH(new CombatAncientSpell() {
         @Override
         public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
-            cast.heal((int) (damage * 0.10));
+            double healMultiplier = 0.10;
+            if (cast.isPlayer() && cast.getAsPlayer().getEquipment().hasAt(Equipment.WEAPON_SLOT,
+                                                                           ItemIdentifiers.ZURIELS_STAFF)) {
+                healMultiplier *= 1.5;
+            }
+            cast.heal((int) (damage * healMultiplier));
         }
 
         @Override
@@ -2042,6 +2049,15 @@ public enum CombatSpells {
         @Override
         public int spellId() {
             return 12861;
+        }
+
+        @Override
+        public double getAccuracyMultiplier(Mobile cast) {
+            if (cast.isPlayer() && cast.getAsPlayer().getEquipment().hasAt(Equipment.WEAPON_SLOT,
+                                                                           ItemIdentifiers.ZURIELS_STAFF)) {
+                return 1.1;
+            }
+            return 1.0;
         }
     }),
     SMOKE_BURST(new CombatAncientSpell() {
@@ -2169,7 +2185,12 @@ public enum CombatSpells {
     BLOOD_BURST(new CombatAncientSpell() {
         @Override
         public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
-            cast.heal((int) (damage * 0.15));
+            double healMultiplier = 0.15;
+            if (cast.isPlayer() && cast.getAsPlayer().getEquipment().hasAt(Equipment.WEAPON_SLOT,
+                                                                           ItemIdentifiers.ZURIELS_STAFF)) {
+                healMultiplier *= 1.5;
+            }
+            cast.heal((int) (damage * healMultiplier));
         }
 
         @Override
@@ -2276,6 +2297,15 @@ public enum CombatSpells {
         @Override
         public int spellId() {
             return 12881;
+        }
+
+        @Override
+        public double getAccuracyMultiplier(Mobile cast) {
+            if (cast.isPlayer() && cast.getAsPlayer().getEquipment().hasAt(Equipment.WEAPON_SLOT,
+                                                                           ItemIdentifiers.ZURIELS_STAFF)) {
+                return 1.1;
+            }
+            return 1.0;
         }
     }),
     SMOKE_BLITZ(new CombatAncientSpell() {
@@ -2403,7 +2433,12 @@ public enum CombatSpells {
     BLOOD_BLITZ(new CombatAncientSpell() {
         @Override
         public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
-			cast.heal((int) (damage * 0.20));
+            double healMultiplier = 0.20;
+            if (cast.isPlayer() && cast.getAsPlayer().getEquipment().hasAt(Equipment.WEAPON_SLOT,
+                                                                           ItemIdentifiers.ZURIELS_STAFF)) {
+                healMultiplier *= 1.5;
+            }
+            cast.heal((int) (damage * healMultiplier));
         }
 
         @Override
@@ -2510,6 +2545,15 @@ public enum CombatSpells {
         @Override
         public int spellId() {
             return 12871;
+        }
+
+        @Override
+        public double getAccuracyMultiplier(Mobile cast) {
+            if (cast.isPlayer() && cast.getAsPlayer().getEquipment().hasAt(Equipment.WEAPON_SLOT,
+                                                                           ItemIdentifiers.ZURIELS_STAFF)) {
+                return 1.1;
+            }
+            return 1.0;
         }
     }),
     SMOKE_BARRAGE(new CombatAncientSpell() {
@@ -2637,7 +2681,12 @@ public enum CombatSpells {
     BLOOD_BARRAGE(new CombatAncientSpell() {
         @Override
         public void spellEffectOnHitCalc(Mobile cast, Mobile castOn, int damage) {
-			cast.heal((int) (damage * 0.25));
+            double healMultiplier = 0.25;
+            if (cast.isPlayer() && cast.getAsPlayer().getEquipment().hasAt(Equipment.WEAPON_SLOT,
+                                                                           ItemIdentifiers.ZURIELS_STAFF)) {
+                healMultiplier *= 1.5;
+            }
+			cast.heal((int) (damage * healMultiplier));
         }
 
         @Override
@@ -2749,6 +2798,15 @@ public enum CombatSpells {
         @Override
         public Sound impactSound() {
             return Sound.ICA_BARRAGE_IMPACT;
+        }
+
+        @Override
+        public double getAccuracyMultiplier(Mobile cast) {
+            if (cast.isPlayer() && cast.getAsPlayer().getEquipment().hasAt(Equipment.WEAPON_SLOT,
+                                                                           ItemIdentifiers.ZURIELS_STAFF)) {
+                return 1.1;
+            }
+            return 1.0;
         }
     }),
     TRIDENT_OF_THE_SEAS(new CombatNormalSpell() {
@@ -2888,7 +2946,7 @@ public enum CombatSpells {
     public static Optional<CombatSpells> getCombatSpells(int id) {
         return Arrays.stream(CombatSpells.values()).filter(s -> s != null && s.getSpell().spellId() == id).findFirst();
     }
-    
+
 	public static CombatSpell getCombatSpell(int spellId) {
 		Optional<CombatSpells> spell = getCombatSpells(spellId);
 		if(spell.isPresent()) {
@@ -2896,7 +2954,7 @@ public enum CombatSpells {
 		}
 		return null;
 	}
-	
+
 	//end radius is 10 for sound
 	public int getHitSoundDelay() {
 		switch (this) {

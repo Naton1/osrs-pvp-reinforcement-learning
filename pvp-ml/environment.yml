@@ -1,0 +1,32 @@
+name: pvp
+channels:
+  - conda-forge
+  - pytorch
+  - nvidia # [GPU]
+dependencies: # Pin all versions to make environment reproducible
+  - python=3.10
+  - openjdk=17.0.10 # For simulation
+  - numpy=1.26.2
+  - gymnasium=0.28.1
+  - pytorch=2.1.2
+  # - cpuonly # [CPU]
+  - pytorch-cuda=12.1 # [GPU]
+  - tensorboard=2.15.1
+  - pip=23.3.2
+  - aiohttp=3.9.1
+  - pyyaml=6.0.1
+  - filelock=3.13.1
+  - psutil=5.9.7
+  - dacite=1.8.0
+  - boto3=1.34.7 # For ray cluster
+  - pytest=7.4.3
+  - pytest-asyncio=0.23.2
+  - pre-commit=3.6.0
+  - mypy=1.6.0
+  - types-psutil=5.9.5.6
+  - types-PyYAML=6.0.12.12
+  - types-setuptools=69.0.0.0
+  - grpcio=1.54.2 # For ray, otherwise ray crashes sometimes if conda chooses an incompatible version
+  - pip:
+      - ray[default]==2.7.1  # Include dashboard, and pin version for dashboard fix
+      - -e .

@@ -58,7 +58,6 @@ public class PendingHit {
      */
     public static PendingHit create(Mobile attacker, Mobile target, CombatMethod method, int damage, boolean accurate) {
     	PendingHit hit = new PendingHit(method, attacker, target);
-
     	hit.hits = new HitDamage[] {new HitDamage(damage, damage == 0 ? HitMask.BLUE : HitMask.RED)};
         hit.delay = 0; //The delay before the hit (0 in most cases with current combat system design).
         hit.handleAfterHitEffects = true;
@@ -102,6 +101,9 @@ public class PendingHit {
     public void setTotalDamage(int damage) {
         for (HitDamage hit : hits) {
             hit.setDamage(damage);
+        }
+        if (damage > 0) {
+            accurate = true;
         }
         updateTotalDamage();
     }

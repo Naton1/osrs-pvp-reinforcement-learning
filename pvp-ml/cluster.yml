@@ -1,0 +1,53 @@
+cluster_name: rollout
+max_workers: 20
+upscaling_speed: 1.0
+idle_timeout_minutes: 10
+
+provider:
+  type: aws
+  region: us-west-2
+  cache_stopped_nodes: false
+
+auth:
+  ssh_user: ec2-user
+
+available_node_types:
+  head_node:
+    resources: { "CPU": 8 }
+    node_config:
+      InstanceType: c4.2xlarge
+      ImageId: ami-0507f77897697c4ba
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 200
+
+  worker_node:
+    resources: { "CPU": 4 }
+    node_config:
+      InstanceType: c4.xlarge
+      ImageId: ami-0507f77897697c4ba
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 100
+      InstanceMarketOptions:
+        MarketType: spot
+
+head_node_type: head_node
+
+setup_commands:
+  - echo 'Installing Git'
+  - which git || sudo yum install -y git
+
+  - echo 'Cloning repository'
+  - sh -c '[ -d ~/osrs-pvp-reinforcement-learning ] && cd ~/osrs-pvp-reinforcement-learning && git pull || git clone https://github.com/Naton1/osrs-pvp-reinforcement-learning.git ~/osrs-pvp-reinforcement-learning'
+
+  - echo 'Installing Mamba'
+  - sh -c '[ -d ~/mambaforge ] || (wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh -O ~/mambaforge.sh && bash ~/mambaforge.sh -b -p $HOME/mambaforge)'
+
+  - echo 'Creating Mamba environment'
+  - bash -c 'source ~/mambaforge/bin/activate && cd ~/osrs-pvp-reinforcement-learning/pvp-ml && if [[ $(mamba env list | grep -c "$(pwd)/env") -eq 0 ]]; then mamba env create -p ./env -f environment.yml; fi'
+
+  - echo 'Adding Conda environment to bashrc for Ray to use'
+  - echo 'source ~/mambaforge/bin/activate && conda activate ~/osrs-pvp-reinforcement-learning/pvp-ml/env' >> ~/.bashrc

@@ -73,11 +73,6 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 
         }
 
-        if (com.elvarg.game.content.cannon.DwarfCannon.isObject(object)) {
-            player.getDwarfCannon().handleInteraction(object, 1);
-            return;
-        }
-
         switch (object.getId()) {
             case WEB:
                 if (!WebHandler.wieldingSharpItem(player)) {
@@ -191,11 +186,6 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
             return;
         }
 
-        if (com.elvarg.game.content.cannon.DwarfCannon.isObject(object)) {
-            player.getDwarfCannon().handleInteraction(object, 2);
-            return;
-        }
-
         switch (object.getId()) {
         case PORTAL_51:
             //DialogueManager.sendStatement(player, "Construction will be avaliable in the future.");
@@ -230,10 +220,6 @@ public class ObjectActionPacketListener extends ObjectIdentifiers implements Pac
 	 *            The packet containing the object's information.
 	 */
 	private static void thirdClick(Player player, GameObject object) {
-        if (com.elvarg.game.content.cannon.DwarfCannon.isObject(object)) {
-            player.getDwarfCannon().handleInteraction(object, 3);
-            return;
-        }
 		switch (object.getId()) {
         case PORTAL_51:
             //DialogueManager.sendStatement(player, "Construction will be avaliable in the future.");

@@ -1,0 +1,5 @@
+---
+HumanLikeAdversarial:
+  import:
+    - HumanLike
+    - AdversaryPastSelfPlay

@@ -125,39 +125,9 @@ public class DamageFormulas {
             maxHit = c.getAsNpc().getDefinition().getMaxHit();
         }
 
-        float equipmentBonus = 1f;
-
-        if (c.isPlayer()) {
-            // There's some missing gear here, check the wiki
-            switch (c.getAsPlayer().getEquipment().getItems()[Equipment.WEAPON_SLOT].getId()) {
-                case ItemIdentifiers.AHRIMS_STAFF:
-                    equipmentBonus += 0.05f;
-                    break;
-                case ItemIdentifiers.KODAI_WAND:
-                case ItemIdentifiers.STAFF_OF_THE_DEAD:
-                case ItemIdentifiers.STAFF_OF_LIGHT:
-                case ItemIdentifiers.TOXIC_STAFF_OF_THE_DEAD:
-                    equipmentBonus += 0.15f;
-                    break;
-            }
-            switch (c.getAsPlayer().getEquipment().getItems()[Equipment.AMULET_SLOT].getId()) {
-                case ItemIdentifiers.OCCULT_NECKLACE:
-                    equipmentBonus += 0.1f;
-                    break;
-            }
-            switch (c.getAsPlayer().getEquipment().getItems()[Equipment.CAPE_SLOT].getId()) {
-                case ItemIdentifiers.IMBUED_SARADOMIN_CAPE:
-                case ItemIdentifiers.IMBUED_GUTHIX_CAPE:
-                case ItemIdentifiers.IMBUED_ZAMORAK_CAPE:
-                    equipmentBonus += 0.02f;
-                    break;
-            }
-            switch (c.getAsPlayer().getEquipment().getItems()[Equipment.HANDS_SLOT].getId()) {
-                case ItemIdentifiers.TORMENTED_BRACELET:
-                    equipmentBonus += 0.05f;
-                    break;
-            }
-        }
+        float equipmentBonus = c.isPlayer()
+                               ? 1f + (c.getAsPlayer().getBonusManager().getOtherBonus()[BonusManager.MAGIC_STRENGTH] / 100f)
+                               : 1f;
 
         maxHit *= equipmentBonus;
 

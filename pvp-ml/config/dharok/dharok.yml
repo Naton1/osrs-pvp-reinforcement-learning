@@ -1,0 +1,50 @@
+---
+DharokCore:
+  env-name: DharokEnv
+  num-envs: 100
+  num-rollout-steps: 1024
+  stack-frames: 1
+  batch-size: 1024
+  gamma: 0.995
+  epochs: 1
+  damage-dealt-reward-scale: 0.05
+  damage-received-reward-scale: -0.05
+  checkpoint-frequency: 1
+  grad-accum: 1
+  continue-training: true
+  normalize-advantages: true
+  win-reward: 1
+  lose-reward: -1
+  tie-reward: -0.2
+  death-match: false
+  entropy-coef:
+    type: linear
+    initial-value: 0.005
+    final-value: 0.0005
+    change-over-time-steps: 200
+  actor:
+    layers:
+      - size: 256
+        activation: relu
+        repeat: 2
+  critic:
+    layers:
+      - size: 256
+        activation: relu
+        repeat: 2
+  action-heads:
+    layers:
+      - size: 64
+        activation: relu
+        repeat: 2
+  normalize-rewards: true
+  normalize-observations: true
+  include-target-obs-in-critic: true
+DharokPastSelfPlay:
+  import:
+    - DharokCore
+  self-play-percent: 0.8
+  past-self-play-percent: 0.2
+  remote-processor-type: thread
+  remote-processor-pool-size: 3
+  num-eval-agent: 10

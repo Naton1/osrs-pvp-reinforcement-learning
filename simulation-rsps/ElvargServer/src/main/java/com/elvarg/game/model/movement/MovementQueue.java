@@ -254,6 +254,14 @@ public final class MovementQueue {
         }
     }
 
+    public Location getDestination() {
+        final Point last = points.peekLast();
+        if (last == null) {
+            return null;
+        }
+        return last.position;
+    }
+
     /**
      * Determines the Player's Mobility status
      *

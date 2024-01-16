@@ -1,0 +1,21 @@
+name: test
+on: push
+jobs:
+  test:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: mamba-org/setup-micromamba@v1
+      with:
+        environment-file: pvp-ml/environment.yml
+    - run: cd pvp-ml && pre-commit run --all-files --show-diff-on-failure
+      shell: bash -l {0}
+    - run: cd pvp-ml && mypy pvp_ml test --config=setup.cfg
+      shell: bash -l {0}
+    - run: cd simulation-rsps/ElvargServer && chmod +x ./gradlew && ./gradlew check
+      shell: bash -l {0}
+    - run: cd pvp-ml && pytest ./test/unit/
+      shell: bash -l {0}
+    - run: cd pvp-ml && pytest ./test/integ/
+      shell: bash -l {0}

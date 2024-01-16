@@ -37,6 +37,8 @@ public class Combat {
     private CombatSpell castSpell;
     private CombatSpell autoCastSpell;
     private CombatSpell previousCast;
+    private int queuedGraniteMaulSpecs = 0;
+
 
     public Combat(Mobile character) {
         this.character = character;
@@ -61,7 +63,9 @@ public class Combat {
         character.setMobileInteraction(target);
 
         // Perform the first attack now (in same tick)
-        performNewAttack(false);
+        // don't actually do this, this isn't how rs works...
+        // performNewAttack(false);
+        character.setCombatFollowing(target); // do this instead, so subsequent process movement tick starts moving
     }
 
     /**
@@ -71,14 +75,15 @@ public class Combat {
         // Process the hit queue
         hitQueue.process(character);
 
+        // Handle attacking
+        performNewAttack(false);
+
         // Reset attacker if we haven't been attacked in 6 seconds.
         if (lastAttack.elapsed(6000)) {
             setUnderAttack(null);
-            return;
         }
 
-        // Handle attacking
-        performNewAttack(false);
+        queuedGraniteMaulSpecs = 0;
     }
 
     /**
@@ -422,4 +427,13 @@ public class Combat {
     public Stopwatch getLastAttack() {
         return lastAttack;
     }
+
+    public int getQueuedGraniteMaulSpecs() {
+        return queuedGraniteMaulSpecs;
+    }
+
+    public void queueGraniteMaulSpec() {
+        queuedGraniteMaulSpecs++;
+    }
+
 }

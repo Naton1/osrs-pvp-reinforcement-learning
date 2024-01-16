@@ -1,0 +1,27 @@
+---
+Test:
+  import:
+    - Core
+  env-name: NhEnv
+  num-envs: 10
+  num-rollout-steps: 128
+  stack-frames:
+    - 0
+    - 2
+  batch-size: 64
+  remote-processor-type: thread
+  remote-processor-pool-size: 3
+  remote-processor-device: cpu
+  actor:
+    layers:
+      - size: 64
+        activation: relu
+  action-heads:
+    layers:
+      - size: 64
+        activation: relu
+  critic:
+    layers:
+      - size: 64
+        activation: relu
+        repeat: 2

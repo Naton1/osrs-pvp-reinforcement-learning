@@ -52,7 +52,7 @@ public class SkillManager {
 			3597792, 3972294, 4385776, 4842295, 5346332, 5902831, 6517253, 7195629, 7944614, 8771558, 9684577, 10692629,
 			11805606, 13034431 };
 	private static final Graphic LEVEL_UP_GRAPHIC = new Graphic(199);
-	
+
 	/**
 	 * The player associated with this Skills instance.
 	 */
@@ -140,7 +140,7 @@ public class SkillManager {
 
 	/**
 	 * Adds experience to {@code skill} by the {@code experience} amount.
-	 * 
+	 *
 	 * @param skill
 	 * @param experience
 	 * @return

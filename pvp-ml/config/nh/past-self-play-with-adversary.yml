@@ -1,0 +1,18 @@
+---
+AdversaryPastSelfPlay:
+  import:
+    - PastSelfPlay
+  train-main-exploiter: true
+  num-main-exploiters: 2
+  main-exploiter-preset: Adversary
+  main-exploiter-delay: 10
+  train-league-exploiter: true
+  num-league-exploiters: 1
+  league-exploiter-preset: Adversary
+  league-exploiter-delay: 10
+Adversary:
+  import:
+    - Core
+  num-eval-agent: 0
+  num-reference-rating-envs: 0
+  add-win-rate-extension: false

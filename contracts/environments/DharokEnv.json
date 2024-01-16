@@ -1,0 +1,285 @@
+{
+  "actions": [
+    {
+      "id": "attack",
+      "description": "Attack",
+      "actions": [
+        {
+          "id": "no_op_attack",
+          "description": "No-op attack"
+        },
+        {
+          "id": "whip_attack",
+          "description": "Whip attack"
+        },
+        {
+          "id": "axe_attack",
+          "description": "Axe attack"
+        },
+        {
+          "id": "maul_spec_attack",
+          "description": "Maul special attack"
+        }
+      ]
+    },
+    {
+      "id": "potion",
+      "description": "Potion",
+      "actions": [
+        {
+          "id": "no_potion",
+          "description": "No potion"
+        },
+        {
+          "id": "use_brew",
+          "description": "Use brew"
+        },
+        {
+          "id": "use_restore_potion",
+          "description": "Use restore potion"
+        },
+        {
+          "id": "use_combat_potion",
+          "description": "Use combat potion"
+        }
+      ]
+    },
+    {
+      "id": "food",
+      "description": "Food",
+      "actions": [
+        {
+          "id": "dont_eat_food",
+          "description": "Don't eat food"
+        },
+        {
+          "id": "eat_primary_food",
+          "description": "Eat primary food"
+        }
+      ]
+    },
+    {
+      "id": "karambwan",
+      "description": "Karambwan",
+      "actions": [
+        {
+          "id": "dont_karambwan",
+          "description": "Don't karambwan"
+        },
+        {
+          "id": "eat_karambwan",
+          "description": "Eat karambwan"
+        }
+      ]
+    },
+    {
+      "id": "vengeance",
+      "description": "Vengeance",
+      "actions": [
+        {
+          "id": "no_veng",
+          "description": "No vengeance"
+        },
+        {
+          "id": "use_veng",
+          "description": "Use vengeance"
+        }
+      ]
+    },
+    {
+      "id": "gear",
+      "description": "Gear",
+      "actions": [
+        {
+          "id": "no_gear",
+          "description": "No gear swap"
+        },
+        {
+          "id": "full_armor",
+          "description": "Equip full armor"
+        },
+        {
+          "id": "take_armor_off",
+          "description": "Take armor off"
+        }
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "id": "player_using_whip",
+      "description": "Player using whip"
+    },
+    {
+      "id": "player_using_maul",
+      "description": "Player using maul"
+    },
+    {
+      "id": "player_using_axe",
+      "description": "Player using axe"
+    },
+    {
+      "id": "special_energy_percent",
+      "description": "Special energy percent"
+    },
+    {
+      "id": "player_health_percent",
+      "description": "Player's health percent"
+    },
+    {
+      "id": "target_health_percent",
+      "description": "Target's health percent"
+    },
+    {
+      "id": "target_using_whip",
+      "description": "Target using whip"
+    },
+    {
+      "id": "target_using_maul",
+      "description": "Target using maul"
+    },
+    {
+      "id": "target_using_axe",
+      "description": "Target using axe"
+    },
+    {
+      "id": "target_special_percent",
+      "description": "Target special percent"
+    },
+    {
+      "id": "combat_potion_doses",
+      "description": "Combat potion doses",
+      "partial": true
+    },
+    {
+      "id": "super_restore_doses",
+      "description": "Super restore doses",
+      "partial": true
+    },
+    {
+      "id": "brew_doses",
+      "description": "Brew doses",
+      "partial": true
+    },
+    {
+      "id": "food_count",
+      "description": "Food count",
+      "partial": true
+    },
+    {
+      "id": "karambwan_count",
+      "description": "Karambwan count",
+      "partial": true
+    },
+    {
+      "id": "prayer_points",
+      "description": "Prayer points",
+      "partial": true
+    },
+    {
+      "id": "strength_level",
+      "description": "Strength level",
+      "partial": true
+    },
+    {
+      "id": "attack_level",
+      "description": "Attack level",
+      "partial": true
+    },
+    {
+      "id": "defense_level",
+      "description": "Defense level",
+      "partial": true
+    },
+    {
+      "id": "attack_cycle_ticks",
+      "description": "Attack cycle ticks"
+    },
+    {
+      "id": "food_cycle_ticks",
+      "description": "Food cycle ticks",
+      "partial": true
+    },
+    {
+      "id": "potion_cycle_ticks",
+      "description": "Potion cycle ticks"
+    },
+    {
+      "id": "karambwan_cycle_ticks",
+      "description": "Karambwan cycle ticks",
+      "partial": true
+    },
+    {
+      "id": "food_attack_delay_scale",
+      "description": "Food attack delay scale",
+      "partial": true
+    },
+    {
+      "id": "target_attack_cycle_ticks",
+      "description": "Target attack cycle ticks"
+    },
+    {
+      "id": "target_potion_cycle_ticks",
+      "description": "Target potion cycle ticks"
+    },
+    {
+      "id": "pending_damage_on_target",
+      "description": "Pending damage on target",
+      "partial": true
+    },
+    {
+      "id": "is_damage_pending_on_player",
+      "description": "Is damage pending on player",
+      "partial": true
+    },
+    {
+      "id": "player_just_attacked",
+      "description": "Player just attacked"
+    },
+    {
+      "id": "target_just_attacked",
+      "description": "Target just attacked"
+    },
+    {
+      "id": "tick_new_attack_damage",
+      "description": "Tick new attack damage",
+      "partial": true
+    },
+    {
+      "id": "damage_on_player_tick",
+      "description": "Damage on player tick"
+    },
+    {
+      "id": "damage_on_target_tick",
+      "description": "Damage on target tick"
+    },
+    {
+      "id": "player_has_pid",
+      "description": "Player has PID"
+    },
+    {
+      "id": "player_veng_available",
+      "description": "Player has veng available"
+    },
+    {
+      "id": "player_has_veng_cast",
+      "description": "Player has veng cast"
+    },
+    {
+      "id": "target_veng_available",
+      "description": "Target has veng available"
+    },
+    {
+      "id": "target_has_veng_cast",
+      "description": "Target has veng cast"
+    },
+    {
+      "id": "player_armor_unequipped",
+      "description": "Player has armor unequipped"
+    },
+    {
+      "id": "target_armor_unequipped",
+      "description": "Target has armor unequipped"
+    }
+  ]
+}

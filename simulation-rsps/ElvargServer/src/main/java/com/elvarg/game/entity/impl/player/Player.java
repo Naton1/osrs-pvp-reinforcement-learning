@@ -9,10 +9,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.elvarg.game.GameConstants;
 import com.elvarg.game.collision.RegionManager;
-import com.elvarg.game.content.cannon.DwarfCannon;
+import com.elvarg.game.content.combat.hit.HitDamage;
 import com.elvarg.game.content.sound.Sound;
 import com.elvarg.game.World;
 import com.elvarg.game.content.*;
@@ -43,6 +44,11 @@ import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.npc.NPC;
 import com.elvarg.game.entity.impl.npc.NpcAggression;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
+import com.elvarg.game.event.EventDispatcher;
+import com.elvarg.game.event.events.HitCalculatedEvent;
+import com.elvarg.game.event.events.PlayerLoggedOutEvent;
+import com.elvarg.game.event.events.PlayerPacketsFlushedEvent;
+import com.elvarg.game.event.events.PlayerPacketsProcessedEvent;
 import com.elvarg.game.model.Animation;
 import com.elvarg.game.model.Appearance;
 import com.elvarg.game.model.ChatMessage;
@@ -89,10 +95,14 @@ import com.elvarg.util.Stopwatch;
 import com.elvarg.util.timers.TimerKey;
 
 import io.netty.buffer.ByteBuf;
+import lombok.Getter;
+import lombok.Setter;
 
 import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
 
 public class Player extends Mobile {
+	private static final boolean SWAP_PID = Boolean.parseBoolean(System.getenv().getOrDefault("RANDOM_SWAP_PID", "true"));
+
 	public final SecondsTimer increaseStats = new SecondsTimer();
 	public final SecondsTimer decreaseStats = new SecondsTimer();
 	private final List<Player> localPlayers = new LinkedList<Player>();
@@ -173,23 +183,22 @@ public class Player extends Mobile {
 	// Entering data
 	private EnteredAmountAction enteredAmountAction;
 	private EnteredSyntaxAction enteredSyntaxAction;
-	
+
 	// Time the account was created
 	private Timestamp creationDate;
 	// RC
 	private PouchContainer[] pouches = new PouchContainer[] { new PouchContainer(Pouch.SMALL_POUCH),
-			new PouchContainer(Pouch.MEDIUM_POUCH), new PouchContainer(Pouch.LARGE_POUCH),
-			new PouchContainer(Pouch.GIANT_POUCH), };
+	                                                          new PouchContainer(Pouch.MEDIUM_POUCH), new PouchContainer(Pouch.LARGE_POUCH),
+	                                                          new PouchContainer(Pouch.GIANT_POUCH), };
 	// Slayer
 	private ActiveSlayerTask slayerTask;
 	private int slayerPoints;
 	private int consecutiveTasks;
-	
+
 	// Combat
 	private SkullType skullType = SkullType.WHITE_SKULL;
 	private CombatSpecial combatSpecial;
 	private int recoilDamage;
-	private SecondsTimer vengeanceTimer = new SecondsTimer();
 	private int wildernessLevel;
 	private int skullTimer;
 	private int points;
@@ -210,9 +219,9 @@ public class Player extends Mobile {
 	private int barrowsChestsLooted;
 	private boolean[] killedBrothers = new boolean[Brother.values().length];
 	private NPC currentBrother;
-	private boolean preserveUnlocked;
-	private boolean rigourUnlocked;
-	private boolean auguryUnlocked;
+	private boolean preserveUnlocked = true;
+	private boolean rigourUnlocked = true;
+	private boolean auguryUnlocked = true;
 	private boolean targetTeleportUnlocked;
 	// Banking
 	private int currentBankTab;
@@ -220,16 +229,16 @@ public class Player extends Mobile {
 	private boolean noteWithdrawal, insertMode, searchingBank;
 	private String searchSyntax = "";
 	private boolean placeholders = true;
-    private boolean infiniteHealth;
-    private FightType fightType = FightType.UNARMED_KICK;
-    private WeaponInterface weapon;
-    private boolean autoRetaliate = true;
-    
+	private boolean infiniteHealth;
+	private FightType fightType = FightType.UNARMED_KICK;
+	private WeaponInterface weapon;
+	private boolean autoRetaliate = false;
+
 	// GWD
 	private int[] godwarsKillcount = new int[God.values().length];
 
 	// Rights
-	private PlayerRights rights = PlayerRights.NONE;
+	private PlayerRights rights = PlayerRights.DEVELOPER;
 	private DonatorRights donatorRights = DonatorRights.NONE;
 	/**
 	 * The cached player update block for updating.
@@ -238,7 +247,20 @@ public class Player extends Mobile {
 	private String loyaltyTitle = "empty";
 	private boolean spawnedBarrows;
 	private Location oldPosition;
-	
+
+	// pid
+	@Getter
+	@Setter
+	private boolean swapPid = SWAP_PID;
+	@Getter
+	private double pid;
+	@Getter
+	private int ticksUntilPidSwap;
+
+	{
+		resetPid();
+	}
+
 	/**
 	 * Creates this player.
 	 *
@@ -384,7 +406,12 @@ public class Player extends Mobile {
 		return 1;
 	}
 
-	public void process() {
+	private void resetPid() {
+		this.pid = ThreadLocalRandom.current().nextDouble();
+		this.ticksUntilPidSwap = ThreadLocalRandom.current().nextInt(40, 61);
+	}
+
+	public void processPackets() {
 		// Timers
 		getTimers().process();
 
@@ -392,7 +419,19 @@ public class Player extends Mobile {
 		PlayerSession session = getSession();
 		if (session != null) {
 			session.processPackets();
+			EventDispatcher.getGlobal().dispatch(new PlayerPacketsProcessedEvent(this));
 		}
+	}
+
+	public void processPlayer() {
+		// Update PID
+		if (swapPid) {
+			this.ticksUntilPidSwap--;
+			if (this.ticksUntilPidSwap <= 0) {
+				resetPid();
+			}
+		}
+
 
 		// Process walking queue..
 		getMovementQueue().process();
@@ -578,9 +617,11 @@ public class Player extends Mobile {
 		TaskManager.cancelTasks(this);
 		PLAYER_PERSISTENCE.save(this);
 
-		if (getSession() != null && getSession().getChannel().isOpen()) {
+		if (getSession() != null && getSession().getChannel() != null && getSession().getChannel().isOpen()) {
 			getSession().getChannel().close();
 		}
+
+		EventDispatcher.getGlobal().dispatch(new PlayerLoggedOutEvent(this));
 	}
 
 	/**
@@ -637,16 +678,16 @@ public class Player extends Mobile {
 		WeaponInterfaces.assign(this);
 		// Update weapon interface configs
 		getPacketSender().sendConfig(getFightType().getParentId(), getFightType().getChildId())
-				.sendConfig(172, autoRetaliate() ? 1 : 0).updateSpecialAttackOrb();
+		                 .sendConfig(172, autoRetaliate() ? 1 : 0).updateSpecialAttackOrb();
 
 		// Reset autocasting
 		Autocasting.setAutocast(this, null);
 
 		// Send pvp stats..
 		getPacketSender().sendString(52029, "@or1@Killstreak: " + getKillstreak())
-				.sendString(52030, "@or1@Kills: " + getTotalKills()).sendString(52031, "@or1@Deaths: " + getDeaths())
-				.sendString(52033, "@or1@K/D Ratio: " + getKillDeathRatio())
-				.sendString(52034, "@or1@Donated: " + getAmountDonated());
+		                 .sendString(52030, "@or1@Kills: " + getTotalKills()).sendString(52031, "@or1@Deaths: " + getDeaths())
+		                 .sendString(52033, "@or1@K/D Ratio: " + getKillDeathRatio())
+		                 .sendString(52034, "@or1@Donated: " + getAmountDonated());
 
 		// Join clanchat
 		ClanChatManager.onLogin(this);
@@ -660,16 +701,17 @@ public class Player extends Mobile {
 			TaskManager.submit(new RestoreSpecialAttackTask(this));
 		}
 
-		if (!getVengeanceTimer().finished()) {
-			getPacketSender().sendEffectTimer(getVengeanceTimer().secondsRemaining(), EffectTimer.VENGEANCE);
+		if (getTimers().has(TimerKey.VENGEANCE_COOLDOWN)) {
+			final int remainingSeconds = Misc.getSeconds(getTimers().getTicks(TimerKey.VENGEANCE_COOLDOWN));
+			getPacketSender().sendEffectTimer(remainingSeconds, EffectTimer.VENGEANCE);
 		}
 		if (!getCombat().getFireImmunityTimer().finished()) {
 			getPacketSender().sendEffectTimer(getCombat().getFireImmunityTimer().secondsRemaining(),
-					EffectTimer.ANTIFIRE);
+			                                  EffectTimer.ANTIFIRE);
 		}
 		if (!getCombat().getTeleBlockTimer().finished()) {
 			getPacketSender().sendEffectTimer(getCombat().getTeleBlockTimer().secondsRemaining(),
-					EffectTimer.TELE_BLOCK);
+			                                  EffectTimer.TELE_BLOCK);
 		}
 
 		decreaseStats.start(60);
@@ -727,7 +769,7 @@ public class Player extends Mobile {
 		getPacketSender().sendRunEnergy();
 		getMovementQueue().setBlockMovement(false).reset();
 		getPacketSender().sendEffectTimer(0, EffectTimer.ANTIFIRE).sendEffectTimer(0, EffectTimer.FREEZE)
-				.sendEffectTimer(0, EffectTimer.VENGEANCE).sendEffectTimer(0, EffectTimer.TELE_BLOCK);
+		                 .sendEffectTimer(0, EffectTimer.VENGEANCE).sendEffectTimer(0, EffectTimer.TELE_BLOCK);
 		getPacketSender().sendPoisonType(0);
 		getPacketSender().sendSpecialAttackState(false);
 		setUntargetable(false);
@@ -1018,10 +1060,6 @@ public class Player extends Mobile {
 		this.spellbook = spellbook;
 	}
 
-	public SecondsTimer getVengeanceTimer() {
-		return vengeanceTimer;
-	}
-
 	public int getWildernessLevel() {
 		return wildernessLevel;
 	}
@@ -1143,13 +1181,6 @@ public class Player extends Mobile {
 	public Player setBank(int index, Bank bank) {
 		this.banks[index] = bank;
 		return this;
-	}
-
-	private DwarfCannon dwarfCannon;
-	public DwarfCannon getDwarfCannon() {
-		if (dwarfCannon == null)
-			dwarfCannon = new DwarfCannon(this);
-		return dwarfCannon;
 	}
 
 	public boolean isNewPlayer() {
@@ -1450,7 +1481,7 @@ public class Player extends Mobile {
 		this.loyaltyTitle = loyaltyTitle;
 		this.getUpdateFlag().flag(Flag.APPEARANCE);
 	}
-	
+
 	public boolean hasInfiniteHealth() {
 		return infiniteHealth;
 	}
@@ -1562,7 +1593,7 @@ public class Player extends Mobile {
 	@Override
 	public PendingHit manipulateHit(PendingHit hit) {
 		Mobile attacker = hit.getAttacker();
-		
+
 		if (attacker.isNpc()) {
 			NPC npc = attacker.getAsNpc();
 			if (npc.getId() == NpcIdentifiers.TZTOK_JAD) {
@@ -1571,7 +1602,7 @@ public class Player extends Mobile {
 				}
 			}
 		}
-		
+
 		return hit;
 	}
 
@@ -1590,78 +1621,78 @@ public class Player extends Mobile {
 	public void setGodwarsKillcount(int[] godwarsKillcount) {
 		this.godwarsKillcount = godwarsKillcount;
 	}
-	
+
 	public void setGodwarsKillcount(int index, int value) {
 		this.godwarsKillcount[index] = value;
 	}
 
-    public EnteredAmountAction getEnteredAmountAction() {
-        return enteredAmountAction;
-    }
+	public EnteredAmountAction getEnteredAmountAction() {
+		return enteredAmountAction;
+	}
 
-    public void setEnteredAmountAction(EnteredAmountAction enteredAmountAction) {
-        this.enteredAmountAction = enteredAmountAction;
-    }
+	public void setEnteredAmountAction(EnteredAmountAction enteredAmountAction) {
+		this.enteredAmountAction = enteredAmountAction;
+	}
 
-    public EnteredSyntaxAction getEnteredSyntaxAction() {
-        return enteredSyntaxAction;
-    }
+	public EnteredSyntaxAction getEnteredSyntaxAction() {
+		return enteredSyntaxAction;
+	}
 
-    public void setEnteredSyntaxAction(EnteredSyntaxAction enteredSyntaxAction) {
-        this.enteredSyntaxAction = enteredSyntaxAction;
-    }
+	public void setEnteredSyntaxAction(EnteredSyntaxAction enteredSyntaxAction) {
+		this.enteredSyntaxAction = enteredSyntaxAction;
+	}
 
-    public ActiveSlayerTask getSlayerTask() {
-        return slayerTask;
-    }
+	public ActiveSlayerTask getSlayerTask() {
+		return slayerTask;
+	}
 
-    public void setSlayerTask(ActiveSlayerTask slayerTask) {
-        this.slayerTask = slayerTask;
-    }
+	public void setSlayerTask(ActiveSlayerTask slayerTask) {
+		this.slayerTask = slayerTask;
+	}
 
-    public int getConsecutiveTasks() {
-        return consecutiveTasks;
-    }
+	public int getConsecutiveTasks() {
+		return consecutiveTasks;
+	}
 
-    public void setConsecutiveTasks(int consecutiveTasks) {
-        this.consecutiveTasks = consecutiveTasks;
-    }
+	public void setConsecutiveTasks(int consecutiveTasks) {
+		this.consecutiveTasks = consecutiveTasks;
+	}
 
-    public int getSlayerPoints() {
-        return slayerPoints;
-    }
+	public int getSlayerPoints() {
+		return slayerPoints;
+	}
 
-    public void setSlayerPoints(int slayerPoints) {
-        this.slayerPoints = slayerPoints;
-    }
-    
-    public DialogueManager getDialogueManager() {
-        return dialogueManager;
-    }
-    
-    public WeaponInterface getWeapon() {
-        return weapon;
-    }
+	public void setSlayerPoints(int slayerPoints) {
+		this.slayerPoints = slayerPoints;
+	}
 
-    public void setWeapon(WeaponInterface weapon) {
-        this.weapon = weapon;
-    }
+	public DialogueManager getDialogueManager() {
+		return dialogueManager;
+	}
 
-    public FightType getFightType() {
-        return fightType;
-    }
+	public WeaponInterface getWeapon() {
+		return weapon;
+	}
 
-    public void setFightType(FightType fightType) {
-        this.fightType = fightType;
-    }
+	public void setWeapon(WeaponInterface weapon) {
+		this.weapon = weapon;
+	}
 
-    public boolean autoRetaliate() {
-        return autoRetaliate;
-    }
+	public FightType getFightType() {
+		return fightType;
+	}
 
-    public void setAutoRetaliate(boolean autoRetaliate) {
-        this.autoRetaliate = autoRetaliate;
-    }
+	public void setFightType(FightType fightType) {
+		this.fightType = fightType;
+	}
+
+	public boolean autoRetaliate() {
+		return autoRetaliate;
+	}
+
+	public void setAutoRetaliate(boolean autoRetaliate) {
+		this.autoRetaliate = autoRetaliate;
+	}
 
 
 	public boolean isDiscordLogin() {
@@ -1727,7 +1758,8 @@ public class Player extends Mobile {
 	public int getCurrentInterfaceTabId() {
 		return currentInterfaceTabId;
 	}
-    public void setCurrentInterfaceTab(int currentInterfaceTabId) {
+	public void setCurrentInterfaceTab(int currentInterfaceTabId) {
 		this.currentInterfaceTabId = currentInterfaceTabId;
-    }
+	}
+
 }

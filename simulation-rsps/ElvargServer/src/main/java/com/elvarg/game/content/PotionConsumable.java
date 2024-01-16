@@ -193,21 +193,21 @@ public enum PotionConsumable {
 			player.getPacketSender().sendMessage("You're currently stunned and cannot use potions.");
 			return true;
 		}
-		
+
         if (player.getTimers().has(TimerKey.POTION)) {
             return true;
         }
-        
+
         player.getTimers().register(TimerKey.POTION, 3);
         player.getTimers().register(TimerKey.FOOD, 3);
-        
+
         player.getPacketSender().sendInterfaceRemoval();
 		player.getCombat().reset();
 		player.performAnimation(new Animation(829));
 		SoundManager.sendSound(player, Sound.DRINK);
 		player.getInventory().setItem(slot, getReplacementItem(item)).refreshItems();
 		potion.get().onEffect(player);
-		
+
 		return true;
 	}
 

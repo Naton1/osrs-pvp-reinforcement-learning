@@ -102,7 +102,7 @@ public class Food {
 		int currentHp = player.getSkillManager().getCurrentLevel(Skill.HITPOINTS);
 		int maxHp = player.getSkillManager().getMaxLevel(Skill.HITPOINTS);
 		int healAmount = food.heal;
-		
+
 		if (food == Edible.ANGLERFISH) {
 			int c = 2;
 			if (maxHp >= 25) {
@@ -123,16 +123,16 @@ public class Food {
 			}
 			maxHp += healAmount;
 		}
-		
+
 		if (healAmount + currentHp > maxHp) {
 			healAmount = maxHp - currentHp;
 		}
 		if (healAmount < 0) {
 			healAmount = 0;
 		}
-		
+
 		player.setHitpoints(player.getHitpoints() + healAmount);
-		
+
 		// Send message to player..
 		String e = food == Edible.BANDAGES ? "use" : "eat";
 		player.getPacketSender().sendMessage("You " + e + " the " + food.name + ".");

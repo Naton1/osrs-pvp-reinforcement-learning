@@ -173,7 +173,9 @@ public class MapObjects {
         }
 
         // Add clipping for object.
-        RegionManager.addObjectClipping(object);
+
+        // We don't work with object clipping at the moment, DISABLE OBJECT CLIPPING
+        //RegionManager.addObjectClipping(object);
     }
 
     /**

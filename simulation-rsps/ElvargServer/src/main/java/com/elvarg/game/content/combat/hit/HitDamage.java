@@ -1,5 +1,9 @@
 package com.elvarg.game.content.combat.hit;
 
+import com.elvarg.game.entity.impl.Mobile;
+import lombok.Builder;
+import lombok.Value;
+
 /**
  * A hit done by an entity onto a target.
  *
@@ -11,11 +15,22 @@ public class HitDamage {
 	private HitMask hitmask;
     private HitMask startHitmask;
 
+	private Metadata metadata;
+
 	public HitDamage(int damage, HitMask hitmask) {
 		this.damage = damage;
 		this.hitmask = hitmask;
 		this.startHitmask = hitmask;
 		update();
+	}
+
+	public HitDamage withMetadata(Metadata metadata) {
+		this.metadata = metadata;
+		return this;
+	}
+
+	public Metadata getMetadata() {
+		return this.metadata;
 	}
 
 	public int getDamage() {
@@ -52,5 +67,13 @@ public class HitDamage {
 
 	public void setHitmask(HitMask hitmask) {
 		this.hitmask = hitmask;
+	}
+
+	@Builder
+	@Value
+	public static class Metadata {
+		private final Mobile attacker;
+		private final Mobile target;
+		private final PendingHit associatedPendingHit;
 	}
 }

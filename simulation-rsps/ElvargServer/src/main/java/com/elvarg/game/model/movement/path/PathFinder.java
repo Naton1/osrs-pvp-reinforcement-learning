@@ -178,7 +178,7 @@ public class PathFinder {
         PrivateArea privateArea = attacker.getPrivateArea();
         Location targetLocation = defender.getLocation();
 
-        if (distance == 1) {
+        if (distance == 1 || (attacker.getLocation().equals(defender.getLocation()))) {
             final int size = attacker.size();
             final int followingSize = defender.size();
             final Location current = attacker.getLocation();
@@ -243,7 +243,8 @@ public class PathFinder {
             // Filter out any tiles which projectiles are blocked from (i.e. tree is in the way)
             .filter(t -> RegionManager.canProjectileAttack(attacker, t, targetLocation))
             // Find the tile closest to the attacker
-            .min(Comparator.comparing(attacker.getLocation()::getDistance));
+            .min(Comparator.comparing(attacker.getLocation()::getEuclideanDistance)
+                         .thenComparing(defender.getLocation()::getEuclideanDistance));
 
             if (distance == 1) {
                 // We've reached the closest attackable tile, break out of the loop as we can't get any closer

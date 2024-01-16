@@ -1,0 +1,17 @@
+---
+HumanLike:
+  import:
+    - Core
+  self-play-percent: 0.1
+  protected-previous-correct-prayer-reward: 0.012
+  protected-previous-wrong-prayer-reward: -0.012
+  attacked-previous-correct-prayer-reward: 0.01
+  attacked-previous-wrong-prayer-reward: -0.01
+  latest-self-play-percent: 0.1
+  latest-self-play-delay-chance:
+    type: expression
+    expression: (random() * 0.2)
+  past-self-play-percent: 0.8
+  past-self-play-delay-chance:
+    type: expression
+    expression: (random() * 0.2) if random() < 0.50 else 0.0

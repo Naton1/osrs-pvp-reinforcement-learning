@@ -10,7 +10,7 @@ public class CommandManager {
 
     public static final Map<String, Command> commands = new HashMap<String, Command>();
 
-    private static void put(Command command, String... keys) {
+    public static void put(Command command, String... keys) {
         for (String key : keys) {
             commands.put(key, command);
         }

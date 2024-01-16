@@ -1,0 +1,22 @@
+---
+PastSelfPlay:
+  import:
+    - Core
+  self-play-percent:
+    type: linear
+    initial-value: 0.8
+    final-value: 0.2
+    change-over-time-steps: 200
+    round-value: true
+    round-digits: 1
+  past-self-play-percent:
+    type: expression
+    expression: 1 - (self_play_percent)
+    substitutions:
+      self_play_percent:
+        type: linear
+        initial-value: 0.8
+        final-value: 0.2
+        change-over-time-steps: 200
+        round-value: true
+        round-digits: 1

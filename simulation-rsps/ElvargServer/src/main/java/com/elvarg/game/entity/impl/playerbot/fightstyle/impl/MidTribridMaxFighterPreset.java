@@ -7,7 +7,9 @@ import com.elvarg.game.content.combat.CombatSpecial;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.content.combat.magic.CombatSpells;
 import com.elvarg.game.content.combat.method.CombatMethod;
+import com.elvarg.game.content.presets.PredefinedPresets;
 import com.elvarg.game.content.presets.Presetable;
+import com.elvarg.game.content.presets.Presetables;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.playerbot.PlayerBot;
 import com.elvarg.game.entity.impl.playerbot.fightstyle.*;
@@ -30,35 +32,37 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
 
     private static final RandomGen RANDOM = new RandomGen();
 
-    public static final Presetable BOT_MID_TRIBRID = new Presetable("Mid Tribrid",
-            new Item[]{
-                    new Item(AVAS_ACCUMULATOR), new Item(BLACK_DHIDE_BODY), new Item(ABYSSAL_WHIP), new Item(SHARK),
-                    new Item(RUNE_CROSSBOW), new Item(RUNE_PLATELEGS), new Item(DRAGON_DEFENDER), new Item(SHARK),
-                    new Item(COOKED_KARAMBWAN), new Item(COOKED_KARAMBWAN), new Item(DRAGON_DAGGER_P_PLUS_PLUS_), new Item(SUPER_RESTORE_4_),
-                    new Item(SHARK), new Item(SHARK), new Item(SHARK), new Item(SHARK),
-                    new Item(SHARK), new Item(SHARK), new Item(SHARK), new Item(SUPER_COMBAT_POTION_4_),
-                    new Item(SHARK), new Item(SHARK), new Item(SHARK), new Item(ANGLERFISH),
-                    new Item(WATER_RUNE, 6000), new Item(BLOOD_RUNE, 2000), new Item(DEATH_RUNE, 4000), new Item(RANGING_POTION_4_),
-            },
-            //
-            new Item[]{
-                    new Item(HELM_OF_NEITIZNOT),
-                    new Item(SARADOMIN_CAPE),
-                    new Item(MASTER_WAND),
-                    new Item(AMULET_OF_FURY),
-                    new Item(MYSTIC_ROBE_TOP),
-                    new Item(SPIRIT_SHIELD),
-                    new Item(MYSTIC_ROBE_BOTTOM),
-                    new Item(BARROWS_GLOVES),
-                    new Item(CLIMBING_BOOTS),
-                    new Item(RING_OF_RECOIL),
-                    new Item(DRAGON_BOLTS_E_, 500),
-            },
-            /* atk, def, str, hp, range, pray, mage */
-            new int[]{99, 99, 99, 99, 99, 99, 99},
-            MagicSpellbook.ANCIENT,
-            true
-    );
+    public static final Presetable BOT_MID_TRIBRID = PredefinedPresets.MAIN_TRIBRID_126;
+
+//    public static final Presetable BOT_MID_TRIBRID = new Presetable("Mid Tribrid",
+//            new Item[]{
+//                    new Item(AVAS_ACCUMULATOR), new Item(BLACK_DHIDE_BODY), new Item(ABYSSAL_WHIP), new Item(SHARK),
+//                    new Item(RUNE_CROSSBOW), new Item(RUNE_PLATELEGS), new Item(DRAGON_DEFENDER), new Item(SHARK),
+//                    new Item(COOKED_KARAMBWAN), new Item(COOKED_KARAMBWAN), new Item(DRAGON_DAGGER_P_PLUS_PLUS_), new Item(SUPER_RESTORE_4_),
+//                    new Item(SHARK), new Item(SHARK), new Item(SHARK), new Item(SHARK),
+//                    new Item(SHARK), new Item(SHARK), new Item(SHARK), new Item(SUPER_COMBAT_POTION_4_),
+//                    new Item(SHARK), new Item(SHARK), new Item(SHARK), new Item(ANGLERFISH),
+//                    new Item(WATER_RUNE, 6000), new Item(BLOOD_RUNE, 2000), new Item(DEATH_RUNE, 4000), new Item(RANGING_POTION_4_),
+//            },
+//            //
+//            new Item[]{
+//                    new Item(HELM_OF_NEITIZNOT),
+//                    new Item(SARADOMIN_CAPE),
+//                    new Item(MASTER_WAND),
+//                    new Item(AMULET_OF_FURY),
+//                    new Item(MYSTIC_ROBE_TOP),
+//                    new Item(SPIRIT_SHIELD),
+//                    new Item(MYSTIC_ROBE_BOTTOM),
+//                    new Item(BARROWS_GLOVES),
+//                    new Item(CLIMBING_BOOTS),
+//                    new Item(RING_OF_RECOIL),
+//                    new Item(DRAGON_BOLTS_E_, 500),
+//            },
+//            /* atk, def, str, hp, range, pray, mage */
+//            new int[]{99, 99, 99, 99, 99, 99, 99},
+//            MagicSpellbook.ANCIENT,
+//            true
+//    );
 
     public static final CombatAction[] COMBAT_ACTIONS = {
             //Slower
@@ -186,8 +190,10 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
                 }
 
             },
-            new CombatSwitch(new int[]{MASTER_WAND, SARADOMIN_CAPE, MYSTIC_ROBE_TOP, MYSTIC_ROBE_BOTTOM, SPIRIT_SHIELD},
-                    new PrayerHandler.PrayerData[]{PrayerHandler.PrayerData.PROTECT_ITEM, PrayerHandler.PrayerData.MYSTIC_MIGHT}) {
+            new CombatSwitch(new int[]{ANCIENT_STAFF, SARADOMIN_CAPE, MYSTIC_ROBE_TOP, MYSTIC_ROBE_BOTTOM,
+                                       SPIRIT_SHIELD},
+                    new PrayerHandler.PrayerData[]{PrayerHandler.PrayerData.PROTECT_ITEM,
+                                                   PrayerHandler.PrayerData.AUGURY}) {
 
                 @Override
                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {
@@ -206,7 +212,7 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
             },
             new EnemyDefenseAwareCombatSwitch(new AttackStyleSwitch[]{
                     new AttackStyleSwitch(CombatType.MAGIC,
-                            new CombatSwitch(new int[]{MASTER_WAND, SARADOMIN_CAPE, MYSTIC_ROBE_TOP, MYSTIC_ROBE_BOTTOM, SPIRIT_SHIELD},
+                            new CombatSwitch(new int[]{ANCIENT_STAFF, SARADOMIN_CAPE, MYSTIC_ROBE_TOP, MYSTIC_ROBE_BOTTOM, SPIRIT_SHIELD},
                                     new PrayerHandler.PrayerData[]{PrayerHandler.PrayerData.PROTECT_ITEM, PrayerHandler.PrayerData.AUGURY}) {
 
                                 @Override
@@ -223,7 +229,8 @@ public class MidTribridMaxFighterPreset implements FighterPreset {
                     ),
                     new AttackStyleSwitch(CombatType.RANGED,
                             new CombatSwitch(new int[]{ RUNE_CROSSBOW, AVAS_ACCUMULATOR, RUNE_PLATELEGS, BLACK_DHIDE_BODY},
-                                    new PrayerHandler.PrayerData[]{PrayerHandler.PrayerData.PROTECT_ITEM, PrayerHandler.PrayerData.EAGLE_EYE}) {
+                                    new PrayerHandler.PrayerData[]{PrayerHandler.PrayerData.PROTECT_ITEM,
+                                                                   PrayerHandler.PrayerData.RIGOUR}) {
 
                                 @Override
                                 public boolean shouldPerform(PlayerBot playerBot, Mobile enemy) {

@@ -8,7 +8,10 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     java
     application
+    id("com.diffplug.spotless") version "6.23.3"
 }
+
+apply(plugin = "com.diffplug.spotless")
 
 repositories {
     mavenLocal()
@@ -31,6 +34,11 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
+    implementation("org.slf4j:slf4j-simple:2.0.0")
+    implementation("com.github.stateless4j:stateless4j:2.6.0")
+    compileOnly("org.projectlombok:lombok:1.18.4")
+    annotationProcessor("org.projectlombok:lombok:1.18.26")
+    implementation("io.github.classgraph:classgraph:4.8.163")
 }
 
 application {
@@ -46,3 +54,16 @@ version = "1.0-SNAPSHOT"
 description = "Elvarg-Game-Server"
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
+
+sourceSets {
+    main {
+        resources.srcDirs("../../contracts")
+    }
+}
+
+spotless {
+    java {
+        target("src/main/java/com/github/naton1/rl/**/*.java")
+        palantirJavaFormat()
+    }
+}

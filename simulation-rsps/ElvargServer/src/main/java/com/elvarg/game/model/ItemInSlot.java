@@ -61,4 +61,14 @@ public class ItemInSlot {
         }
         return new ItemInSlot(itemId, slot);
     }
+
+    public static ItemInSlot getFromInventory(int[] itemId, Inventory inventory) {
+        for (int id : itemId) {
+            final ItemInSlot itemInSlot = ItemInSlot.getFromInventory(id, inventory);
+            if (itemInSlot != null) {
+                return itemInSlot;
+            }
+        }
+        return null;
+    }
 }

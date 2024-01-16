@@ -47,7 +47,7 @@ public class MagicCombatMethod extends CombatMethod {
 		if (spell == null) {
 			return hits;
 		}
-		
+
 		List<PendingHit> multiCombatHits = new ArrayList<>();
 
 		for (PendingHit hit : hits) {
@@ -139,6 +139,10 @@ public class MagicCombatMethod extends CombatMethod {
 
 	@Override
 	public int attackSpeed(Mobile character) {
+
+		if (character.getCombat().getCastSpell() != null) {
+			return character.getCombat().getCastSpell().getAttackSpeed();
+		}
 
 		if (character.getCombat().getPreviousCast() != null) {
 			return character.getCombat().getPreviousCast().getAttackSpeed();

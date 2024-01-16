@@ -3,6 +3,8 @@ package com.elvarg.game.content.combat.magic;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.*;
+import com.elvarg.util.Misc;
+import com.elvarg.util.timers.TimerKey;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,16 +62,18 @@ public class EffectSpells {
                 }
 
 
-                if (!player.getVengeanceTimer().finished()) {
-                    player.getPacketSender().sendMessage("You must wait another " + player.getVengeanceTimer().secondsRemaining() + " seconds before you can cast that again.");
+                if (player.getTimers().has(TimerKey.VENGEANCE_COOLDOWN)) {
+                    final int remainingSeconds = Misc.getSeconds(player.getTimers().getTicks(TimerKey.VENGEANCE_COOLDOWN));
+                    player.getPacketSender().sendMessage("You must wait another " + remainingSeconds + " seconds before you can cast that again.");
                     return true;
                 }
 
                 //Send message and effect timer to client
 
                 player.setHasVengeance(true);
-                player.getVengeanceTimer().start(30);
-                player.getPacketSender().sendEffectTimer(30, EffectTimer.VENGEANCE)
+                player.getTimers().register(TimerKey.VENGEANCE_COOLDOWN, 50);
+                final int remainingSeconds = Misc.getSeconds(player.getTimers().getTicks(TimerKey.VENGEANCE_COOLDOWN));
+                player.getPacketSender().sendEffectTimer(remainingSeconds, EffectTimer.VENGEANCE)
                         .sendMessage("You now have Vengeance's effect.");
                 player.getInventory().deleteItemSet(EffectSpell.VENGEANCE.getSpell().itemsRequired(player));
                 player.performAnimation(new Animation(4410));

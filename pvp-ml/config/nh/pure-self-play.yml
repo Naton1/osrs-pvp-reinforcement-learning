@@ -1,0 +1,5 @@
+---
+PureSelfPlay:
+  import:
+    - Core
+  self-play-percent: 1.0

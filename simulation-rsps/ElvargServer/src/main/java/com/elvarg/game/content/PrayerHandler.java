@@ -2,6 +2,7 @@ package com.elvarg.game.content;
 
 import java.util.HashMap;
 
+import com.elvarg.game.GameConstants;
 import com.elvarg.game.content.Dueling.DuelRule;
 import com.elvarg.game.content.combat.CombatType;
 import com.elvarg.game.entity.impl.Mobile;
@@ -427,10 +428,10 @@ public class PrayerHandler {
         TaskManager.submit(new Task(1, player, false) {
             @Override
             public void execute() {
-                
+
                 double drainPerTick = 0.0;
                 double pointDrain = player.getPrayerPointDrain();
-                
+
                 for (int i = 0; i < player.getPrayerActive().length; i++) {
                     if (!player.getPrayerActive()[i]) {
                         continue;
@@ -440,7 +441,7 @@ public class PrayerHandler {
                         continue;
                     double drainMinute = pd.drainRate;
                     double drainSeconds = drainMinute / 60;
-                    double drainTicks = (drainSeconds * 0.6);   
+                    double drainTicks = (drainSeconds * GameConstants.GAME_ENGINE_PROCESSING_CYCLE_RATE / 1000D);
                     drainPerTick += drainTicks;
                 }
 
@@ -448,30 +449,30 @@ public class PrayerHandler {
                     this.stop();
                     return;
                 }
-                
+
                 int bonus = player.getBonusManager().getOtherBonus()[BonusManager.PRAYER];
                 drainPerTick /= (1 + (0.0333 * bonus));
-                
-                pointDrain += drainPerTick;                
+
+                pointDrain += drainPerTick;
                 int drainTreshold = (int) pointDrain;
                 if (drainTreshold >= 1) {
-                    
+
                     int total = (player.getSkillManager().getCurrentLevel(Skill.PRAYER) - drainTreshold);
                     player.getSkillManager().setCurrentLevel(Skill.PRAYER, total, true);
-                    
+
                     if (player.getSkillManager().getCurrentLevel(Skill.PRAYER) <= 0) {
                         deactivatePrayers(player);
                         player.getPacketSender().sendMessage("You have run out of Prayer points!");
                         this.stop();
                         return;
                     }
-                    
+
                     pointDrain -= drainTreshold;
                     if (pointDrain < 0) {
                         pointDrain = 0;
                     }
                 }
-                
+
                 player.setPrayerPointDrain(pointDrain);
 
             }
@@ -484,7 +485,7 @@ public class PrayerHandler {
             }
         });
     }
-    
+
     /**
      * Resets <code> prayers </code> with an exception for <code> prayerID </code>
      *
@@ -589,7 +590,7 @@ public class PrayerHandler {
          */
         private int configId;
         /**
-         * The rate of which the player's prayer points will be drained at 
+         * The rate of which the player's prayer points will be drained at
          * per minute.
          */
         private double drainRate;

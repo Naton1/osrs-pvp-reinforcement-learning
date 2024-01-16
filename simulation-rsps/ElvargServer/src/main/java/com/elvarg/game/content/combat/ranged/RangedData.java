@@ -9,7 +9,9 @@ import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.content.combat.FightType;
 import com.elvarg.game.content.combat.hit.PendingHit;
 import com.elvarg.game.content.combat.method.CombatMethod;
+import com.elvarg.game.content.combat.method.impl.specials.ArmadylCrossbowCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.ZaryteCrossbowCombatMethod;
+import com.elvarg.game.content.combat.ranged.RangedData.RangedWeaponType;
 import com.elvarg.game.entity.impl.Mobile;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Graphic;
@@ -23,6 +25,8 @@ import com.elvarg.util.timers.TimerKey;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
+import static com.elvarg.util.ItemIdentifiers.ARMADYL_CROSSBOW;
+import static com.elvarg.util.ItemIdentifiers.DIAMOND_DRAGON_BOLTS_E_;
 import static com.elvarg.util.ItemIdentifiers.DRAGONSTONE_DRAGON_BOLTS_E_;
 import static com.elvarg.util.ItemIdentifiers.OPAL_DRAGON_BOLTS_E_;
 import static com.elvarg.util.ItemIdentifiers.ZARYTE_CROSSBOW;
@@ -48,167 +52,208 @@ public class RangedData {
     public static int applySpecialEffects(Player p, Mobile target, int damage, boolean accurate,
                                           CombatMethod combatMethod) {
 
+        // Zaryte cbow spec guarantees activation on accurate hits
         final boolean isZaryteCrossbow = p.getEquipment().hasAt(Equipment.WEAPON_SLOT, ZARYTE_CROSSBOW);
         final boolean isZaryteCrossbowSpecialAttack =
                 isZaryteCrossbow && combatMethod instanceof ZaryteCrossbowCombatMethod;
         final boolean guaranteedActivation = isZaryteCrossbowSpecialAttack && accurate;
 
+        // Armadyl cbow spec doubles chance of activation
+        final boolean isArmadylCrossbow = p.getEquipment().hasAt(Equipment.WEAPON_SLOT, ARMADYL_CROSSBOW);
+        final boolean isArmadylCrossbowSpecialAttack =
+                isArmadylCrossbow && combatMethod instanceof ArmadylCrossbowCombatMethod;
+
         switch (p.getCombat().getAmmunition()) {
 
-            case ENCHANTED_DIAMOND_BOLT:
+        case ENCHANTED_DIAMOND_BOLT:
 
-                final double activateChance = target.isPlayer() ? 0.1 : 0.05;
-                if (guaranteedActivation || Misc.getRandomDouble() < activateChance) {
-                    target.performGraphic(new Graphic(758, GraphicHeight.MIDDLE));
-                    final double multiplier = isZaryteCrossbow ? 1.25 : 1.15;
-                    damage = (int) Math.floor(damage * multiplier);
+            double diamondActivateChance = target.isPlayer() ? 0.1 : 0.05;
+            if (isArmadylCrossbowSpecialAttack) {
+                diamondActivateChance *= 2;
+            }
+            if (guaranteedActivation || Misc.getRandomDouble() < diamondActivateChance) {
+                target.performGraphic(new Graphic(758, GraphicHeight.MIDDLE));
+                final double multiplier = isZaryteCrossbow ? 1.25 : 1.15;
+                damage = (int) Math.floor(damage * multiplier);
+            }
+
+            break;
+
+        case ENCHANTED_DRAGONSTONE_DRAGON_BOLT:
+        case ENCHANTED_DRAGON_BOLT:
+
+            double dragonActivateChance = 0.06;
+            if (isArmadylCrossbowSpecialAttack) {
+                dragonActivateChance *= 2;
+            }
+            if (guaranteedActivation || (accurate && Misc.getRandomDouble() < dragonActivateChance)) {
+                boolean multiply = true;
+                if (target.isPlayer()) {
+                    Player t = target.getAsPlayer();
+                    multiply = !(!t.getCombat().getFireImmunityTimer().finished()
+                                 || CombatEquipment.hasDragonProtectionGear(t)
+                                 || t.getPrayerActive()[PrayerHandler.PROTECT_FROM_MAGIC]);
                 }
 
-                break;
+                if (multiply) {
+                    target.performGraphic(new Graphic(756));
+                    final double multiplier = isZaryteCrossbow ? 0.22 : 0.2;
+                    final int extraDamage =
+                            (int) Math.floor(p.getSkillManager().getCurrentLevel(Skill.RANGED) * multiplier);
+                    damage += extraDamage;
+                }
+            }
 
-            case ENCHANTED_DRAGONSTONE_DRAGON_BOLT:
-            case ENCHANTED_DRAGON_BOLT:
+            break;
+        case ENCHANTED_EMERALD_BOLT:
 
-                if (guaranteedActivation || (accurate && Misc.getRandomDouble() < 0.06)) {
-                    boolean multiply = true;
-                    if (target.isPlayer()) {
-                        Player t = target.getAsPlayer();
-                        multiply = !(!t.getCombat().getFireImmunityTimer().finished()
-                                     || CombatEquipment.hasDragonProtectionGear(t)
-                                     || t.getPrayerActive()[PrayerHandler.PROTECT_FROM_MAGIC]);
-                    }
+            double emeraldActivateChance = target.isPlayer() ? 0.54 : 0.55;
+            if (isArmadylCrossbowSpecialAttack) {
+                emeraldActivateChance *= 2;
+            }
+            if (guaranteedActivation || (accurate && Misc.getRandomDouble() < emeraldActivateChance)) {
+                target.performGraphic(new Graphic(752));
+                final PoisonType poisonType = isZaryteCrossbow ? PoisonType.SUPER : PoisonType.MILD;
+                CombatFactory.poisonEntity(target, poisonType);
+            }
 
-                    if (multiply) {
-                        target.performGraphic(new Graphic(756));
-                        final double multiplier = isZaryteCrossbow ? 0.22 : 0.2;
-                        final int extraDamage =
-                                (int) Math.floor(p.getSkillManager().getCurrentLevel(Skill.RANGED) * multiplier);
-                        damage += extraDamage;
-                    }
+            break;
+        case ENCHANTED_JADE_BOLT:
+
+            double jadeActivateChance = 0.06;
+            if (isArmadylCrossbowSpecialAttack) {
+                jadeActivateChance *= 2;
+            }
+            if (guaranteedActivation || Misc.getRandomDouble() < jadeActivateChance) {
+
+                // Note, this should also roll against target agility level...
+
+                boolean apply = true;
+                if (target.isPlayer()) {
+                    Player t = target.getAsPlayer();
+                    apply = !t.getPrayerActive()[PrayerHandler.PROTECT_FROM_MAGIC];
                 }
 
-                break;
-            case ENCHANTED_EMERALD_BOLT:
-
-                final double emeraldActivateChance = target.isPlayer() ? 0.54 : 0.55;
-                if (guaranteedActivation || (accurate && Misc.getRandomDouble() < emeraldActivateChance)) {
-                    target.performGraphic(new Graphic(752));
-                    final PoisonType poisonType = isZaryteCrossbow ? PoisonType.SUPER : PoisonType.MILD;
-                    CombatFactory.poisonEntity(target, poisonType);
+                if (apply) {
+                    target.performGraphic(new Graphic(755));
+                    target.getTimers().register(TimerKey.FREEZE, 8);
                 }
+            }
 
-                break;
-            case ENCHANTED_JADE_BOLT:
+            break;
+        case ENCHANTED_ONYX_BOLT:
 
-                if (guaranteedActivation || Misc.getRandomDouble() < 0.06) {
+            double onyxActivateChance = target.isPlayer() ? 0.10 : 0.11;
+            if (isArmadylCrossbowSpecialAttack) {
+                onyxActivateChance *= 2;
+            }
+            if (guaranteedActivation || (accurate && Misc.getRandomDouble() < onyxActivateChance)) {
+                target.performGraphic(new Graphic(753));
+                final double damageMultiplier = isZaryteCrossbow ? 1.3 : 1.2;
+                damage = (int) Math.floor(damage * damageMultiplier);
+                final int heal = (int) Math.floor(damage * 0.25);
+                p.heal(heal);
+            }
 
-                    // Note, this should also roll against target agility level...
+            break;
 
-                    boolean apply = true;
-                    if (target.isPlayer()) {
-                        Player t = target.getAsPlayer();
-                        apply = !t.getPrayerActive()[PrayerHandler.PROTECT_FROM_MAGIC];
-                    }
+        case ENCHANTED_PEARL_BOLT:
 
-                    if (apply) {
-                        target.performGraphic(new Graphic(755));
-                        target.getTimers().register(TimerKey.FREEZE, 8);
-                    }
-                }
+            double pearlActivateChance = 0.06;
+            if (isArmadylCrossbowSpecialAttack) {
+                pearlActivateChance *= 2;
+            }
+            if (guaranteedActivation || Misc.getRandomDouble() < pearlActivateChance) {
+                final int scaleFrom = Math.max(p.getSkillManager().getCurrentLevel(Skill.RANGED),
+                                               p.getSkillManager().getMaxLevel(Skill.RANGED));
+                final int extraDamage = (int) Math.floor((1 / 15D) * scaleFrom);
+                target.performGraphic(new Graphic(750));
+                damage += extraDamage;
+            }
 
-                break;
-            case ENCHANTED_ONYX_BOLT:
+            break;
 
-                final double onyxActivateChance = target.isPlayer() ? 0.10 : 0.11;
-                if (guaranteedActivation || (accurate && Misc.getRandomDouble() < onyxActivateChance)) {
+        case ENCHANTED_RUBY_BOLT:
+
+            double rubyActivateChance = target.isPlayer() ? 0.11 : 0.06;
+            if (isArmadylCrossbowSpecialAttack) {
+                rubyActivateChance *= 2;
+            }
+            if (guaranteedActivation || Misc.getRandomDouble() < rubyActivateChance) {
+                final int healthCost = (int) Math.ceil(p.getSkillManager().getCurrentLevel(Skill.HITPOINTS) * 0.10);
+                if (healthCost < p.getSkillManager().getCurrentLevel(Skill.HITPOINTS)) {
+                    final double damageScale = isZaryteCrossbow ? 0.22 : 0.2;
+                    final int extraDamage = (int) Math.min(Math.round(target.getHitpoints() * damageScale), 100);
+                    damage += extraDamage;
                     target.performGraphic(new Graphic(753));
-                    final double damageMultiplier = isZaryteCrossbow ? 1.3 : 1.2;
-                    damage = (int) Math.floor(damage * damageMultiplier);
-                    final int heal = (int) Math.floor(damage * 0.25);
-                    p.heal(heal);
+                    p.setHitpoints(p.getHitpoints() - healthCost);
                 }
+            }
 
-                break;
+            break;
+        case ENCHANTED_SAPPHIRE_BOLT:
 
-            case ENCHANTED_PEARL_BOLT:
+            double sapphireActivateChance = target.isPlayer() ? 0.05 : 0.25;
+            if (isArmadylCrossbowSpecialAttack) {
+                sapphireActivateChance *= 2;
+            }
+            if (guaranteedActivation || (accurate && Misc.getRandomDouble() < sapphireActivateChance)) {
+                target.performGraphic(new Graphic(751));
+                if (target.isPlayer()) {
+                    final Player t = target.getAsPlayer();
 
-                if (guaranteedActivation || Misc.getRandomDouble() < 0.06) {
-                    final int scaleFrom = Math.max(p.getSkillManager().getCurrentLevel(Skill.RANGED),
-                                                   p.getSkillManager().getMaxLevel(Skill.RANGED));
-                    final int extraDamage = (int) Math.floor((1 / 15D) * scaleFrom);
-                    target.performGraphic(new Graphic(750));
-                    damage += extraDamage;
-                }
+                    final int prayerTaken =
+                            (int) Math.floor(p.getSkillManager().getCurrentLevel(Skill.RANGED) * 0.05);
 
-                break;
+                    t.getSkillManager().setCurrentLevel(Skill.PRAYER, t.getSkillManager().getCurrentLevel(Skill.PRAYER) - prayerTaken);
+                    if (t.getSkillManager().getCurrentLevel(Skill.PRAYER) < 0) {
+                        t.getSkillManager().setCurrentLevel(Skill.PRAYER, 0);
+                    }
+                    t.getPacketSender().sendMessage("Your Prayer level has been leeched.");
 
-            case ENCHANTED_RUBY_BOLT:
-
-                final double rubyActivateChance = target.isPlayer() ? 0.11 : 0.06;
-                if (guaranteedActivation || Misc.getRandomDouble() < rubyActivateChance) {
-                    final int healthCost = (int) Math.ceil(p.getSkillManager().getCurrentLevel(Skill.HITPOINTS) * 0.10);
-                    if (healthCost < p.getSkillManager().getCurrentLevel(Skill.HITPOINTS)) {
-                        final double damageScale = isZaryteCrossbow ? 0.22 : 0.2;
-                        final int extraDamage = (int) Math.min(Math.round(target.getHitpoints() * damageScale), 100);
-                        damage += extraDamage;
-                        target.performGraphic(new Graphic(753));
-                        p.setHitpoints(p.getHitpoints() - healthCost);
+                    final int prayerRestored = prayerTaken / 2;
+                    p.getSkillManager().setCurrentLevel(Skill.PRAYER, t.getSkillManager().getCurrentLevel(Skill.PRAYER) + prayerRestored);
+                    if (p.getSkillManager().getCurrentLevel(Skill.PRAYER) > p.getSkillManager().getMaxLevel(Skill.PRAYER)) {
+                        p.getSkillManager().setCurrentLevel(Skill.PRAYER, p.getSkillManager().getMaxLevel(Skill.PRAYER));
+                    } else {
+                        p.getPacketSender().sendMessage("Your enchanced bolts leech some Prayer points from your opponent..");
                     }
                 }
+            }
 
-                break;
-            case ENCHANTED_SAPPHIRE_BOLT:
+            break;
+        case ENCHANTED_TOPAZ_BOLT:
 
-                final double sapphireActivateChance = target.isPlayer() ? 0.05 : 0.25;
-                if (guaranteedActivation || (accurate && Misc.getRandomDouble() < sapphireActivateChance)) {
-                    target.performGraphic(new Graphic(751));
-                    if (target.isPlayer()) {
-                        final Player t = target.getAsPlayer();
-
-                        final int prayerTaken =
-                                (int) Math.floor(p.getSkillManager().getCurrentLevel(Skill.RANGED) * 0.05);
-
-                        t.getSkillManager().setCurrentLevel(Skill.PRAYER, t.getSkillManager().getCurrentLevel(Skill.PRAYER) - prayerTaken);
-                        if (t.getSkillManager().getCurrentLevel(Skill.PRAYER) < 0) {
-                            t.getSkillManager().setCurrentLevel(Skill.PRAYER, 0);
-                        }
-                        t.getPacketSender().sendMessage("Your Prayer level has been leeched.");
-
-                        final int prayerRestored = prayerTaken / 2;
-                        p.getSkillManager().setCurrentLevel(Skill.PRAYER, t.getSkillManager().getCurrentLevel(Skill.PRAYER) + prayerRestored);
-                        if (p.getSkillManager().getCurrentLevel(Skill.PRAYER) > p.getSkillManager().getMaxLevel(Skill.PRAYER)) {
-                            p.getSkillManager().setCurrentLevel(Skill.PRAYER, p.getSkillManager().getMaxLevel(Skill.PRAYER));
-                        } else {
-                            p.getPacketSender().sendMessage("Your enchanced bolts leech some Prayer points from your opponent..");
-                        }
-                    }
+            double topazActivateChance = 0.04;
+            if (isArmadylCrossbowSpecialAttack) {
+                topazActivateChance *= 2;
+            }
+            if (guaranteedActivation || Misc.getRandomDouble() < topazActivateChance) {
+                target.performGraphic(new Graphic(757));
+                if (target.isPlayer()) {
+                    final Player t = target.getAsPlayer();
+                    t.getSkillManager().setCurrentLevel(Skill.MAGIC,
+                                                        t.getSkillManager().getCurrentLevel(Skill.MAGIC) - 1);
+                    t.getPacketSender().sendMessage("Your Magic level has been reduced.");
                 }
+            }
 
-                break;
-            case ENCHANTED_TOPAZ_BOLT:
+            break;
+        case ENCHANTED_OPAL_BOLT:
+        case ENCHANTED_DRAGONSTONE_OPAL_BOLT:
 
-                if (guaranteedActivation || Misc.getRandomDouble() < 0.04) {
-                    target.performGraphic(new Graphic(757));
-                    if (target.isPlayer()) {
-                        final Player t = target.getAsPlayer();
-                        t.getSkillManager().setCurrentLevel(Skill.MAGIC,
-                                                            t.getSkillManager().getCurrentLevel(Skill.MAGIC) - 1);
-                        t.getPacketSender().sendMessage("Your Magic level has been reduced.");
-                    }
-                }
+            double opalActivateChance = 0.05;
+            if (isArmadylCrossbowSpecialAttack) {
+                opalActivateChance *= 2;
+            }
+            if (guaranteedActivation || Misc.getRandomDouble() < opalActivateChance) {
+                target.performGraphic(new Graphic(749));
+                final int scale = isZaryteCrossbow ? 9 : 10;
+                final int extraDamage = p.getSkillManager().getCurrentLevel(Skill.RANGED) / scale;
+                damage += extraDamage;
+            }
 
-                break;
-            case ENCHANTED_OPAL_BOLT:
-            case ENCHANTED_OPAL_DRAGON_BOLT:
-
-                if (guaranteedActivation || Misc.getRandomDouble() < 0.05) {
-                    target.performGraphic(new Graphic(749));
-                    final int scale = isZaryteCrossbow ? 9 : 10;
-                    final int extraDamage = p.getSkillManager().getCurrentLevel(Skill.RANGED) / scale;
-                    damage += extraDamage;
-                }
-
-                break;
+            break;
 
         }
 
@@ -240,8 +285,19 @@ public class RangedData {
         MITHRIL_CROSSBOW(new int[]{9181}, new Ammunition[]{Ammunition.BRONZE_BOLT, Ammunition.OPAL_BOLT, Ammunition.ENCHANTED_OPAL_BOLT, Ammunition.IRON_BOLT, Ammunition.JADE_BOLT, Ammunition.ENCHANTED_JADE_BOLT, Ammunition.STEEL_BOLT, Ammunition.PEARL_BOLT, Ammunition.ENCHANTED_PEARL_BOLT, Ammunition.MITHRIL_BOLT, Ammunition.TOPAZ_BOLT, Ammunition.ENCHANTED_TOPAZ_BOLT}, RangedWeaponType.CROSSBOW),
         ADAMANT_CROSSBOW(new int[]{9183}, new Ammunition[]{Ammunition.BRONZE_BOLT, Ammunition.OPAL_BOLT, Ammunition.ENCHANTED_OPAL_BOLT, Ammunition.IRON_BOLT, Ammunition.JADE_BOLT, Ammunition.ENCHANTED_JADE_BOLT, Ammunition.STEEL_BOLT, Ammunition.PEARL_BOLT, Ammunition.ENCHANTED_PEARL_BOLT, Ammunition.MITHRIL_BOLT, Ammunition.TOPAZ_BOLT, Ammunition.ENCHANTED_TOPAZ_BOLT, Ammunition.ADAMANT_BOLT, Ammunition.SAPPHIRE_BOLT, Ammunition.ENCHANTED_SAPPHIRE_BOLT, Ammunition.EMERALD_BOLT, Ammunition.ENCHANTED_EMERALD_BOLT, Ammunition.RUBY_BOLT, Ammunition.ENCHANTED_RUBY_BOLT}, RangedWeaponType.CROSSBOW),
         RUNE_CROSSBOW(new int[]{9185}, new Ammunition[]{Ammunition.BRONZE_BOLT, Ammunition.OPAL_BOLT, Ammunition.ENCHANTED_OPAL_BOLT, Ammunition.IRON_BOLT, Ammunition.JADE_BOLT, Ammunition.ENCHANTED_JADE_BOLT, Ammunition.STEEL_BOLT, Ammunition.PEARL_BOLT, Ammunition.ENCHANTED_PEARL_BOLT, Ammunition.MITHRIL_BOLT, Ammunition.TOPAZ_BOLT, Ammunition.ENCHANTED_TOPAZ_BOLT, Ammunition.ADAMANT_BOLT, Ammunition.SAPPHIRE_BOLT, Ammunition.ENCHANTED_SAPPHIRE_BOLT, Ammunition.EMERALD_BOLT, Ammunition.ENCHANTED_EMERALD_BOLT, Ammunition.RUBY_BOLT, Ammunition.ENCHANTED_RUBY_BOLT, Ammunition.RUNITE_BOLT, Ammunition.BROAD_BOLT, Ammunition.DIAMOND_BOLT, Ammunition.ENCHANTED_DIAMOND_BOLT, Ammunition.ONYX_BOLT, Ammunition.ENCHANTED_ONYX_BOLT, Ammunition.DRAGON_BOLT, Ammunition.ENCHANTED_DRAGON_BOLT}, RangedWeaponType.CROSSBOW),
-        ARMADYL_CROSSBOW(new int[]{ItemIdentifiers.ARMADYL_CROSSBOW}, new Ammunition[]{Ammunition.BRONZE_BOLT, Ammunition.OPAL_BOLT, Ammunition.ENCHANTED_OPAL_BOLT, Ammunition.IRON_BOLT, Ammunition.JADE_BOLT, Ammunition.ENCHANTED_JADE_BOLT, Ammunition.STEEL_BOLT, Ammunition.PEARL_BOLT, Ammunition.ENCHANTED_PEARL_BOLT, Ammunition.MITHRIL_BOLT, Ammunition.TOPAZ_BOLT, Ammunition.ENCHANTED_TOPAZ_BOLT, Ammunition.ADAMANT_BOLT, Ammunition.SAPPHIRE_BOLT, Ammunition.ENCHANTED_SAPPHIRE_BOLT, Ammunition.EMERALD_BOLT, Ammunition.ENCHANTED_EMERALD_BOLT, Ammunition.RUBY_BOLT, Ammunition.ENCHANTED_RUBY_BOLT, Ammunition.RUNITE_BOLT, Ammunition.BROAD_BOLT, Ammunition.DIAMOND_BOLT, Ammunition.ENCHANTED_DIAMOND_BOLT, Ammunition.ONYX_BOLT, Ammunition.ENCHANTED_ONYX_BOLT, Ammunition.DRAGON_BOLT, Ammunition.ENCHANTED_DRAGON_BOLT, Ammunition.ENCHANTED_OPAL_DRAGON_BOLT, Ammunition.ENCHANTED_DRAGONSTONE_DRAGON_BOLT}, RangedWeaponType.CROSSBOW),
-        ZARYTE_CROSSBOW(new int[]{ItemIdentifiers.ZARYTE_CROSSBOW}, new Ammunition[]{Ammunition.BRONZE_BOLT, Ammunition.OPAL_BOLT, Ammunition.ENCHANTED_OPAL_BOLT, Ammunition.IRON_BOLT, Ammunition.JADE_BOLT, Ammunition.ENCHANTED_JADE_BOLT, Ammunition.STEEL_BOLT, Ammunition.PEARL_BOLT, Ammunition.ENCHANTED_PEARL_BOLT, Ammunition.MITHRIL_BOLT, Ammunition.TOPAZ_BOLT, Ammunition.ENCHANTED_TOPAZ_BOLT, Ammunition.ADAMANT_BOLT, Ammunition.SAPPHIRE_BOLT, Ammunition.ENCHANTED_SAPPHIRE_BOLT, Ammunition.EMERALD_BOLT, Ammunition.ENCHANTED_EMERALD_BOLT, Ammunition.RUBY_BOLT, Ammunition.ENCHANTED_RUBY_BOLT, Ammunition.RUNITE_BOLT, Ammunition.BROAD_BOLT, Ammunition.DIAMOND_BOLT, Ammunition.ENCHANTED_DIAMOND_BOLT, Ammunition.ONYX_BOLT, Ammunition.ENCHANTED_ONYX_BOLT, Ammunition.DRAGON_BOLT, Ammunition.ENCHANTED_DRAGON_BOLT, Ammunition.ENCHANTED_OPAL_DRAGON_BOLT, Ammunition.ENCHANTED_DRAGONSTONE_DRAGON_BOLT}, RangedWeaponType.CROSSBOW),
+        ARMADYL_CROSSBOW(new int[]{ItemIdentifiers.ARMADYL_CROSSBOW}, new Ammunition[]{Ammunition.BRONZE_BOLT,
+                                                                                       Ammunition.OPAL_BOLT,
+                                                                                       Ammunition.ENCHANTED_OPAL_BOLT
+                , Ammunition.IRON_BOLT, Ammunition.JADE_BOLT, Ammunition.ENCHANTED_JADE_BOLT, Ammunition.STEEL_BOLT,
+                                                                                       Ammunition.PEARL_BOLT,
+                                                                                       Ammunition.ENCHANTED_PEARL_BOLT, Ammunition.MITHRIL_BOLT, Ammunition.TOPAZ_BOLT, Ammunition.ENCHANTED_TOPAZ_BOLT, Ammunition.ADAMANT_BOLT, Ammunition.SAPPHIRE_BOLT, Ammunition.ENCHANTED_SAPPHIRE_BOLT, Ammunition.EMERALD_BOLT, Ammunition.ENCHANTED_EMERALD_BOLT, Ammunition.RUBY_BOLT, Ammunition.ENCHANTED_RUBY_BOLT, Ammunition.RUNITE_BOLT, Ammunition.BROAD_BOLT, Ammunition.DIAMOND_BOLT, Ammunition.ENCHANTED_DIAMOND_BOLT, Ammunition.ONYX_BOLT, Ammunition.ENCHANTED_ONYX_BOLT, Ammunition.DRAGON_BOLT, Ammunition.ENCHANTED_DRAGON_BOLT, Ammunition.ENCHANTED_DRAGONSTONE_DIAMOND_BOLT, Ammunition.ENCHANTED_DRAGONSTONE_OPAL_BOLT, Ammunition.ENCHANTED_DRAGONSTONE_DRAGON_BOLT}, RangedWeaponType.CROSSBOW),
+        ZARYTE_CROSSBOW(new int[]{ ItemIdentifiers.ZARYTE_CROSSBOW }, new Ammunition[]{ Ammunition.BRONZE_BOLT,
+                                                                                        Ammunition.OPAL_BOLT,
+                                                                                        Ammunition.ENCHANTED_OPAL_BOLT
+                , Ammunition.IRON_BOLT, Ammunition.JADE_BOLT, Ammunition.ENCHANTED_JADE_BOLT, Ammunition.STEEL_BOLT,
+                                                                                        Ammunition.PEARL_BOLT,
+                                                                                        Ammunition.ENCHANTED_PEARL_BOLT, Ammunition.MITHRIL_BOLT, Ammunition.TOPAZ_BOLT, Ammunition.ENCHANTED_TOPAZ_BOLT, Ammunition.ADAMANT_BOLT, Ammunition.SAPPHIRE_BOLT, Ammunition.ENCHANTED_SAPPHIRE_BOLT, Ammunition.EMERALD_BOLT, Ammunition.ENCHANTED_EMERALD_BOLT, Ammunition.RUBY_BOLT, Ammunition.ENCHANTED_RUBY_BOLT, Ammunition.RUNITE_BOLT, Ammunition.BROAD_BOLT, Ammunition.DIAMOND_BOLT, Ammunition.ENCHANTED_DIAMOND_BOLT, Ammunition.ONYX_BOLT, Ammunition.ENCHANTED_ONYX_BOLT, Ammunition.DRAGON_BOLT, Ammunition.ENCHANTED_DRAGON_BOLT, Ammunition.ENCHANTED_DRAGONSTONE_DIAMOND_BOLT, Ammunition.ENCHANTED_DRAGONSTONE_OPAL_BOLT, Ammunition.ENCHANTED_DRAGONSTONE_DRAGON_BOLT}, RangedWeaponType.CROSSBOW),
+
 
         BRONZE_DART(new int[]{806}, new Ammunition[]{Ammunition.BRONZE_DART}, RangedWeaponType.DART),
         IRON_DART(new int[]{807}, new Ammunition[]{Ammunition.IRON_DART}, RangedWeaponType.DART),
@@ -258,6 +314,8 @@ public class RangedData {
         MITHRIL_KNIFE(new int[]{866, 873, 5657}, new Ammunition[]{Ammunition.MITHRIL_KNIFE}, RangedWeaponType.KNIFE),
         ADAMANT_KNIFE(new int[]{867, 875, 5659}, new Ammunition[]{Ammunition.ADAMANT_KNIFE}, RangedWeaponType.KNIFE),
         RUNE_KNIFE(new int[]{868, 876, 5660, 5667}, new Ammunition[]{Ammunition.RUNE_KNIFE}, RangedWeaponType.KNIFE),
+        DRAGON_KNIFE(new int[]{22804, 22806, 22808, 22810}, new Ammunition[]{Ammunition.DRAGON_KNIFE},
+                     RangedWeaponType.KNIFE),
 
 
         TOKTZ_XIL_UL(new int[]{6522}, new Ammunition[]{Ammunition.TOKTZ_XIL_UL}, RangedWeaponType.TOKTZ_XIL_UL),
@@ -266,7 +324,9 @@ public class RangedData {
 
         BALLISTA(new int[]{19478, 19481}, new Ammunition[]{Ammunition.BRONZE_JAVELIN, Ammunition.IRON_JAVELIN, Ammunition.STEEL_JAVELIN, Ammunition.MITHRIL_JAVELIN, Ammunition.ADAMANT_JAVELIN, Ammunition.RUNE_JAVELIN, Ammunition.DRAGON_JAVELIN}, RangedWeaponType.BALLISTA),
 
-        TOXIC_BLOWPIPE(new int[]{12926}, new Ammunition[]{Ammunition.DRAGON_DART}, RangedWeaponType.BLOWPIPE);
+        TOXIC_BLOWPIPE(new int[]{12926}, new Ammunition[]{Ammunition.DRAGON_DART}, RangedWeaponType.BLOWPIPE),
+
+        MORRIGANS_JAVELIN(new int[] {22636}, new Ammunition[]{Ammunition.MORRIGANS_JAVELIN}, RangedWeaponType.MORRIGANS_JAVELIN);
 
         static {
             for (RangedWeapon data : RangedWeapon.values()) {
@@ -291,6 +351,10 @@ public class RangedData {
             return rangedWeapons.get(weapon);
         }
 
+        public static RangedWeapon getFor(int id) {
+            return rangedWeapons.get(id);
+        }
+
         public int[] getWeaponIds() {
             return weaponIds;
         }
@@ -306,107 +370,114 @@ public class RangedData {
 
     public enum Ammunition {
 
-        BRONZE_ARROW(882, new Graphic(19, GraphicHeight.HIGH), 10, 7),
-        IRON_ARROW(884, new Graphic(18, GraphicHeight.HIGH), 9, 10),
-        STEEL_ARROW(886, new Graphic(20, GraphicHeight.HIGH), 11, 16),
-        MITHRIL_ARROW(888, new Graphic(21, GraphicHeight.HIGH), 12, 22),
-        ADAMANT_ARROW(890, new Graphic(22, GraphicHeight.HIGH), 13, 31),
-        RUNE_ARROW(892, new Graphic(24, GraphicHeight.HIGH), 15, 50),
-        ICE_ARROW(78, new Graphic(25, GraphicHeight.HIGH), 16, 58),
-        BROAD_ARROW(4160, new Graphic(20, GraphicHeight.HIGH), 11, 58),
-        DRAGON_ARROW(11212, new Graphic(1111, GraphicHeight.HIGH), 1120, 65),
+        BRONZE_ARROW(882, new Graphic(19, GraphicHeight.HIGH), 10, 7, -1),
+        IRON_ARROW(884, new Graphic(18, GraphicHeight.HIGH), 9, 10, -1),
+        STEEL_ARROW(886, new Graphic(20, GraphicHeight.HIGH), 11, 16, -1),
+        MITHRIL_ARROW(888, new Graphic(21, GraphicHeight.HIGH), 12, 22, -1),
+        ADAMANT_ARROW(890, new Graphic(22, GraphicHeight.HIGH), 13, 31, -1),
+        RUNE_ARROW(892, new Graphic(24, GraphicHeight.HIGH), 15, 50, -1),
+        ICE_ARROW(78, new Graphic(25, GraphicHeight.HIGH), 16, 58, -1),
+        BROAD_ARROW(4160, new Graphic(20, GraphicHeight.HIGH), 11, 58, -1),
+        DRAGON_ARROW(11212, new Graphic(1111, GraphicHeight.HIGH), 1120, 65, -1),
 
-        BRONZE_BOLT(877, new Graphic(955, GraphicHeight.HIGH), 27, 13),
-        OPAL_BOLT(879, new Graphic(955, GraphicHeight.HIGH), 27, 20),
-        ENCHANTED_OPAL_BOLT(9236, new Graphic(955, GraphicHeight.HIGH), 27, 20),
-        IRON_BOLT(9140, new Graphic(955, GraphicHeight.HIGH), 27, 28),
-        JADE_BOLT(9335, new Graphic(955, GraphicHeight.HIGH), 27, 31),
-        ENCHANTED_JADE_BOLT(9237, new Graphic(955, GraphicHeight.HIGH), 27, 31),
-        STEEL_BOLT(9141, new Graphic(955, GraphicHeight.HIGH), 27, 35),
-        PEARL_BOLT(880, new Graphic(955, GraphicHeight.HIGH), 27, 38),
-        ENCHANTED_PEARL_BOLT(9238, new Graphic(955, GraphicHeight.HIGH), 27, 38),
-        MITHRIL_BOLT(9142, new Graphic(955, GraphicHeight.HIGH), 27, 40),
-        TOPAZ_BOLT(9336, new Graphic(955, GraphicHeight.HIGH), 27, 50),
-        ENCHANTED_TOPAZ_BOLT(9239, new Graphic(955, GraphicHeight.HIGH), 27, 50),
-        ADAMANT_BOLT(9143, new Graphic(955, GraphicHeight.HIGH), 27, 60),
-        SAPPHIRE_BOLT(9337, new Graphic(955, GraphicHeight.HIGH), 27, 65),
-        ENCHANTED_SAPPHIRE_BOLT(9240, new Graphic(955, GraphicHeight.HIGH), 27, 65),
-        EMERALD_BOLT(9338, new Graphic(955, GraphicHeight.HIGH), 27, 70),
-        ENCHANTED_EMERALD_BOLT(9241, new Graphic(955, GraphicHeight.HIGH), 27, 70),
-        RUBY_BOLT(9339, new Graphic(955, GraphicHeight.HIGH), 27, 75),
-        ENCHANTED_RUBY_BOLT(9242, new Graphic(955, GraphicHeight.HIGH), 27, 75),
-        BROAD_BOLT(13280, new Graphic(955, GraphicHeight.HIGH), 27, 100),
-        RUNITE_BOLT(9144, new Graphic(955, GraphicHeight.HIGH), 27, 115),
-        DIAMOND_BOLT(9340, new Graphic(955, GraphicHeight.HIGH), 27, 105),
-        ENCHANTED_DIAMOND_BOLT(9243, new Graphic(955, GraphicHeight.HIGH), 27, 105),
-        DRAGON_BOLT(9341, new Graphic(955, GraphicHeight.HIGH), 27, 117),
-        ENCHANTED_DRAGON_BOLT(9244, new Graphic(955, GraphicHeight.HIGH), 27, 117),
-        ONYX_BOLT(9342, new Graphic(955, GraphicHeight.HIGH), 27, 120),
-        ENCHANTED_ONYX_BOLT(9245, new Graphic(955, GraphicHeight.HIGH), 27, 120),
-        ENCHANTED_DRAGONSTONE_DRAGON_BOLT(DRAGONSTONE_DRAGON_BOLTS_E_, new Graphic(955, GraphicHeight.HIGH), 27, 122),
-        ENCHANTED_OPAL_DRAGON_BOLT(OPAL_DRAGON_BOLTS_E_, new Graphic(955, GraphicHeight.HIGH), 27, 122),
+        BRONZE_BOLT(877, new Graphic(955, GraphicHeight.HIGH), 27, 13, -1),
+        OPAL_BOLT(879, new Graphic(955, GraphicHeight.HIGH), 27, 20, -1),
+        ENCHANTED_OPAL_BOLT(9236, new Graphic(955, GraphicHeight.HIGH), 27, 20, -1),
+        IRON_BOLT(9140, new Graphic(955, GraphicHeight.HIGH), 27, 28, -1),
+        JADE_BOLT(9335, new Graphic(955, GraphicHeight.HIGH), 27, 31, -1),
+        ENCHANTED_JADE_BOLT(9237, new Graphic(955, GraphicHeight.HIGH), 27, 31, -1),
+        STEEL_BOLT(9141, new Graphic(955, GraphicHeight.HIGH), 27, 35, -1),
+        PEARL_BOLT(880, new Graphic(955, GraphicHeight.HIGH), 27, 38, -1),
+        ENCHANTED_PEARL_BOLT(9238, new Graphic(955, GraphicHeight.HIGH), 27, 38, -1),
+        MITHRIL_BOLT(9142, new Graphic(955, GraphicHeight.HIGH), 27, 40, -1),
+        TOPAZ_BOLT(9336, new Graphic(955, GraphicHeight.HIGH), 27, 50, -1),
+        ENCHANTED_TOPAZ_BOLT(9239, new Graphic(955, GraphicHeight.HIGH), 27, 50, -1),
+        ADAMANT_BOLT(9143, new Graphic(955, GraphicHeight.HIGH), 27, 60, -1),
+        SAPPHIRE_BOLT(9337, new Graphic(955, GraphicHeight.HIGH), 27, 65, -1),
+        ENCHANTED_SAPPHIRE_BOLT(9240, new Graphic(955, GraphicHeight.HIGH), 27, 65, -1),
+        EMERALD_BOLT(9338, new Graphic(955, GraphicHeight.HIGH), 27, 70, -1),
+        ENCHANTED_EMERALD_BOLT(9241, new Graphic(955, GraphicHeight.HIGH), 27, 70, -1),
+        RUBY_BOLT(9339, new Graphic(955, GraphicHeight.HIGH), 27, 75, -1),
+        ENCHANTED_RUBY_BOLT(9242, new Graphic(955, GraphicHeight.HIGH), 27, 75, -1),
+        BROAD_BOLT(13280, new Graphic(955, GraphicHeight.HIGH), 27, 100, -1),
+        RUNITE_BOLT(9144, new Graphic(955, GraphicHeight.HIGH), 27, 115, -1),
+        DIAMOND_BOLT(9340, new Graphic(955, GraphicHeight.HIGH), 27, 105, -1),
+        ENCHANTED_DIAMOND_BOLT(9243, new Graphic(955, GraphicHeight.HIGH), 27, 105, -1),
+        DRAGON_BOLT(9341, new Graphic(955, GraphicHeight.HIGH), 27, 117, -1),
+        ENCHANTED_DRAGON_BOLT(9244, new Graphic(955, GraphicHeight.HIGH), 27, 117, -1),
+        ONYX_BOLT(9342, new Graphic(955, GraphicHeight.HIGH), 27, 120, -1),
+        ENCHANTED_ONYX_BOLT(9245, new Graphic(955, GraphicHeight.HIGH), 27, 120, -1),
+        ENCHANTED_DRAGONSTONE_DRAGON_BOLT(DRAGONSTONE_DRAGON_BOLTS_E_, new Graphic(955, GraphicHeight.HIGH), 27, 122, -1),
+        ENCHANTED_DRAGONSTONE_DIAMOND_BOLT(DIAMOND_DRAGON_BOLTS_E_, new Graphic(955, GraphicHeight.HIGH), 27, 122, -1),
+        ENCHANTED_DRAGONSTONE_OPAL_BOLT(OPAL_DRAGON_BOLTS_E_, new Graphic(955, GraphicHeight.HIGH), 27, 122, -1),
+        BRONZE_DART(806, new Graphic(232, GraphicHeight.HIGH), 226, 1, -1),
+        IRON_DART(807, new Graphic(233, GraphicHeight.HIGH), 227, 4, -1),
+        STEEL_DART(808, new Graphic(234, GraphicHeight.HIGH), 228, 6, -1),
+        MITHRIL_DART(809, new Graphic(235, GraphicHeight.HIGH), 229, 8, -1),
+        ADAMANT_DART(810, new Graphic(236, GraphicHeight.HIGH), 230, 13, -1),
+        RUNE_DART(811, new Graphic(237, GraphicHeight.HIGH), 231, 17, -1),
+        DRAGON_DART(11230, new Graphic(1123, GraphicHeight.HIGH), 226, 24, -1),
 
-        BRONZE_DART(806, new Graphic(232, GraphicHeight.HIGH), 226, 1),
-        IRON_DART(807, new Graphic(233, GraphicHeight.HIGH), 227, 4),
-        STEEL_DART(808, new Graphic(234, GraphicHeight.HIGH), 228, 6),
-        MITHRIL_DART(809, new Graphic(235, GraphicHeight.HIGH), 229, 8),
-        ADAMANT_DART(810, new Graphic(236, GraphicHeight.HIGH), 230, 13),
-        RUNE_DART(811, new Graphic(237, GraphicHeight.HIGH), 231, 17),
-        DRAGON_DART(11230, new Graphic(1123, GraphicHeight.HIGH), 226, 24),
+        BRONZE_KNIFE(864, new Graphic(219, GraphicHeight.HIGH), 212, 3, -1),
+        BRONZE_KNIFE_P1(870, new Graphic(219, GraphicHeight.HIGH), 212, 3, -1),
+        BRONZE_KNIFE_P2(5654, new Graphic(219, GraphicHeight.HIGH), 212, 3, -1),
+        BRONZE_KNIFE_P3(5661, new Graphic(219, GraphicHeight.HIGH), 212, 3, -1),
 
-        BRONZE_KNIFE(864, new Graphic(219, GraphicHeight.HIGH), 212, 3),
-        BRONZE_KNIFE_P1(870, new Graphic(219, GraphicHeight.HIGH), 212, 3),
-        BRONZE_KNIFE_P2(5654, new Graphic(219, GraphicHeight.HIGH), 212, 3),
-        BRONZE_KNIFE_P3(5661, new Graphic(219, GraphicHeight.HIGH), 212, 3),
+        IRON_KNIFE(863, new Graphic(220, GraphicHeight.HIGH), 213, 4, -1),
+        IRON_KNIFE_P1(871, new Graphic(220, GraphicHeight.HIGH), 213, 4, -1),
+        IRON_KNIFE_P2(5655, new Graphic(220, GraphicHeight.HIGH), 213, 4, -1),
+        IRON_KNIFE_P3(5662, new Graphic(220, GraphicHeight.HIGH), 213, 4, -1),
 
-        IRON_KNIFE(863, new Graphic(220, GraphicHeight.HIGH), 213, 4),
-        IRON_KNIFE_P1(871, new Graphic(220, GraphicHeight.HIGH), 213, 4),
-        IRON_KNIFE_P2(5655, new Graphic(220, GraphicHeight.HIGH), 213, 4),
-        IRON_KNIFE_P3(5662, new Graphic(220, GraphicHeight.HIGH), 213, 4),
+        STEEL_KNIFE(865, new Graphic(221, GraphicHeight.HIGH), 214, 7, -1),
+        STEEL_KNIFE_P1(872, new Graphic(221, GraphicHeight.HIGH), 214, 7, -1),
+        STEEL_KNIFE_P2(5656, new Graphic(221, GraphicHeight.HIGH), 214, 7, -1),
+        STEEL_KNIFE_P3(5663, new Graphic(221, GraphicHeight.HIGH), 214, 7, -1),
 
-        STEEL_KNIFE(865, new Graphic(221, GraphicHeight.HIGH), 214, 7),
-        STEEL_KNIFE_P1(872, new Graphic(221, GraphicHeight.HIGH), 214, 7),
-        STEEL_KNIFE_P2(5656, new Graphic(221, GraphicHeight.HIGH), 214, 7),
-        STEEL_KNIFE_P3(5663, new Graphic(221, GraphicHeight.HIGH), 214, 7),
+        BLACK_KNIFE(869, new Graphic(222, GraphicHeight.HIGH), 215, 8, -1),
+        BLACK_KNIFE_P1(874, new Graphic(222, GraphicHeight.HIGH), 215, 8, -1),
+        BLACK_KNIFE_P2(5658, new Graphic(222, GraphicHeight.HIGH), 215, 8, -1),
+        BLACK_KNIFE_P3(5665, new Graphic(222, GraphicHeight.HIGH), 215, 8, -1),
 
-        BLACK_KNIFE(869, new Graphic(222, GraphicHeight.HIGH), 215, 8),
-        BLACK_KNIFE_P1(874, new Graphic(222, GraphicHeight.HIGH), 215, 8),
-        BLACK_KNIFE_P2(5658, new Graphic(222, GraphicHeight.HIGH), 215, 8),
-        BLACK_KNIFE_P3(5665, new Graphic(222, GraphicHeight.HIGH), 215, 8),
+        MITHRIL_KNIFE(866, new Graphic(223, GraphicHeight.HIGH), 215, 10, -1),
+        MITHRIL_KNIFE_P1(873, new Graphic(223, GraphicHeight.HIGH), 215, 10, -1),
+        MITHRIL_KNIFE_P2(5657, new Graphic(223, GraphicHeight.HIGH), 215, 10, -1),
+        MITHRIL_KNIFE_P3(5664, new Graphic(223, GraphicHeight.HIGH), 215, 10, -1),
 
-        MITHRIL_KNIFE(866, new Graphic(223, GraphicHeight.HIGH), 215, 10),
-        MITHRIL_KNIFE_P1(873, new Graphic(223, GraphicHeight.HIGH), 215, 10),
-        MITHRIL_KNIFE_P2(5657, new Graphic(223, GraphicHeight.HIGH), 215, 10),
-        MITHRIL_KNIFE_P3(5664, new Graphic(223, GraphicHeight.HIGH), 215, 10),
+        ADAMANT_KNIFE(867, new Graphic(224, GraphicHeight.HIGH), 217, 14, -1),
+        ADAMANT_KNIFE_P1(875, new Graphic(224, GraphicHeight.HIGH), 217, 14, -1),
+        ADAMANT_KNIFE_P2(5659, new Graphic(224, GraphicHeight.HIGH), 217, 14, -1),
+        ADAMANT_KNIFE_P3(5666, new Graphic(224, GraphicHeight.HIGH), 217, 14, -1),
 
-        ADAMANT_KNIFE(867, new Graphic(224, GraphicHeight.HIGH), 217, 14),
-        ADAMANT_KNIFE_P1(875, new Graphic(224, GraphicHeight.HIGH), 217, 14),
-        ADAMANT_KNIFE_P2(5659, new Graphic(224, GraphicHeight.HIGH), 217, 14),
-        ADAMANT_KNIFE_P3(5666, new Graphic(224, GraphicHeight.HIGH), 217, 14),
+        RUNE_KNIFE(868, new Graphic(225, GraphicHeight.HIGH), 218, 24, -1),
+        RUNE_KNIFE_P1(876, new Graphic(225, GraphicHeight.HIGH), 218, 24, -1),
+        RUNE_KNIFE_P2(5660, new Graphic(225, GraphicHeight.HIGH), 218, 24, -1),
+        RUNE_KNIFE_P3(5667, new Graphic(225, GraphicHeight.HIGH), 218, 24, -1),
 
-        RUNE_KNIFE(868, new Graphic(225, GraphicHeight.HIGH), 218, 24),
-        RUNE_KNIFE_P1(876, new Graphic(225, GraphicHeight.HIGH), 218, 24),
-        RUNE_KNIFE_P2(5660, new Graphic(225, GraphicHeight.HIGH), 218, 24),
-        RUNE_KNIFE_P3(5667, new Graphic(225, GraphicHeight.HIGH), 218, 24),
+        DRAGON_KNIFE(22804, null, 28, 30, 8194),
+        DRAGON_KNIFE_P1(22806, null, 697, 30, 8195),
+        DRAGON_KNIFE_P2(22808, null, 697, 30, 8195),
+        DRAGON_KNIFE_P3(22810, null, 697, 30, 8195),
 
-		/*	BRONZE_THROWNAXE(800, 43, 36, 3, 44, 7),
-        IRON_THROWNAXE(801, 42, 35, 3, 44, 9),
-		STEEL_THROWNAXE(802, 44, 37, 3, 44, 11),
-		MITHRIL_THROWNAXE(803, 45, 38, 3, 44, 13),
-		ADAMANT_THROWNAXE(804, 46, 39, 3, 44, 15),
+		/*	BRONZE_THROWNAXE(800, 43, 36, 3, 44, 7, -1),
+        IRON_THROWNAXE(801, 42, 35, 3, 44, 9, -1),
+		STEEL_THROWNAXE(802, 44, 37, 3, 44, 11, -1),
+		MITHRIL_THROWNAXE(803, 45, 38, 3, 44, 13, -1),
+		ADAMANT_THROWNAXE(804, 46, 39, 3, 44, 15, -1),
 		RUNE_THROWNAXE(805, 48, 41, 3, 44, 17),*/
 
-        BRONZE_JAVELIN(825, null, 200, 25),
-        IRON_JAVELIN(826, null, 201, 42),
-        STEEL_JAVELIN(827, null, 202, 64),
-        MITHRIL_JAVELIN(828, null, 203, 85),
-        ADAMANT_JAVELIN(829, null, 204, 107),
-        RUNE_JAVELIN(830, null, 205, 124),
-        DRAGON_JAVELIN(19484, null, 1301, 150),
+        BRONZE_JAVELIN(825, null, 200, 25, -1),
+        IRON_JAVELIN(826, null, 201, 42, -1),
+        STEEL_JAVELIN(827, null, 202, 64, -1),
+        MITHRIL_JAVELIN(828, null, 203, 85, -1),
+        ADAMANT_JAVELIN(829, null, 204, 107, -1),
+        RUNE_JAVELIN(830, null, 205, 124, -1),
+        DRAGON_JAVELIN(19484, null, 1301, 150, -1),
 
-        TOKTZ_XIL_UL(6522, null, 442, 58),
+        MORRIGANS_JAVELIN(22636, null, 200, 145, -1),
 
-        BOLT_RACK(4740, null, 27, 55),;
+        TOKTZ_XIL_UL(6522, null, 442, 58, -1),
+
+        BOLT_RACK(4740, null, 27, 55, -1),;
 
         //Ammo that shouldn't be dropped on the floor
         private static final ImmutableSet<Ammunition> NO_GROUND_DROP = Sets.immutableEnumSet(BRONZE_JAVELIN, IRON_JAVELIN, STEEL_JAVELIN, ADAMANT_JAVELIN, RUNE_JAVELIN, DRAGON_JAVELIN);
@@ -421,12 +492,14 @@ public class RangedData {
         private int itemId;
         private int projectileId;
         private int strength;
+        private int animationId;
 
-        Ammunition(int itemId, Graphic startGfx, int projectileId, int strength) {
+        Ammunition(int itemId, Graphic startGfx, int projectileId, int strength, int animationId) {
             this.itemId = itemId;
             this.startGfx = startGfx;
             this.projectileId = projectileId;
             this.strength = strength;
+            this.animationId = animationId;
         }
 
         public static Ammunition getFor(Player p) {
@@ -478,27 +551,34 @@ public class RangedData {
         public boolean dropOnFloor() {
             return !NO_GROUND_DROP.contains(this);
         }
+
+        public int getAnimationId() {
+            return animationId;
+        }
     }
 
     public enum RangedWeaponType {
-        KNIFE(4, 6, FightType.KNIFE_LONGRANGE),
-        DART(3, 5, FightType.DART_LONGRANGE),
-        TOKTZ_XIL_UL(5, 6, FightType.OBBY_RING_LONGRANGE),
-        LONGBOW(9, 10, FightType.LONGBOW_LONGRANGE),
-        BLOWPIPE(5, 7, FightType.BLOWPIPE_LONGRANGE),
-        SHORTBOW(7, 9, FightType.SHORTBOW_LONGRANGE),
-        CROSSBOW(7, 9, FightType.CROSSBOW_LONGRANGE),
-        BALLISTA(7, 9, FightType.BALLISTA_LONGRANGE),
+        KNIFE(4, 6, FightType.KNIFE_LONGRANGE, false),
+        DART(3, 5, FightType.DART_LONGRANGE, false),
+        TOKTZ_XIL_UL(5, 6, FightType.OBBY_RING_LONGRANGE, false),
+        MORRIGANS_JAVELIN(5, 6, FightType.JAVELIN_LONGRANGE, false),
+        LONGBOW(9, 10, FightType.LONGBOW_LONGRANGE, true),
+        BLOWPIPE(5, 7, FightType.BLOWPIPE_LONGRANGE, false),
+        SHORTBOW(7, 9, FightType.SHORTBOW_LONGRANGE, true),
+        CROSSBOW(7, 9, FightType.CROSSBOW_LONGRANGE, true),
+        BALLISTA(7, 9, FightType.BALLISTA_LONGRANGE, true),
         ;
 
     	private final FightType longRangeFightType;
         private final int defaultDistance;
         private final int longRangeDistance;
+        private final boolean usesAmmoSlot;
 
-        RangedWeaponType(int defaultDistance, int longRangeDistance, FightType longRangeFightType) {
+        RangedWeaponType(int defaultDistance, int longRangeDistance, FightType longRangeFightType, boolean usesAmmoSlot) {
             this.defaultDistance = defaultDistance;
             this.longRangeDistance = longRangeDistance;
             this.longRangeFightType = longRangeFightType;
+            this.usesAmmoSlot = usesAmmoSlot;
         }
 
         public int getDefaultDistance() {
@@ -512,6 +592,10 @@ public class RangedData {
 		public FightType getLongRangeFightType() {
 			return longRangeFightType;
 		}
+
+        public boolean isUsesAmmoSlot() {
+            return usesAmmoSlot;
+        }
     }
 
     /**
@@ -524,6 +608,7 @@ public class RangedData {
         case DART:
         case TOKTZ_XIL_UL:
         case BLOWPIPE:
+        case MORRIGANS_JAVELIN:
             return 1 + (distance / 6);
 
         case SHORTBOW:

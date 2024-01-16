@@ -1,42 +1,91 @@
-# RSPSApp
+# Simulation RSPS
 
-## Vision
+This contains a RuneScape Private Server (RSPS) specifically modified to facilitate training
+reinforcement learning agents. It builds upon [Elvarg RSPS](https://github.com/RSPSApp/elvarg-rsps).
 
-The vision of this project is to have a very stable and functional RuneScape Private Server source which is open source to the entire community. As an added bonus, 
-all copies of this source are compatible with our webclient, which we will be opening for other servers to use in the near future. 
-We believe more can be achieved when we work together as a community.
+Key modifications in this project can be reviewed in the [rl](ElvargServer/src/main/java/com/github/naton1/rl) package.
+For a comprehensive view of all changes, consider running a diff between this and the upstream repository.
 
-## Setting up your fork:
+#### Primary Modifications
 
-1. Fork the repo
-2. Clone your fork of rhe repo using `git clone <fork url>`
-3. Inside your cloned fork, execute:
-```git remote add rspsapp https://github.com/RSPSApp/elvarg-rsps.git```
+* Development of a [plugin](ElvargServer/src/main/java/com/elvarg/game/plugin)
+  and [event](ElvargServer/src/main/java/com/elvarg/game/event) system.
+* Creation of
+  a [reinforcement learning plugin](ElvargServer/src/main/java/com/github/naton1/rl/ReinforcementLearningPlugin.java).
 
-This creates a link to the main repo so you can pull bug fixes and core feature improvements. 
-It also means you can open a PR to contribute to the core server base, if you fix a bug or add a feature that would be useful to other servers.
+#### Repository Synchronization
 
-### Getting the latest from RSPSApp/elvarg-rsps
+To synchronize with the [upstream repository](https://github.com/RSPSApp/elvarg-rsps), use:
+`git subtree pull --prefix=simulation-rsps https://github.com/RSPSApp/elvarg-rsps.git master`
 
-Any time you want to pull the latest changes from the core repo, just do:
+**Note: This repository has diverged from the upstream due to incompatible changes in the upstream (like their own
+plugin system).**
 
-```git checkout master```
-then
-```git pull rspsapp master```
+#### Simulation Preview
 
-### Contributing to the Core
+![Simulation Gif](../assets/simulation.gif)
 
-If you want to fix something on `RSPSApp/elvarg-rsps`, you need to create a clean branch from the latest version or our master. 
+# How To Use
 
-This is because we want to keep `RSPSApp/elvarg-rsps` vanilla and true to the original goal of Elvarg.   
+## ElvargServer
 
-1. Create a new branch for your changes ```git checkout -b "feature-description-here" --track rspsapp/master``` 
-**Change `feature-description-here` to whatever you're doing**
-2. Do the work/fix
-3. Commit your changes ```git add --all``` then ```git commit -m "Fixing ..."```
-4. Push your changes to a remote branch ```git push```
-5. Go to Github > Pull Requests > New Pull Request
+This contains the simulated game environment. By default, the reinforcement learning plugin will run, launching the
+remote environment server required for training/evaluation (see [pvp-ml](../pvp-ml/README.md) for connection details).
 
+It requires running with Java 17.
 
+1. Navigate to the [ElvargServer](ElvargServer) directory.
+2. Launch the server using gradle: `./gradlew run`.
 
+**Note:** [pvp-ml](../pvp-ml/README.md#how-to-use) will install Java 17.
 
+### Connect to Server via Client
+
+Connect to the server with a RSPS client by cloning upstream, and launching the built-in client. This is useful for
+testing and observing training.
+
+It requires running with Java 11.
+
+1. Clone the upstream repository: `git clone https://github.com/RSPSApp/elvarg-rsps`.
+2. Change to the ElvargClient directory: `cd elvarg-rsps/ElvargClient`.
+3. Start the client with gradle: `./gradlew run`.
+4. Log in!
+
+### Reinforcement Learning Plugin
+
+This extends the game logic with a custom reinforcement learning plugin (`ReinforcementLearningPlugin`)
+(note: the plugin/event systems themselves were added in as part of this as well to make the code cleaner).
+
+#### Features:
+
+* Launches a socket
+  server ([RemoteEnvironmentServer](ElvargServer/src/main/java/com/github/naton1/rl/RemoteEnvironmentServer.java)) for
+  API interactions. This exposes routes for logging in and out, and for step and reset requests (like the gym
+  interface).
+* Enables control over training agents via
+  API ([RemoteEnvironmentPlayerBot](ElvargServer/src/main/java/com/github/naton1/rl/RemoteEnvironmentPlayerBot.java))
+* Supports independent ML-driven
+  agents ([AgentBotLoader](ElvargServer/src/main/java/com/github/naton1/rl/AgentBotLoader.java)) and player-controlled
+  agents ([EnableAgentCommand](ElvargServer/src/main/java/com/github/naton1/rl/command/EnableAgentCommand.java)).
+
+### Add New Environment
+
+Adding a new environment requires a few simple steps, assuming the environment contract has already been created.
+
+1) Implement an `AgentEnvironment` class for the new environment.
+2) Implement an `EnvironmentDescriptor` class for the new environment, and associated classes (such as
+   `EnvironmentParams`).
+3) Add a new type to the `EnvironmentRegistry` enum. This type can now be used for training.
+
+# Simulation Accuracy
+
+The aim is to replicate OSRS combat as accurately as possible. Achieving this required extensive modifications to the
+original RSPS, especially in combat mechanics (ex. food consumption and attack delays). Precision in simulating these
+details is crucial to ensure that the agent's learned policies are applicable to the live game.
+
+# Possible Enhancements
+
+## Generalized RL Plugin
+
+Future work could involve generalizing the plugin logic for broader applicability across various RSPS frameworks. This
+would facilitate easier adaptation and training on different servers if needed.

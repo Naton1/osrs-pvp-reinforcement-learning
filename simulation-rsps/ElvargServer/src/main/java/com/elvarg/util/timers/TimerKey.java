@@ -15,7 +15,8 @@ public enum TimerKey {
 	CASTLEWARS_TAKE_ITEM,
 	STEPPING_OUT,
 	BOT_WAIT_FOR_PLAYERS(Misc.getTicks(180 /* 3 minutes */)),
-	STAT_CHANGE;
+	STAT_CHANGE,
+	VENGEANCE_COOLDOWN;
 
 	private int ticks;
 

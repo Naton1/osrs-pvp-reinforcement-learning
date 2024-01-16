@@ -6,6 +6,7 @@ import com.elvarg.game.content.combat.ranged.RangedData.RangedWeapon;
 import com.elvarg.game.definition.ItemDefinition;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Item;
+import com.elvarg.game.model.container.impl.Equipment;
 
 /**
  * Represents a bonus manager. Handles a player's equipment bonuses.
@@ -34,7 +35,7 @@ public class BonusManager {
     private int[] attackBonus = new int[5];
     private int[] defenceBonus = new int[5];
     private int[] otherBonus = new int[4];
-    
+
     /**
      * Opens the interface which displays the player's bonuses.
      *
@@ -42,7 +43,6 @@ public class BonusManager {
      */
     public static void open(Player player) {
         player.getPacketSender().sendInterface(INTERFACE_ID);
-        player.getPacketSender().sendTab(3);
         BonusManager.update(player);
     }
 
@@ -54,14 +54,16 @@ public class BonusManager {
     public static void update(Player player) {
         int totalBonuses = STRING_ID.length;
         int[] bonuses = new int[totalBonuses];
+        final RangedWeapon rangedWeapon = RangedWeapon.getFor(player);
         for (Item item : player.getEquipment().getItems()) {
             ItemDefinition definition = ItemDefinition.forId(item.getId());
             if (definition.getBonuses() != null) {
+                if (rangedWeapon != null && !rangedWeapon.getType().isUsesAmmoSlot()
+                    && definition.getEquipmentType().getSlot() == Equipment.AMMUNITION_SLOT) {
+                    // Don't count ammo slot bonuses if weapon doesn't use it
+                    continue;
+                }
                 for (int i = 0; i < definition.getBonuses().length; i++) {
-                    // Count range str only once.
-                    if (i == 11 && bonuses[i] != 0) {
-                        continue;
-                    }
                     bonuses[i] += definition.getBonuses()[i];
                 }
             }

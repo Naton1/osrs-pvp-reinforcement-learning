@@ -14,6 +14,8 @@ import com.elvarg.game.entity.updating.NPCUpdating;
 import com.elvarg.game.entity.updating.PlayerUpdating;
 import com.elvarg.game.entity.updating.sync.GameSyncExecutor;
 import com.elvarg.game.entity.updating.sync.GameSyncTask;
+import com.elvarg.game.event.EventDispatcher;
+import com.elvarg.game.event.events.PlayerPacketsFlushedEvent;
 import com.elvarg.game.model.Graphic;
 import com.elvarg.game.model.GraphicHeight;
 import com.elvarg.game.model.Location;
@@ -21,8 +23,17 @@ import com.elvarg.game.model.commands.impl.Players;
 import com.elvarg.game.task.TaskManager;
 import com.elvarg.util.Misc;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 import static com.elvarg.game.GameConstants.PLAYER_PERSISTENCE;
 
@@ -44,7 +55,8 @@ public class World {
 	/**
 	 * The collection of active {@link PlayerBot}s.
 	 */
-	private static TreeMap<String, PlayerBot> playerBots = new TreeMap<String, PlayerBot>(String.CASE_INSENSITIVE_ORDER);
+	private static TreeMap<String, PlayerBot> playerBots =
+			new TreeMap<String, PlayerBot>(String.CASE_INSENSITIVE_ORDER);
 
 	/**
 	 * The collection of active {@link NPC}s.
@@ -107,8 +119,9 @@ public class World {
 		// Add pending players..
 		for (int i = 0; i < GameConstants.QUEUED_LOOP_THRESHOLD; i++) {
 			Player player = addPlayerQueue.poll();
-			if (player == null)
+			if (player == null) {
 				break;
+			}
 			// Kick any copies before adding the new player
 			World.getPlayerByName(player.getUsername()).ifPresent(e -> e.requestLogout());
 			getPlayers().add(player);
@@ -132,32 +145,46 @@ public class World {
 		// Add pending Npcs..
 		for (int i = 0; i < GameConstants.QUEUED_LOOP_THRESHOLD; i++) {
 			NPC npc = addNPCQueue.poll();
-			if (npc == null)
+			if (npc == null) {
 				break;
+			}
 			getNpcs().add(npc);
 		}
 
 		// Removing pending npcs..
 		for (int i = 0; i < GameConstants.QUEUED_LOOP_THRESHOLD; i++) {
 			NPC npc = removeNPCQueue.poll();
-			if (npc == null)
+			if (npc == null) {
 				break;
+			}
 			getNpcs().remove(npc);
 		}
 
 		// Handle synchronization tasks.
-		executor.sync(new GameSyncTask(true, false) {
-			@Override
-			public void execute(int index) {
-				Player player = players.get(index);
-				try {
-					player.process();
-				} catch (Exception e) {
-					e.printStackTrace();
-					player.requestLogout();
-				}
-			}
-		});
+		// Process player packets first, then process player (ex. combat).
+		// This seems to be how OSRS does it (at least, for combat).
+		final List<Player> sortedPlayers = players.stream()
+		                                    .filter(Objects::nonNull)
+		                                    .sorted(Comparator.comparingDouble(Player::getPid))
+											.toList();
+		sortedPlayers.forEach(player -> {
+			       try {
+				       player.processPackets();
+			       }
+			       catch (Exception e) {
+				       e.printStackTrace();
+				       player.requestLogout();
+			       }
+		       });
+		sortedPlayers.forEach(player -> {
+			       try {
+				       player.processPlayer();
+			       }
+			       catch (Exception e) {
+				       e.printStackTrace();
+				       player.requestLogout();
+			       }
+		       });
 
 		executor.sync(new GameSyncTask(false, false) {
 			@Override
@@ -165,7 +192,8 @@ public class World {
 				NPC npc = npcs.get(index);
 				try {
 					npc.process();
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -175,11 +203,17 @@ public class World {
 			@Override
 			public void execute(int index) {
 				Player player = players.get(index);
+				if (player instanceof PlayerBot) {
+					// No need to sync a bot
+					// Note this breaks some stuff like multi target spells, but boosts performance
+					return;
+				}
 				synchronized (player) {
 					try {
 						PlayerUpdating.update(player);
 						NPCUpdating.update(player);
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						e.printStackTrace();
 						player.requestLogout();
 					}
@@ -196,7 +230,9 @@ public class World {
 						player.resetUpdating();
 						player.setCachedUpdateBlock(null);
 						player.getSession().flush();
-					} catch (Exception e) {
+						EventDispatcher.getGlobal().dispatch(new PlayerPacketsFlushedEvent(player));
+					}
+					catch (Exception e) {
 						e.printStackTrace();
 						player.requestLogout();
 					}
@@ -211,7 +247,8 @@ public class World {
 				synchronized (npc) {
 					try {
 						npc.resetUpdating();
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
@@ -223,7 +260,7 @@ public class World {
 	 * Gets a player by their username.
 	 *
 	 * @param username
-	 *            The username of the player.
+	 * 		The username of the player.
 	 * @return The player with the matching username.
 	 */
 	public static Optional<Player> getPlayerByName(String username) {
@@ -234,7 +271,7 @@ public class World {
 	 * Broadcasts a message to all players in the game.
 	 *
 	 * @param message
-	 *            The message to broadcast.
+	 * 		The message to broadcast.
 	 */
 	public static void sendMessage(String message) {
 		players.forEach(p -> p.getPacketSender().sendMessage(message));
@@ -244,11 +281,12 @@ public class World {
 	 * Broadcasts a message to all staff-members in the game.
 	 *
 	 * @param message
-	 *            The message to broadcast.
+	 * 		The message to broadcast.
 	 */
 	public static void sendStaffMessage(String message) {
-		players.stream().filter(p -> !Objects.isNull(p) && p.isStaff())
-				.forEach(p -> p.getPacketSender().sendMessage(message));
+		players.stream()
+		       .filter(p -> !Objects.isNull(p) && p.isStaff())
+		       .forEach(p -> p.getPacketSender().sendMessage(message));
 	}
 
 	/**
@@ -266,7 +304,7 @@ public class World {
 		return npcs;
 	}
 
-	public static TreeMap<String, PlayerBot> getPlayerBots() { return playerBots; }
+	public static TreeMap<String, PlayerBot> getPlayerBots() {return playerBots;}
 
 	public static List<ItemOnGround> getItems() {
 		return items;
@@ -298,6 +336,7 @@ public class World {
 
 	/**
 	 * Simple way of finding objects in the world
+	 *
 	 * @param id
 	 * @param loc
 	 * @return
@@ -312,10 +351,14 @@ public class World {
 
 	/**
 	 * Sends GFX at the location to all players within a 32 tile radius
+	 *
 	 * @param id
 	 * @param position
 	 */
 	public static void sendLocalGraphics(int id, Location position, GraphicHeight graphicHeight) {
-		players.stream().filter(Objects::nonNull).filter(p -> p.getLocation().isWithinDistance(position, 32)).forEach(p -> p.getPacketSender().sendGraphic(new Graphic(id, graphicHeight), position));
+		players.stream()
+		       .filter(Objects::nonNull)
+		       .filter(p -> p.getLocation().isWithinDistance(position, 32))
+		       .forEach(p -> p.getPacketSender().sendGraphic(new Graphic(id, graphicHeight), position));
 	}
 }

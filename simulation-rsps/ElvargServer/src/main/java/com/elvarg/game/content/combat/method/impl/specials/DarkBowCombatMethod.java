@@ -22,8 +22,12 @@ public class DarkBowCombatMethod extends RangedCombatMethod {
 		int distance = character.getLocation().getDistance(target.getLocation());
 		int delay = RangedData.hitDelay(distance, RangedWeaponType.LONGBOW);
 
-		return new PendingHit[] { new PendingHit(character, target, this, false, delay),
-				new PendingHit(character, target, this, false, RangedData.dbowArrowDelay(distance)) };
+		final PendingHit firstHit = new PendingHit(character, target, this, delay);
+		final PendingHit secondHit = new PendingHit(character, target, this, RangedData.dbowArrowDelay(distance));
+		firstHit.setTotalDamage(Math.max(Math.min(firstHit.getTotalDamage(), 48), 8));
+		secondHit.setTotalDamage(Math.max(Math.min(secondHit.getTotalDamage(), 48), 8));
+
+		return new PendingHit[] { firstHit, secondHit };
 	}
 
 	@Override

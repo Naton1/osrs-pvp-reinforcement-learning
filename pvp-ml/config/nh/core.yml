@@ -1,0 +1,89 @@
+---
+Core:
+  env-name: NhEnv
+  num-envs: 100
+  num-rollout-steps: 1024
+  stack-frames: 1
+  batch-size: 2048
+  remote-processor-type: ray
+  remote-processor-pool-size: 4
+  remote-processor-device: cpu
+  gamma: 0.995
+  epochs: 1
+  checkpoint-frequency: 1
+  grad-accum: 1
+  continue-training: true
+  normalize-advantages: true
+  win-reward: 1
+  lose-reward: -1
+  entropy-coef:
+    type: linear
+    initial-value: 0.01
+    final-value: 0.001
+    change-over-time-steps: 1000
+  damage-dealt-reward-scale: 0.25
+  damage-received-reward-scale: -0.25
+  target-frozen-tick-reward:
+    type: linear
+    initial-value: 0.004
+    final-value: 0.003
+    change-over-time-steps: 300
+  player-frozen-tick-reward:
+      type: linear
+      initial-value: -0.004
+      final-value: -0.003
+      change-over-time-steps: 300
+  no-prayer-tick-reward: -0.01
+  protected-correct-prayer-reward: 0.025
+  protected-wrong-prayer-reward: -0.025
+  attacked-correct-prayer-reward: 0.025
+  attacked-wrong-prayer-reward: -0.025
+  player-died-with-food-multiplier:
+    type: expression
+    expression: (scale + 1.2) ** 1.5
+    defaults:
+      scale: 0
+  player-wasted-food-multiplier: 5.0
+  novelty-reward-scale:
+    type: linear
+    initial-value: 0.00025
+    final-value: 0.000
+    change-over-time-steps: 200
+  smite-damage-dealt-reward-multiplier: 0.1
+  smite-damage-received-reward-multiplier: 0.1
+  actor:
+    layers:
+      - size: 512
+        activation: relu
+        repeat: 2
+  action-heads:
+    layers:
+      - size: 128
+        activation: relu
+        repeat: 2
+  critic:
+    layers:
+      - size: 512
+        activation: relu
+        repeat: 2
+  env-kwargs:
+    reset-params:
+      onlySwitchPrayerWhenAboutToAttack: false
+      onlySwitchGearWhenAttackSoon: false
+      allowMovingIfCanAttack: false
+      allowSmite: false
+      allowRedemption: false
+      randomizeBuild: true
+      randomizeGear: true
+      randomBuildOptions: [ LMS_PURE, LMS_ZERKER, LMS_MED, PURE, ZERKER, MED ]
+      randomizeFightType: true
+  num-eval-agent: 10
+  num-reference-rating-envs: 5
+  normalize-rewards: true
+  normalize-observations: true
+  include-target-obs-in-critic: true
+  policy-kwargs:
+    autoregressive-actions: true
+    append-future-action-masks: false
+    normalize-autoregressive-actions: true
+  add-win-rate-extension: true

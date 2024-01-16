@@ -2,6 +2,9 @@ package com.elvarg.game.content.combat.hit;
 
 import com.elvarg.game.content.combat.CombatFactory;
 import com.elvarg.game.entity.impl.Mobile;
+import com.elvarg.game.event.EventDispatcher;
+import com.elvarg.game.event.events.HitAppliedEvent;
+import com.elvarg.game.event.events.HitCalculatedEvent;
 import com.elvarg.game.model.Flag;
 
 import java.util.*;
@@ -90,6 +93,7 @@ public class HitQueue {
 	 */
 	public void addPendingHit(PendingHit c_h) {
 		pendingHits.add(c_h);
+		EventDispatcher.getGlobal().dispatch(new HitCalculatedEvent(c_h));
 	}
 
 	/**
@@ -99,6 +103,12 @@ public class HitQueue {
 	 */
 	public void addPendingDamage(HitDamage... hits) {
 		Arrays.stream(hits).filter(h -> !Objects.isNull(h)).forEach(h -> pendingDamage.add(h));
+		for (HitDamage hit : hits) {
+			if (hit == null || hit.getMetadata() == null) {
+				continue;
+			}
+			EventDispatcher.getGlobal().dispatch(new HitAppliedEvent(hit));
+		}
 	}
 
 	public int getAccumulatedDamage() {
@@ -108,10 +118,28 @@ public class HitQueue {
 		return hitDmg + dmg;
 	}
 
+	public int getAllAccumulatedDamage() {
+		var hitDmg = this.pendingHits.stream().mapToInt(PendingHit::getTotalDamage).sum();
+		var dmg = this.pendingDamage.stream().mapToInt(HitDamage::getDamage).sum();
+
+		return hitDmg + dmg;
+	}
+
+	public int getTicksUntilNextHit() {
+		// -1 if no hits pending, 0 if processed next combat process tick, and so on
+		if (!this.pendingDamage.isEmpty()) {
+			return 0;
+		}
+		return this.pendingHits.stream()
+				.mapToInt(PendingHit::getExecutedInTicks)
+				.findFirst()
+				.orElse(-1);
+	}
+
 	/***
 	 * Checks if the pending hit queue is empty, except from the specified
 	 * {@link Mobile}. Used for anti-pjing.
-	 * 
+	 *
 	 * @param exception
 	 * @return
 	 */

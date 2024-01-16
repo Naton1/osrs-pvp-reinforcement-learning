@@ -4,10 +4,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class TaskManager {
 
-    private final static Queue<Task> pendingTasks = new LinkedList<>();
+    private final static Queue<Task> pendingTasks = new ConcurrentLinkedQueue<>();
 
     private final static List<Task> activeTasks = new LinkedList<>();
 

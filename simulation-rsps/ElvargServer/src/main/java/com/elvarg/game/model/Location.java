@@ -207,11 +207,11 @@ public class Location {
         this.y += y;
         return this;
     }
-    
+
     public Location transform(int x, int y) {
         return clone().addX(x).addY(y);
     }
-    
+
     public boolean isPerpendicularTo(Location other) {
         Location delta = Misc.delta(this, other);
         return delta.getX() != delta.getY() && delta.getX() == 0 || delta.getY() == 0;
@@ -247,7 +247,7 @@ public class Location {
         int deltaX = other.x - x, deltaY = other.y - y;
         return deltaX <= 2 && deltaX >= -3 && deltaY <= 2 && deltaY >= -3;
     }
-    
+
     /**
      * Gets the distance between this and another location.
      * <br>
@@ -261,7 +261,7 @@ public class Location {
         int deltaY = y - other.y;
 		return Math.max(Math.abs(deltaX), Math.abs(deltaY));
 	}
-	
+
 	/**
 	 * Increments the {@code X}, {@code Y}, and {@code Z} coordinate values
 	 * within this container by {@code amountX}, {@code amountY}, and
@@ -275,7 +275,7 @@ public class Location {
 		int z = (this.z + position.getZ());
 		return new Location(x, y, z);
 	}
-	
+
 	/**
 	 * Increments the {@code X} and {@code Y} coordinate values within this
 	 * container by deltas of the set {@code Direction}.
@@ -300,19 +300,14 @@ public class Location {
         return Math.sqrt(Math.pow(x - pointX, 2)
                 + Math.pow(y - pointY, 2));
     }
-    
-    public int calculateDistance(Location other) {
-        // Calculate the differences in the x and y coordinates
+
+    public double getEuclideanDistance(Location other) {
         int xDiff = this.x - other.getX();
         int yDiff = this.y - other.getY();
 
-        // Use the Euclidean distance formula to calculate the distance
-        double distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-
-        // Round down to the nearest integer and return the result
-        return (int) Math.floor(distance);
+        return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
     }
-    
+
     public static int calculateDistance(Location[] tiles, Location[] otherTiles) {
         int lowestCount = Integer.MAX_VALUE;
 
@@ -323,7 +318,7 @@ public class Location {
                     return 0;
                 }
 
-                int distance = tile.calculateDistance(toTile);
+                int distance = tile.getDistance(toTile);
                 if (distance < lowestCount) {
                     lowestCount = distance;
                 }
@@ -332,7 +327,7 @@ public class Location {
 
         return lowestCount;
     }
-    
+
     @Override
     public Location clone() {
         return new Location(x, y, z);

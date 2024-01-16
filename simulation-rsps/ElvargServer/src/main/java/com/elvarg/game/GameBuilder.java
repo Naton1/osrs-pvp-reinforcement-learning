@@ -42,13 +42,12 @@ public class GameBuilder {
         backgroundLoader.init(createBackgroundTasks());
 
         // Start global tasks..
-
-        // Start game engine..
-        new GameEngine().init();
-
         // Make sure the background tasks loaded properly..
         if (!backgroundLoader.awaitCompletion())
             throw new IllegalStateException("Background load did not complete normally!");
+
+        // Start game engine..
+        new GameEngine().init();
     }
 
     /**
@@ -74,7 +73,7 @@ public class GameBuilder {
         tasks.add(new NpcSpawnDefinitionLoader());
         tasks.add(new GroundItemDefinitionLoader());
         tasks.add(MinigameHandler::init);
-    //    tasks.add(new NPCSpawnDumper());        
+    //    tasks.add(new NPCSpawnDumper());
         return tasks;
     }
 }

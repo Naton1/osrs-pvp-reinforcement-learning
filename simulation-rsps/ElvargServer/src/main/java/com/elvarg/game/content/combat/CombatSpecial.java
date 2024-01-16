@@ -11,6 +11,7 @@ import com.elvarg.game.content.combat.method.impl.specials.AbyssalBludgeonCombat
 import com.elvarg.game.content.combat.method.impl.specials.AbyssalDaggerCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.AbyssalTentacleCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.AbyssalWhipCombatMethod;
+import com.elvarg.game.content.combat.method.impl.specials.AncientGodswordCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.ArmadylCrossbowCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.ArmadylGodswordCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.BallistaCombatMethod;
@@ -20,15 +21,20 @@ import com.elvarg.game.content.combat.method.impl.specials.DarkBowCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.DragonClawCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.DragonDaggerCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.DragonHalberdCombatMethod;
+import com.elvarg.game.content.combat.method.impl.specials.DragonKnifeCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.DragonLongswordCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.DragonMaceCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.DragonScimitarCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.DragonWarhammerCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.GraniteMaulCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.MagicShortbowCombatMethod;
+import com.elvarg.game.content.combat.method.impl.specials.MorrigansJavelinCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.SaradominGodswordCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.SaradominSwordCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.ShoveCombatMethod;
+import com.elvarg.game.content.combat.method.impl.specials.StatiusWarhammerCombatMethod;
+import com.elvarg.game.content.combat.method.impl.specials.VestasLongswordCombatMethod;
+import com.elvarg.game.content.combat.method.impl.specials.VolatileNightmareStaffCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.ZamorakGodswordCombatMethod;
 import com.elvarg.game.content.combat.method.impl.specials.ZaryteCrossbowCombatMethod;
 import com.elvarg.game.entity.impl.Mobile;
@@ -63,11 +69,14 @@ public enum CombatSpecial {
             WeaponInterface.MACE),
     DRAGON_WARHAMMER(new int[]{13576}, 50, 1.5, 1.00,
             new DragonWarhammerCombatMethod(), WeaponInterface.WARHAMMER),
-
+    VESTAS_LONGSWORD(new int[]{22613},
+                    25, 1.0, 1.0, new VestasLongswordCombatMethod(), WeaponInterface.LONGSWORD),
+    STATIUS_WARHAMMER(new int[]{22622}, 35, 1.0, 1.0, new StatiusWarhammerCombatMethod(), WeaponInterface.WARHAMMER),
     SARADOMIN_SWORD(new int[]{11838}, 100, 1.0, 1.0, new SaradominSwordCombatMethod(),
             WeaponInterface.SARADOMIN_SWORD),
 
     ARMADYL_GODSWORD(new int[]{11802}, 50, 1.375, 2, new ArmadylGodswordCombatMethod(), WeaponInterface.GODSWORD),
+    ANCIENT_GODSWORD(new int[]{26233}, 50, 1.1, 2, new AncientGodswordCombatMethod(), WeaponInterface.GODSWORD),
     SARADOMIN_GODSWORD(new int[]{11806}, 50, 1.1, 1.5, new SaradominGodswordCombatMethod(), WeaponInterface.GODSWORD),
     BANDOS_GODSWORD(new int[]{11804}, 100, 1.21, 1.5, new BandosGodswordCombatMethod(), WeaponInterface.GODSWORD),
     ZAMORAK_GODSWORD(new int[]{11808}, 50, 1.1, 2, new ZamorakGodswordCombatMethod(), WeaponInterface.GODSWORD),
@@ -78,7 +87,7 @@ public enum CombatSpecial {
     //Dragon Spear, Zamorakian Hasta, and Zamorakian Spear
     SHOVE_SPECIAL(new int[]{1249,5730,5716,3176,1263,11824,11889}, 25, 1.0, 1.0, new ShoveCombatMethod(),
             WeaponInterface.SPEAR),
- 
+
     // Multiple hits
     DRAGON_HALBERD(new int[]{3204}, 30, 1.1, 1.35, new DragonHalberdCombatMethod(),
             WeaponInterface.HALBERD),
@@ -96,14 +105,22 @@ public enum CombatSpecial {
     // Ranged
     MAGIC_SHORTBOW(new int[]{861}, 55, 1, 1, new MagicShortbowCombatMethod(),
             WeaponInterface.SHORTBOW),
-    DARK_BOW(new int[]{11235}, 55, 1.5, 1.35, new DarkBowCombatMethod(),
+    DARK_BOW(new int[]{11235}, 55, 1.5, 1.0, new DarkBowCombatMethod(),
             WeaponInterface.DARK_BOW),
-    ARMADYL_CROSSBOW(new int[]{11785}, 40, 1, 2.0,
+    ARMADYL_CROSSBOW(new int[]{11785}, 50, 1, 2.0,
             new ArmadylCrossbowCombatMethod(), WeaponInterface.CROSSBOW),
     ZARYTE_CROSSBOW(new int[]{26374}, 75, 1, 2.0,
                     new ZaryteCrossbowCombatMethod(), WeaponInterface.CROSSBOW),
-    BALLISTA(new int[]{19481},
-            65, 1.25, 1.45, new BallistaCombatMethod(), WeaponInterface.BALLISTA),
+    BALLISTA(new int[]{19478, 19481},
+            65, 1.25, 1.25, new BallistaCombatMethod(), WeaponInterface.BALLISTA),
+    MORRIGANS_JAVELIN(new int[]{22636},
+                      50, 1, 1, new MorrigansJavelinCombatMethod(), WeaponInterface.JAVELIN),
+    DRAGON_KNIFE(new int[]{22804, 22806, 22808, 28810},
+                 25, 1, 1, new DragonKnifeCombatMethod(), WeaponInterface.KNIFE),
+
+
+    VOLATILE_NIGHTMARE_STAFF(new int[]{24424}, 55, 1, 1.5,
+                             new VolatileNightmareStaffCombatMethod(), WeaponInterface.STAFF),
     ;
 
     public static final Set<Integer> SPECIAL_ATTACK_WEAPON_IDS = Arrays.stream(CombatSpecial.values()).flatMap(cs -> Arrays.stream(cs.getIdentifiers()).boxed()).collect(Collectors.toSet());
@@ -263,6 +280,18 @@ public enum CombatSpecial {
             return;
         }
 
+        // Get the special attack
+        final CombatSpecial spec = player.getCombatSpecial();
+
+        if (spec == CombatSpecial.GRANITE_MAUL) {
+            // Special case for granite maul, queue the clicks this tick to process during combat
+            final int requiredSpec =
+                    CombatSpecial.GRANITE_MAUL.getDrainAmount() * (player.getCombat().getQueuedGraniteMaulSpecs() + 1);
+            if (player.getSpecialPercentage() >= requiredSpec) {
+                player.getCombat().queueGraniteMaulSpec();
+            }
+        }
+
         // Check if player has already activated special attack,
         // If that's the case - turn if off.
         if (player.isSpecialActivated()) {
@@ -270,46 +299,16 @@ public enum CombatSpecial {
             CombatSpecial.updateBar(player);
         } else {
 
-            // Get the special attack..
-            final CombatSpecial spec = player.getCombatSpecial();
-
             // Set special attack activated
             player.setSpecialActivated(true);
 
             // Update special bar
             CombatSpecial.updateBar(player);
 
-            // Handle instant special attacks here.
-            // Example: Granite Maul, Dragon battleaxe...
-            if (spec == CombatSpecial.GRANITE_MAUL) {
-
-                // Make sure the player has enough special attack
-                if (player.getSpecialPercentage() < player.getCombatSpecial().getDrainAmount()) {
-                    player.getPacketSender().sendMessage("You do not have enough special attack energy left!");
-                    player.setSpecialActivated(false);
-                    CombatSpecial.updateBar(player);
-                    return;
-                }
-
-                // Check if the player is attacking and using Melee..
-                Mobile target = player.getCombat().getTarget();
-                if (target != null && CombatFactory.getMethod(player).type() == CombatType.MELEE) {
-                    // Perform an immediate attack
-                    player.getCombat().performNewAttack(true);
-                    return;
-                } else {
-
-                    // Uninformed player using gmaul without being in combat..
-                    // Teach them a lesson!
-                    player.getPacketSender()
-                            .sendMessage("Although not required, the Granite maul special attack should be used during")
-                            .sendMessage("combat for maximum effect.");
-                }
-            } /*
-             * else if(spec == CombatSpecial.DRAGON_BATTLEAXE) {
-             *
-             * }
-             */
+            if (spec == CombatSpecial.GRANITE_MAUL && player.getCombat().getTarget() == null) {
+                player.sendMessage("Warning: Since the maul's special is an instant attack, it will be wasted when "
+                                   + "used on a first strike.");
+            }
 
         }
 

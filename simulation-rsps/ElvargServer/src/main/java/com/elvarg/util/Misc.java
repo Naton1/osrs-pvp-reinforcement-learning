@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
 
+import com.elvarg.game.GameConstants;
 import com.elvarg.game.entity.impl.player.Player;
 import com.elvarg.game.model.Item;
 import com.elvarg.game.model.Location;
@@ -30,11 +31,11 @@ public class Misc {
      * @return
      */
 	public static int getTicks(int seconds) {
-		return (int) (seconds / 0.6);
+		return (int) (seconds / GameConstants.GAME_ENGINE_PROCESSING_CYCLE_RATE / 1000D);
 	}
 
     public static String ticksToTime(int ticks) {
-        ticks *= 600;
+        ticks *= GameConstants.GAME_ENGINE_PROCESSING_CYCLE_RATE;
         if (ticks >= 600000)
             return String.format("%02d:%02d:%02d",
                     TimeUnit.MILLISECONDS.toHours(ticks),
@@ -44,9 +45,9 @@ public class Misc {
                             TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ticks)));
         return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(ticks) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(ticks)), TimeUnit.MILLISECONDS.toSeconds(ticks) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ticks)));
     }
-	
+
 	public static int getSeconds(int ticks) {
-		return (int) (ticks * 0.6);
+		return (int) (ticks * GameConstants.GAME_ENGINE_PROCESSING_CYCLE_RATE / 1000D);
 	}
 
     //Our formatter
@@ -151,7 +152,7 @@ public class Misc {
         for (int i = 0; i < 8; i++) {
             if (DIRECTIONS[i][0] == x && DIRECTIONS[i][1] == y)
                 return i;
-        }        
+        }
         return -1;
     }
 
@@ -225,7 +226,7 @@ public class Misc {
 
         return new String(decodeBuf, 0, idx);
     }
-    
+
     /**
      * Packs text.
      *

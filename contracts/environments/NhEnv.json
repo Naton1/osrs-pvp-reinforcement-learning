@@ -1,0 +1,1219 @@
+{
+  "actions": [
+    {
+      "id": "attack",
+      "description": "Attack style",
+      "actions": [
+        {
+          "id": "no_op_attack",
+          "description": "No-op attack"
+        },
+        {
+          "id": "mage_attack",
+          "description": "Mage attack"
+        },
+        {
+          "id": "ranged_attack",
+          "description": "Ranged attack"
+        },
+        {
+          "id": "melee_attack",
+          "description": "Melee attack"
+        }
+      ]
+    },
+    {
+      "id": "melee_attack_type",
+      "description": "Melee attack type",
+      "actions": [
+        {
+          "id": "no_melee_attack",
+          "description": "No melee attack",
+          "dependencies": {
+            "require_none": [
+              "melee_attack"
+            ]
+          }
+        },
+        {
+          "id": "basic_melee_attack",
+          "description": "Basic melee attack",
+          "dependencies": {
+            "require_all": [
+              "melee_attack"
+            ]
+          }
+        },
+        {
+          "id": "melee_special_attack",
+          "description": "Melee special attack",
+          "dependencies": {
+            "require_all": [
+              "melee_attack"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "ranged_attack_type",
+      "description": "Ranged attack type",
+      "actions": [
+        {
+          "id": "no_ranged_attack",
+          "description": "No ranged attack",
+          "dependencies": {
+            "require_none": [
+              "ranged_attack"
+            ]
+          }
+        },
+        {
+          "id": "basic_ranged_attack",
+          "description": "Basic ranged attack",
+          "dependencies": {
+            "require_all": [
+              "ranged_attack"
+            ]
+          }
+        },
+        {
+          "id": "ranged_special_attack",
+          "description": "Ranged special attack",
+          "dependencies": {
+            "require_all": [
+              "ranged_attack"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "mage_attack_type",
+      "description": "Magic attack type",
+      "actions": [
+        {
+          "id": "no_mage_attack",
+          "description": "No magic attack",
+          "dependencies": {
+            "require_none": [
+              "mage_attack"
+            ]
+          }
+        },
+        {
+          "id": "use_ice_spell",
+          "description": "Use ice spell",
+          "dependencies": {
+            "require_all": [
+              "mage_attack"
+            ]
+          }
+        },
+        {
+          "id": "use_blood_spell",
+          "description": "Use blood spell",
+          "dependencies": {
+            "require_all": [
+              "mage_attack"
+            ]
+          }
+        },
+        {
+          "id": "use_magic_spec",
+          "description": "Use magic spec",
+          "dependencies": {
+            "require_all": [
+              "mage_attack"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "potion",
+      "description": "Use potion type",
+      "actions": [
+        {
+          "id": "no_potion",
+          "description": "No potion"
+        },
+        {
+          "id": "use_brew",
+          "description": "Use brew"
+        },
+        {
+          "id": "use_restore_potion",
+          "description": "Use restore potion"
+        },
+        {
+          "id": "use_combat_potion",
+          "description": "Use combat potion"
+        },
+        {
+          "id": "use_ranged_potion",
+          "description": "Use ranged potion"
+        }
+      ]
+    },
+    {
+      "id": "food",
+      "description": "Food",
+      "actions": [
+        {
+          "id": "dont_eat_food",
+          "description": "Don't eat food"
+        },
+        {
+          "id": "eat_primary_food",
+          "description": "Eat primary food"
+        }
+      ]
+    },
+    {
+      "id": "karambwan",
+      "description": "Karambwan",
+      "actions": [
+        {
+          "id": "dont_karambwan",
+          "description": "Don't karambwan"
+        },
+        {
+          "id": "eat_karambwan",
+          "description": "Eat karambwan"
+        }
+      ]
+    },
+    {
+      "id": "veng",
+      "description": "Vengeance",
+      "actions": [
+        {
+          "id": "dont_use_veng",
+          "description": "Don't use vengeance"
+        },
+        {
+          "id": "use_veng",
+          "description": "Use vengeance"
+        }
+      ]
+    },
+    {
+      "id": "gear",
+      "description": "Tank gear",
+      "actions": [
+        {
+          "id": "no_gear",
+          "description": "No gear swap",
+          "dependencies": {
+            "require_none": [
+              "no_op_attack"
+            ]
+          }
+        },
+        {
+          "id": "use_tank_gear",
+          "description": "Use tank gear",
+          "dependencies": {
+            "require_all": [
+              "no_op_attack"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "movement",
+      "description": "Movement action",
+      "actions": [
+        {
+          "id": "dont_move",
+          "description": "Don't move"
+        },
+        {
+          "id": "move_next_to_target",
+          "description": "Move next to target"
+        },
+        {
+          "id": "move_under_target",
+          "description": "Move under target"
+        },
+        {
+          "id": "move_to_farcast_tile",
+          "description": "Move to farcast tile"
+        },
+        {
+          "id": "move_diagonal_to_target",
+          "description": "Move diagonal to target"
+        }
+      ]
+    },
+    {
+      "id": "farcast_distance",
+      "description": "Farcast distance",
+      "actions": [
+        {
+          "id": "no_op_farcast",
+          "description": "Don't move (farcast)",
+          "dependencies": {
+            "require_none": [
+              "move_to_farcast_tile"
+            ]
+          }
+        },
+        {
+          "id": "farcast_2_tiles",
+          "description": "Farcast 2 tiles away",
+          "dependencies": {
+            "require_all": [
+              "move_to_farcast_tile"
+            ]
+          }
+        },
+        {
+          "id": "farcast_3_tiles",
+          "description": "Farcast 3 tiles away",
+          "dependencies": {
+            "require_all": [
+              "move_to_farcast_tile"
+            ]
+          }
+        },
+        {
+          "id": "farcast_4_tiles",
+          "description": "Farcast 4 tiles away",
+          "dependencies": {
+            "require_all": [
+              "move_to_farcast_tile"
+            ]
+          }
+        },
+        {
+          "id": "farcast_5_tiles",
+          "description": "Farcast 5 tiles away",
+          "dependencies": {
+            "require_all": [
+              "move_to_farcast_tile"
+            ]
+          }
+        },
+        {
+          "id": "farcast_6_tiles",
+          "description": "Farcast 6 tiles away",
+          "dependencies": {
+            "require_all": [
+              "move_to_farcast_tile"
+            ]
+          }
+        },
+        {
+          "id": "farcast_7_tiles",
+          "description": "Farcast 7 tiles away",
+          "dependencies": {
+            "require_all": [
+              "move_to_farcast_tile"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "prayer",
+      "description": "Overhead prayer",
+      "actions": [
+        {
+          "id": "no_op_prayer",
+          "description": "No-op prayer"
+        },
+        {
+          "id": "mage_prayer",
+          "description": "Mage prayer"
+        },
+        {
+          "id": "ranged_prayer",
+          "description": "Ranged prayer"
+        },
+        {
+          "id": "melee_prayer",
+          "description": "Melee prayer"
+        },
+        {
+          "id": "smite_prayer",
+          "description": "Smite prayer"
+        },
+        {
+          "id": "redemption_prayer",
+          "description": "Redemption prayer"
+        }
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "id": "player_using_melee",
+      "description": "Player using melee"
+    },
+    {
+      "id": "player_using_ranged",
+      "description": "Player using ranged"
+    },
+    {
+      "id": "player_using_mage",
+      "description": "Player using mage"
+    },
+    {
+      "id": "player_spec_equipped",
+      "description": "Player spec equipped"
+    },
+    {
+      "id": "special_energy_percent",
+      "description": "Special energy percent"
+    },
+    {
+      "id": "player_melee_prayer",
+      "description": "Player melee prayer"
+    },
+    {
+      "id": "player_ranged_prayer",
+      "description": "Player ranged prayer"
+    },
+    {
+      "id": "player_magic_prayer",
+      "description": "Player magic prayer"
+    },
+    {
+      "id": "player_smite_prayer",
+      "description": "Player smite prayer"
+    },
+    {
+      "id": "player_redemption_prayer",
+      "description": "Player redemption prayer"
+    },
+    {
+      "id": "player_health_percent",
+      "description": "Player's health percent",
+      "partial": true
+    },
+    {
+      "id": "target_health_percent",
+      "description": "Target's health percent",
+      "partial": true
+    },
+    {
+      "id": "target_using_melee",
+      "description": "Target using melee"
+    },
+    {
+      "id": "target_using_ranged",
+      "description": "Target using ranged"
+    },
+    {
+      "id": "target_using_mage",
+      "description": "Target using mage"
+    },
+    {
+      "id": "target_spec_equipped",
+      "description": "Target spec equipped"
+    },
+    {
+      "id": "target_melee_prayer",
+      "description": "Target melee prayer"
+    },
+    {
+      "id": "target_ranged_prayer",
+      "description": "Target ranged prayer"
+    },
+    {
+      "id": "target_magic_prayer",
+      "description": "Target magic prayer"
+    },
+    {
+      "id": "target_smite_prayer",
+      "description": "Target smite prayer"
+    },
+    {
+      "id": "target_redemption_prayer",
+      "description": "Target redemption prayer"
+    },
+    {
+      "id": "target_special_percent",
+      "description": "Target special percent"
+    },
+    {
+      "id": "range_potion_doses",
+      "description": "Range potion doses",
+      "partial": true
+    },
+    {
+      "id": "combat_potion_doses",
+      "description": "Combat potion doses",
+      "partial": true
+    },
+    {
+      "id": "super_restore_doses",
+      "description": "Super restore doses",
+      "partial": true
+    },
+    {
+      "id": "brew_doses",
+      "description": "Brew doses",
+      "partial": true
+    },
+    {
+      "id": "food_count",
+      "description": "Food count",
+      "partial": true
+    },
+    {
+      "id": "karambwan_count",
+      "description": "Karambwan count",
+      "partial": true
+    },
+    {
+      "id": "prayer_points",
+      "description": "Prayer points",
+      "partial": true
+    },
+    {
+      "id": "player_frozen_ticks",
+      "description": "Player's frozen ticks"
+    },
+    {
+      "id": "target_frozen_ticks",
+      "description": "Target's frozen ticks"
+    },
+    {
+      "id": "player_frozen_immunity_ticks",
+      "description": "Player's frozen immunity ticks"
+    },
+    {
+      "id": "target_frozen_immunity_ticks",
+      "description": "Target's frozen immunity ticks"
+    },
+    {
+      "id": "player_location_can_melee",
+      "description": "Player location can melee"
+    },
+    {
+      "id": "strength_level",
+      "description": "Strength level",
+      "partial": true
+    },
+    {
+      "id": "attack_level",
+      "description": "Attack level",
+      "partial": true
+    },
+    {
+      "id": "defense_level",
+      "description": "Defense level",
+      "partial": true
+    },
+    {
+      "id": "ranged_level",
+      "description": "Ranged level",
+      "partial": true
+    },
+    {
+      "id": "magic_level",
+      "description": "Magic level",
+      "partial": true
+    },
+    {
+      "id": "attack_cycle_ticks",
+      "description": "Attack cycle ticks",
+      "partial": true
+    },
+    {
+      "id": "food_cycle_ticks",
+      "description": "Food cycle ticks",
+      "partial": true
+    },
+    {
+      "id": "potion_cycle_ticks",
+      "description": "Potion cycle ticks"
+    },
+    {
+      "id": "karambwan_cycle_ticks",
+      "description": "Karambwan cycle ticks",
+      "partial": true
+    },
+    {
+      "id": "food_attack_delay",
+      "description": "Food attack delay",
+      "partial": true
+    },
+    {
+      "id": "target_attack_cycle_ticks",
+      "description": "Target attack cycle ticks"
+    },
+    {
+      "id": "target_potion_cycle_ticks",
+      "description": "Target potion cycle ticks"
+    },
+    {
+      "id": "pending_damage_on_target",
+      "description": "Pending damage on target",
+      "partial": true
+    },
+    {
+      "id": "ticks_until_hit_on_target",
+      "description": "Ticks until hit on target"
+    },
+    {
+      "id": "ticks_until_hit_on_player",
+      "description": "Ticks until hit on player"
+    },
+    {
+      "id": "player_just_attacked",
+      "description": "Player just attacked"
+    },
+    {
+      "id": "target_just_attacked",
+      "description": "Target just attacked"
+    },
+    {
+      "id": "tick_new_attack_damage",
+      "description": "Tick new attack damage",
+      "partial": true
+    },
+    {
+      "id": "damage_on_player_tick",
+      "description": "Damage on player tick"
+    },
+    {
+      "id": "damage_on_target_tick",
+      "description": "Damage on target tick"
+    },
+    {
+      "id": "player_attacking_target",
+      "description": "Player attacking target",
+      "partial": true
+    },
+    {
+      "id": "player_is_moving",
+      "description": "Player is moving"
+    },
+    {
+      "id": "target_is_moving",
+      "description": "Target is moving"
+    },
+    {
+      "id": "player_has_pid",
+      "description": "Player has PID"
+    },
+    {
+      "id": "ice_barrage_usable",
+      "description": "Ice barrage usable",
+      "partial": true
+    },
+    {
+      "id": "blood_barrage_usable",
+      "description": "Blood barrage usable",
+      "partial": true
+    },
+    {
+      "id": "destination_to_target_distance",
+      "description": "Destination to target distance",
+      "partial": true
+    },
+    {
+      "id": "player_to_destination_distance",
+      "description": "Player to destination distance",
+      "partial": true
+    },
+    {
+      "id": "player_to_target_distance",
+      "description": "Player to target distance",
+      "partial": true
+    },
+    {
+      "id": "player_prayer_correct",
+      "description": "Player prayer correct"
+    },
+    {
+      "id": "target_prayer_correct",
+      "description": "Target prayer correct"
+    },
+    {
+      "id": "total_damage_dealt_scale",
+      "description": "Total damage dealt scale (relative to damage received)",
+      "partial": true
+    },
+    {
+      "id": "target_attack_confidence",
+      "description": "Target attack confidence"
+    },
+    {
+      "id": "target_melee_hit_percent",
+      "description": "Target melee hit percent"
+    },
+    {
+      "id": "target_magic_hit_percent",
+      "description": "Target magic hit percent"
+    },
+    {
+      "id": "target_ranged_hit_percent",
+      "description": "Target ranged hit percent"
+    },
+    {
+      "id": "player_melee_hit_percent",
+      "description": "Player melee hit percent"
+    },
+    {
+      "id": "player_magic_hit_percent",
+      "description": "Player magic hit percent"
+    },
+    {
+      "id": "player_ranged_hit_percent",
+      "description": "Player ranged hit percent"
+    },
+    {
+      "id": "target_number_of_hits_off_prayer",
+      "description": "Target number of hits off prayer"
+    },
+    {
+      "id": "target_prayer_confidence",
+      "description": "Target prayer confidence"
+    },
+    {
+      "id": "target_magic_prayer_percent",
+      "description": "Target magic prayer percent"
+    },
+    {
+      "id": "target_ranged_prayer_percent",
+      "description": "Target ranged prayer percent"
+    },
+    {
+      "id": "target_melee_prayer_percent",
+      "description": "Target melee prayer percent"
+    },
+    {
+      "id": "player_magic_prayer_percent",
+      "description": "Player magic prayer percent"
+    },
+    {
+      "id": "player_ranged_prayer_percent",
+      "description": "Player ranged prayer percent"
+    },
+    {
+      "id": "player_melee_prayer_percent",
+      "description": "Player melee prayer percent"
+    },
+    {
+      "id": "target_correct_pray_percent",
+      "description": "Target correct pray percent"
+    },
+    {
+      "id": "recent_target_melee_hit_percent",
+      "description": "Recent (5) target melee hit percent"
+    },
+    {
+      "id": "recent_target_magic_hit_percent",
+      "description": "Recent (5) target magic hit percent"
+    },
+    {
+      "id": "recent_target_ranged_hit_percent",
+      "description": "Recent (5) target ranged hit percent"
+    },
+    {
+      "id": "recent_player_melee_hit_percent",
+      "description": "Recent (5) player melee hit percent"
+    },
+    {
+      "id": "recent_player_magic_hit_percent",
+      "description": "Recent (5) player magic hit percent"
+    },
+    {
+      "id": "recent_player_ranged_hit_percent",
+      "description": "Recent (5) player ranged hit percent"
+    },
+    {
+      "id": "recent_target_number_of_hits_off_prayer",
+      "description": "Recent (5) target number of hits off prayer"
+    },
+    {
+      "id": "recent_target_magic_prayer_percent",
+      "description": "Recent (5) target magic prayer percent"
+    },
+    {
+      "id": "recent_target_ranged_prayer_percent",
+      "description": "Recent (5) target ranged prayer percent"
+    },
+    {
+      "id": "recent_target_melee_prayer_percent",
+      "description": "Recent (5) target melee prayer percent"
+    },
+    {
+      "id": "recent_player_magic_prayer_percent",
+      "description": "Recent (5) player magic prayer percent"
+    },
+    {
+      "id": "recent_player_ranged_prayer_percent",
+      "description": "Recent (5) player ranged prayer percent"
+    },
+    {
+      "id": "recent_player_melee_prayer_percent",
+      "description": "Recent (5) player melee prayer percent"
+    },
+    {
+      "id": "recent_target_correct_pray_percent",
+      "description": "Recent (5) target correct pray percent"
+    },
+    {
+      "id": "absolute_attack_level",
+      "description": "Absolute attack level",
+      "constant": true
+    },
+    {
+      "id": "absolute_strength_level",
+      "description": "Absolute strength level",
+      "constant": true
+    },
+    {
+      "id": "absolute_defense_level",
+      "description": "Absolute defense level",
+      "constant": true
+    },
+    {
+      "id": "absolute_ranged_level",
+      "description": "Absolute ranged level",
+      "constant": true
+    },
+    {
+      "id": "absolute_magic_level",
+      "description": "Absolute magic level",
+      "constant": true
+    },
+    {
+      "id": "absolute_prayer_level",
+      "description": "Absolute prayer level",
+      "constant": true
+    },
+    {
+      "id": "absolute_hitpoints_level",
+      "description": "Absolute hitpoints level",
+      "constant": true
+    },
+    {
+      "id": "is_enchanted_dragon_bolt",
+      "description": "Is ranged using dragon bolts e",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_enchanted_opal_bolt",
+      "description": "Is ranged using opal bolts e",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_enchanted_diamond_bolt",
+      "description": "Is ranged using diamond bolts e",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_mage_spec_weapon_loadout",
+      "description": "Is mage spec weapon in loadout",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_ranged_spec_weapon_loadout",
+      "description": "Is ranged spec weapon in loadout",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_mage_spec_weapon_nightmare_staff",
+      "description": "Is mage spec weapon volatile nightmare staff",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_ranged_spec_weapon_zaryte_cbow",
+      "description": "Is ranged spec weapon zaryte cbow",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_ranged_spec_weapon_ballista",
+      "description": "Is ranged spec weapon ballista",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_ranged_spec_weapon_morrigans_javelin",
+      "description": "Is ranged spec weapon morrigan's javelins",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_ranged_spec_weapon_dragon_knife",
+      "description": "Is ranged spec weapon dragon knife",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_ranged_spec_weapon_dark_bow",
+      "description": "Is ranged spec weapon dark bow",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_melee_spec_dclaws",
+      "description": "Is melee spec dragon claws",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_melee_spec_dds",
+      "description": "Is melee spec dds",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_melee_spec_ags",
+      "description": "Is melee spec ags",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_melee_spec_vls",
+      "description": "Is melee spec vls",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_melee_spec_stat_hammer",
+      "description": "Is melee spec stat hammer",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_melee_spec_ancient_godsword",
+      "description": "Is melee spec ancient godsword",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_melee_spec_gmaul",
+      "description": "Is melee spec granite maul",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_blood_fury",
+      "description": "Is blood fury used for melee",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_dharoks_set",
+      "description": "Is melee attacks using dharoks set",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_zuriel_staff",
+      "description": "Is zuriel's staff used for magic",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "magic_accuracy",
+      "description": "Expected magic accuracy",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "magic_strength",
+      "description": "Expected magic strength",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "ranged_accuracy",
+      "description": "Expected ranged accuracy",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "ranged_strength",
+      "description": "Expected ranged strength",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "ranged_attack_speed",
+      "description": "Expected ranged attack speed",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "ranged_attack_range",
+      "description": "Expected ranged attack range",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "melee_accuracy",
+      "description": "Expected melee accuracy",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "melee_strength",
+      "description": "Expected melee strength",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "melee_attack_speed",
+      "description": "Expected melee attack speed",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "magic_gear_ranged_defence",
+      "description": "Magic gear ranged defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "magic_gear_mage_defence",
+      "description": "Magic gear mage defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "magic_gear_melee_defence",
+      "description": "Magic gear melee defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "ranged_gear_ranged_defence",
+      "description": "Ranged gear ranged defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "ranged_gear_mage_defence",
+      "description": "Ranged gear mage defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "ranged_gear_melee_defence",
+      "description": "Ranged gear melee defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "melee_gear_ranged_defence",
+      "description": "Melee gear ranged defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "melee_gear_mage_defence",
+      "description": "Melee gear mage defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "melee_gear_melee_defence",
+      "description": "Melee gear melee defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_current_gear_ranged_defence",
+      "description": "Target current gear ranged defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_current_gear_mage_defence",
+      "description": "Target current gear mage defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_current_gear_melee_defence",
+      "description": "Target current gear melee defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_magic_accuracy",
+      "description": "Expected target magic accuracy",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_magic_strength",
+      "description": "Expected target magic strength",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_ranged_accuracy",
+      "description": "Expected target ranged accuracy",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_ranged_strength",
+      "description": "Expected target ranged strength",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_melee_accuracy",
+      "description": "Expected target melee accuracy",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_melee_strength",
+      "description": "Expected target melee strength",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_magic_gear_ranged_defence",
+      "description": "Target magic gear ranged defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_magic_gear_mage_defence",
+      "description": "Target magic gear mage defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_magic_gear_melee_defence",
+      "description": "Target magic gear melee defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_ranged_gear_ranged_defence",
+      "description": "Target ranged gear ranged defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_ranged_gear_mage_defence",
+      "description": "Target ranged gear mage defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_ranged_gear_melee_defence",
+      "description": "Target ranged gear melee defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_melee_gear_ranged_defence",
+      "description": "Target melee gear ranged defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_melee_gear_mage_defence",
+      "description": "Target melee gear mage defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "target_melee_gear_melee_defence",
+      "description": "Target melee gear melee defence",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "is_lms_restrictions",
+      "description": "Is fight using LMS restrictions",
+      "constant": true
+    },
+    {
+      "id": "is_pvp_arena_rules",
+      "description": "Is fight using PvP Arena rules (ex. no PID swap)",
+      "constant": true
+    },
+    {
+      "id": "is_veng_active",
+      "description": "Is player vengeance active"
+    },
+    {
+      "id": "is_target_veng_active",
+      "description": "Is target vengeance active"
+    },
+    {
+      "id": "is_player_lunar_spellbook",
+      "description": "Is player using lunar spellbook",
+      "constant": true
+    },
+    {
+      "id": "is_target_lunar_spellbook",
+      "description": "Is target using lunar spellbook",
+      "partial": true,
+      "constant": true
+    },
+    {
+      "id": "player_veng_cooldown_ticks",
+      "description": "Ticks until player vengeance available"
+    },
+    {
+      "id": "target_veng_cooldown_ticks",
+      "description": "Ticks until target vengeance available"
+    },
+    {
+      "id": "is_blood_magic_attack_available",
+      "description": "Is blood magic attack available",
+      "partial": true
+    },
+    {
+      "id": "is_ice_magic_attack_available",
+      "description": "Is ice magic attack available",
+      "partial": true
+    },
+    {
+      "id": "is_magic_spec_attack_available",
+      "description": "Is magic spec attack available",
+      "partial": true
+    },
+    {
+      "id": "is_range_attack_available",
+      "description": "Is range attack available",
+      "partial": true
+    },
+    {
+      "id": "is_range_spec_attack_available",
+      "description": "Is range spec attack available",
+      "partial": true
+    },
+    {
+      "id": "is_melee_attack_available",
+      "description": "Is melee attack available",
+      "partial": true
+    },
+    {
+      "id": "is_melee_spec_attack_available",
+      "description": "Is melee spec attack available",
+      "partial": true
+    },
+    {
+      "id": "is_food_anglerfish",
+      "description": "Is primary food anglerfish (it can heal over max health)",
+      "partial": true,
+      "constant": true
+    }
+  ]
+}
