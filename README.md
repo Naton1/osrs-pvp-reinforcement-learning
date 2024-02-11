@@ -20,6 +20,12 @@ is not publicly available to prevent affecting the real game.
 The most recent model version shows incredibly promising results. [FineTunedNh](pvp-ml/models) maintained a
 near perfect win rate on the real game in LMS, primarily losing only due to the inherent randomness of the game.
 
+#### Youtube Video
+
+https://youtu.be/jArLZ8nC5Nw
+
+[<img width=400 src="./assets/youtube-thumbnail.png">](https://youtu.be/jArLZ8nC5Nw)
+
 Evaluation session stats:\
 ![LMS Session](assets/pvp-plugin.png)
 
