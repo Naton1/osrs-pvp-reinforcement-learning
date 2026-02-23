@@ -212,17 +212,17 @@ async def add_input(
             detail=f"Action {action_id} not found",
         )
 
-    item = await db.item.find_unique(where={"source_id": input_data.item_source_id})
+    item = await db.item.find_first(where={"name": input_data.item_name})
     if not item:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Item {input_data.item_source_id} not found",
+            detail=f"Item '{input_data.item_name}' not found",
         )
 
     created_input = await db.actioninput.create(
         data={
             "action_id": action_id,
-            "item_source_id": input_data.item_source_id,
+            "item_source_id": item.source_id,
             "quantity": input_data.quantity,
         },
         include={"item": True},
@@ -243,17 +243,17 @@ async def add_output(
             detail=f"Action {action_id} not found",
         )
 
-    item = await db.item.find_unique(where={"source_id": output.item_source_id})
+    item = await db.item.find_first(where={"name": output.item_name})
     if not item:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Item {output.item_source_id} not found",
+            detail=f"Item '{output.item_name}' not found",
         )
 
     created_output = await db.actionoutput.create(
         data={
             "action_id": action_id,
-            "item_source_id": output.item_source_id,
+            "item_source_id": item.source_id,
             "quantity": output.quantity,
         },
         include={"item": True},

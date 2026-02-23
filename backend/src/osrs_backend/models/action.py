@@ -2,6 +2,7 @@
 
 from typing import Optional
 from pydantic import BaseModel, Field
+from fastapi import HTTPException
 from prisma import Prisma
 from prisma.enums import RequirementType, Skill
 
@@ -37,28 +38,34 @@ async def create_action_with_requirements(db: Prisma, action: ActionModel):
     }
 
     if hasattr(action, "inputs") and action.inputs:
-        create_data["inputs"] = {
-            "create": [
-                {
-                    "item_source_id": inp.item_source_id,
-                    "quantity": inp.quantity,
-                }
-                for inp in action.inputs
-            ]
-        }
+        resolved_inputs = []
+        for inp in action.inputs:
+            item = await db.item.find_first(where={"name": inp.item_name})
+            if not item:
+                raise HTTPException(
+                    status_code=404, detail=f"Item '{inp.item_name}' not found"
+                )
+            resolved_inputs.append({
+                "item_source_id": item.source_id,
+                "quantity": inp.quantity,
+            })
+        create_data["inputs"] = {"create": resolved_inputs}
 
     if hasattr(action, "outputs") and action.outputs:
-        create_data["outputs"] = {
-            "create": [
-                {
-                    "item_source_id": out.item_source_id,
-                    "quantity": out.quantity,
-                }
-                for out in action.outputs
-            ]
-        }
+        resolved_outputs = []
+        for out in action.outputs:
+            item = await db.item.find_first(where={"name": out.item_name})
+            if not item:
+                raise HTTPException(
+                    status_code=404, detail=f"Item '{out.item_name}' not found"
+                )
+            resolved_outputs.append({
+                "item_source_id": item.source_id,
+                "quantity": out.quantity,
+            })
+        create_data["outputs"] = {"create": resolved_outputs}
 
-    create_data["cost"] = action.cost if action.cost is not None else 0.0
+    create_data["cost"] = 0.0
     create_data["experience"] = (
         action.experience if action.experience is not None else 0
     )
@@ -102,14 +109,14 @@ class RequirementCreate(BaseModel):
 class InputCreate(BaseModel):
     """Model for creating an action input."""
 
-    item_source_id: int = Field(..., description="OSRS item ID")
+    item_name: str = Field(..., description="Name of the OSRS item")
     quantity: int = Field(..., ge=1, description="Input quantity")
 
 
 class OutputCreate(BaseModel):
     """Model for creating an action output."""
 
-    item_source_id: int = Field(..., description="OSRS item ID")
+    item_name: str = Field(..., description="Name of the OSRS item")
     quantity: int = Field(..., ge=1, description="Output quantity")
 
 
@@ -190,9 +197,10 @@ def action_to_pydantic(action_data) -> ActionModel:
     inputs = []
     if hasattr(action_data, "inputs") and action_data.inputs:
         for inp in action_data.inputs:
+            item_name = inp.item.name if hasattr(inp, "item") and inp.item else f"Item {inp.item_source_id}"
             inputs.append(
                 ActionInput(
-                    item_source_id=inp.item_source_id,
+                    item_name=item_name,
                     quantity=inp.quantity,
                 )
             )
@@ -200,7 +208,6 @@ def action_to_pydantic(action_data) -> ActionModel:
     return ActionModel(
         name=action_data.name,
         action_type=action_data.action_type,
-        cost=action_data.cost if hasattr(action_data, "cost") else None,
         actions_per_hour=(
             action_data.actions_per_hour
             if hasattr(action_data, "actions_per_hour")

@@ -1,11 +1,8 @@
 """Action and requirement Pydantic models."""
 
 from typing import Literal, Union, Annotated, Optional
-from pydantic import BaseModel, Field, Discriminator, field_validator
+from pydantic import BaseModel, Field, Discriminator
 from prisma.enums import Skill
-
-from osrs_backend.utils.price_parser import price_validator
-
 
 class SkillRequirement(BaseModel):
     """Requirement for a skill level (e.g., 88 Magic)."""
@@ -42,7 +39,7 @@ ActionRequirement = Annotated[
 class ActionInput(BaseModel):
     """Input for an action (items consumed when taking the action)."""
 
-    item_source_id: int = Field(..., description="OSRS item ID")
+    item_name: str = Field(..., description="Name of the OSRS item")
     quantity: int = Field(..., ge=1, description="Quantity consumed")
 
 
@@ -58,14 +55,6 @@ class Action(BaseModel):
     name: str = Field(..., description="Name of the action")
     action_type: str = Field(
         ..., description="Type of action (e.g., 'spell', 'activity', 'item_creation')"
-    )
-    cost: Optional[float] = Field(
-        default=None,
-        description="Cost of the action (can be parsed from string like '1.4m')",
-    )
-    cost_per_hour: Optional[float] = Field(
-        default=None,
-        description="Cost per hour of the action",
     )
     actions_per_hour: Optional[int] = Field(
         default=1,
@@ -87,19 +76,6 @@ class Action(BaseModel):
         description="List of items produced when taking this action",
     )
 
-    @field_validator("cost", mode="before")
-    @classmethod
-    def parse_cost(cls, v: Union[str, float, int, None]) -> Optional[float]:
-        """Parse cost from string (e.g., '1.4m') or return as float."""
-        if v is None:
-            return None
-        if isinstance(v, (int, float)):
-            return float(v)
-        if isinstance(v, str):
-            parsed = price_validator(v)
-            return float(parsed)
-        return None
-
     def add_skill_requirement(self, skill: Skill, level: int) -> None:
         """Helper method to add a skill requirement."""
         self.requirements.append(SkillRequirement(skill=skill, level=level))
@@ -120,10 +96,10 @@ class Action(BaseModel):
             QuestRequirement(quest_name=quest_name, completed=completed)
         )
 
-    def add_input(self, item_source_id: int, item_name: str, quantity: int) -> None:
+    def add_input(self, item_name: str, quantity: int) -> None:
         """Helper method to add an action input (consumed item)."""
         self.inputs.append(
             ActionInput(
-                item_source_id=item_source_id, item_name=item_name, quantity=quantity
+                item_name=item_name, quantity=quantity
             )
         )
